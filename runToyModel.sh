@@ -1,0 +1,1 @@
+python3 /gpfs0/jdubi/users/kasirer/Research/toyModel.py -M 9 -N 9 --vmin 0 --vmax 5000 --stepnum 10 --vthmean 20 --vthstd 10  --rmean 1 --rstd 0.5 --cmean  0.001 --cstd 0 --dt 0.01 --vtimes 10  --method dynamic --repeatnum 10 --postfix diffvt --distribution exponential -o /gpfs0/jdubi/users/kasirer/Research/toyModel_results/
