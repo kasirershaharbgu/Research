@@ -1,0 +1,15 @@
+N: 9
+M: 9
+n: 5
+Vmin: 0.0
+Vmax: 5000.0
+ step num: 10
+Vth mean: 20.0
+ Vth std: 10.0
+ R mean: 1.0
+ R std: 0.5
+C mean: 0.001
+ C std: 0.0
+dt: 0.01
+method: dynamic
+repesats: 10
