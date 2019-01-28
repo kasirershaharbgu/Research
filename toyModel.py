@@ -7,7 +7,7 @@ import matplotlib.animation as animation
 from itertools import product
 from scipy.optimize import fsolve, broyden1, broyden2, newton_krylov
 from scipy.optimize.nonlin import NoConvergence
-import sys
+import os
 from optparse import OptionParser
 
 def getM1(M, N):
@@ -481,7 +481,9 @@ def plotVth(Vth):
 def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
              VthStd, RMean, RStd, CMean, CStd, dt,  method,
              fileNamesPostfix, repeat, distribution="normal",plot = False,
-             voltageTime=1):
+             voltageTime=1, output_folder="."):
+    if not os.path.exists(output_folder):
+        os.mkdir(output_folder)
     if RStd == 0:
         R = np.ones((M, N))*RMean
     else:
@@ -496,9 +498,10 @@ def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
     fig1 = plt.figure()
     plotVth(Vth)
     plt.title('Trheshold voltages for orderParam = ' + str(VthStd))
-    plt.savefig('ThresholdVoltages_orderParam_' + str(VthStd) + "_vtime" +
-                str(voltageTime) + "_size=" + str(N) + "X" + str(M) +
-                fileNamesPostfix +".png")
+    plt.savefig(os.path.join(output_folder, 'ThresholdVoltages_orderParam_'
+                             + str(VthStd) + "_vtime" + str(voltageTime) +
+                             "_size=" + str(N) + "X" + str(M) +
+                             fileNamesPostfix + ".png"))
     plt.close(fig1)
     Vth = reduceArray(Vth.flatten(), M, N)
     Iext, Vext, results = calcIVcurve(M, N, n, Rinf, Vth, Vmin, Vmax,
@@ -516,10 +519,10 @@ def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
         ims = plotCurrent(results, Vmax, M,N)
         im_ani = animation.ArtistAnimation(fig2, ims, interval=100,
                                            repeat_delay=1000, blit=True)
-        im_ani.save('CurrentsAnimation_orderParam_' + str(VthStd) + "_vtime" +
+        im_ani.save(os.path.join(output_folder,
+                'CurrentsAnimation_orderParam_' + str(VthStd)  + "_vtime" +
                 str(voltageTime) + "_size=" + str(N) + "X" + str(M) +
-                fileNamesPostfix + '.mp4',
-                writer=writer)
+                fileNamesPostfix + '.mp4'), writer=writer)
         plt.close(fig2)
     fig3 = plt.figure()
     x = len(Vext)
@@ -528,13 +531,13 @@ def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
     plt.xlabel('Voltage')
     plt.ylabel('Current')
     plt.title('IV for orderParam = ' + str(VthStd))
-    plt.savefig('IV_orderParam_' +  str(VthStd) +"_vtime" +
-                str(voltageTime) + "_size=" + str(N) + "X" + str(M) +
-                fileNamesPostfix +".png")
+    plt.savefig(os.path.join(output_folder,'IV_orderParam_' +  str(VthStd)
+                             +"_vtime" + str(voltageTime) + "_size=" + str(N)
+                             + "X" + str(M) + fileNamesPostfix +".png"))
     plt.close(fig3)
-    with open('runningParameters_orderParam_' +  str(VthStd) + "_vtime" +
-                str(voltageTime) + "_size=" + str(N) + "X" + str(M) +
-                fileNamesPostfix +".txt",mode='w') as f:
+    with open(os.path.join(output_folder,'runningParameters_orderParam_' +
+            str(VthStd) + "_vtime" + str(voltageTime) + "_size=" + str(N) +
+            "X" + str(M) + fileNamesPostfix +".txt"),mode='w') as f:
         f.write("N: " + str(N) + "\nM: " + str((M+1)//2)+ "\nn: " +
                 str(n) + "\nVmin: " + str(Vmin) +  "\nVmax: " +
                 str(Vmax) + "\n step num: " + str(numSteps) + "\nVth mean: "+
@@ -600,6 +603,9 @@ def getOptions():
     parser.add_option("--plotcurrent", dest="plot", help="if true a clip "
                       "with currnets will be plotted [Default: %default]",
                       default=False, action='store_true')
+    parser.add_option("-o", "--output-folder", dest="output_folder",
+                      help="Output folder [default: current folder]",
+                      default='.')
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -612,4 +618,4 @@ if __name__ == "__main__":
                 options.CStd, options.dt,  options.method,
                 options.fileNamesPostfix, options.repeat,
                  distribution=options.distribution, plot=options.plot,
-                 voltageTime=voltageTime)
+                 voltageTime=voltageTime, output_folder=options.output_folder)
