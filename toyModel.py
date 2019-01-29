@@ -480,10 +480,13 @@ def plotVth(Vth):
 
 def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
              VthStd, RMean, RStd, CMean, CStd, dt,  method,
-             fileNamesPostfix, repeat, distribution="normal",plot = False,
+             fileName, repeat, distribution="normal",plot = False,
              voltageTime=1, output_folder="."):
     if not os.path.exists(output_folder):
         os.mkdir(output_folder)
+    elif os.path.isfile(os.path.join(output_folder,'IV_' + fileName
+            +".png")):
+        fileName = fileName + '1'
     if RStd == 0:
         R = np.ones((M, N))*RMean
     else:
@@ -498,10 +501,8 @@ def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
     fig1 = plt.figure()
     plotVth(Vth)
     plt.title('Trheshold voltages for orderParam = ' + str(VthStd))
-    plt.savefig(os.path.join(output_folder, 'ThresholdVoltages_orderParam_'
-                             + str(VthStd) + "_vtime" + str(voltageTime) +
-                             "_size=" + str(N) + "X" + str(M) +
-                             fileNamesPostfix + ".png"))
+    plt.savefig(os.path.join(output_folder, 'ThresholdVoltages_'
+                             +fileName + ".png"))
     plt.close(fig1)
     Vth = reduceArray(Vth.flatten(), M, N)
     Iext, Vext, results = calcIVcurve(M, N, n, Rinf, Vth, Vmin, Vmax,
@@ -520,9 +521,8 @@ def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
         im_ani = animation.ArtistAnimation(fig2, ims, interval=100,
                                            repeat_delay=1000, blit=True)
         im_ani.save(os.path.join(output_folder,
-                'CurrentsAnimation_orderParam_' + str(VthStd)  + "_vtime" +
-                str(voltageTime) + "_size=" + str(N) + "X" + str(M) +
-                fileNamesPostfix + '.mp4'), writer=writer)
+                'CurrentsAnimation_orderParam_' + fileName + '.mp4'),
+        writer=writer)
         plt.close(fig2)
     fig3 = plt.figure()
     x = len(Vext)
@@ -531,13 +531,10 @@ def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
     plt.xlabel('Voltage')
     plt.ylabel('Current')
     plt.title('IV for orderParam = ' + str(VthStd))
-    plt.savefig(os.path.join(output_folder,'IV_orderParam_' +  str(VthStd)
-                             +"_vtime" + str(voltageTime) + "_size=" + str(N)
-                             + "X" + str(M) + fileNamesPostfix +".png"))
+    plt.savefig(os.path.join(output_folder,'IV_' + fileName +".png"))
     plt.close(fig3)
-    with open(os.path.join(output_folder,'runningParameters_orderParam_' +
-            str(VthStd) + "_vtime" + str(voltageTime) + "_size=" + str(N) +
-            "X" + str(M) + fileNamesPostfix +".txt"),mode='w') as f:
+    with open(os.path.join(output_folder,'runningParameters_' + fileName +
+            ".txt"),mode='w') as f:
         f.write("N: " + str(N) + "\nM: " + str((M+1)//2)+ "\nn: " +
                 str(n) + "\nVmin: " + str(Vmin) +  "\nVmax: " +
                 str(Vmax) + "\n step num: " + str(numSteps) + "\nVth mean: "+
@@ -595,8 +592,8 @@ def getOptions():
                       help="probability distribution from wich the Vth "
                            "values are drawn [default: %default]",
                       default="normal")
-    parser.add_option("--postfix", dest="fileNamesPostfix", help="optional "
-                      "addition to output filenames", default='')
+    parser.add_option("--file-name", dest="fileName", help="optional "
+                      "output files name", default='')
     parser.add_option("--repeatnum", dest="repeat", help="number of times "
                       "to repeat each voltage for averaging (for linear "
                       "meathod) [default: %default]", default=1, type=int)
@@ -616,6 +613,6 @@ if __name__ == "__main__":
                 options.Vmin, options.Vmax, options.stepNum, options.VthMean,
                 vthStd, options.RMean, options.RStd, options.CMean,
                 options.CStd, options.dt,  options.method,
-                options.fileNamesPostfix, options.repeat,
+                options.fileName, options.repeat,
                  distribution=options.distribution, plot=options.plot,
                  voltageTime=voltageTime, output_folder=options.output_folder)
