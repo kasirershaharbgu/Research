@@ -1,1 +1,1 @@
-python3 toyModel.py -M 9 -N 9 --vmin 0 --vmax 700 --stepnum 500 --vthmean 20 --vthstd 10  --rmean "$1" --rstd 0.5 --cmean  "$2" --cstd 0 --dt 0.01 --vtimes 10  --method dynamic --repeatnum 5 --file-name "$3" --distribution exponential -o ./toyModel_results/ --plotcurrent
+python3 toyModel.py -M 9 -N 9 --vmin 0 --vmax 700 --stepnum 500 --vthmean 20 --vthstd 10  --rmean "$1" --rstd 0.5 --cmean  "$2" --cstd 0 --dt 0.01 --vtimes 10  --method dynamic --repeatnum 5 --file-name "$3" --distribution exponential -o ./toyModel_results/
