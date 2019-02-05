@@ -9,7 +9,7 @@ do
 for C in "${arrayC[@]}"
 do
 
-qsub -V -S /bin/bash -cwd -N different_c -q jdubi.q runToyModel.sh "$R" "$C" "C_$C"
+qsub -V -S /bin/bash -cwd -N different_c -q jdubi.q runToyModel.sh "$R" "$C" "smallC_$C"
 
 sleep 10
 
