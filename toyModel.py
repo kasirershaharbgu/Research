@@ -174,6 +174,8 @@ def getb(M,N, Vext):
     b[:M//2 + 1] = Vext
     return b
 
+
+
 def getI(V, n, R0, Vth):
     '''
     Calculates I for the non Ohmic resistors.
@@ -187,6 +189,7 @@ def getI(V, n, R0, Vth):
     I = V**n / (R0*(Vth**(n-1) + V**(n-1)))
     I[V==0] = 0
     return I
+
 
 def getIprime(V, n, R0, Vth):
     Vth = Vth.flatten()
@@ -273,6 +276,8 @@ def calcLinearCurrents(M,N, M1, M2, R, R0, Rinf, Vth, Vext, repeat):
     if len(res) == 0:
         res.append(V/R)
     return res, Rnew
+
+
 
 def getJacobian(M1, M2, M3,n,R0,Vth):
     def fprime(V):
