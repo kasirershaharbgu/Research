@@ -7,6 +7,7 @@ import matplotlib.animation as animation
 from itertools import product
 from scipy.optimize import fsolve, broyden1, broyden2, newton_krylov
 from scipy.optimize.nonlin import NoConvergence
+from scipy.integrate import odeint as odeintegator
 import os
 from optparse import OptionParser
 
@@ -176,7 +177,7 @@ def getb(M,N, Vext):
 
 
 
-def getI(V, n, R0, Vth):
+def getI(V, n, R0, Vth, axis=0):
     '''
     Calculates I for the non Ohmic resistors.
     :param V: Matrix of the Voltages in the array
@@ -186,6 +187,11 @@ def getI(V, n, R0, Vth):
     :param Vth: Matrix of threshold voltages
     :return:
     '''
+    if len(V.shape) > 1 and V.shape[axis] > 1:
+        newShape = [1,1]
+        newShape[1 - axis] = R0.size
+        R0 = np.repeat(R0.reshape(newShape), V.shape[axis], axis=axis)
+        Vth = np.repeat(Vth.reshape(newShape), V.shape[axis], axis=axis)
     I = V**n / (R0*(Vth**(n-1) + V**(n-1)))
     I[V==0] = 0
     return I
@@ -277,7 +283,36 @@ def calcLinearCurrents(M,N, M1, M2, R, R0, Rinf, Vth, Vext, repeat):
         res.append(V/R)
     return res, Rnew
 
+def calcCurrentsUsingODE(M1, M2, M3, N, C, R0, n, Vth, Vslope, tUp, tDown):
+    M3C = M3*(np.ones((M3.shape[0],1)).dot(C.reshape((1,M3.shape[1]))))
+    eqM = np.vstack((M1,M2,M3C))
+    M3T = M3.T
+    inveqM = np.linalg.inv(eqM).T
+    Vini = np.zeros(Vth.shape)
 
+    def f(V, t0, dV):
+        origShape = V.shape
+        if len(origShape) == 1:
+            V = V.reshape((1,V.size))
+        return np.hstack((dV*np.ones((V.shape[0],M1.shape[0])), np.zeros((
+            V.shape[0],M2.shape[0])), -getI(V, n, R0,Vth).dot(M3T))).dot(
+            inveqM).reshape(origShape)
+
+    VresUp, infodictUp = odeintegator(f, Vini, tUp, args=(Vslope,),
+                                      full_output=1)
+    Vini = VresUp[-1,:]
+    VresDown, infodictDown = odeintegator(f, Vini, tDown, args=(-Vslope,),
+                                      full_output=1)
+    IresUp = getI(VresUp, n, R0, Vth) + \
+             f(VresUp, 0, Vslope) * np.repeat(C.reshape((1, C.size)),
+                                       VresUp.shape[0], axis=0)
+    IresDown = getI(VresDown, n, R0, Vth) + \
+               f(VresDown, 0, -Vslope) * np.repeat(C.reshape((1, C.size)),
+                                          VresDown.shape[0], axis=0)
+    Ires = np.vstack((IresUp, IresDown))
+
+    Iext= np.sum(Ires[:,(N-1)::(2*N-1)], axis=1)
+    return Ires, Iext
 
 def getJacobian(M1, M2, M3,n,R0,Vth):
     def fprime(V):
@@ -395,68 +430,77 @@ def calcIVcurve(M, N, n, Rinf, Vth, Vmin, Vmax, stepNum, R,  C, dt, repeat,
     M1 = getM1(M,N)
     M2 = getM2(M,N)
     M3nonLinear = getM3NonLinear(M,N)
-    results = []
-    Iext = []
-    Vext = np.linspace(Vmin,Vmax, num=stepNum)
-    Vext = np.hstack((Vext, np.flip(Vext, axis=0)))
+    VextUp = np.linspace(Vmin,Vmax, num=stepNum)
+    Vext = np.hstack((VextUp, np.flip(VextUp, axis=0)))
     R = reduceArray(R.flatten(), M, N)
     C = reduceArray(C.flatten(), M, N)
-    currR = np.ones((M*N-M//2,))*Rinf
-    V = np.zeros((M*N,))
-    V = np.delete(V,np.arange(1,M,2)*N + N-1)
-    for index, currV in enumerate(Vext):
-        try:
-            if method=="linear":
-                Ilist, newR= calcLinearCurrents(M,N, M1, M2, currR,R,
-                                               Rinf, Vth, currV, repeat)
-                currR = newR
-            elif method == "dynamic":
-                Ilist, V = calcDynamicVoltages(M, N, M1, M2, R, C, Vth,
-                                               currV, V, dt, repeat,
-                                               voltageTime=voltageTime)
-            elif method == "nonlinear":
-                V = calcNonLinearVoltages(M, N,M1, M2,M3nonLinear, n, R,
-                                          Vth, currV, V)
-                Ilist = [getI(V,n,R, Vth)]
-            else:
-                print("no such method: " + method)
-                exit(1)
-        except NoConvergence:
-            results.append((None,None))
-            Iext.append(-999)
-            print("failed for V=" + str(currV))
-            continue
-        results.extend([(I, currV) for I in Ilist])
-        Iext.append(np.mean([np.sum(I[(N-1)::(2*N-1)]) for I in Ilist]))
+    if method == "ode":
+        Vslope = (Vext[1] - Vext[0])/dt
+        tUp = np.arange(0,dt*VextUp.size, dt)
+        tDown = np.arange(tUp[-1] + dt, dt*Vext.size, dt)
+        Ires, Iext = calcCurrentsUsingODE(M1, M2, M3nonLinear, N, C, R, n,
+                                          Vth, Vslope, tUp, tDown)
+        results = [(Ires[i,:], Vext[i]) for i in range(Vext.size)]
+    else:
+        results = []
+        Iext = []
+
+        currR = np.ones((M*N-M//2,))*Rinf
+        V = np.zeros((M*N,))
+        V = np.delete(V,np.arange(1,M,2)*N + N-1)
+
+        for index, currV in enumerate(Vext):
+            try:
+                if method=="linear":
+                    Ilist, newR= calcLinearCurrents(M,N, M1, M2, currR,R,
+                                                   Rinf, Vth, currV, repeat)
+                    currR = newR
+                elif method == "dynamic":
+                    Ilist, V = calcDynamicVoltages(M, N, M1, M2, R, C, Vth,
+                                                   currV, V, dt, repeat,
+                                                   voltageTime=voltageTime)
+                elif method == "nonlinear":
+                    V = calcNonLinearVoltages(M, N,M1, M2,M3nonLinear, n, R,
+                                              Vth, currV, V)
+                    Ilist = [getI(V,n,R, Vth)]
+                else:
+                    print("no such method: " + method)
+                    exit(1)
+            except NoConvergence:
+                results.append((None,None))
+                Iext.append(-999)
+                print("failed for V=" + str(currV))
+                continue
+            results.extend([(I, currV) for I in Ilist])
+            Iext.append(np.mean([np.sum(I[(N-1)::(2*N-1)]) for I in Ilist]))
     Iext = np.array(Iext)
     Vext = np.array(Vext)
     return Iext[Iext != -999], Vext[Iext != -999], results
 
-def plotCurrent(results, Vmax, M,N):
+def plotCurrent(im, text, M,N):
     '''
     updating the plot to current currents map
     :return: image for animation
     '''
-    ims = []
-    num = 0
-    for result in results:
+    J = np.zeros(((M//2)*3+1,N*3))
+    vertRows = np.arange(0,(M//2)*3+1,3)
+    vertCols = np.repeat(np.arange(0,3*N,3),2)
+    vertCols[1::2] += 1
+    horzRows = np.repeat(np.arange(1, (M//2)*3+1, 3),2)
+    horzRows[1::2] += 1
+    horzCols = np.arange(2,3*N,3)
+
+    def updateCurrent(result):
         I, Vext = result
         if I is None:
-            continue
-        I = expandArray(I,M,N)
-        I = I.reshape((M,N))
-        J = np.zeros(((M//2)*3+1,N*3))
-        for i in range(2):
-            J[0:(M//2)*3+1:3, i:3*N:3] = I[0:M:2,:]
-        for i in range(2):
-            J[i+1:(M//2)*3+1:3, 2:3*N:3] = I[1:M:2,:]
-        im = plt.imshow(J, vmin=-Vmax/(M*M*N), vmax=Vmax/(M*M*N),
-        cmap='plasma', aspect='equal',animated=True)
-        tx = plt.annotate('Vext = ' + str(Vext), (1,1))
-        ims.append([im, tx])
-        num += 1
-    print(str(num))
-    return ims
+            return im
+        I = expandArray(I,M,N).reshape((M, N))
+        J[np.ix_(vertRows, vertCols)] = np.repeat(I[0:M:2,:],2,axis=1)
+        J[np.ix_(horzRows, horzCols)] = np.repeat(I[1:M:2,:],2,axis=0)
+        im.set_array(J)
+        text.set_text('Vext = ' + str(Vext))
+        return im,text
+    return updateCurrent
 
 def getDisorderedValues(M, N, mean, std, nozero=False, distribution="normal"):
     minval = 0.01 if nozero else 0
@@ -485,46 +529,66 @@ def plotVth(Vth):
 
 def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
              VthStd, RMean, RStd, CMean, CStd, dt,  method,
-             fileName, repeat, distribution="normal",plot = False,
-             voltageTime=1, output_folder="."):
-    if not os.path.exists(output_folder):
-        os.mkdir(output_folder)
-    elif os.path.isfile(os.path.join(output_folder,'IV_' + fileName
-            +".png")):
-        fileName = fileName + '1'
-    if RStd == 0:
-        R = np.ones((M, N))*RMean
+             fileName, repeat, distribution="normal",plot=False,
+             voltageTime=1, output_folder=".", save=False, load=False):
+    if load:
+        Vth = np.load(os.path.join(output_folder, 'ThresholdVoltages_'
+                             +fileName + ".npy"))
+        Iext = np.load(os.path.join(output_folder, 'Iext_'
+                             +fileName + ".npy"))
+        Vext = np.load(os.path.join(output_folder, 'Vext_'
+                             +fileName + ".npy"))
+        results = np.load(os.path.join(output_folder, 'results_'
+                             +fileName + ".npy"))
     else:
-        R = getDisorderedValues(M, N, RMean, RStd, nozero=True)
-    if CStd == 0:
-        C = np.ones((M, N))*CMean
-    else:
-        C = getDisorderedValues(M, N, CMean, CStd, nozero=True)
-    Rinf = np.max(R) * 1000
-    Vth = getDisorderedValues(M, N, VthMean, VthStd,
-                              distribution=distribution)
+
+        if not os.path.exists(output_folder):
+            os.mkdir(output_folder)
+        else:
+            i=1
+            if os.path.isfile(os.path.join(output_folder,'IV_' + fileName
+                 +".png")):
+                fileName = fileName + str(i)
+                i += 1
+            while os.path.isfile(os.path.join(output_folder,'IV_' + fileName
+                 +".png")):
+                fileName = fileName[:-1] + str(i)
+                i += 1
+        if RStd == 0:
+            R = np.ones((M, N))*RMean
+        else:
+            R = getDisorderedValues(M, N, RMean, RStd, nozero=True)
+        if CStd == 0:
+            C = np.ones((M, N))*CMean
+        else:
+            C = getDisorderedValues(M, N, CMean, CStd, nozero=True)
+        Rinf = np.max(R) * 1000
+        Vth = getDisorderedValues(M, N, VthMean, VthStd,
+                                 distribution=distribution)
+        VthReduced = reduceArray(Vth.flatten(), M, N)
+        Iext, Vext, results = calcIVcurve(M, N, n, Rinf, VthReduced, Vmin, Vmax,
+                                        numSteps, R,  C, dt,
+                                        repeat, method=method,
+                                         voltageTime=voltageTime)
     fig1 = plt.figure()
     plotVth(Vth)
     plt.title('Trheshold voltages for orderParam = ' + str(VthStd))
     plt.savefig(os.path.join(output_folder, 'ThresholdVoltages_'
                              +fileName + ".png"))
     plt.close(fig1)
-    Vth = reduceArray(Vth.flatten(), M, N)
-    Iext, Vext, results = calcIVcurve(M, N, n, Rinf, Vth, Vmin, Vmax,
-                                      numSteps, R,  C, dt,
-                                      repeat, method=method,
-                                      voltageTime=voltageTime)
-
     if plot:
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=24, bitrate=1800)
         fig2 = plt.figure()
-        plt.imshow(np.zeros((M,N)), vmin=-Vmax/np.min(R), vmax=Vmax/np.min(R),
-                   animated=True, cmap='plasma', aspect='equal')
+        Imax = np.max(Iext) / (M//2) if M > 1 else np.max(Iext)
+        im = plt.imshow(np.zeros(((M//2)*3+1,N*3)), vmin=-Imax/2,
+                    vmax=Imax/2,animated=True, cmap='plasma', aspect='equal')
+        text = plt.text(1,1, 'Vext = 0')
         plt.colorbar()
-        ims = plotCurrent(results, Vmax, M,N)
-        im_ani = animation.ArtistAnimation(fig2, ims, interval=100,
-                                           repeat_delay=1000, blit=True)
+        im_ani = animation.FuncAnimation(fig2, plotCurrent(im, text, M, N),
+                                         frames=results, interval=100,
+                                         repeat_delay=1000,
+                                         blit=True)
         im_ani.save(os.path.join(output_folder,
                 'CurrentsAnimation_orderParam_' + fileName + '.mp4'),
         writer=writer)
@@ -548,6 +612,16 @@ def runModel(N,M,n,Vmin, Vmax, numSteps, VthMean,
                 "\nC mean: " + str(CMean) + "\n C std: " + str(CStd) +
                 "\ndt: " + str(dt) + "\nmethod: " + method + "\nrepesats: " +
                 str(repeat))
+    if save and not load:
+        np.save(os.path.join(output_folder, 'ThresholdVoltages_'
+                                  +fileName), Vth)
+        np.save(os.path.join(output_folder, 'Iext_'
+                                   +fileName), Iext)
+        np.save(os.path.join(output_folder, 'Vext_'
+                                   +fileName), Vext)
+        np.save(os.path.join(output_folder, 'results_'
+                                   +fileName), results)
+
 
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
@@ -605,6 +679,12 @@ def getOptions():
     parser.add_option("--plotcurrent", dest="plot", help="if true a clip "
                       "with currnets will be plotted [Default: %default]",
                       default=False, action='store_true')
+    parser.add_option("--save", dest="save", help="if true the "
+                      "results will be save to file [Default: %default]",
+                      default=False, action='store_true')
+    parser.add_option("--load", dest="load", help="if true the "
+                      "results will be loaded from file [Default: %default]",
+                      default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
                       default='.')
@@ -620,4 +700,6 @@ if __name__ == "__main__":
                 options.CStd, options.dt,  options.method,
                 options.fileName, options.repeat,
                  distribution=options.distribution, plot=options.plot,
-                 voltageTime=voltageTime, output_folder=options.output_folder)
+                 voltageTime=voltageTime,
+                 output_folder=options.output_folder,
+                 save=options.save, load=options.load)
