@@ -1,0 +1,15 @@
+N: 51
+M: 51
+n: 11.0
+Vmin: 0.0
+Vmax: 700.0
+ step num: 500
+Vth mean: 20.0
+ Vth std: 10.0
+ R mean: 1.0
+ R std: 0.5
+C mean: 0.0001
+ C std: 0.0
+dt: 10.0
+method: ode
+repesats: 1
