@@ -1,0 +1,1 @@
+python3 dots_array.py -M "$1" -N "$2" --vmin "$3" --vmax "$4" --vstep "$5" --tstep "$6" --gvoltage "$7" --rightc "$8" --leftc "$9" --groundc "$10" --rightr "$11" --leftr "$12" --groundr "$13" --repeats "$14" -n "$15" -Q "$16" --dt "$17" --file-name "$18" -o "$19"
