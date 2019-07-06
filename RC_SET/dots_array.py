@@ -5,149 +5,21 @@ from matplotlib import pyplot as plt
 from optparse import OptionParser
 import os
 
+def sumToColumnVector(a, axis):
+    return a.sum(axis).reshape((a.shape[1+axis],1))
+
+def padAndShift(a):
+    tempZeros = np.zeros((a.shape[0],a.shape[1] + 2))
+    aShiftedRight = tempZeros.copy()
+    aShiftedLeft = tempZeros.copy()
+    aPadded = tempZeros.copy()
+    aShiftedRight[:,2:] = a
+    aShiftedLeft[:,:-2] = a
+    aPadded[:,1:-1] = a
+    return aShiftedRight, aShiftedLeft, aPadded
+
 class NoElectronsOnDot(RuntimeError):
     pass
-
-class Dot:
-    """
-    A quantum dot connected to gate trough capacitor and resistor (RC-SET)
-    """
-    def __init__(self, Q0, n0, VG, CG, RG, VL, CL, RL, VR, CR, RR, VU=None,
-                 CU=None, RU=None, VD=None, CD=None, RD=None):
-        """
-        Constructor for a single dot
-        :param Q0: Initial charge on the gate capacitor (e units)
-        :param n0: Initial number of electrons on the dot
-        properties of connections:
-        V - potential energy, C - capacitance, R - resistance
-        the different possible connections are:
-        G - gate, L- left, R- right, D - down, U - up
-        """
-        self.QG = Q0 # Charge on gate capacitor in units of e
-        self.n = n0 # Number of electrons on the dot
-        # connection properties:
-        # Gate:
-        self.VG = VG
-        self.CG = CG
-        self.RG = RG
-        # Left:
-        self.VL = VL
-        self.CL = CL
-        self.RL = RL
-        # Right:
-        self.VR = VR
-        self.CR = CR
-        self.RR = RR
-        if VU:
-            # Up: None if the dot is in the upper row in the array
-            self.VU = VU
-            self.CU = CU
-            self.RU = RU
-        if VD:
-            # Down: None if the dot is in the upper row in the array
-            self.VD = VD
-            self.CD = CD
-            self.RD = RD
-        self.nChanged = True
-        self._calcTau()
-
-
-    def addElectron(self):
-        """
-        Adds electron to the dot
-        """
-        self.n += 1
-        self.nChanged = True
-
-    def removeElectron(self):
-        """
-        Removes electron from the dot
-        """
-        if self.n==0:
-            raise NoElectronsOnDot
-        self.n -= 1
-        self.nChanged = True
-
-    def changeVoltages(self, VL, VR, VU=None, VD=None):
-        self.VL = VL
-        self.VR = VR
-        if VU:
-            self.VU = VU
-        if VD:
-            self.VD = VD
-        self._calcQn()
-
-
-    def getNumberOfElectrons(self):
-        """
-        :return: the number of rlectrons on the dot
-        """
-        return self.n
-
-    def getGateCharge(self):
-        """
-        :return: the charge on the gate capacitor
-        """
-        return self.QG
-
-    def _calcTau(self):
-        """
-        Calculates relaxation time for the dot.
-        """
-        # TODO: upgrade to match dot that is connected from up and down
-        self.tau = (self.RG * self.CG * (self.CL + self.CR)) / \
-                   (self.CL + self.CR + self.CG)
-
-    def _calcQn(self):
-        """
-        Calculating equilibrium value for the charge on the gate capacitor
-        :return:
-        """
-        # TODO: upgrade to match dot that is connected from up and down
-        self.Qn = self.tau * (((self.CL * self.VL +self.CR*self.VR + self.n) /
-                  (self.RG*(self.CL + self.CR))) - self.VG/self.RG)
-
-
-    def getRate(self, side, addElectron, includeVoltageWork=True):
-        """
-        Calculates the work done by the system when adding/removing
-        electron trough the given side
-        :param side: (R, L, U, D) the side trough the electron will be
-        removed/added
-        :param addElectron: If True an electron will be added, else an
-        electron will be removed
-        :return: The work done and the tunneling rate
-        """
-        # TODO: upgrade to match dot that is connected from up and down and
-        #  split to energy difference and work by voltage difference
-        if self.n < 1 and not addElectron:
-            w = 0
-            relevantR = 1
-        else:
-            sideSign = -1 if side== "L" else 1
-            addSign = -1 if addElectron else 1
-            relevantC = self.CR if side == "L" else self.CL
-            relevantR = self.RL if side == "L" else self.RR
-            if includeVoltageWork:
-                w = (1/(self.CL + self.CR)) * \
-                    (-0.5 + addSign * (2*(self.n - self.QG) +
-                                    sideSign*relevantC*(self.VL - self.VR)))
-            else:
-                w = (1/(self.CL + self.CR)) * \
-                    (-0.5 +  addSign *(self.n - self.QG))
-        # TODO: upgrade for T > 0
-        return w/relevantR
-
-    def developQ(self, t):
-        """
-        Letting the system develop with no tunneling for time t
-        :param t: time interval
-        """
-        if self.nChanged:
-            self._calcQn()
-            self.nChanged = False
-        self.QG = (self.QG - self.Qn)*np.exp(-t/self.tau) + self.Qn
-
 
 class DotArray:
     """
@@ -155,8 +27,8 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, Vext, VG, Q0, n0, CG, RG, CL,
-                 RL, CR, RR, CU=None, RU=None, CD=None, RD=None):
+    def __init__(self, rows, columns, Vext, VG, Q0, n0, CG, RG, C,
+                 R):
         """
         Creates new array of quantum dots
         :param rows: number of rows
@@ -164,7 +36,7 @@ class DotArray:
         :param Vext: external voltage
         :param Q0: np array of initial charges
         :param n0: np array of initial electrons
-        :param VG: voltage of the gate
+        :param VG: voltage of the gates (NXM array)
         np arrays of other parameters of the dots:
         C - capacitance, R - resistance
         the different possible connections are:
@@ -172,29 +44,17 @@ class DotArray:
         """
         self.rows = rows
         self.columns = columns
-        self.Vext = Vext
+        self.VL = Vext
+        self.VR = 0
         self.VG = VG
-        VL, VR, _, _ = self._calcVoltages()
-        self.array = [[None]*columns]*rows
-        for i in range(rows):
-            for j in range(columns):
-                # TODO: upgrade for more than 1 row
-                self.array[i][j] = Dot(Q0[i, j], n0[i, j], self.VG, CG[i, j],
-                                       RG[i, j], VL[i, j], CL[i, j], RL[i, j],
-                                       VR[i, j], CR[i, j], RR[i, j])
+        self.Q = Q0
+        self.n = n0
+        self.CG = CG
+        self.RG = RG
+        self.C = C
+        self.R = R
         self.totalChargePassed = 0
-        # TODO: upgrade for more than 1 dot
-        self.nearNeighbors = ((0,-1), (0,1))
-
-    def _calcVoltages(self):
-        """
-        Calculating voltages for the array
-        :return: np array of voltages (VL, VR, VU, VD)
-        """
-        # TODO: upgarde for more then 1 dot
-        VL = np.array([[self.Vext/2]])
-        VR = np.array([[-self.Vext/2]])
-        return VL, VR, None, None
+        self.createConstantMatrices()
 
     def getRows(self):
         return self.rows
@@ -209,81 +69,128 @@ class DotArray:
         self.totalChargePassed = 0
 
     def changeVext(self, newVext):
-        self.Vext = newVext
-        VL, VR, _, _ = self._calcVoltages()
-        for i in range(self.rows):
-            for j in range(self.columns):
-                # TODO: upgrade for more than 1 row
-                self.array[i][j].changeVoltages(VL[i][j], VR[i][j])
+        self.VL = newVext
+        # self.VR = -newVext/2
+        self.createConstantMatrices()
 
     def getCharge(self):
         return self.totalChargePassed
 
-    def getRate(self, fromDot, toDot):
-        """
-        Returns the work done when tunneling from dot
-        :param fromDot: index of the dot from where the electron tunnels ,
-        column -1 means left electrode
-        :param toDot: index of the dot to where to tunnel, column index =
-        number of columns means right electrode
-        :return: the work done by this tunneling event
-        """
-        # TODO: upgrade for more than 1 dot
-        if fromDot[1] < 0:
-            return self.array[toDot[0]][toDot[1]].getRate("L", True)
-        elif fromDot[1] >= self.rows:
-            return self.array[toDot[0]][toDot[1]].getRate("R", True)
-        elif toDot[1] < 0:
-            return self.array[fromDot[0]][fromDot[1]].getRate("L", False)
-        elif toDot[1] >= self.rows:
-            return self.array[fromDot[0]][fromDot[1]].getRate("R", False)
-        else:
-            raise(NotImplementedError)
+    def createConstantMatrices(self):
+        invC = 1/self.C
+        invCMatrix = np.repeat(invC[:,:-1],self.columns,0)
+        A = np.tril(invCMatrix)
+        self._invCsqrt = np.sqrt(invC)
+        self._invCG = 1/self.CG
+        self._invRG = 1/self.RG
+        self._invR = 1/self.R
+        B = np.triu(np.ones((self.columns, self.columns)))
+        M = np.linalg.inv(np.eye(self.columns) + self.C[0,-1]*invCMatrix)
+        AdotM = A.dot(M)
+        constant = self.C[0,-1] * (self.VR - self.VL)
+        self._AdotMdotB = AdotM.dot(B)
+        self._J = -np.diag(self._invRG.flatten()).dot(self._AdotMdotB + np.diag(
+            self._invCG.flatten()))
+        self._bBase= -self._invRG.T*(constant *
+                             sumToColumnVector(AdotM, -1) - self.VG.T + self.VL)
+        Mtilde = np.diag(self._invCsqrt[0,:-1]).dot(M)
+        alpha = Mtilde.dot(B)
+        alphaAddition = -np.sqrt(self.C[0,-1])*A[-1,:].dot(alpha)
+        self._alpha = np.vstack((alpha, alphaAddition))
+        beta = constant*sumToColumnVector(Mtilde,-1)
+        betaAddition = np.sqrt(self.C[0,-1])*(self.VR-self.VL - A[-1,
+                                                                :].dot(beta))
+        self._beta = np.vstack((beta, betaAddition))
+        alphaShiftedRight, alphaShiftedLeft, alphaPadded = padAndShift(
+            self._alpha)
+
+        dalphaRight = alphaShiftedLeft - alphaPadded
+        dalphaLeft = alphaShiftedRight - alphaPadded
+        dalphaRightsqr = sumToColumnVector(dalphaRight*dalphaRight, 0)
+        dalphaLeftsqr = sumToColumnVector(dalphaLeft*dalphaLeft, 0)
+
+        self._deltaERightBase = 0.5*(dalphaRightsqr + dalphaRight.T.dot(
+            self._beta))
+
+        self._deltaELeftBase = 0.5*(dalphaLeftsqr + dalphaLeft.T.dot(
+            self._beta))
+
+    def getbVector(self):
+        return self._bBase - (self._invRG.T*self._AdotMdotB.dot(self.n.T))
+
+    def developeQ(self, dt):
+        self.Q = (self._J.dot(self.Q.T) + self.getbVector()).T*dt
+    def getprobabilities(self, dt):
+        alphaShiftedRight, alphaShiftedLeft, alphaPadded = padAndShift(
+            self._alpha)
+        dalphaRight = alphaShiftedLeft - alphaPadded
+        dalphaLeft = alphaShiftedRight - alphaPadded
 
 
-    def getAllPossibleRates(self):
-        """
-        :return: dictionary with keys-> possible tunnels and items work done
-        by this tunnel
-        """
-        # TODO: upgrade for more than 1 dot
-        rates = []
-        for row in range(0, self.rows,2,):
-            for col in range(0, self.columns, 2):
-                rate = []
-                for p in self.nearNeighbors:
-                    current = (row, col)
-                    neighbor = (row + p[0],col + p[1])
-                    rate.append(self.getRate(current, neighbor))
-                    rate.append(self.getRate(neighbor, current))
-                rates.append(rate)
-        return np.array(rates)
+        commonElement = self._alpha.dot((self.Q+self.n).T)
+        deltaERight = self._deltaERightBase + dalphaRight.T.dot(commonElement)
+        deltaELeft = self._deltaELeftBase + dalphaLeft.T.dot(commonElement)
 
-    def develope(self, t):
-        for row in range(self.rows):
-            for column in range(self.columns):
-                self.array[row][column].developQ(t)
+
+        Qjunctions = commonElement + self._beta
+        QCratio = Qjunctions*self._invCsqrt.T
+        tempZeros = np.zeros((QCratio.shape[0]+1,QCratio.shape[1]))
+        deltaVRight = tempZeros.copy()
+        deltaVLeft = tempZeros.copy()
+
+        deltaVRight[:-1,:] = QCratio
+        deltaVLeft[1:,:] = -QCratio
+
+        tempZeros = np.zeros((self._invR.shape[0],self._invR.shape[1]+1))
+        invRShiftedRight = tempZeros.copy()
+        invRShiftedLeft = tempZeros.copy()
+
+        invRShiftedRight[:,1:] = self._invR
+        invRShiftedLeft[:,:-1] = self._invR
+
+        rateRight = (deltaERight + deltaVRight).T* invRShiftedLeft
+        rateLeft = (deltaELeft + deltaVLeft).T* invRShiftedRight
+        noElectrons = np.hstack(([[False]], self.n == 0, [[False]]))
+        rateRight[noElectrons] = 0
+        rateLeft[noElectrons] = 0
+
+
+        ratesCombined = np.vstack((rateRight, rateLeft)).flatten()
+        prob = np.zeros(ratesCombined.shape)
+        prob[ratesCombined < 0] = 1 - np.exp(ratesCombined[ratesCombined <
+                                                         0]*dt)
+        return prob
 
     def tunnel(self, fromDot, toDot):
         if self.columns > fromDot[1] >= 0:
-            self.array[fromDot[0]][fromDot[1]].removeElectron()
+            self.n[fromDot] -=1
         if self.columns > toDot[1] >= 0:
-            self.array[toDot[0]][toDot[1]].addElectron()
+            self.n[toDot] += 1
         if toDot[1] == self.columns:
             self.totalChargePassed += 1
         elif fromDot[1] == self.columns:
             self.totalChargePassed -= 1
+        if (self.n < 0).any():
+            raise NoElectronsOnDot
 
     def printState(self):
         for i in range(self.rows):
             for j in range(self.columns):
-                n = self.array[i][j].getNumberOfElectrons()
-                Q = self.array[i][j].getGateCharge()
                 print("At dot (" + str(i) + ", " + str(j) + ") the state "
-                      "is: n= " + str(n) + " and QG = " + str(Q))
+                      "is: n= " + str(self.n[i,j]) + " and QG = " + str(
+                    self.Q[i,j]))
 
-    def getIndices(self, ind):
-            return ind // self.columns, ind % self.columns
+    def executeStep(self, ind):
+            side = ind // ((self.columns+2)*self.rows)
+            dotIndex = ind % ((self.columns+2)*self.rows)
+            dotRow = dotIndex // (self.columns+2)
+            dotColumn = dotIndex % (self.columns+2) -1
+            fromDot = (dotRow, dotColumn)
+            if side == 0:
+                toDot = (dotRow, dotColumn+1)
+            if side == 1:
+                toDot = (dotRow, dotColumn-1)
+            self.tunnel(fromDot, toDot)
 
 MINPROBLOG = np.log(1/0.7)
 class Simulator:
@@ -293,139 +200,112 @@ class Simulator:
     :param columns: number of columns in the array
     """
     def __init__(self, rows, columns, Vext0, VG0, dt,
-                 Q0, n0, CG, RG, CL, RL, CR, RR):
+                 Q0, n0, CG, RG, C, R):
         # TODO upgrade for more than 1 row
         self.dotArray = DotArray(rows, columns, Vext0, VG0, Q0, n0, CG, RG,
-                                 CL, RL, CR, RR)
+                                 C, R)
         self.t = 0
         self.dt = dt
-        self.prob = None
         self.Vext = Vext0
 
 
-    def _calcProbabilities(self):
-        rates = self.dotArray.getAllPossibleRates()
-        self.prob = np.zeros(rates.shape)
-        relevant = rates > 0
-        self.prob[relevant] = 1 - np.exp(-rates[relevant]* self.dt)
-        self.prob = np.cumsum(self.prob,axis = 1)
+
 
     def executeStep(self, printState=False):
-        self.dotArray.develope(self.dt)
-        self._calcProbabilities()
+        r = np.random.ranf()
+        probNotOk = True
+        while (probNotOk):
+            self.dotArray.developeQ(self.dt)
+            prob = self.dotArray.getprobabilities(self.dt)
+            cumProb = np.cumsum(prob)
+            if cumProb[-1] > 1:
+                print("Warning: total prob > 1 needed smaller dt, reducing dt")
+                self.dt /= 10
+            else:
+                probNotOk = False
+        actionInd = np.searchsorted(cumProb, r)
+        if actionInd < prob.size:
+            self.dotArray.executeStep(actionInd)
+        if printState:
+            self.printState()
 
-        r = np.random.ranf((self.prob.shape[0],))
-        tunnelToLeft, = np.where(r < self.prob[:,0])
-        tunnelFromLeft, = np.where((r < self.prob[:,1]) ^ (r < self.prob[:,0]))
-        tunnelToRight, = np.where((r < self.prob[:,2]) ^ (r < self.prob[:,1]))
-        tunnelFromRight, = np.where((r < self.prob[:,3]) ^ (r < self.prob[:,2]))
-        try:
-            for tunnel in tunnelToLeft:
-                row, col = self.dotArray.getIndices(tunnel)
-                self.dotArray.tunnel((row, col), (row, col-1))
-            for tunnel in tunnelToRight:
-                row, col = self.dotArray.getIndices(tunnel)
-                self.dotArray.tunnel((row, col), (row, col+1))
-            for tunnel in tunnelFromLeft:
-                row, col = self.dotArray.getIndices(tunnel)
-                self.dotArray.tunnel((row, col - 1), (row, col))
-            for tunnel in tunnelFromRight:
-                row, col = self.dotArray.getIndices(tunnel)
-                self.dotArray.tunnel((row, col + 1), (row, col))
-            self.t += self.dt
-            if printState:
-                self.printState()
-        except NoElectronsOnDot as e:
-            self.dotArray.printState()
-            print(self.prob)
-            raise e
-
-    def calcCurrent(self, t, fullOutput=False):
+    def calcCurrent(self, t,print=False):
         # TODO: for now t must be multiplication of dt by whole number
         if fullOutput:
             n = []
             Q = []
         for steps in range(int(t // self.dt)):
-            self.executeStep(printState=False)
-
-            if fullOutput:
-                n.append(self.dotArray.array[0][0].getNumberOfElectrons())
-                Q.append(self.dotArray.array[0][0].getGateCharge())
-
+            self.executeStep(printState=print)
         current = self.dotArray.getCharge() / t
-        if fullOutput:
-            return current,n, Q
         return current
 
-    def calcIV(self, Vmax, Vstep, tStep, fullOutput=False):
+    def calcIV(self, Vmax, Vstep, tStep, print=False, fullOutput=False):
         V = []
         I = []
-        if fullOutput:
-            Q = []
-            n = []
+
         V0 = self.Vext
         while(self.Vext < Vmax):
             if fullOutput:
-                current, stepn, stepQ = self.calcCurrent(tStep,
-                                                         fullOutput=True)
+                current, stepn, stepQ = self.calcCurrent(tStep,print=print)
                 I.append(current)
-                n.extend(stepn)
-                Q.extend(stepQ)
             else:
-                I.append(self.calcCurrent(tStep, fullOutput=False))
-
+                I.append(self.calcCurrent(tStep, print=print))
             V.append(self.Vext)
             self.Vext += Vstep
+            self.t += tStep
             self.dotArray.changeVext(self.Vext)
             self.dotArray.resetCharge()
         while(self.Vext > V0):
-            I.append(self.calcCurrent(tStep))
+            if fullOutput:
+                current, stepn, stepQ = self.calcCurrent(tStep,print=print)
+                I.append(current)
+            else:
+                I.append(self.calcCurrent(tStep, print=print))
             V.append(self.Vext)
             self.Vext -= Vstep
+            self.t += tStep
             self.dotArray.changeVext(self.Vext)
             self.dotArray.resetCharge()
-        if fullOutput:
-            return np.array(I), np.array(V), np.array(n), np.array(Q)
         return np.array(I), np.array(V)
 
     def printState(self):
-        print("At t = " + str(self.t) + ":")
+        print("At t= " + str(self.t) + " Vext = " + str(self.Vext) + ":")
         self.dotArray.printState()
 
 
-def runSingleDotSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, CL, RL, CR, RR,
-                           Vmax, Vstep, tStep,repeats=1, savePath=".",
-                           fileName="", fullOutput=False):
+def run1DSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, C, R, columns,
+                    Vmax, Vstep, tStep,repeats=1, savePath=".",
+                    fileName="", fullOutput=False, printState=False):
     basePath = os.path.join(savePath, fileName)
     Is = []
 
     for repeat in range(repeats):
-        simulator = Simulator(1, 1, Vext0, VG0, dt, np.array([[Q0]]),
-                              np.array([[n0]]), np.array([[CG]]),
-                              np.array([[RG]]), np.array([[CL]]),
-                              np.array([[RL]]), np.array([[CR]]),
-                              np.array([[RR]]))
+        simulator = Simulator(1, columns, Vext0, np.array(VG0), dt,
+                              np.array(Q0),
+                              np.array(n0), np.array(CG),
+                              np.array(RG), np.array(C),
+                              np.array(R))
         out = simulator.calcIV(Vmax, Vstep, tStep,
-                                fullOutput=fullOutput)
+                                fullOutput=fullOutput, print=printState)
         I = out[0]
         V = out[1]
-        if fullOutput:
-            n = out[2]
-            Q = out[3]
+        # if fullOutput:
+        #     n = out[2]
+        #     Q = out[3]
         Is.append(I)
     avgI = np.mean(np.array(Is), axis=0)
-    if fullOutput:
-        fig = plt.figure()
-        plt.plot(n, '.')
-        plt.savefig(basePath + "_n.png")
-        np.save(basePath + "_n.bin", n)
-        plt.close(fig)
-
-        fig = plt.figure()
-        plt.plot(Q, '.')
-        plt.savefig(basePath + "_Q.png")
-        np.save(basePath + "_Q.bin", Q)
-        plt.close(fig)
+    # if fullOutput:
+    #     fig = plt.figure()
+    #     plt.plot(n, '.')
+    #     plt.savefig(basePath + "_n.png")
+    #     np.save(basePath + "_n.bin", n)
+    #     plt.close(fig)
+    #
+    #     fig = plt.figure()
+    #     plt.plot(Q, '.')
+    #     plt.savefig(basePath + "_Q.png")
+    #     np.save(basePath + "_Q.bin", Q)
+    #     plt.close(fig)
 
     fig = plt.figure()
     plt.plot(V[:V.size//2], avgI[:I.size//2], '.b',V[V.size//2:],
@@ -435,11 +315,10 @@ def runSingleDotSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, CL, RL, CR, RR,
     plt.savefig(basePath + "_IV.png")
     np.save(basePath + "_I.bin", avgI)
     np.save(basePath + "_V.bin", V)
-
-    if fullOutput:
-        return I, V, n, Q
-    else:
-        return I, V
+    plt.close(fig)
+    # if fullOutput:
+    #     return I, V, n, Q
+    return I, V
 
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
@@ -508,31 +387,48 @@ def saveParameters(path, fileName, options):
 
 
 if __name__ == "__main__":
-    options, args = getOptions()
+    # options, args = getOptions()
+    # columns = options.N
+    # Vext0 = options.Vmin
+    # VG = options.VG
+    # dt = options.dt
+    # Q0 = options.Q0
+    # n0 = options.n0
+    # CG = options.CG
+    # RG = options.RG
+    # C = options.C
+    # R = options.R
+    # Vmax = options.Vmax
+    # Vstep = options.vStep
+    # tStep = options.tStep
+    # repeats = options.repeats
+    # savePath = options.output_folder
+    # fileName = options.fileName
+    # fullOutput = options.fullOutput
 
-    Vext0 = options.Vmin
-    VG = options.VG
-    dt = options.dt
-    Q0 = options.Q0
-    n0 = options.n0
-    CG = options.CG
-    RG = options.RG
-    CL = options.CL
-    RL = options.RL
-    CR = options.CR
-    RR = options.RR
-    Vmax = options.Vmax
-    Vstep = options.vStep
-    tStep = options.tStep
-    repeats = options.repeats
-    savePath = options.output_folder
-    fileName = options.fileName
-    fullOutput = options.fullOutput
-    if not os.path.exists(savePath):
-        os.mkdir(savePath)
+    # saveParameters(savePath, fileName, options)
+    columns = 2
+    Q0 = [[0, 0]]
+    n0 = [[0, 0]]
+    C = [[1, 1, 1]]
+    R = [[1, 1, 1]]
+    Vmax = 100
+    Vstep = 1
+    tStep = 10
+    repeats = 1
+    fullOutput = False
 
-    saveParameters(savePath, fileName, options)
-    runSingleDotSimulation(Vext0, VG, dt, Q0, n0, CG, RG, CL, RL, CR, RR,
-                           Vmax, Vstep, tStep, repeats=repeats,
-                           savePath=savePath, fileName=fileName,
-                           fullOutput=fullOutput)
+    Vext0 = 0
+    dt = 0.001
+
+    VG = [[0, 0]]
+    CG = [[1, 1]]
+    RG = [[1, 1]]
+    RGs = [[1, 1]]
+    fileName = "dbg"
+    savePath = "./dbg"
+
+
+    run1DSimulation(Vext0, VG, dt, Q0, n0, CG, RG, C, R, columns,
+                    Vmax, Vstep, tStep, repeats=repeats,
+                    savePath=savePath, fileName=fileName, printState=False)
