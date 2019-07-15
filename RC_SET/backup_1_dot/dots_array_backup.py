@@ -301,6 +301,16 @@ class Simulator:
         self.dt = dt
         self.prob = None
         self.Vext = Vext0
+    #     self.randomGen = self.getRandom()
+    #
+    # def getRandom(self):
+    #     numbers = [0.01,0.001,0.001,0.76,0.002]
+    #     idx = -1
+    #     while True:
+    #         idx += 1
+    #         if idx == len(numbers):
+    #             idx = 0
+    #         yield numbers[idx]
 
 
     def _calcProbabilities(self):
@@ -314,7 +324,9 @@ class Simulator:
         self.dotArray.develope(self.dt)
         self._calcProbabilities()
 
-        r = np.random.ranf((self.prob.shape[0],))
+        r = np.random.ranf((self.prob.shape[0],)) # TODO return
+        # r = next(self.randomGen)
+
         tunnelToLeft, = np.where(r < self.prob[:,0])
         tunnelFromLeft, = np.where((r < self.prob[:,1]) ^ (r < self.prob[:,0]))
         tunnelToRight, = np.where((r < self.prob[:,2]) ^ (r < self.prob[:,1]))
@@ -364,7 +376,6 @@ class Simulator:
             Q = []
             n = []
         V0 = self.Vext
-        count = 0  # For flactuation test TODO: remove
         while(self.Vext < Vmax):
             if fullOutput:
                 current, stepn, stepQ = self.calcCurrent(tStep,
@@ -375,13 +386,9 @@ class Simulator:
             else:
                 I.append(self.calcCurrent(tStep, fullOutput=False))
             V.append(self.Vext)
-            if count < 10:
-                count +=1
-            else:
-                self.Vext += Vstep
-                self.dotArray.changeVext(self.Vext)
-                self.dotArray.resetCharge()
-                count = 0
+            self.Vext += Vstep
+            self.dotArray.changeVext(self.Vext)
+            self.dotArray.resetCharge()
         while(self.Vext > V0):
             if fullOutput:
                 current, stepn, stepQ = self.calcCurrent(tStep,
@@ -552,10 +559,10 @@ if __name__ == "__main__":
     Vmax = 5
     Vstep = 0.1
     tStep = 100
-    repeats = 1
+    repeats = 10
     fullOutput = False
 
-    Vext0 = 0
+    Vext0 = 2
     dt = 0.01
 
     VGs = [0]
@@ -569,7 +576,7 @@ if __name__ == "__main__":
             for RG in RGs:
                 for CR in CRs:
                     for RR in RRs:
-                        savePath = "single_dot_flactuation_test_VG_" + str(
+                        savePath = "dbg" + str(
                             VG) + \
                                    "_CG_" + str(CG) + "_RG_" + \
                                    str(RG)
