@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from optparse import OptionParser
 import os
+from ast import literal_eval
 
 def sumToColumnVector(a, axis):
     return a.sum(axis).reshape((a.shape[1+axis],1))
@@ -44,8 +45,8 @@ class DotArray:
         """
         self.rows = rows
         self.columns = columns
-        self.VL = Vext
-        self.VR = 0
+        self.VL = Vext/2
+        self.VR = -Vext/2
         self.VG = VG
         self.Q = Q0
         self.n = n0
@@ -69,8 +70,8 @@ class DotArray:
         self.totalChargePassed = 0
 
     def changeVext(self, newVext):
-        self.VL = newVext
-        # self.VR = -newVext/2
+        self.VL = newVext/2
+        self.VR = -newVext/2
         self.createConstantMatrices()
 
     def getCharge(self):
@@ -89,9 +90,12 @@ class DotArray:
         AdotM = A.dot(M)
         constant = self.C[0,-1] * (self.VR - self.VL)
         self._AdotMdotB = AdotM.dot(B)
-        self._J = -np.diag(self._invRG.flatten()).dot(self._AdotMdotB + np.diag(
+        J = -np.diag(self._invRG.flatten()).dot(self._AdotMdotB + np.diag(
             self._invCG.flatten()))
-        self._bBase= -self._invRG.T*(constant *
+        self._JeigenValues, self._JeigenVectors = np.linalg.eig(J)
+        self._JeigenValues = self._JeigenValues.reshape((self._JeigenValues.shape[0], 1))
+        self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
+        self._bBase = -self._invRG.T*(constant *
                              sumToColumnVector(AdotM, -1) - self.VG.T + self.VL)
         Mtilde = np.diag(self._invCsqrt[0,:-1]).dot(M)
         alpha = Mtilde.dot(B)
@@ -116,10 +120,17 @@ class DotArray:
             self._beta))
 
     def getbVector(self):
-        return self._bBase - (self._invRG.T*self._AdotMdotB.dot(self.n.T))
+        return self._JeigenVectorsInv.dot(self._bBase - (
+            self._invRG.T*self._AdotMdotB.dot(
+            self.n.T)))
 
     def developeQ(self, dt):
-        self.Q = (self._J.dot(self.Q.T) + self.getbVector()).T*dt
+            Q0 = self._JeigenVectorsInv.dot(self.Q.T)
+            b = self.getbVector()
+            exponent = np.exp(self._JeigenValues*dt)
+            self.Q = self._JeigenVectors.dot(Q0*exponent +(
+                b/self._JeigenValues)*(exponent - 1)).T
+
     def getprobabilities(self, dt):
         alphaShiftedRight, alphaShiftedLeft, alphaPadded = padAndShift(
             self._alpha)
@@ -207,12 +218,20 @@ class Simulator:
         self.t = 0
         self.dt = dt
         self.Vext = Vext0
-
-
-
+    #     self.randomGen = self.getRandom()
+    #
+    # def getRandom(self):
+    #     numbers = [0.01,0.001,0.001,0.76,0.002]
+    #     idx = -1
+    #     while True:
+    #         idx += 1
+    #         if idx == len(numbers):
+    #             idx = 0
+    #         yield numbers[idx]
 
     def executeStep(self, printState=False):
         r = np.random.ranf()
+        # r = next(self.randomGen)
         probNotOk = True
         while (probNotOk):
             self.dotArray.developeQ(self.dt)
@@ -276,6 +295,11 @@ class Simulator:
 def run1DSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, C, R, columns,
                     Vmax, Vstep, tStep,repeats=1, savePath=".",
                     fileName="", fullOutput=False, printState=False):
+    if not os.path.exists(savePath):
+        os.mkdir(savePath)
+    elif not os.path.isdir(savePath):
+        print("the given path exists but is a file")
+        exit(0)
     basePath = os.path.join(savePath, fileName)
     Is = []
 
@@ -323,6 +347,7 @@ def run1DSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, C, R, columns,
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
 
+    # Normal parameters
     parser.add_option("-M", "--height", dest="M", help="number of lines in "
                       "the array [default: %default]", default=1, type=int)
     parser.add_option("-N", "--width", dest="N", help="number of columns in "
@@ -335,33 +360,9 @@ def getOptions():
                     "default: %default]", default=1, type=float)
     parser.add_option("--tstep", dest="tStep", help="Time of each voltage "
                       "step [default: %default]", default=1, type=float)
-    parser.add_option("--gvoltage", dest="VG", help="Gate voltage "
-                      "[default: %default]", default=0, type=float)
-    parser.add_option("--rightc", dest="CR", help="Right junction "
-                      "capacitance[default: %default]",
-                      default=1, type=float)
-    parser.add_option("--leftc", dest="CL", help="Left junction "
-                      "capacitance[default: %default]",
-                      default=1, type=float)
-    parser.add_option("--groundc", dest="CG", help="Gate Capacitor "
-                      "capacitance[default: %default]",
-                      default=1, type=float)
-    parser.add_option("--rightr", dest="RR", help="Right junction "
-                      "resistance[default: %default]",
-                      default=1, type=float)
-    parser.add_option("--leftr", dest="RL", help="Left junction "
-                      "resistance [default: %default]",
-                      default=1, type=float)
-    parser.add_option("--groundr", dest="RG", help="Gate Resistor "
-                      "resistance[default: %default]",
-                      default=1, type=float)
     parser.add_option("--repeats", dest="repeats",
                       help="how many times to run calculation for averaging"
                       " [default: %default]", default=1, type=int)
-    parser.add_option("-n", dest="n0", help="initial number of electrons on"
-                      " dot [default:%default]", default=0, type=float)
-    parser.add_option("-Q", dest="Q0", help="initial charge on gate capacitor"
-                      " [default:%default]", default=0, type=float)
     parser.add_option("--dt", dest="dt", help="time step size"
                       " [default:%default]", default=0.1, type=float)
     parser.add_option("--file-name", dest="fileName", help="optional "
@@ -373,6 +374,47 @@ def getOptions():
                       help="Output folder [default: current folder]",
                       default='.')
 
+    # Disorder Parameters
+    parser.add_option("--vg-avg", dest="VG_avg", help="Gate voltage average"
+                      "[default: %default]", default=1, type=float)
+    parser.add_option("--vg-std", dest="VG_std", help="Gate voltage std"
+                      "[default: %default]", default=0, type=float)
+    parser.add_option("--c-avg", dest="C_avg", help="capacitance of "
+                      "junctions average [default: %default]",
+                      default=1, type=float)
+    parser.add_option("--c-std", dest="C_std", help="capacitance of "
+                      "junctions std [default: %default]",
+                      default=0, type=float)
+    parser.add_option("--cg-avg", dest="CG_avg", help="Gate Capacitors "
+                      "capacitance average [default: %default]",
+                      default=1, type=float)
+    parser.add_option("--cg-std", dest="CG_std", help="Gate Capacitors "
+                      "capacitance std [default: %default]",
+                      default=0, type=float)
+    parser.add_option("--r-avg", dest="R_avg", help="junctions "
+                      "resistance average [default: %default]",
+                      default=1, type=float)
+    parser.add_option("--r-std", dest="R_std", help="junctions "
+                      "resistance std [default: %default]",
+                      default=0, type=float)
+    parser.add_option("--rg-avg", dest="RG_avg", help="Gate Resistors "
+                      "resistance average [default: %default]",
+                      default=1, type=float)
+    parser.add_option("--rg-std", dest="RG_std", help="Gate Resistors "
+                      "resistance std [default: %default]",
+                      default=0, type=float)
+    parser.add_option("--n-avg", dest="n0_avg", help="initial number of "
+                      "electrons on each dot average [default:%default]",
+                      default=0, type=float)
+    parser.add_option("--n-std", dest="n0_std", help="initial number of "
+                      "electrons on each dot std [default:%default]",
+                      default=0, type=float)
+    parser.add_option("--q-avg", dest="Q0_avg", help="initial charge on gate "
+                      "capacitors average [default:%default]",
+                      default=0, type=float)
+    parser.add_option("--q-std", dest="Q0_std", help="initial charge on gate "
+                      "capacitors std [default:%default]",
+                      default=0, type=float)
     return parser.parse_args()
 
 def saveParameters(path, fileName, options):
@@ -383,52 +425,45 @@ def saveParameters(path, fileName, options):
         for key in vars(options):
             f.write(key + " = " + str(optionsDict[key]) + "\n")
 
-
-
+def create_random_array(M,N, avg, std, only_positive=False):
+    if std == 0:
+        return avg*np.ones((M, N))
+    if only_positive:
+        if avg == 0:
+            shape = 1
+            scale = 2
+        else:
+            shape = (avg/std)**2
+            scale = std**2 / avg
+        return np.random.gamma(shape=shape, scale=scale, size=(M,N))
+    else:
+        return np.random.normal(loc=avg, scale=std, size=(M,N))
 
 if __name__ == "__main__":
-    # options, args = getOptions()
-    # columns = options.N
-    # Vext0 = options.Vmin
-    # VG = options.VG
-    # dt = options.dt
-    # Q0 = options.Q0
-    # n0 = options.n0
-    # CG = options.CG
-    # RG = options.RG
-    # C = options.C
-    # R = options.R
-    # Vmax = options.Vmax
-    # Vstep = options.vStep
-    # tStep = options.tStep
-    # repeats = options.repeats
-    # savePath = options.output_folder
-    # fileName = options.fileName
-    # fullOutput = options.fullOutput
+    options, args = getOptions()
+    columns = options.N
+    Vext0 = options.Vmin
+    VG = create_random_array(1, columns, options.VG_avg, options.VG_std,
+                             False)
+    dt = options.dt
+    Q0 = create_random_array(1, columns, options.Q0_avg, options.Q0_std,
+                             False)
+    n0 = create_random_array(1, columns, options.n0_avg, options.n0_std, True)
+    CG = create_random_array(1, columns, options.CG_avg, options.CG_std, True)
+    RG = create_random_array(1, columns, options.RG_avg, options.RG_std, True)
+    C = create_random_array(1, columns + 1, options.C_avg, options.C_std,
+                            True)
+    R = create_random_array(1, columns + 1, options.R_avg, options.R_std,
+                            True)
+    Vmax = options.Vmax
+    Vstep = options.vStep
+    tStep = options.tStep
+    repeats = options.repeats
+    savePath = options.output_folder
+    fileName = options.fileName
+    fullOutput = options.fullOutput
 
-    # saveParameters(savePath, fileName, options)
-    columns = 2
-    Q0 = [[0, 0]]
-    n0 = [[0, 0]]
-    C = [[1, 1, 1]]
-    R = [[1, 1, 1]]
-    Vmax = 100
-    Vstep = 1
-    tStep = 10
-    repeats = 1
-    fullOutput = False
-
-    Vext0 = 0
-    dt = 0.001
-
-    VG = [[0, 0]]
-    CG = [[1, 1]]
-    RG = [[1, 1]]
-    RGs = [[1, 1]]
-    fileName = "dbg"
-    savePath = "./dbg"
-
-
+    saveParameters(savePath, fileName, options)
     run1DSimulation(Vext0, VG, dt, Q0, n0, CG, RG, C, R, columns,
                     Vmax, Vstep, tStep, repeats=repeats,
                     savePath=savePath, fileName=fileName, printState=False)
