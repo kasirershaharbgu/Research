@@ -431,7 +431,7 @@ def create_random_array(M,N, avg, std, only_positive=False):
         else:
             shape = (avg/std)**2
             scale = std**2 / avg
-        return np.random.gamma(shape=shape, scale=scale, size=(M,N))
+        return 0.1 + np.random.gamma(shape=shape, scale=scale, size=(M,N))
     else:
         return np.random.normal(loc=avg, scale=std, size=(M,N))
 
