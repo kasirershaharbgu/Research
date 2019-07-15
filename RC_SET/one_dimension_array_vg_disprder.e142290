@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "dots_array.py", line 466, in <module>
-    saveParameters(savePath, fileName, options)
-  File "dots_array.py", line 424, in saveParameters
-    ".txt"),mode='w') as f:
-FileNotFoundError: [Errno 2] No such file or directory: '1004/runningParameters_1003.txt'
