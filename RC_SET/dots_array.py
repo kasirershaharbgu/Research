@@ -295,11 +295,7 @@ class Simulator:
 def run1DSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, C, R, columns,
                     Vmax, Vstep, tStep,repeats=1, savePath=".",
                     fileName="", fullOutput=False, printState=False):
-    if not os.path.exists(savePath):
-        os.mkdir(savePath)
-    elif not os.path.isdir(savePath):
-        print("the given path exists but is a file")
-        exit(0)
+
     basePath = os.path.join(savePath, fileName)
     Is = []
 
@@ -462,6 +458,12 @@ if __name__ == "__main__":
     savePath = options.output_folder
     fileName = options.fileName
     fullOutput = options.fullOutput
+
+    if not os.path.exists(savePath):
+        os.mkdir(savePath)
+    elif not os.path.isdir(savePath):
+        print("the given path exists but is a file")
+        exit(0)
 
     saveParameters(savePath, fileName, options)
     run1DSimulation(Vext0, VG, dt, Q0, n0, CG, RG, C, R, columns,
