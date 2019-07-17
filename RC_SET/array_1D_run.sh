@@ -15,7 +15,7 @@ q_avg=0
 q_std=0
 dt=0.01
 vmax=100
-vsep=1
+vstep=1
 f="1D_Array/one_dimension_big_array"
 
 qsub -V -S /bin/bash -cwd -N r_disorder -q jdubi.q run_RC_SET.sh 1 "$N" "$vmin" "$vmax" "$vstep" "$tstep" "$vg_avg" 0 "$c_avg" 0 "$cg_avg" 0 "$r_avg" 0  "$rg_avg" 0 "$repeats" "$n_avg" "$n_std" "$q_avg" "$q_std" "$dt" "no_disorder_N_$N" "$f"
