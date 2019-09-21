@@ -6,18 +6,8 @@ from optparse import OptionParser
 import os
 from ast import literal_eval
 
-def sumToColumnVector(a, axis):
-    return a.sum(axis).reshape((a.shape[1+axis],1))
-
-def padAndShift(a):
-    tempZeros = np.zeros((a.shape[0],a.shape[1] + 2))
-    aShiftedRight = tempZeros.copy()
-    aShiftedLeft = tempZeros.copy()
-    aPadded = tempZeros.copy()
-    aShiftedRight[:,2:] = a
-    aShiftedLeft[:,:-2] = a
-    aPadded[:,1:-1] = a
-    return aShiftedRight, aShiftedLeft, aPadded
+def flattenToColumn(a):
+    return a.reshape((a.size,1))
 
 class NoElectronsOnDot(RuntimeError):
     pass
@@ -28,20 +18,20 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, Vext, VG, Q0, n0, CG, RG, C,
-                 R):
+    def __init__(self, rows, columns, Vext, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
         """
         Creates new array of quantum dots
-        :param rows: number of rows
-        :param columns: number of columns
-        :param Vext: external voltage
-        :param Q0: np array of initial charges
-        :param n0: np array of initial electrons
-        :param VG: voltage of the gates (NXM array)
-        np arrays of other parameters of the dots:
-        C - capacitance, R - resistance
-        the different possible connections are:
-        G - gate, L- left, R- right, D - down, U - up
+        :param rows: number of rows (int)
+        :param columns: number of columns (int)
+        :param Vext: external voltage (double)
+        :param Q0: np array of initial charges (rowsXcolumns double array)
+        :param n0: np array of initial electrons (rowsXcolumns double array)
+        :param VG: voltage of the gates (rowsXcolumns double array)
+        :param Ch: horizotal capacitances ((rowsXcolumns+1 double array)
+        :param Cv: vertical capacitances (rows-1Xcolumns double array)
+        :param Rh: vertical tunnelling ressistances (rowsXcolumns+1 double array)
+        :param Rv: horizontal tunnelling ressistances (rowsXcolumns+1 double array)
+        :param RG: ground resistances (rowsXcolumns double array)
         """
         self.rows = rows
         self.columns = columns
@@ -52,10 +42,14 @@ class DotArray:
         self.n = n0
         self.CG = CG
         self.RG = RG
-        self.C = C
-        self.R = R
+        self.Ch = Ch
+        self.Cv = np.vstack((np.zeros((1,columns)),Cv))
+        self.Rh = Rh
+        self.Rv = Rv
         self.totalChargePassed = 0
-        self.createConstantMatrices()
+        self.createCapacitanceMatrix()
+        self.setDiagonalizedJ()
+        self.setConstWork()
 
     def getRows(self):
         return self.rows
@@ -68,108 +62,123 @@ class DotArray:
         Reset the counter for total charge passed
         """
         self.totalChargePassed = 0
+        return True
 
     def changeVext(self, newVext):
         self.VL = newVext/2
         self.VR = -newVext/2
-        self.createConstantMatrices()
+        return True
 
     def getCharge(self):
         return self.totalChargePassed
 
-    def createConstantMatrices(self):
-        invC = 1/self.C
-        invCMatrix = np.repeat(invC[:,:-1],self.columns,0)
-        A = np.tril(invCMatrix)
-        self._invCsqrt = np.sqrt(invC)
-        self._invCG = 1/self.CG
-        self._invRG = 1/self.RG
-        self._invR = 1/self.R
-        B = np.triu(np.ones((self.columns, self.columns)))
-        M = np.linalg.inv(np.eye(self.columns) + self.C[0,-1]*invCMatrix)
-        AdotM = A.dot(M)
-        constant = self.C[0,-1] * (self.VR - self.VL)
-        self._AdotMdotB = AdotM.dot(B)
-        J = -np.diag(self._invRG.flatten()).dot(self._AdotMdotB + np.diag(
-            self._invCG.flatten()))
-        self._JeigenValues, self._JeigenVectors = np.linalg.eig(J)
-        self._JeigenValues = self._JeigenValues.reshape((self._JeigenValues.shape[0], 1))
-        self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
-        self._bBase = -self._invRG.T*(constant *
-                             sumToColumnVector(AdotM, -1) - self.VG.T + self.VL)
-        Mtilde = np.diag(self._invCsqrt[0,:-1]).dot(M)
-        alpha = Mtilde.dot(B)
-        alphaAddition = -np.sqrt(self.C[0,-1])*A[-1,:].dot(alpha)
-        self._alpha = np.vstack((alpha, alphaAddition))
-        beta = constant*sumToColumnVector(Mtilde,-1)
-        betaAddition = np.sqrt(self.C[0,-1])*(self.VR-self.VL - A[-1,
-                                                                :].dot(beta))
-        self._beta = np.vstack((beta, betaAddition))
-        alphaShiftedRight, alphaShiftedLeft, alphaPadded = padAndShift(
-            self._alpha)
+    def createCapacitanceMatrix(self):
+        """
+        Creates the inverse capacitance matrix
+        """
+        diagonal = self.Ch[:,:-1] + self.Ch[:,1:] + self.Cv + np.roll(self.Cv, -1, axis=0)
+        second_diagonal = np.copy(self.Ch[:,1:])
+        second_diagonal[:,-1] = 0
+        second_diagonal = second_diagonal.flatten()
+        second_diagonal = second_diagonal[:-1]
+        n_diagonal = np.copy(self.Cv[1:,:])
+        C_mat = np.diagflat(diagonal) - np.diagflat(second_diagonal,k=1) - np.diagflat(second_diagonal,k=-1)\
+                -np.diagflat(n_diagonal, k=self.columns) -  np.diagflat(n_diagonal, k=-self.columns)
+        self.invC = np.linalg.inv(C_mat)
+        return True
 
-        dalphaRight = alphaShiftedLeft - alphaPadded
-        dalphaLeft = alphaShiftedRight - alphaPadded
-        dalphaRightsqr = sumToColumnVector(dalphaRight*dalphaRight, 0)
-        dalphaLeftsqr = sumToColumnVector(dalphaLeft*dalphaLeft, 0)
-
-        self._deltaERightBase = 0.5*(dalphaRightsqr + dalphaRight.T.dot(
-            self._beta))
-
-        self._deltaELeftBase = 0.5*(dalphaLeftsqr + dalphaLeft.T.dot(
-            self._beta))
+    def getNprime(self):
+        left_part = np.copy(self.Ch)
+        left_part[:,1:] = 0
+        right_part = np.copy(self.Ch)
+        right_part[:,:-1] = 0
+        return flattenToColumn(self.n + left_part*self.VL + right_part*self.VR)
 
     def getbVector(self):
-        return self._JeigenVectorsInv.dot(self._bBase - (
-            self._invRG.T*self._AdotMdotB.dot(
-            self.n.T)))
+        res = -self.invC.dot(self.getNprime()) + flattenToColumn(self.VG)
+        return res / np.repeat(flattenToColumn(self.RG),res.shape[1],axis=1)
+
+    def getJmatrix(self):
+        res = self.invC + np.diagflat(1/self.CG)
+        return res / np.repeat(flattenToColumn(self.RG),res.shape[1],axis=1)
+
+    def setDiagonalizedJ(self):
+        self._JeigenValues, self._JeigenVectors = np.linalg.eig(self.getJmatrix())
+        self._JeigenVectorsInv = np.linalg.inv(self.JeigenVectors)
+        return True
 
     def developeQ(self, dt):
-            Q0 = self._JeigenVectorsInv.dot(self.Q.T)
-            b = self.getbVector()
-            exponent = np.exp(self._JeigenValues*dt)
-            self.Q = self._JeigenVectors.dot(Q0*exponent +(
-                b/self._JeigenValues)*(exponent - 1)).T
+        Q0 = self._JeigenVectorsInv.dot(self.Q.T)
+        b = self.getbVector()
+        exponent = np.exp(self._JeigenValues*dt)
+        self.Q = self._JeigenVectors.dot(Q0*exponent +(
+             b/self._JeigenValues)*(exponent - 1)).T
+        return True
+
+    def setConstWork(self):
+        invCDiagMat = np.diag(self.invC).reshape((self.rows,self.columns))
+        lowerCDiag = np.pad(np.diag(self.invC,k=-1),((0,1),)).reshape((self.rows,self.columns))
+        lowerCDiag[:,:-1] = 0
+        lowerCDiag  = np.pad(lowerCDiag,((1,0),(0,0)))
+        upperCDiag = np.pad(np.diag(self.invC,k=1),((0,1),)).reshape((self.rows,self.columns))
+        upperCDiag[:,:-1] = 0
+        upperCDiag  = np.pad(upperCDiag,((1,0),(0,0)))
+        commonHorz = np.pad(invCDiagMat,((0,0),(1,0))) + np.pad(invCDiagMat,((0,0),(0,1)))\
+                        - lowerCDiag - upperCDiag
+
+        lowerNCDiag = np.diag(self.invC,k=-self.columns).reshape((self.rows-1,self.columns))
+        upperNCDiag = np.diag(self.invC,k=self.columns).reshape((self.rows-1,self.columns))
+        commonVert = invCDiagMat[1:,:] + invCDiagMat[:-1,:] - lowerNCDiag - upperNCDiag
+
+        additionalLeft = np.zeros((self.rows,self.columns+1))
+        additionalLeft[:,0] = self.VL
+        additionalLeft[:,-1] = -self.VR
+        self.leftConstWork = (0.5*commonHorz + additionalLeft).flatten()
+
+        additionalRight = -additionalLeft
+        self.rightConstWork = (0.5*commonHorz + additionalRight).flatten()
+
+        self.upConstWork = (0.5*commonVert).flatten()
+        self.downConstWork = np.copy(self.upConstWork)
+        return True
+
+    def getWork(self):
+        q = self.getNprime() + flattenToColumn(self.QG)
+        firstHorzMat = np.zeros(((self.columns+1)*self.rows,self.columns*self.rows))
+        secondHorzMat = np.zeros(firstHorzMat.shape)
+        firstLocations = np.ones(((self.columns+1)*self.rows,))
+        secondLocations = np.ones(firstLocations.shape)
+        firstLocations[self.columns:self.columns+1:] = 0
+        secondLocations[0:self.columns+1:] = 0
+        firstHorzMat[np.astype(firstLocations,np.bool),:] = self.invC
+        secondHorzMat[np.astype(secondLocations,np.bool),:] = self.invC
+        variableRightWork = ((firstHorzMat - secondHorzMat).dot(q)).flatten()
+        variableLeftWork = -variableRightWork
+
+        firstVertMat = self.invC[:-self.columns,:]
+        secondVertMat = self.invC[self.columns:,:]
+        variableUpWork = ((firstVertMat - secondVertMat).dot(q)).flatten()
+        variableDownWork = -variableUpWork
+
+        return variableRightWork + self.rightConstWork, variableLeftWork + self.leftConstWork,\
+               variableDownWork + self.downConstWork, variableUpWork + self.upConstWork
+
+    def getRates(self):
+        rightWork, leftWork, downWork, upWork = self.getWork()
+        horzResistance = self.Rh.flatten()
+        vertResistance = self.Rv.flatten()
+        rightWork[rightWork > 0] = 0
+        leftWork[leftWork > 0] = 0
+        downWork[downWork > 0] = 0
+        upWork[upWork > 0] = 0
+        return -rightWork/horzResistance, -leftWork/horzResistance,\
+               -downWork/vertResistance,-upWork/vertResistance
+
 
     def getprobabilities(self, dt):
-        alphaShiftedRight, alphaShiftedLeft, alphaPadded = padAndShift(
-            self._alpha)
-        dalphaRight = alphaShiftedLeft - alphaPadded
-        dalphaLeft = alphaShiftedRight - alphaPadded
-
-
-        commonElement = self._alpha.dot((self.Q+self.n).T)
-        deltaERight = self._deltaERightBase + dalphaRight.T.dot(commonElement)
-        deltaELeft = self._deltaELeftBase + dalphaLeft.T.dot(commonElement)
-
-
-        Qjunctions = commonElement + self._beta
-        QCratio = Qjunctions*self._invCsqrt.T
-        tempZeros = np.zeros((QCratio.shape[0]+1,QCratio.shape[1]))
-        deltaVRight = tempZeros.copy()
-        deltaVLeft = tempZeros.copy()
-
-        deltaVRight[:-1,:] = QCratio
-        deltaVLeft[1:,:] = -QCratio
-
-        tempZeros = np.zeros((self._invR.shape[0],self._invR.shape[1]+1))
-        invRShiftedRight = tempZeros.copy()
-        invRShiftedLeft = tempZeros.copy()
-
-        invRShiftedRight[:,1:] = self._invR
-        invRShiftedLeft[:,:-1] = self._invR
-
-        rateRight = (deltaERight + deltaVRight).T* invRShiftedLeft
-        rateLeft = (deltaELeft + deltaVLeft).T* invRShiftedRight
-        noElectrons = np.hstack(([[False]], self.n == 0, [[False]]))
-        rateRight[noElectrons] = 0
-        rateLeft[noElectrons] = 0
-
-
-        ratesCombined = np.vstack((rateRight, rateLeft)).flatten()
-        prob = np.zeros(ratesCombined.shape)
-        prob[ratesCombined < 0] = 1 - np.exp(ratesCombined[ratesCombined <
-                                                         0]*dt)
+        rates = self.getRates()
+        ratesCombined = np.hstack(rates)
+        prob = 1 - np.exp(-ratesCombined*dt)
         return prob
 
     def tunnel(self, fromDot, toDot):
@@ -181,8 +190,7 @@ class DotArray:
             self.totalChargePassed += 1
         elif fromDot[1] == self.columns:
             self.totalChargePassed -= 1
-        if (self.n < 0).any():
-            raise NoElectronsOnDot
+        return True
 
     def printState(self):
         for i in range(self.rows):
@@ -192,15 +200,23 @@ class DotArray:
                     self.Q[i,j]))
 
     def executeStep(self, ind):
-            side = ind // ((self.columns+2)*self.rows)
-            dotIndex = ind % ((self.columns+2)*self.rows)
-            dotRow = dotIndex // (self.columns+2)
-            dotColumn = dotIndex % (self.columns+2) -1
-            fromDot = (dotRow, dotColumn)
-            if side == 0:
-                toDot = (dotRow, dotColumn+1)
-            if side == 1:
-                toDot = (dotRow, dotColumn-1)
+            horzSize = (self.rows*(self.columns+1))**2
+            vertSize = ((self.rows - 1)*self.columns)**2
+            if ind <  horzSize: # tunnel right:
+                fromDot = (ind//(self.columns+1), ind%(self.columns+1)-1)
+                toDot = fromDot + (0,1)
+            elif ind < horzSize*2:
+                ind -= horzSize
+                fromDot = (ind//(self.columns+1), ind%(self.columns+1))
+                toDot = fromDot + (0,-1)
+            elif ind < horzSize*2 + vertSize:
+                ind -= horzSize*2
+                fromDot = (ind//self.columns, ind%self.columns)
+                toDot = fromDot + (1,0)
+            else:
+                ind -= (horzSize*2 + vertSize)
+                fromDot = (ind//self.columns+1, ind%self.columns)
+                toDot = fromDot + (-1,0)
             self.tunnel(fromDot, toDot)
 
 MINPROBLOG = np.log(1/0.7)
@@ -210,14 +226,14 @@ class Simulator:
     :param rows: number of rows in the array
     :param columns: number of columns in the array
     """
-    def __init__(self, rows, columns, Vext0, VG0, dt,
-                 Q0, n0, CG, RG, C, R):
-        # TODO upgrade for more than 1 row
-        self.dotArray = DotArray(rows, columns, Vext0, VG0, Q0, n0, CG, RG,
-                                 C, R)
+    def __init__(self, rows, columns, Vext0, VG, dt,
+                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
+        self.dotArray = DotArray(rows, columns, Vext0, VG, Q0, n0, CG, RG,
+                                 Ch, Cv, Rh, Rv)
         self.t = 0
         self.dt = dt
         self.Vext = Vext0
+        # for debug
     #     self.randomGen = self.getRandom()
     #
     # def getRandom(self):
@@ -231,6 +247,7 @@ class Simulator:
 
     def executeStep(self, printState=False):
         r = np.random.ranf()
+        # for debug
         # r = next(self.randomGen)
         probNotOk = True
         while (probNotOk):
@@ -249,10 +266,17 @@ class Simulator:
             self.printState()
 
     def calcCurrent(self, t,print=False):
-        # TODO: for now t must be multiplication of dt by whole number
-        if fullOutput:
-            n = []
-            Q = []
+        # if fullOutput:
+        #     n = []
+        #     Q = []
+        #TODO: find smart way to know we have reach steady state
+        steadySteps = 1000
+
+        # Reaching equilibrium before calculating current
+        for steps in steadySteps:
+            self.executeStep(printState=print)
+            self.dotArray.resetCharge()
+        # Now when we are in steady state actually measuring current
         for steps in range(int(t // self.dt)):
             self.executeStep(printState=print)
         current = self.dotArray.getCharge() / t
@@ -292,7 +316,7 @@ class Simulator:
         self.dotArray.printState()
 
 
-def run1DSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, C, R, columns,
+def run1DSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                     Vmax, Vstep, tStep,repeats=1, savePath=".",
                     fileName="", fullOutput=False, printState=False):
 
@@ -300,11 +324,10 @@ def run1DSimulation(Vext0, VG0, dt, Q0, n0, CG, RG, C, R, columns,
     Is = []
 
     for repeat in range(repeats):
-        simulator = Simulator(1, columns, Vext0, np.array(VG0), dt,
-                              np.array(Q0),
-                              np.array(n0), np.array(CG),
-                              np.array(RG), np.array(C),
-                              np.array(R))
+        simulator = Simulator(rows, columns, Vext0, np.array(VG0), dt,
+                              np.array(Q0), np.array(n0), np.array(CG),
+                              np.array(RG), np.array(Ch), np.array(Cv),
+                              np.array(Rh), np.array(Rv))
         out = simulator.calcIV(Vmax, Vstep, tStep,
                                 fullOutput=fullOutput, print=printState)
         I = out[0]
