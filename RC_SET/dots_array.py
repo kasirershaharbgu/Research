@@ -120,7 +120,7 @@ class DotArray:
         self._JeigenValues, self._JeigenVectors = np.linalg.eig(self.getJmatrix())
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
-        self.timeStep = np.max(self._JeigenValues)
+        self.timeStep = -1/np.min(self._JeigenValues)
         return True
 
     def developeQ(self, dt):
