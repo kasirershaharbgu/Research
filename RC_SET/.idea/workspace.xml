@@ -3,50 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_disorder.e174170" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_disorder.e174299" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_disorder.e174432" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_disorder.o174170" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_disorder.o174299" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_disorder.o174432" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/c_disorder.e174166" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/c_disorder.e174295" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/c_disorder.e174428" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/c_disorder.o174166" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/c_disorder.o174295" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/c_disorder.o174428" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cg_disorder.e174168" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cg_disorder.e174297" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cg_disorder.e174430" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cg_disorder.o174168" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cg_disorder.o174297" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cg_disorder.o174430" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder.e174164" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder.o174164" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.e174165" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.e174293" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.e174294" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.e174394" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.e174425" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.o174165" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.o174293" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.o174294" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.o174394" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder.o174425" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rg_disorder.e174167" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rg_disorder.e174296" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rg_disorder.e174429" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rg_disorder.o174167" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rg_disorder.o174296" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rg_disorder.o174429" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_RC_SET.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_RC_SET.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vg_disprder.e174169" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vg_disprder.e174298" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vg_disprder.e174431" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vg_disprder.o174169" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vg_disprder.o174298" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vg_disprder.o174431" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -141,7 +98,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 1 --vstep 0.5 --vg-avg 0.05 --vg-std 0 --c-avg 1 --c-std 0.01 --cg-avg 10 --cg-std 1 --r-avg 1 --r-std 0 --rg-avg 10 --rg-std 0.1 --repeats 2 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --file-name &quot;dbg_full_run1&quot; -o &quot;dbg_2D&quot;" />
+      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 2 --vstep 0.1 --vg-avg 0.05 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 10 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --file-name no_disorder_1_1 -o no_disorder_1_1" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -274,6 +231,11 @@
           <url>file://$PROJECT_DIR$/../toyModel/toyModel.py</url>
           <line>551</line>
           <option name="timeStamp" value="119" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>324</line>
+          <option name="timeStamp" value="121" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
