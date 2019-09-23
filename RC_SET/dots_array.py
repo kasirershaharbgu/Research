@@ -77,6 +77,9 @@ class DotArray:
     def getCharge(self):
         return self.totalChargePassedRight, self.totalChargePassedLeft
 
+    def getTimeStep(self):
+        return self.timeStep
+
     def createCapacitanceMatrix(self):
         """
         Creates the inverse capacitance matrix
@@ -115,7 +118,9 @@ class DotArray:
 
     def setDiagonalizedJ(self):
         self._JeigenValues, self._JeigenVectors = np.linalg.eig(self.getJmatrix())
+        self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
+        self.timeStep = np.max(self._JeigenValues)
         return True
 
     def developeQ(self, dt):
@@ -312,10 +317,11 @@ class Simulator:
         plt.plot(x,Ileft, x,Iright)
         plt.show()
 
-    def calcIV(self, Vmax, Vstep, tStep, print=False, fullOutput=False):
+    def calcIV(self, Vmax, Vstep, print=False, fullOutput=False):
         V = []
         I = []
         V0 = self.Vext
+        tStep = self.dotArray.getTimeStep()
         while(self.Vext < Vmax):
             rightCurrent, leftCurrnet = self.calcCurrent(tStep, print=print)
             I.append((rightCurrent+leftCurrnet)/2)
@@ -336,15 +342,8 @@ class Simulator:
 
 
 def run1DSimulation(Vext0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                    Vmax, Vstep, tStep,repeats=1, savePath=".",
-                    fileName="", fullOutput=False, printState=False, checkEquilibration=False):
-    if checkEquilibration:
-        simulator = Simulator(rows, columns, Vext0, np.array(VG0),
-                              np.array(Q0), np.array(n0), np.array(CG),
-                              np.array(RG), np.array(Ch), np.array(Cv),
-                              np.array(Rh), np.array(Rv))
-        simulator.checkEquilibration(tStep, repeats)
-        return None, None
+                    Vmax, Vstep,repeats=1, savePath=".",
+                    fileName="", fullOutput=False, printState=False):
     basePath = os.path.join(savePath, fileName)
     Is = []
 
@@ -353,7 +352,7 @@ def run1DSimulation(Vext0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv))
-        out = simulator.calcIV(Vmax, Vstep, tStep,
+        out = simulator.calcIV(Vmax, Vstep,
                                 fullOutput=fullOutput, print=printState)
         I = out[0]
         V = out[1]
@@ -402,13 +401,9 @@ def getOptions():
                       " [default: %default]", default=10, type=float)
     parser.add_option("--vstep", dest="vStep", help="size of voltage step["
                     "default: %default]", default=1, type=float)
-    parser.add_option("--tstep", dest="tStep", help="Time of each voltage "
-                      "step [default: %default]", default=1, type=float)
     parser.add_option("--repeats", dest="repeats",
                       help="how many times to run calculation for averaging"
                       " [default: %default]", default=1, type=int)
-    parser.add_option("--dt", dest="dt", help="time step size"
-                      " [default:%default]", default=0.1, type=float)
     parser.add_option("--file-name", dest="fileName", help="optional "
                       "output files name", default='')
     parser.add_option("--full", dest="fullOutput", help="if true the "
@@ -483,62 +478,56 @@ def create_random_array(M,N, avg, std, only_positive=False):
     else:
         return np.random.normal(loc=avg, scale=std, size=(M,N))
 
+
 if __name__ == "__main__":
-
-
-    pr = cProfile.Profile()
-    pr.enable()
     # Initializing Running Parameters
-    # options, args = getOptions()
-    # rows = options.M
-    # columns = options.N
-    # Vext0 = options.Vmin
-    # VG = create_random_array(rows, columns, options.VG_avg, options.VG_std,
-    #                          False)
-    # dt = options.dt
-    # Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std,
-    #                          False)
-    # n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, True)
-    # CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, True)
-    # RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, True)
-    # Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std,
-    #                         True)
-    # Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std,
-    #                         True)
-    # Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std,
-    #                         True)
-    # Rh = create_random_array(rows - 1, columns, options.R_avg, options.R_std,
-    #                         True)
-    # Vmax = options.Vmax
-    # Vstep = options.vStep
-    # tStep = options.tStep
-    # repeats = options.repeats
-    # savePath = options.output_folder
-    # fileName = options.fileName
-    # fullOutput = options.fullOutput
+    options, args = getOptions()
+    rows = options.M
+    columns = options.N
+    Vext0 = options.Vmin
+    VG = create_random_array(rows, columns, options.VG_avg, options.VG_std,
+                             False)
+    Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std,
+                             False)
+    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, True)
+    CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, True)
+    RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, True)
+    Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std,
+                            True)
+    Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std,
+                            True)
+    Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std,
+                            True)
+    Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std,
+                            True)
+    Vmax = options.Vmax
+    Vstep = options.vStep
+    repeats = options.repeats
+    savePath = options.output_folder
+    fileName = options.fileName
+    fullOutput = options.fullOutput
 
     # Debug
-    rows = 1
-    columns = 1
-    Vext0 = -0.25
-    VG = [[0.05]]
-    dt = 0.001
-    Q0 = [[0]]
-    n0 = [[0]]
-    CG = [[10]]
-    RG = [[1000]]
-    Ch = [[1,1]]
-    Cv = [[]]
-    Rh = [[1,1]]
-    Rv = [[]]
-    Vmax = 2
-    Vstep = 0.01
-    tStep = 1000
-    repeats = 1
-    savePath = "dbg_2D"
-    fileName = "dbg_2D_try1"
-    fullOutput = False
-
+    # rows = 1
+    # columns = 1
+    # Vext0 = -0.25
+    # VG = [[0.05]]
+    # dt = 0.001
+    # Q0 = [[0]]
+    # n0 = [[0]]
+    # CG = [[10]]
+    # RG = [[1000]]
+    # Ch = [[1,1]]
+    # Cv = [[]]
+    # Rh = [[1,1]]
+    # Rv = [[]]
+    # Vmax = 2
+    # Vstep = 0.01
+    # tStep = 1000
+    # repeats = 1
+    # savePath = "dbg_2D"
+    # fileName = "dbg_2D_try1"
+    # fullOutput = False
 
     # Running Simulation
     if not os.path.exists(savePath):
@@ -548,12 +537,7 @@ if __name__ == "__main__":
         exit(0)
 
     # saveParameters(savePath, fileName, options)
-
     run1DSimulation(Vext0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
-                    Vmax, Vstep, tStep, repeats=repeats,
-                    savePath=savePath, fileName=fileName, printState=False, checkEquilibration=False)
-
-    pr.disable()
-    sortby = 'cumulative'
-    ps = pstats.Stats(pr).sort_stats(sortby)
-    ps.print_stats()
+                    Vmax, Vstep, repeats=repeats,
+                    savePath=savePath, fileName=fileName, printState=False)
+    exit(0)
