@@ -131,13 +131,13 @@ class DotArray:
 
     def setConstWork(self):
         invCDiagMat = np.diag(self.invC).reshape((self.rows,self.columns))
-        lowerCDiag = np.pad(np.diag(self.invC,k=-1),((0,1),)).reshape((self.rows,self.columns))
+        lowerCDiag = np.pad(np.diag(self.invC,k=-1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         lowerCDiag[:,:-1] = 0
         lowerCDiag  = np.pad(lowerCDiag,((0,0),(1,0)))
-        upperCDiag = np.pad(np.diag(self.invC,k=1),((0,1),)).reshape((self.rows,self.columns))
+        upperCDiag = np.pad(np.diag(self.invC,k=1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         upperCDiag[:,:-1] = 0
-        upperCDiag  = np.pad(upperCDiag,((0,0),(1,0)))
-        commonHorz = np.pad(invCDiagMat,((0,0),(1,0))) + np.pad(invCDiagMat,((0,0),(0,1)))\
+        upperCDiag  = np.pad(upperCDiag,((0,0),(1,0)),mode='constant')
+        commonHorz = np.pad(invCDiagMat,((0,0),(1,0)),mode='constant') + np.pad(invCDiagMat,((0,0),(0,1)),mode='constant')\
                         - lowerCDiag - upperCDiag
 
         lowerNCDiag = np.diag(self.invC,k=-self.columns).reshape((self.rows-1,self.columns))
