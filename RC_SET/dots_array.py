@@ -4,8 +4,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 from optparse import OptionParser
 import os
-import cProfile, pstats
-from ast import literal_eval
 
 def flattenToColumn(a):
     return a.reshape((a.size,1))
