@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "dots_array.py", line 540, in <module>
+    savePath=savePath, fileName=fileName, printState=False)
+  File "dots_array.py", line 352, in run1DSimulation
+    np.array(Rh), np.array(Rv))
+  File "dots_array.py", line 257, in __init__
+    Ch, Cv, Rh, Rv)
+  File "dots_array.py", line 53, in __init__
+    self.setConstWork()
+  File "dots_array.py", line 134, in setConstWork
+    lowerCDiag = np.pad(np.diag(self.invC,k=-1),((0,1),)).reshape((self.rows,self.columns))
+TypeError: pad() missing 1 required positional argument: 'mode'
