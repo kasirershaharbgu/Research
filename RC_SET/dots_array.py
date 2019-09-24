@@ -281,7 +281,6 @@ class Simulator:
             prob = self.dotArray.getprobabilities(dt)
             cumProb = np.cumsum(prob)
             if cumProb[-1] > 1:
-                print("Warning: total prob > 1 needed smaller dt, reducing dt")
                 self.dotArray.developeQ(-dt)
                 dt /= 10
             else:
