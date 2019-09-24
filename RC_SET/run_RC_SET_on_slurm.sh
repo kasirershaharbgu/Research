@@ -2,11 +2,8 @@
 
 #SBATCH -N 1                               # nodes=1
 #SBATCH --ntasks-per-node=1                # ppn=1
-#SBATCH -J "$file_name"                    # job name
-#SBATCH -t "$time"                         # jobtime hh:mm:ss
 #SBATCH -p dept                            # partition/queue name
 #SBATCH --mem=2000MB                       # memory in MB
-#SBATCH --output="${file_name}.out"        # file for STDOUT
 #SBATCH --mail-user=skasirer@princeton.edu # Mail  id of the user
 #SBATCH --mail-type=end                    # Slurm will send at the completion of your job
 
