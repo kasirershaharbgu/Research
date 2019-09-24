@@ -133,7 +133,7 @@ class DotArray:
         invCDiagMat = np.diag(self.invC).reshape((self.rows,self.columns))
         lowerCDiag = np.pad(np.diag(self.invC,k=-1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         lowerCDiag[:,:-1] = 0
-        lowerCDiag  = np.pad(lowerCDiag,((0,0),(1,0)))
+        lowerCDiag  = np.pad(lowerCDiag,((0,0),(1,0)),mode='constant')
         upperCDiag = np.pad(np.diag(self.invC,k=1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         upperCDiag[:,:-1] = 0
         upperCDiag  = np.pad(upperCDiag,((0,0),(1,0)),mode='constant')
