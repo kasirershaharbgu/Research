@@ -486,7 +486,7 @@ if __name__ == "__main__":
                              False)
     Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std,
                              False)
-    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, True)
+    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, False)
     CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, True)
     RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, True)
     Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std,
@@ -506,24 +506,22 @@ if __name__ == "__main__":
 
     # Debug
     # rows = 1
-    # columns = 1
-    # Vext0 = -0.25
-    # VG = [[0.05]]
-    # dt = 0.001
-    # Q0 = [[0]]
-    # n0 = [[0]]
-    # CG = [[10]]
-    # RG = [[1000]]
-    # Ch = [[1,1]]
+    # columns = 3
+    # Vext0 = 1
+    # VG = [[0.05, 0.05,0.05]]
+    # Q0 = [[0,0,0]]
+    # n0 = [[0,0,0]]
+    # CG = [[10,10,10]]
+    # RG = [[1000,1000,1000]]
+    # Ch = [[1,1,1,1]]
     # Cv = [[]]
-    # Rh = [[1,1]]
+    # Rh = [[1,1,1,1]]
     # Rv = [[]]
     # Vmax = 2
     # Vstep = 0.01
-    # tStep = 1000
     # repeats = 1
     # savePath = "dbg_2D"
-    # fileName = "dbg_2D_try1"
+    # fileName = "dbg_1D_array"
     # fullOutput = False
 
     # Running Simulation
