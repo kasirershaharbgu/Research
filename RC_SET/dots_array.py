@@ -186,6 +186,8 @@ class DotArray:
     def getRates(self):
         work = self.getWork()
         work[work > 0] = 0
+        # if self.VL - self.VR == 0.48 or self.VL - self.VR == 0.52:
+        #     print(work)
         return -work / self.R
 
     def getTimeInterval(self, randomNumber):
@@ -231,6 +233,21 @@ class DotArray:
                       "is: n= " + str(self.n[i,j]) + " and QG = " + str(
                     self.Q[i,j]))
 
+    def __str__(self):
+        rows = "Rows: " + str(self.rows)
+        columns = "Columns: " + str(self.columns)
+        VG = "VG: " + str(self.VG)
+        CG = "CG: " + str(self.CG)
+        RG = "RG: " + str(self.RG)
+        Ch = "Ch: " + str(self.Ch)
+        Cv = "Cv: " + str(self.Cv)
+        Rh = "Rh: " + str(self.Rh)
+        Rv = "Rv: " + str(self.Rv)
+        res = "----Array Parameters-----"
+        for param in [rows, columns, VG, CG, RG, Ch, Cv, Rh, Rv]:
+            res += "\n" + param
+        return res
+
     def executeAction(self, ind):
             horzSize = self.rows*(self.columns+1)
             vertSize = (self.rows - 1)*self.columns
@@ -275,6 +292,9 @@ class Simulator:
     #         if idx == len(numbers):
     #             idx = 0
     #         yield numbers[idx]
+
+    def getArrayParameters(self):
+        return str(self.dotArray)
 
     def executeStep(self, printState=False):
         r = np.random.rand(2)
@@ -348,7 +368,8 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
     # if fullOutput:
     #     n = out[2]
     #     Q = out[3]
-    return I,V
+    array_params = simulator.getArrayParameters()
+    return I,V,array_params
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                     Vmax, Vstep,repeats=1, savePath=".",
@@ -373,7 +394,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
                                  Vmax, Vstep, fullOutput, printState))
         results.append(res)
     for res in results:
-        I,V = res.get()
+        I,V,params = res.get()
         Is.append(I)
     avgI = np.mean(np.array(Is), axis=0)
     # if fullOutput:
@@ -399,7 +420,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     plt.close(fig)
     # if fullOutput:
     #     return I, V, n, Q
-    return I, V
+    return params
 
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
@@ -421,6 +442,8 @@ def getOptions():
                       " [default: %default]", default=1, type=int)
     parser.add_option("--file-name", dest="fileName", help="optional "
                       "output files name", default='')
+    parser.add_option("--distribution", dest="dist", help="probability distribution to use [Default:%default]",
+                      default='uniform')
     parser.add_option("--full", dest="fullOutput", help="if true the "
                       "results n and Q will be also saved [Default:%default]",
                       default=False, action='store_true')
@@ -471,28 +494,42 @@ def getOptions():
                       default=0, type=float)
     return parser.parse_args()
 
-def saveParameters(path, fileName, options):
+def saveParameters(path, fileName, options, array_params):
 
     optionsDict = options.__dict__
     with open(os.path.join(path,'runningParameters_' + fileName +
             ".txt"),mode='w') as f:
+        f.write("-------Running parameters--------\n")
         for key in vars(options):
             f.write(key + " = " + str(optionsDict[key]) + "\n")
+        f.write(array_params)
 
-def create_random_array(M,N, avg, std, only_positive=False):
+def create_random_array(M,N, avg, std, dist, only_positive=False):
     if std == 0:
-        return avg*np.ones((M, N))
-    if only_positive:
+        res = avg*np.ones((M, N))
+    elif dist == 'uniform':
+        res = np.random.uniform(low=avg-std, high=avg+std,size=(M,N))
+    elif dist == 'two_points':
+        # r = np.random.rand(M,N)
+        # r[r > 0.5] = avg + std
+        # r[r <= 0.5] = avg - std
+        # res = r
+        res = (avg + std)*np.ones((M,N))
+        res[::2] = avg - std
+    elif dist == 'normal':
+        res = np.random.normal(loc=avg, scale=std, size=(M, N))
+    elif dist == 'gamma':
         if avg == 0:
             shape = 1
             scale = 2
         else:
             shape = (avg/std)**2
             scale = std**2 / avg
-        return 0.1 + np.random.gamma(shape=shape, scale=scale, size=(M,N))
-    else:
-        return np.random.normal(loc=avg, scale=std, size=(M,N))
-
+        res = 0.1 + np.random.gamma(shape=shape, scale=scale, size=(M,N))
+    if only_positive and (res <= 0).any():
+        print("Warnning, changing to positive distribution")
+        res = res + 0.1 - np.min(res.flatten())
+    return res
 
 if __name__ == "__main__":
     # Initializing Running Parameters
@@ -501,20 +538,21 @@ if __name__ == "__main__":
     columns = options.N
     VR0 = options.VR
     VL0 = VR0 + options.Vmin
-    VG = create_random_array(rows, columns, options.VG_avg, options.VG_std,
+    dist = options.dist
+    VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                              False)
-    Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std,
+    Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
                              False)
-    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, False)
-    CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, True)
-    RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, True)
-    Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std,
+    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
+    CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist,True)
+    RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist,True)
+    Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
                             True)
-    Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std,
+    Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
                             True)
-    Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std,
+    Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
                             True)
-    Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std,
+    Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
                             True)
     Vmax = options.Vmax
     Vstep = options.vStep
@@ -524,24 +562,24 @@ if __name__ == "__main__":
     fullOutput = options.fullOutput
 
     # Debug
-    # rows = 3
-    # columns = 3
-    # VR0 = -1
-    # VL0 = 100
-    # VG = [[1,2,3],[4,5,6],[7,8,9]]
-    # Q0 = [[1,2,3],[4,5,6],[7,8,9]]
-    # n0 = [[1,2,3],[4,5,6],[7,8,9]]
-    # CG = [[1,2,3],[4,5,6],[7,8,9]]
-    # RG = [[1,2,3],[4,5,6],[7,8,9]]
-    # Ch = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
-    # Cv = [[13,14,15],[16,17,18]]
-    # Rh = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
-    # Rv = [[13,14,15],[16,17,18]]
-    # Vmax = 4000
+    # rows = 1
+    # columns = 1
+    # VR0 = -0.25
+    # VL0 = -0.25
+    # VG = [[0.05]]
+    # Q0 = [[0]]
+    # n0 = [[0]]
+    # CG = [[1]]
+    # RG = [[1000]]
+    # Ch = [[1,1]]
+    # Cv = [[]]
+    # Rh = [[1,10]]
+    # Rv = [[]]
+    # Vmax = 2
     # Vstep = 0.01
-    # repeats = 1000
-    # savePath = "dbg"
-    # fileName = "dbg"
+    # repeats = 1
+    # savePath = "for_weizman"
+    # fileName = "no_hysteresis_R2_10R1"
     # fullOutput = False
 
     # Running Simulation
@@ -551,8 +589,8 @@ if __name__ == "__main__":
         print("the given path exists but is a file")
         exit(0)
 
-    # saveParameters(savePath, fileName, options)
-    runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
+    array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                       Vmax, Vstep, repeats=repeats,
                       savePath=savePath, fileName=fileName, printState=False)
+    saveParameters(savePath, fileName, options, array_params)
     exit(0)
