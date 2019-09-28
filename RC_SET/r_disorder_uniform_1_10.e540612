@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "dots_array.py", line 554, in <module>
+    True)
+  File "dots_array.py", line 529, in create_random_array
+    if only_positive and (res <= 0).any():
+UnboundLocalError: local variable 'res' referenced before assignment
