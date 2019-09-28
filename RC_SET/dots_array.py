@@ -510,12 +510,12 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
     elif dist == 'uniform':
         res = np.random.uniform(low=avg-std, high=avg+std,size=(M,N))
     elif dist == 'two_points':
-        # r = np.random.rand(M,N)
-        # r[r > 0.5] = avg + std
-        # r[r <= 0.5] = avg - std
-        # res = r
-        res = (avg + std)*np.ones((M,N))
-        res[::2] = avg - std
+        if M == 1 and N == 2:
+            return np.array([[avg-std,avg+std]])
+        r = np.random.rand(M,N)
+        r[r > 0.5] = avg + std
+        r[r <= 0.5] = avg - std
+        res = r
     elif dist == 'normal':
         res = np.random.normal(loc=avg, scale=std, size=(M, N))
     elif dist == 'gamma':
