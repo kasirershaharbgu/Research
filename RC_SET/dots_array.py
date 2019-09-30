@@ -308,17 +308,20 @@ class Simulator:
 
     def calcCurrent(self, t,print=False):
         self.dotArray.resetCharge()
-        # Now when we are in steady state actually measuring current
         curr_t = 0
         while curr_t < t:
             curr_t += self.executeStep(printState=print)
         rightCurrent, leftCurrent = self.dotArray.getCharge()
         return rightCurrent/curr_t, -leftCurrent/curr_t
 
-    def checkSteadyState(self, t, rep):
+    def checkSteadyState(self, rep):
         Ileft = []
         Iright = []
+        t = self.dotArray.getTimeStep()
         for r in range(rep):
+            # running once to get to steady state
+            self.calcCurrent(t)
+            # now we are in steady state calculate current
             rightCurrent, leftCurrnet = self.calcCurrent(t)
             Ileft.append(leftCurrnet)
             Iright.append(rightCurrent)
@@ -327,8 +330,10 @@ class Simulator:
         print("Mean left: " + str(np.average(Ileft))+ " Var left: " + str(np.var(Ileft)))
         print("Tail mean right: " + str(np.average(Iright[len(Iright)//4:])) + " Tail var right: " + str(np.var(Iright[len(Iright)//4:])))
         print("Tail mean left: " + str(np.average(Ileft[len(Ileft)//4:])) + " Tail var left: " + str(np.var(Ileft[len(Ileft)//4:])))
-
-        plt.plot(x,Ileft, x,Iright)
+        plt.figure()
+        plt.plot(x,Ileft, x,Iright, x, (np.array(Ileft) - np.array(Iright))**2)
+        plt.figure()
+        plt.plot((np.array(Ileft) - np.array(Iright)) ** 2)
         plt.show()
 
     def calcIV(self, Vmax, Vstep, print=False, fullOutput=False):
@@ -380,7 +385,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv))
-        simulator.checkSteadyState(100, repeats)
+        simulator.checkSteadyState(repeats)
         exit(0)
 
 
@@ -394,7 +399,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
                                  Vmax, Vstep, fullOutput, printState))
         results.append(res)
     for res in results:
-        I,V,params = res.get()
+        I, V, params = res.get()
         Is.append(I)
     avgI = np.mean(np.array(Is), axis=0)
     # if fullOutput:
