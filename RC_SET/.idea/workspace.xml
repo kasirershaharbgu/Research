@@ -4,66 +4,6 @@
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_1_1.e540606" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_1_1.e540616" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_1_1.e540682" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_1_1.o540606" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_1_1.o540616" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_1_1.o540682" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_small_cg_1_1.e540608" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_small_cg_1_1.e540618" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_small_cg_1_1.e540684" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_small_cg_1_1.o540608" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_small_cg_1_1.o540618" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/no_disorder_small_cg_1_1.o540684" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_small_cg_1_1.e540609" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_small_cg_1_1.e540619" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_small_cg_1_1.e540685" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_small_cg_1_1.o540609" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_small_cg_1_1.o540619" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_small_cg_1_1.o540685" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_1.e540610" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_1.e540620" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_1.e540686" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_1.o540610" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_1.o540620" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_1.o540686" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_10.e540615" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_10.e540625" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_10.e540691" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_10.o540615" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_10.o540625" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_10_10.o540691" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_1.e540607" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_1.e540617" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_1.e540683" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_1.o540607" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_1.o540617" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_1.o540683" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_10.e540613" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_10.e540623" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_10.e540689" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_10.o540613" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_10.o540623" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_two_points_1_10.o540689" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_1.e540611" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_1.e540621" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_1.e540687" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_1.o540611" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_1.o540621" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_1.o540687" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_10.e540614" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_10.e540624" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_10.e540690" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_10.o540614" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_10.o540624" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_10_10.o540690" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_1_10.e540612" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_1_10.e540622" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_1_10.e540688" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_1_10.o540612" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_1_10.o540622" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/r_disorder_uniform_1_10.o540688" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

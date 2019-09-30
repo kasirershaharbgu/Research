@@ -249,29 +249,32 @@ class DotArray:
         return res
 
     def executeAction(self, ind):
-            horzSize = self.rows*(self.columns+1)
-            vertSize = (self.rows - 1)*self.columns
-            if ind < horzSize: # tunnel right:
-                fromDot = (ind//(self.columns+1), (ind%(self.columns+1))-1)
-                toDot = (fromDot[0], fromDot[1] + 1)
-            elif ind < horzSize*2: # tunnel left
-                ind -= horzSize
-                fromDot = (ind//(self.columns+1), ind%(self.columns+1))
-                toDot = (fromDot[0], fromDot[1] - 1)
-            elif ind < horzSize*2 + vertSize: # tunnel down
-                ind -= horzSize*2
-                fromDot = (ind//self.columns, ind%self.columns)
-                toDot = (fromDot[0] + 1, fromDot[1])
-            else: # tunnel up
-                ind -= (horzSize*2 + vertSize)
-                fromDot = ((ind//self.columns) + 1, ind%self.columns)
-                toDot = (fromDot[0] - 1, fromDot[1])
-            self.tunnel(fromDot, toDot)
+        horzSize = self.rows*(self.columns+1)
+        vertSize = (self.rows - 1)*self.columns
+        if ind < horzSize: # tunnel right:
+            fromDot = (ind//(self.columns+1), (ind%(self.columns+1))-1)
+            toDot = (fromDot[0], fromDot[1] + 1)
+        elif ind < horzSize*2: # tunnel left
+            ind -= horzSize
+            fromDot = (ind//(self.columns+1), ind%(self.columns+1))
+            toDot = (fromDot[0], fromDot[1] - 1)
+        elif ind < horzSize*2 + vertSize: # tunnel down
+            ind -= horzSize*2
+            fromDot = (ind//self.columns, ind%self.columns)
+            toDot = (fromDot[0] + 1, fromDot[1])
+        else: # tunnel up
+            ind -= (horzSize*2 + vertSize)
+            fromDot = ((ind//self.columns) + 1, ind%self.columns)
+            toDot = (fromDot[0] - 1, fromDot[1])
+        self.tunnel(fromDot, toDot)
+        return fromDot, toDot
+
+
 
 
 class Simulator:
     """
-    Preforms Markov-Chain Monte-Carlo simulation on an array of quantum dots
+    Preforms Gillespie simulation on an array of quantum dots
     :param rows: number of rows in the array
     :param columns: number of columns in the array
     """
@@ -358,6 +361,40 @@ class Simulator:
     def printState(self):
         print("At t= " + str(self.t) + " Vext = " + str(self.Vext) + ":")
         self.dotArray.printState()
+
+class GraphSimulator:
+    """
+    Calculating staedy state current for an array of quantum dots by using linear programming
+    """
+    def __init__(self, rows, columns, VL0, VR0, VG,
+                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
+        self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
+                                 Ch, Cv, Rh, Rv)
+
+    # def buildGraph(self, Q):
+    #     states = []
+    #     states_dict = dict()
+    #     edges = []
+    #     self.dotArray.Q = Q
+    #     states.append(self.dotArray.n)
+    #     current_state_ind = 0
+    #     next_state_ind = 1
+    #     while state_ind < len(states):
+    #         edge = [0] *
+    #         rates = self.dotArray.getRates()
+    #         more_work = False
+    #         for ind,rate in enumerate(rates):
+    #             if rate > 0: # add new edge
+    #                 fromDot, toDot = self.dotArray.executeAction(ind)
+    #                 n = self.dotArray.n
+    #                 if self.dotArray.n not in states_dict:
+    #                     states_dict[n] =
+    #                     states.append(self.dotArray.n)
+    #                     edge.append(rate)
+
+
+
+
 
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
