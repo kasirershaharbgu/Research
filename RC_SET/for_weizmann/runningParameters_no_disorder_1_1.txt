@@ -6,7 +6,7 @@ Vmin = 0.0
 Vmax = 2.0
 vStep = 0.01
 repeats = 20
-fileName = no_disorder_small_cg_1_1
+fileName = no_disorder_1_1
 dist = uniform
 fullOutput = False
 output_folder = for_weizmann
@@ -14,7 +14,7 @@ VG_avg = 0.0
 VG_std = 0.0
 C_avg = 1.0
 C_std = 0.0
-CG_avg = 1.0
+CG_avg = 10.0
 CG_std = 0.0
 R_avg = 10.0
 R_std = 0.0
@@ -28,7 +28,7 @@ Q0_std = 0.0
 Rows: 1
 Columns: 1
 VG: [[0.]]
-CG: [[1.]]
+CG: [[10.]]
 RG: [[1000.]]
 Ch: [[1. 1.]]
 Cv: [[0.]]
