@@ -346,12 +346,18 @@ class Simulator:
         tStep = self.dotArray.getTimeStep()
         V0 = self.VL - self.VR
         while(self.VL - self.VR < Vmax):
+            # running once to get to steady state
+            self.calcCurrent(tStep)
+            # now we are in steady state calculate current
             rightCurrent, leftCurrnet = self.calcCurrent(tStep, print=print)
             I.append((rightCurrent+leftCurrnet)/2)
             V.append(self.VL - self.VR)
             self.VL += Vstep
             self.dotArray.changeVext(self.VL, self.VR)
         while(self.VL - self.VR > V0):
+            # running once to get to steady state
+            self.calcCurrent(tStep)
+            # now we are in steady state calculate current
             rightCurrent, leftCurrnet = self.calcCurrent(tStep, print=print)
             I.append((rightCurrent+leftCurrnet)/2)
             V.append(self.VL - self.VR)
@@ -420,7 +426,8 @@ class GraphSimulator:
         res = linprog(self.edgesMat, A_ub=A_ub, b_ub=b_ub)
         self.prob = res.x
 
-def calcIV(Vmax, Vstep, fullOutput=False, print=False))
+def calcIV(Vmax, Vstep, fullOutput=False, print=False):
+    pass
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False):
@@ -568,7 +575,6 @@ def getOptions():
     return parser.parse_args()
 
 def saveParameters(path, fileName, options, array_params):
-
     optionsDict = options.__dict__
     with open(os.path.join(path,'runningParameters_' + fileName +
             ".txt"),mode='w') as f:
