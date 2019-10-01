@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from optparse import OptionParser
 import os
 from multiprocessing import Pool
+from scipy.optimize import linprog
 
 def flattenToColumn(a):
     return a.reshape((a.size,1))
@@ -370,39 +371,69 @@ class GraphSimulator:
                  Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
                                  Ch, Cv, Rh, Rv)
+        self.edgesMat = None
+        self.states = None
+        self.prob = None
 
-    # def buildGraph(self, Q):
-    #     states = []
-    #     states_dict = dict()
-    #     edges = []
-    #     self.dotArray.Q = Q
-    #     states.append(self.dotArray.n)
-    #     current_state_ind = 0
-    #     next_state_ind = 1
-    #     while state_ind < len(states):
-    #         edge = [0] *
-    #         rates = self.dotArray.getRates()
-    #         more_work = False
-    #         for ind,rate in enumerate(rates):
-    #             if rate > 0: # add new edge
-    #                 fromDot, toDot = self.dotArray.executeAction(ind)
-    #                 n = self.dotArray.n
-    #                 if self.dotArray.n not in states_dict:
-    #                     states_dict[n] =
-    #                     states.append(self.dotArray.n)
-    #                     edge.append(rate)
+    def getArrayParameters(self):
+        return str(self.dotArray)
 
+    def buildGraph(self, Q):
+        states = []
+        states_dict = dict()
+        edges = []
+        self.dotArray.Q = Q
+        states.append(self.dotArray.n)
+        current_state_ind = 0
+        next_state_ind = 1
+        while current_state_ind < len(states):
+            self.dotArray.n = states[current_state_ind]
+            edges_line = [0] * (current_state_ind + 1)
+            rates = self.dotArray.getRates()
+            for ind,rate in enumerate(rates):
+                if rate > 0: # add new edge
+                    fromDot, toDot = self.dotArray.executeAction(ind)
+                    n = self.dotArray.n
+                    if self.dotArray.n not in states_dict:
+                        states_dict[n] = next_state_ind
+                        states.append(self.dotArray.n)
+                        next_state_ind += 1
+                        edges_line.append(rate)
+                    else:
+                        edges_line[states_dict[n]] = rate
+                    self.dotArray.tunnel(toDot, fromDot)
+            edges.append(edges_line)
+            current_state_ind += 1
+        edgesMat = np.zeros((len(edges),len(edges[-1])))
+        for ind, line in enumerate(edges):
+            edgesMat[ind,:len(line)] = line
+        diagonal = np.sum(edgesMat,axis=1)
+        self.edgesMat = edgesMat - np.diagflat(diagonal)
+        self.states = states
 
+    def find_probabilities(self,Q):
+        self.buildGraph(Q)
+        states_num = len(self.states)
+        A_ub = np.vstack((-self.edgesMat.T, np.ones((states_num, 1))))
+        b_ub = np.zeros((A_ub.shape[0], 1))
+        b_ub[-1,0] = 1
+        res = linprog(self.edgesMat, A_ub=A_ub, b_ub=b_ub)
+        self.prob = res.x
 
-
-
+def calcIV(Vmax, Vstep, fullOutput=False, print=False))
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                        Vmax, Vstep, fullOutput=False, printState=False):
-    simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
-                          np.array(Q0), np.array(n0), np.array(CG),
-                          np.array(RG), np.array(Ch), np.array(Cv),
-                          np.array(Rh), np.array(Rv))
+                        Vmax, Vstep, fullOutput=False, printState=False, useGraph=False):
+    if useGraph:
+        simulator = GraphSimulator(rows, columns, VL0, VR0, np.array(VG0),
+                                    np.array(Q0), np.array(n0), np.array(CG),
+                                    np.array(RG), np.array(Ch), np.array(Cv),
+                                    np.array(Rh), np.array(Rv))
+    else:
+        simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
+                              np.array(Q0), np.array(n0), np.array(CG),
+                              np.array(RG), np.array(Ch), np.array(Cv),
+                              np.array(Rh), np.array(Rv))
     out = simulator.calcIV(Vmax, Vstep,
                            fullOutput=fullOutput, print=printState)
     I = out[0]
@@ -414,8 +445,8 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
     return I,V,array_params
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                    Vmax, Vstep,repeats=1, savePath=".",
-                    fileName="", fullOutput=False, printState=False, checkSteadyState=False):
+                      Vmax, Vstep,repeats=1, savePath=".", fileName="", fullOutput=False,
+                      printState=False, checkSteadyState=False, useGraph=False):
 
     if checkSteadyState:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
@@ -433,7 +464,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     for repeat in range(repeats):
         res = pool.apply_async(runSingleSimulation,
                                 (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                 Vmax, Vstep, fullOutput, printState))
+                                 Vmax, Vstep, fullOutput, printState, useGraph))
         results.append(res)
     for res in results:
         I, V, params = res.get()
@@ -573,6 +604,7 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
         res = res + 0.1 - np.min(res.flatten())
     return res
 
+
 if __name__ == "__main__":
     # Initializing Running Parameters
     options, args = getOptions()
@@ -601,7 +633,7 @@ if __name__ == "__main__":
     repeats = options.repeats
     savePath = options.output_folder
     fileName = options.fileName
-    fullOutput = options.fullOutput
+    fullOutput = options.fullOutputus
 
     # Debug
     # rows = 1
@@ -630,9 +662,8 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
-                      Vmax, Vstep, repeats=repeats,
-                      savePath=savePath, fileName=fileName, printState=False)
+                          Vmax, Vstep, repeats=repeats,
+                          savePath=savePath, fileName=fileName, printState=False, useGraph=False)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
