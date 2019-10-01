@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "dots_array.py", line 642, in <module>
+    fullOutput = options.fullOutputus
+AttributeError: 'Values' object has no attribute 'fullOutputus'
