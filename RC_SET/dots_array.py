@@ -639,7 +639,7 @@ if __name__ == "__main__":
     repeats = options.repeats
     savePath = options.output_folder
     fileName = options.fileName
-    fullOutput = options.fullOutputus
+    fullOutput = options.fullOutput
 
     # Debug
     # rows = 1
