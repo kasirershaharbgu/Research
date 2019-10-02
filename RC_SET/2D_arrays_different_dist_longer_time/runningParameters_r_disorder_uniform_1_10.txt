@@ -1,0 +1,37 @@
+-------Running parameters--------
+M = 1
+N = 10
+VR = 0
+Vmin = 0.0
+Vmax = 20.0
+vStep = 0.01
+repeats = 20
+fileName = r_disorder_uniform_1_10
+dist = uniform
+fullOutput = False
+output_folder = 2D_arrays_different_dist_longer_time
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 10
+VG: [[0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]]
+CG: [[10. 10. 10. 10. 10. 10. 10. 10. 10. 10.]]
+RG: [[1000. 1000. 1000. 1000. 1000. 1000. 1000. 1000. 1000. 1000.]]
+Ch: [[1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]]
+Cv: [[0.]]
+Rh: [[12.20487899 13.90539007  9.7590054  13.18401853  7.16897329 18.39788282
+   4.18672065  6.08511314  2.40846217  7.5512478  12.47158422]]
+Rv: []
