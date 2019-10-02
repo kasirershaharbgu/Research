@@ -57,6 +57,7 @@ class DotArray:
         self.setDiagonalizedJ()
         self.setConstWork()
         self.setConstMatrix()
+        self.setConstNprimePart()
 
     def getRows(self):
         return self.rows
@@ -98,13 +99,16 @@ class DotArray:
                 -np.diagflat(n_diagonal, k=self.columns) -  np.diagflat(n_diagonal, k=-self.columns)
         self.invC = np.linalg.inv(C_mat)
         return True
+    def setConstNprimePart(self):
+        self._left_part_n_prime = np.copy(self.Ch[:, :-1])
+        self._left_part_n_prime[:, 1:] = 0
+        self._right_part_n_prime = np.copy(self.Ch[:, 1:])
+        self._right_part_n_prime[:, :-1] = 0
+        return True
+
 
     def getNprime(self):
-        left_part = self.Ch[:,:-1]
-        left_part[:,1:] = 0
-        right_part = self.Ch[:,1:]
-        right_part[:,:-1] = 0
-        return flattenToColumn(self.n + left_part*self.VL + right_part*self.VR)
+        return flattenToColumn(self.n + self.left_part_n_prime*self.VL + self.right_part_n_prime*self.VR)
 
     def getbVector(self):
         """
@@ -137,18 +141,18 @@ class DotArray:
         return True
 
     def setConstWork(self):
-        invCDiagMat = np.diag(self.invC).reshape((self.rows,self.columns))
-        lowerCDiag = np.pad(np.diag(self.invC,k=-1),((0,1),),mode='constant').reshape((self.rows,self.columns))
+        invCDiagMat = np.diag(np.copy(self.invC)).reshape((self.rows,self.columns))
+        lowerCDiag = np.pad(np.diag(np.copy(self.invC),k=-1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         lowerCDiag[:,-1] = 0
         lowerCDiag  = np.pad(lowerCDiag,((0,0),(1,0)),mode='constant')
-        upperCDiag = np.pad(np.diag(self.invC,k=1),((0,1),),mode='constant').reshape((self.rows,self.columns))
+        upperCDiag = np.pad(np.diag(np.copy(self.invC),k=1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         upperCDiag[:,-1] = 0
         upperCDiag  = np.pad(upperCDiag,((0,0),(1,0)),mode='constant')
         commonHorz = np.pad(invCDiagMat,((0,0),(1,0)),mode='constant') + np.pad(invCDiagMat,((0,0),(0,1)),mode='constant')\
                         - lowerCDiag - upperCDiag
 
-        lowerNCDiag = np.diag(self.invC,k=-self.columns).reshape((self.rows-1,self.columns))
-        upperNCDiag = np.diag(self.invC,k=self.columns).reshape((self.rows-1,self.columns))
+        lowerNCDiag = np.diag(np.copy(self.invC),k=-self.columns).reshape((self.rows-1,self.columns))
+        upperNCDiag = np.diag(np.copy(self.invC),k=self.columns).reshape((self.rows-1,self.columns))
         commonVert = invCDiagMat[1:,:] + invCDiagMat[:-1,:] - lowerNCDiag - upperNCDiag
 
         additionalLeft = np.zeros((self.rows,self.columns+1))
@@ -171,11 +175,11 @@ class DotArray:
         secondLocations = np.ones(firstLocations.shape)
         firstLocations[self.columns::self.columns + 1] = 0
         secondLocations[0::self.columns + 1] = 0
-        firstHorzMat[firstLocations.astype(np.bool), :] = self.invC
-        secondHorzMat[secondLocations.astype(np.bool), :] = self.invC
+        firstHorzMat[firstLocations.astype(np.bool), :] = np.copy(self.invC)
+        secondHorzMat[secondLocations.astype(np.bool), :] = np.copy(self.invC)
         self.horizontalMatrix = firstHorzMat - secondHorzMat
-        firstVertMat = self.invC[self.columns:, :]
-        secondVertMat = self.invC[:-self.columns, :]
+        firstVertMat = np.copy(self.invC[self.columns:, :])
+        secondVertMat = np.copy(self.invC[:-self.columns, :])
         self.verticalMatrix = firstVertMat - secondVertMat
         return True
 
@@ -475,13 +479,8 @@ class GraphSimulator:
         points = flatten_grid.T
         self.lyaponuv = LinearNDInterpolator(points, res.flatten())
 
-
-
-
-
-
-def calcIV(Vmax, Vstep, fullOutput=False, print=False):
-    pass
+    def calcIV(Vmax, Vstep, fullOutput=False, print=False):
+        pass
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False):
@@ -508,7 +507,6 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep,repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False):
-
     if checkSteadyState:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
