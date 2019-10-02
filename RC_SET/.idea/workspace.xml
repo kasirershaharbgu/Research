@@ -231,11 +231,6 @@
           <line>551</line>
           <option name="timeStamp" value="119" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>131</line>
-          <option name="timeStamp" value="128" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
