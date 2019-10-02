@@ -1,0 +1,3 @@
+Usage: dots_array.py [options]
+
+dots_array.py: error: option --c-std: invalid floating-point value: ''

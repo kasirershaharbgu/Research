@@ -1,0 +1,5 @@
+/var/spool/slurmd/job1110782/slurm_script: line 10: /etc/local/set-anaconda3: Permission denied
+Traceback (most recent call last):
+  File "dots_array.py", line 4, in <module>
+    from matplotlib import pyplot as plt
+ImportError: No module named 'matplotlib'
