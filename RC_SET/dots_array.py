@@ -108,7 +108,7 @@ class DotArray:
 
 
     def getNprime(self):
-        return flattenToColumn(self.n + self.left_part_n_prime*self.VL + self.right_part_n_prime*self.VR)
+        return flattenToColumn(self.n + self._left_part_n_prime*self.VL + self._right_part_n_prime*self.VR)
 
     def getbVector(self):
         """
