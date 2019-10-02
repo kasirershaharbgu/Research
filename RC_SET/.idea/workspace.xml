@@ -2,7 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/no_disorder_1_1_I.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/no_disorder_1_1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/no_disorder_1_1_V.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/no_disorder_uniform_1_1_I.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/no_disorder_uniform_1_1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/no_disorder_uniform_1_1_V.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/r_disorder_two_points_10_1_I.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/r_disorder_two_points_10_1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/r_disorder_two_points_10_1_V.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/r_disorder_two_points_1_1_I.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/r_disorder_two_points_1_1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/r_disorder_two_points_1_1_V.bin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/runningParameters_no_disorder_1_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/runningParameters_no_disorder_uniform_1_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/runningParameters_r_disorder_two_points_10_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_weizmann/runningParameters_r_disorder_two_points_1_1.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +114,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 2 --vmax 3 --vstep 0.01 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 5 --r-std 4 --rg-avg 1000 --rg-std 0 --repeats 10 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --file-name dbg -o dbg" />
+      <option name="PARAMETERS" value="-M 1 -N 1 --vmin -0.25 --vmax 2 --vstep 0.01 --vr -0.25 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 4 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --file-name dbg -o dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />

@@ -5,7 +5,9 @@ from matplotlib import pyplot as plt
 from optparse import OptionParser
 import os
 from multiprocessing import Pool
-from scipy.optimize import linprog
+from scipy.linalg import null_space
+from scipy.integrate import cumtrapz
+from scipy.interpolate import LinearNDInterpolator
 
 def flattenToColumn(a):
     return a.reshape((a.size,1))
@@ -380,15 +382,25 @@ class GraphSimulator:
         self.edgesMat = None
         self.states = None
         self.prob = None
+        self.n0 = n0
+        self.lyaponuv = None
+        self.set_constant_matrices()
 
     def getArrayParameters(self):
         return str(self.dotArray)
+    def set_constant_matrices(self):
+        J = self.dotArray.getJmatrix()
+        invJ = np.linalg.inv(J)
+        self._constQnPart = invJ.dot(flattenToColumn(self.dotArray.VG))
+        CGMat = np.repeat(self.dotArray.CG.flatten(),J.shape[0],axis=0)
+        self._matrixQnPart = invJ*CGMat - np.eye(J.shape[0])
 
     def buildGraph(self, Q):
         states = []
         states_dict = dict()
         edges = []
         self.dotArray.Q = Q
+        self.dotArray.n = self.n0
         states.append(self.dotArray.n)
         current_state_ind = 0
         next_state_ind = 1
@@ -415,16 +427,58 @@ class GraphSimulator:
             edgesMat[ind,:len(line)] = line
         diagonal = np.sum(edgesMat,axis=1)
         self.edgesMat = edgesMat - np.diagflat(diagonal)
-        self.states = states
+        self.states = np.array(states)
 
-    def find_probabilities(self,Q):
+    def find_probabilities(self, Q):
         self.buildGraph(Q)
-        states_num = len(self.states)
-        A_ub = np.vstack((-self.edgesMat.T, np.ones((states_num, 1))))
-        b_ub = np.zeros((A_ub.shape[0], 1))
-        b_ub[-1,0] = 1
-        res = linprog(self.edgesMat, A_ub=A_ub, b_ub=b_ub)
-        self.prob = res.x
+        # steady state probabilities are the belong to null-space of edgesMat.T
+        null = null_space(self.edgesMat.T)
+        sol = []
+        for i in range(null.shape[1]):
+            candidate = null[:,i]*np.sign(null[0,i])
+            if (candidate > 0).all():
+                sol.append(candidate / np.sum(candidate))
+        if len(sol) > 1:
+            print("Warning - more than one solution for steady state probabilities")
+        elif len(sol) < 1:
+            self.prob = None
+        else:
+            self.prob = sol[0]
+
+    def get_average_state(self, Q):
+        self.find_probabilities(Q)
+        average_state = np.multiply(self.states, self.prob)
+        return average_state.reshape((self.dotArray.getRows(),
+                                     self.dotArray.getColumns()))
+
+    def get_average_Qn(self, Q):
+        self.dotArray.n = self.get_average_state(Q)
+        return self._constQnPart + self._matrixQnPart.dot(self.dotArray.getNprime())
+
+    def set_lyaponuv(self, Qmin, Qmax):
+        Qmin = Qmin.flatten()
+        Qmax = Qmax.flatten()
+        coordinates = (np.arange(Qmin[i],Qmax[i],0.1) for i in range(Qmin.size))
+        grid = np.meshgrid(coordinates)
+        grid_array = np.array(grid)
+        res = np.zeros(grid_array.shape)
+        it = np.nditer(grid[0], flags=['f_index'])
+        while not it.finished:
+            index = it.multi_index
+            curr_Q = grid_array[:,index]
+            diff_from_equi = curr_Q - self.get_average_Qn(curr_Q.reshape((self.dotArray.getRows(),
+                                     self.dotArray.getColumns())))
+            res[it.multi_index] = diff_from_equi
+        for axis in range(len(res.shape)):
+            res = cumtrapz(res,grid,axis=axis,initial=0)
+        flatten_grid = np.vstack((p.flatten() for p in grid))
+        points = flatten_grid.T
+        self.lyaponuv = LinearNDInterpolator(points, res.flatten())
+
+
+
+
+
 
 def calcIV(Vmax, Vstep, fullOutput=False, print=False):
     pass
