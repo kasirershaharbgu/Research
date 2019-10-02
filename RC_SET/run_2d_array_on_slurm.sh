@@ -27,7 +27,7 @@ v_max=20
 t="10:00:00"
 dist="uniform"
 
-sbatch -J "name" -t "$t" --output "$f/$name.out" --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
+sbatch -J="name" -t="$t" --output="$f/$name.out" -N 1 --ntasks-per-node="$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
 
 sleep 3
 
@@ -38,7 +38,7 @@ v_max=2
 t="4:00:00"
 dist="uniform"
 
-sbatch -J "name" -t "$t" --output "$f/$name.out" --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
+sbatch -J "name" -t "$t" --output "$f/$name.out" -N 1 --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
 
 sleep 3
 
@@ -49,7 +49,7 @@ v_max=20
 t="24:00:00"
 dist="uniform"
 
-sbatch -J "name" -t "$t" --output "$f/$name.out" --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
+sbatch -J "name" -t "$t" --output "$f/$name.out" -N 1 --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
 
 sleep 3
 
@@ -60,7 +60,7 @@ v_max=20
 t="10:00:00"
 dist="two_points"
 
-sbatch -J "name" -t "$t" --output "$f/$name.out" --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
+sbatch -J "name" -t "$t" --output "$f/$name.out" -N 1 --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
 
 sleep 3
 
@@ -71,7 +71,7 @@ v_max=2
 t="4:00:00"
 dist="two_points"
 
-sbatch -J "name" -t "$t" --output "$f/$name.out" --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
+sbatch -J "name" -t "$t" --output "$f/$name.out" -N 1 --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
 
 sleep 3
 
@@ -82,7 +82,7 @@ v_max=20
 t="24:00:00"
 dist="two_points"
 
-sbatch -J "name" -t "$t" --output "$f/$name.out" --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
+sbatch -J "name" -t "$t" --output "$f/$name.out" -N 1 --ntasks-per-node "$repeats" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
 
 sleep 3
 

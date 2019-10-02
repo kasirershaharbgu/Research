@@ -1,6 +1,5 @@
 #!/bin/sh
 
-#SBATCH -N 1                               # nodes=1
 #SBATCH -p dept                            # partition/queue name
 #SBATCH --mem=2000MB                       # memory in MB
 #SBATCH --mail-user=skasirer@princeton.edu # Mail  id of the user
