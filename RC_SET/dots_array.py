@@ -776,6 +776,6 @@ if __name__ == "__main__":
         exit(0)
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, repeats=repeats,
-                          savePath=savePath, fileName=fileName, printState=False, useGraph=True)
+                          savePath=savePath, fileName=fileName, printState=False, useGraph=False)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
