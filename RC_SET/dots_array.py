@@ -720,53 +720,53 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
 if __name__ == "__main__":
     # Initializing Running Parameters
     options, args = getOptions()
-    # rows = options.M
-    # columns = options.N
-    # VR0 = options.VR
-    # VL0 = VR0 + options.Vmin
-    # dist = options.dist
-    # VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
-    #                          False)
-    # Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
-    #                          False)
-    # n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
-    # CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist,True)
-    # RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist,True)
-    # Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
-    #                         True)
-    # Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
-    #                         True)
-    # Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
-    #                         True)
-    # Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
-    #                         True)
-    # Vmax = options.Vmax
-    # Vstep = options.vStep
-    # repeats = options.repeats
-    # savePath = options.output_folder
-    # fileName = options.fileName
-    # fullOutput = options.fullOutput
+    rows = options.M
+    columns = options.N
+    VR0 = options.VR
+    VL0 = VR0 + options.Vmin
+    dist = options.dist
+    VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
+                             False)
+    Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
+                             False)
+    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
+    CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist,True)
+    RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist,True)
+    Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
+                            True)
+    Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
+                            True)
+    Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
+                            True)
+    Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
+                            True)
+    Vmax = options.Vmax
+    Vstep = options.vStep
+    repeats = options.repeats
+    savePath = options.output_folder
+    fileName = options.fileName
+    fullOutput = options.fullOutput
 
     # Debug
-    rows = 1
-    columns = 1
-    VR0 = 0
-    VL0 = 0
-    VG = [[0]]
-    Q0 = [[0]]
-    n0 = [[0]]
-    CG = [[1]]
-    RG = [[1000]]
-    Ch = [[1,1]]
-    Cv = [[]]
-    Rh = [[1,10]]
-    Rv = [[]]
-    Vmax = 2
-    Vstep = 0.1
-    repeats = 1
-    savePath = "dbg_graph"
-    fileName = "dbg_graph"
-    fullOutput = False
+    # rows = 1
+    # columns = 1
+    # VR0 = 0
+    # VL0 = 0
+    # VG = [[0]]
+    # Q0 = [[0]]
+    # n0 = [[0]]
+    # CG = [[1]]
+    # RG = [[1000]]
+    # Ch = [[1,1]]
+    # Cv = [[]]
+    # Rh = [[1,10]]
+    # Rv = [[]]
+    # Vmax = 2
+    # Vstep = 0.1
+    # repeats = 1
+    # savePath = "dbg_graph"
+    # fileName = "dbg_graph"
+    # fullOutput = False
 
     # Running Simulation
     if not os.path.exists(savePath):
