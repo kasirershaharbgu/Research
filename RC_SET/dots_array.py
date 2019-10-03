@@ -7,7 +7,7 @@ import os
 from multiprocessing import Pool
 from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
-from scipy.interpolate import LinearNDInterpolator
+from scipy.signal import argrelextrema
 
 def flattenToColumn(a):
     return a.reshape((a.size,1))
@@ -383,12 +383,21 @@ class GraphSimulator:
                  Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
                                  Ch, Cv, Rh, Rv)
+        self.n0 = n0
+        self.QG = Q0
+        self.VL = VL0
+        self.VR = VR0
+
         self.edgesMat = None
         self.states = None
         self.prob = None
-        self.n0 = n0
         self.lyaponuv = None
+        self.rates_diff_left = None
+        self.rates_diff_right = None
+
         self.set_constant_matrices()
+    def reshape_to_array(self,a):
+        return a.reshape((self.dotArray.getRows(), self.dotArray.getColumns()))
 
     def getArrayParameters(self):
         return str(self.dotArray)
@@ -403,35 +412,44 @@ class GraphSimulator:
         states = []
         states_dict = dict()
         edges = []
-        self.dotArray.Q = Q
-        self.dotArray.n = self.n0
-        states.append(self.dotArray.n)
+        self.dotArray.Q = np.copy(Q)
+        states.append(np.copy(self.n0).flatten())
+        tup_n = tuple(self.n0.flatten())
+        states_dict[tup_n] = 0
+        left_rates_diff = []
+        right_rates_diff = []
         current_state_ind = 0
         next_state_ind = 1
         while current_state_ind < len(states):
-            self.dotArray.n = states[current_state_ind]
+            self.dotArray.n = self.reshape_to_array(np.copy(states[current_state_ind]))
             edges_line = [0] * (current_state_ind + 1)
             rates = self.dotArray.getRates()
             for ind,rate in enumerate(rates):
                 if rate > 0: # add new edge
                     fromDot, toDot = self.dotArray.executeAction(ind)
-                    n = self.dotArray.n
-                    if self.dotArray.n not in states_dict:
-                        states_dict[n] = next_state_ind
-                        states.append(self.dotArray.n)
+                    n = np.copy(self.dotArray.n).flatten()
+                    tup_n = tuple(n)
+                    if tup_n not in states_dict:
+                        states_dict[tup_n] = next_state_ind
+                        states.append(n)
                         next_state_ind += 1
                         edges_line.append(rate)
                     else:
-                        edges_line[states_dict[n]] = rate
+                        edges_line[states_dict[tup_n]] += rate
                     self.dotArray.tunnel(toDot, fromDot)
             edges.append(edges_line)
             current_state_ind += 1
+            left_diff, right_diff = self.get_edge_rates_diff(rates)
+            left_rates_diff.append(left_diff)
+            right_rates_diff.append(right_diff)
         edgesMat = np.zeros((len(edges),len(edges[-1])))
         for ind, line in enumerate(edges):
             edgesMat[ind,:len(line)] = line
         diagonal = np.sum(edgesMat,axis=1)
         self.edgesMat = edgesMat - np.diagflat(diagonal)
         self.states = np.array(states)
+        self.rates_diff_left = np.array(right_rates_diff)
+        self.rates_diff_right = np.array(left_rates_diff)
 
     def find_probabilities(self, Q):
         self.buildGraph(Q)
@@ -439,8 +457,8 @@ class GraphSimulator:
         null = null_space(self.edgesMat.T)
         sol = []
         for i in range(null.shape[1]):
-            candidate = null[:,i]*np.sign(null[0,i])
-            if (candidate > 0).all():
+            candidate = null[:,i]
+            if (candidate >= 0).all() or (candidate <= 0).all():
                 sol.append(candidate / np.sum(candidate))
         if len(sol) > 1:
             print("Warning - more than one solution for steady state probabilities")
@@ -451,9 +469,8 @@ class GraphSimulator:
 
     def get_average_state(self, Q):
         self.find_probabilities(Q)
-        average_state = np.multiply(self.states, self.prob)
-        return average_state.reshape((self.dotArray.getRows(),
-                                     self.dotArray.getColumns()))
+        average_state = np.sum(np.multiply(self.states, self.prob),axis=0)
+        return self.reshape_to_array(average_state)
 
     def get_average_Qn(self, Q):
         self.dotArray.n = self.get_average_state(Q)
@@ -462,25 +479,62 @@ class GraphSimulator:
     def set_lyaponuv(self, Qmin, Qmax):
         Qmin = Qmin.flatten()
         Qmax = Qmax.flatten()
-        coordinates = (np.arange(Qmin[i],Qmax[i],0.1) for i in range(Qmin.size))
+        coordinates = [np.arange(Qmin[i],Qmax[i],0.1) for i in range(Qmin.size)]
         grid = np.meshgrid(coordinates)
         grid_array = np.array(grid)
         res = np.zeros(grid_array.shape)
-        it = np.nditer(grid[0], flags=['f_index'])
+        it = np.nditer(grid[0], flags=['multi_index'])
         while not it.finished:
             index = it.multi_index
             curr_Q = grid_array[:,index]
-            diff_from_equi = curr_Q - self.get_average_Qn(curr_Q.reshape((self.dotArray.getRows(),
+            diff_from_equi = curr_Q.flatten() - self.get_average_Qn(curr_Q.reshape((self.dotArray.getRows(),
                                      self.dotArray.getColumns())))
             res[it.multi_index] = diff_from_equi
         for axis in range(len(res.shape)):
             res = cumtrapz(res,grid,axis=axis,initial=0)
-        flatten_grid = np.vstack((p.flatten() for p in grid))
-        points = flatten_grid.T
-        self.lyaponuv = LinearNDInterpolator(points, res.flatten())
+        self.lyaponuv = res
+        self.Q_grid = grid_array
 
-    def calcIV(Vmax, Vstep, fullOutput=False, print=False):
-        pass
+    def find_next_QG(self):
+        self.set_lyaponuv(self.QG - 1, self.QG + 1)
+        peaks = argrelextrema(self.lyaponuv, np.less_equal)
+        Qind = np.argmin(np.abs(self.Q_grid[peaks] - self.QG))
+        self.QG = self.Q_grid[peaks[Qind]]
+
+    def calcCurrent(self):
+        self.find_next_QG()
+        self.dotArray.Q = self.QG
+        left_current = np.sum(self.prob*self.rates_diff_left)
+        right_current = np.sum(self.prob*self.rates_diff_right)
+        return right_current, left_current
+
+    def get_edge_rates_diff(self, rates):
+        M = self.dotArray.rows
+        N = self.dotArray.columns + 1
+        horzSize = M * N
+        right_tunneling_rates = rates[:horzSize].reshape((M, N))
+        left_tunneling_rates = rates[horzSize:2*horzSize].reshape((M, N))
+        left_diff = right_tunneling_rates[:,0] - left_tunneling_rates[:,0]
+        right_diff = right_tunneling_rates[:,-1] - left_tunneling_rates[:,-1]
+        return left_diff, right_diff
+
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print=False):
+        V = []
+        I = []
+        V0 = self.VL - self.VR
+        while (self.VL - self.VR < Vmax):
+            rightCurrent, leftCurrnet = self.calcCurrent()
+            I.append((rightCurrent + leftCurrnet) / 2)
+            V.append(self.VL - self.VR)
+            self.VL += Vstep
+            self.dotArray.changeVext(self.VL, self.VR)
+        while (self.VL - self.VR > V0):
+            rightCurrent, leftCurrnet = self.calcCurrent()
+            I.append((rightCurrent + leftCurrnet) / 2)
+            V.append(self.VL - self.VR)
+            self.VL -= Vstep
+            self.dotArray.changeVext(self.VL, self.VR)
+        return np.array(I), np.array(V)
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False):
@@ -666,53 +720,53 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
 if __name__ == "__main__":
     # Initializing Running Parameters
     options, args = getOptions()
-    rows = options.M
-    columns = options.N
-    VR0 = options.VR
-    VL0 = VR0 + options.Vmin
-    dist = options.dist
-    VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
-                             False)
-    Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
-                             False)
-    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
-    CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist,True)
-    RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist,True)
-    Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
-                            True)
-    Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
-                            True)
-    Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
-                            True)
-    Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
-                            True)
-    Vmax = options.Vmax
-    Vstep = options.vStep
-    repeats = options.repeats
-    savePath = options.output_folder
-    fileName = options.fileName
-    fullOutput = options.fullOutput
+    # rows = options.M
+    # columns = options.N
+    # VR0 = options.VR
+    # VL0 = VR0 + options.Vmin
+    # dist = options.dist
+    # VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
+    #                          False)
+    # Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
+    #                          False)
+    # n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
+    # CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist,True)
+    # RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist,True)
+    # Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
+    #                         True)
+    # Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
+    #                         True)
+    # Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
+    #                         True)
+    # Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
+    #                         True)
+    # Vmax = options.Vmax
+    # Vstep = options.vStep
+    # repeats = options.repeats
+    # savePath = options.output_folder
+    # fileName = options.fileName
+    # fullOutput = options.fullOutput
 
     # Debug
-    # rows = 1
-    # columns = 1
-    # VR0 = -0.25
-    # VL0 = -0.25
-    # VG = [[0.05]]
-    # Q0 = [[0]]
-    # n0 = [[0]]
-    # CG = [[1]]
-    # RG = [[1000]]
-    # Ch = [[1,1]]
-    # Cv = [[]]
-    # Rh = [[1,10,10]]
-    # Rv = [[]]
-    # Vmax = 2
-    # Vstep = 0.01
-    # repeats = 1
-    # savePath = "for_weizman"
-    # fileName = "no_hysteresis_R2_10R1"
-    # fullOutput = False
+    rows = 1
+    columns = 1
+    VR0 = 0
+    VL0 = 0
+    VG = [[0]]
+    Q0 = [[0]]
+    n0 = [[0]]
+    CG = [[1]]
+    RG = [[1000]]
+    Ch = [[1,1]]
+    Cv = [[]]
+    Rh = [[1,10]]
+    Rv = [[]]
+    Vmax = 2
+    Vstep = 0.1
+    repeats = 1
+    savePath = "dbg_graph"
+    fileName = "dbg_graph"
+    fullOutput = False
 
     # Running Simulation
     if not os.path.exists(savePath):
@@ -722,6 +776,6 @@ if __name__ == "__main__":
         exit(0)
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, repeats=repeats,
-                          savePath=savePath, fileName=fileName, printState=False, useGraph=False)
+                          savePath=savePath, fileName=fileName, printState=False, useGraph=True)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
