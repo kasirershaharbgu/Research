@@ -18,72 +18,14 @@ q_avg=0
 q_std=0
 vstep=0.01
 r_std=9
-f="2D_Array/slurm_run_different_disorder"
+f="1D_Array/2dots"
 
-name="uniform_r_disorder_1_10"
+name="disorder_1_10_10"
 rows=1
-columns=10
-v_max=20
-t="10:00:00"
+columns=2
+vmax=4
+t="1:00:00"
 dist="uniform"
 
-sbatch -J="name" --nodes=1 --ntasks-per-node="$repeats" --mem=2000MB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out"  --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
-
-sleep 3
-
-name="uniform_r_disorder_10_1"
-rows=10
-columns=1
-v_max=2
-t="4:00:00"
-dist="uniform"
-
-sbatch -J="name" --nodes=1 --ntasks-per-node="$repeats" --mem=2000MB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
-
-sleep 3
-
-name="uniform_r_disorder_10_10"
-rows=10
-columns=10
-v_max=20
-t="24:00:00"
-dist="uniform"
-
-sbatch -J="name" --nodes=1 --ntasks-per-node="$repeats" --mem=2000MB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
-
-sleep 3
-
-name="two_points_r_disorder_1_10"
-rows=1
-columns=10
-v_max=20
-t="10:00:00"
-dist="two_points"
-
-sbatch -J="name" --nodes=1 --ntasks-per-node="$repeats" --mem=2000MB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
-
-sleep 3
-
-name="two_points_r_disorder_10_1"
-rows=10
-columns=1
-v_max=2
-t="4:00:00"
-dist="two_points"
-
-sbatch -J="name" --nodes=1 --ntasks-per-node="$repeats" --mem=2000MB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
-
-sleep 3
-
-name="two_points_r_disorder_10_10"
-rows=10
-columns=10
-v_max=20
-t="24:00:00"
-dist="two_points"
-
-sbatch -J="name" --nodes=1 --ntasks-per-node="$repeats" --mem=2000MB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out" --export=M="$rows",N="$columns",vmin="$vmin",vmax="$v_max",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",cstd="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
-
-sleep 3
-
+sbatch -J="$name" --nodes=1 --ntasks-per-node="$repeats" --mem=2000MB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out"  --export=M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",file_name="$name",out="$f",vr="$vr",dist="$dist" run_RC_SET_on_slurm.sh
 
