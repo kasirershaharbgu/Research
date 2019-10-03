@@ -1,0 +1,36 @@
+-------Running parameters--------
+M = 1
+N = 2
+VR = 0.0
+Vmin = 0.0
+Vmax = 4.0
+vStep = 0.01
+repeats = 20
+fileName = disorder_10_10_1
+dist = uniform
+fullOutput = False
+output_folder = 1D_Array/2dots
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 2
+VG: [[0. 0.]]
+CG: [[10. 10.]]
+RG: [[1000. 1000.]]
+Ch: [[1. 1. 1.]]
+Cv: [[0.]]
+Rh: [[7.25910145 7.99729887 1.00989014]]
+Rv: []
