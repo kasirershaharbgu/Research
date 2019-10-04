@@ -221,6 +221,8 @@ class DotArray:
     def nextStep(self, dt, randomNumber):
         self.developeQ(dt)
         rates = self.getRates()
+        if (rates == 0).all():
+            return True
         cumRates = np.cumsum(rates)
         actionInd = np.searchsorted(cumRates, randomNumber*cumRates[-1])
         self.executeAction(actionInd)
@@ -618,16 +620,16 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         avgQ = np.mean(np.array(Qs), axis=0)
         np.save(basePath + "_n.bin", avgN)
         np.save(basePath + "_Q.bin", avgQ)
+
     fig = plt.figure()
     plt.plot(V[:V.size//2], avgI[:I.size//2], '.b',V[V.size//2:],
              avgI[I.size//2:],
              '.r')
+    plt.show()
     plt.savefig(basePath + "_IV.png")
     np.save(basePath + "_I.bin", avgI)
     np.save(basePath + "_V.bin", V)
     plt.close(fig)
-    # if fullOutput:
-    #     return I, V, n, Q
     return params
 
 def getOptions():

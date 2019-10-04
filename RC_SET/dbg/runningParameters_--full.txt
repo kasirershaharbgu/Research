@@ -6,15 +6,15 @@ Vmin = 0.0
 Vmax = 2.0
 vStep = 0.01
 repeats = 1
-fileName = dbg
+fileName = --full
 dist = two_points
-fullOutput = True
+fullOutput = False
 output_folder = dbg
 VG_avg = 0.0
 VG_std = 0.0
 C_avg = 1.0
 C_std = 0.0
-CG_avg = 1.0
+CG_avg = 10.0
 CG_std = 0.0
 R_avg = 10.0
 R_std = 9.0
@@ -28,7 +28,7 @@ Q0_std = 0.0
 Rows: 1
 Columns: 1
 VG: [[0.]]
-CG: [[1.]]
+CG: [[10.]]
 RG: [[0.001]]
 Ch: [[1. 1.]]
 Cv: [[0.]]
