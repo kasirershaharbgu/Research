@@ -773,28 +773,29 @@ if __name__ == "__main__":
     savePath = options.output_folder
     fileName = options.fileName
     fullOutput = options.fullOutput
+    use_graph = options.use_graph
 
     # Debug
-    rows = 1
-    columns = 1
-    VR0 = 0
-    VL0 = 0
-    VG = [[0]]
-    Q0 = [[0]]
-    n0 = [[0]]
-    CG = [[1]]
-    RG = [[1000]]
-    Ch = [[1,1]]
-    Cv = [[]]
-    Rh = [[1,10]]
-    Rv = [[]]
-    Vmax = 2
-    Vstep = 0.1
-    repeats = 1
-    savePath = "dbg_graph"
-    fileName = "dbg_graph"
-    fullOutput = False
-    use_graph = True
+    # rows = 1
+    # columns = 1
+    # VR0 = 0
+    # VL0 = 0
+    # VG = [[0]]
+    # Q0 = [[0]]
+    # n0 = [[0]]
+    # CG = [[1]]
+    # RG = [[1000]]
+    # Ch = [[1,1]]
+    # Cv = [[]]
+    # Rh = [[1,10]]
+    # Rv = [[]]
+    # Vmax = 2
+    # Vstep = 0.1
+    # repeats = 1
+    # savePath = "dbg_graph"
+    # fileName = "dbg_graph"
+    # fullOutput = False
+    # use_graph = True
 
     # Running Simulation
     if not os.path.exists(savePath):
