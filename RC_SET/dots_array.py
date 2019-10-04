@@ -331,8 +331,8 @@ class Simulator:
         curr_t = 0
         steps = 0
         if fullOutput:
-            n_sum = np.zeros((self.dotArray.getColumns(), self.dotArray.getRows()))
-            Q_sum = np.zeros((self.dotArray.getColumns(), self.dotArray.getRows()))
+            n_sum = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
+            Q_sum = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
         min_steps = MINIMUM_STEPS_PER_DOT*(self.dotArray.getColumns()*self.dotArray.getRows())
         while curr_t < t or steps < min_steps:
             if fullOutput:
@@ -602,13 +602,15 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     pool = Pool(processes=repeats)
     results = []
     for repeat in range(repeats):
-        res = pool.apply_async(runSingleSimulation,
-                                (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                 Vmax, Vstep, fullOutput, printState, useGraph))
+        # res = pool.apply_async(runSingleSimulation,
+        #                         (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+        #                          Vmax, Vstep, fullOutput, printState, useGraph))
+        res = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+                                  Vmax, Vstep, fullOutput, printState, useGraph)
         results.append(res)
     for res in results:
         if fullOutput:
-            I,V,n,Q,params = res.get()
+            I,V,n,Q,params = res
             ns.append(n)
             Qs.append(Q)
         else:
@@ -625,7 +627,6 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     plt.plot(V[:V.size//2], avgI[:I.size//2], '.b',V[V.size//2:],
              avgI[I.size//2:],
              '.r')
-    plt.show()
     plt.savefig(basePath + "_IV.png")
     np.save(basePath + "_I.bin", avgI)
     np.save(basePath + "_V.bin", V)
