@@ -9,6 +9,8 @@ from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
 from scipy.signal import argrelextrema
 
+MINIMUM_STEPS_PER_DOT = 1000
+
 def flattenToColumn(a):
     return a.reshape((a.size,1))
 
@@ -78,6 +80,12 @@ class DotArray:
         self.VR = newVR
         self.setConstWork()
         return True
+
+    def getOccupation(self):
+        return np.copy(self.n)
+
+    def getGroundCharge(self):
+        return np.copy(self.Q)
 
     def getCharge(self):
         return self.totalChargePassedRight, self.totalChargePassedLeft
@@ -316,12 +324,27 @@ class Simulator:
             self.printState()
         return dt
 
-    def calcCurrent(self, t,print=False):
+    def calcCurrent(self, t,print=False,fullOutput=False):
         self.dotArray.resetCharge()
         curr_t = 0
-        while curr_t < t:
-            curr_t += self.executeStep(printState=print)
+        steps = 0
+        if fullOutput:
+            n_sum = np.zeros((self.dotArray.getColumns(), self.dotArray.getRows()))
+            Q_sum = np.zeros((self.dotArray.getColumns(), self.dotArray.getRows()))
+        min_steps = MINIMUM_STEPS_PER_DOT*(self.dotArray.getColumns()*self.dotArray.getRows())
+        while curr_t < t or steps < min_steps:
+            if fullOutput:
+                curr_n = self.dotArray.getOccupation()
+                curr_Q = self.dotArray.getGroundCharge()
+            dt = self.executeStep(printState=print)
+            steps += 1
+            curr_t += dt
+            if fullOutput:
+                n_sum += curr_n*dt
+                Q_sum += curr_Q*dt
         rightCurrent, leftCurrent = self.dotArray.getCharge()
+        if fullOutput:
+            return rightCurrent/curr_t, -leftCurrent/curr_t, n_sum/curr_t, Q_sum/curr_t
         return rightCurrent/curr_t, -leftCurrent/curr_t
 
     def checkSteadyState(self, rep):
@@ -347,32 +370,30 @@ class Simulator:
         plt.show()
 
     def calcIV(self, Vmax, Vstep, print=False, fullOutput=False):
-        V = []
         I = []
+        if fullOutput:
+            ns = []
+            Qs = []
         tStep = self.dotArray.getTimeStep()
-        V0 = self.VL - self.VR
-        while(self.VL - self.VR < Vmax):
+        VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
+        VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+        for VL in VL_vec:
+            self.dotArray.changeVext(VL, self.VR)
             # running once to get to steady state
             self.calcCurrent(tStep)
             # now we are in steady state calculate current
-            rightCurrent, leftCurrnet = self.calcCurrent(tStep, print=print)
+            if fullOutput:
+                rightCurrent, leftCurrnet, n, Q = self.calcCurrent(tStep, print=print, fullOutput=True)
+                ns.append(n)
+                Qs.append(Q)
+            else:
+                rightCurrent, leftCurrnet = self.calcCurrent(tStep, print=print)
             I.append((rightCurrent+leftCurrnet)/2)
-            V.append(self.VL - self.VR)
-            self.VL += Vstep
-            self.dotArray.changeVext(self.VL, self.VR)
-        while(self.VL - self.VR > V0):
-            # running once to get to steady state
-            self.calcCurrent(tStep)
-            # now we are in steady state calculate current
-            rightCurrent, leftCurrnet = self.calcCurrent(tStep, print=print)
-            I.append((rightCurrent+leftCurrnet)/2)
-            V.append(self.VL - self.VR)
-            self.VL -= Vstep
-            self.dotArray.changeVext(self.VL, self.VR)
-        return np.array(I), np.array(V)
+        if fullOutput:
+            return np.array(I), VL_vec - self.VR, np.array(ns), np.array(Qs)
+        return np.array(I), VL_vec - self.VR
 
     def printState(self):
-        print("At t= " + str(self.t) + " Vext = " + str(self.Vext) + ":")
         self.dotArray.printState()
 
 class GraphSimulator:
@@ -552,10 +573,11 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
                            fullOutput=fullOutput, print=printState)
     I = out[0]
     V = out[1]
-    # if fullOutput:
-    #     n = out[2]
-    #     Q = out[3]
     array_params = simulator.getArrayParameters()
+    if fullOutput:
+        n = out[2]
+        Q = out[3]
+        return I,V,n,Q,array_params
     return I,V,array_params
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
@@ -572,6 +594,9 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
 
     basePath = os.path.join(savePath, fileName)
     Is = []
+    if fullOutput:
+        ns = []
+        Qs = []
     pool = Pool(processes=repeats)
     results = []
     for repeat in range(repeats):
@@ -580,22 +605,19 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
                                  Vmax, Vstep, fullOutput, printState, useGraph))
         results.append(res)
     for res in results:
-        I, V, params = res.get()
+        if fullOutput:
+            I,V,n,Q,params = res.get()
+            ns.append(n)
+            Qs.append(Q)
+        else:
+            I, V, params = res.get()
         Is.append(I)
     avgI = np.mean(np.array(Is), axis=0)
-    # if fullOutput:
-    #     fig = plt.figure()
-    #     plt.plot(n, '.')
-    #     plt.savefig(basePath + "_n.png")
-    #     np.save(basePath + "_n.bin", n)
-    #     plt.close(fig)
-    #
-    #     fig = plt.figure()
-    #     plt.plot(Q, '.')
-    #     plt.savefig(basePath + "_Q.png")
-    #     np.save(basePath + "_Q.bin", Q)
-    #     plt.close(fig)
-
+    if fullOutput:
+        avgN = np.mean(np.array(ns), axis=0)
+        avgQ = np.mean(np.array(Qs), axis=0)
+        np.save(basePath + "_n.bin", avgN)
+        np.save(basePath + "_Q.bin", avgQ)
     fig = plt.figure()
     plt.plot(V[:V.size//2], avgI[:I.size//2], '.b',V[V.size//2:],
              avgI[I.size//2:],
@@ -775,7 +797,7 @@ if __name__ == "__main__":
         print("the given path exists but is a file")
         exit(0)
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
-                          Vmax, Vstep, repeats=repeats,
-                          savePath=savePath, fileName=fileName, printState=False, useGraph=False)
+                          Vmax, Vstep, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
+                          printState=False, useGraph=False)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
