@@ -602,11 +602,9 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     pool = Pool(processes=repeats)
     results = []
     for repeat in range(repeats):
-        # res = pool.apply_async(runSingleSimulation,
-        #                         (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-        #                          Vmax, Vstep, fullOutput, printState, useGraph))
-        res = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                  Vmax, Vstep, fullOutput, printState, useGraph)
+        res = pool.apply_async(runSingleSimulation,
+                                (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+                                 Vmax, Vstep, fullOutput, printState, useGraph))
         results.append(res)
     for res in results:
         if fullOutput:
@@ -773,25 +771,25 @@ if __name__ == "__main__":
     fullOutput = options.fullOutput
 
     # Debug
-    # rows = 1
-    # columns = 1
-    # VR0 = 0
-    # VL0 = 0
-    # VG = [[0]]
-    # Q0 = [[0]]
-    # n0 = [[0]]
-    # CG = [[1]]
-    # RG = [[1000]]
-    # Ch = [[1,1]]
-    # Cv = [[]]
-    # Rh = [[1,10]]
-    # Rv = [[]]
-    # Vmax = 2
-    # Vstep = 0.1
-    # repeats = 1
-    # savePath = "dbg_graph"
-    # fileName = "dbg_graph"
-    # fullOutput = False
+    rows = 1
+    columns = 1
+    VR0 = 0
+    VL0 = 0
+    VG = [[0]]
+    Q0 = [[0]]
+    n0 = [[0]]
+    CG = [[1]]
+    RG = [[1000]]
+    Ch = [[1,1]]
+    Cv = [[]]
+    Rh = [[1,10]]
+    Rv = [[]]
+    Vmax = 2
+    Vstep = 0.1
+    repeats = 1
+    savePath = "dbg_graph"
+    fileName = "dbg_graph"
+    fullOutput = False
 
     # Running Simulation
     if not os.path.exists(savePath):
@@ -801,6 +799,6 @@ if __name__ == "__main__":
         exit(0)
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
-                          printState=False, useGraph=False)
+                          printState=False, useGraph=use_graph)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
