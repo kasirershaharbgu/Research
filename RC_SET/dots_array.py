@@ -492,7 +492,7 @@ class GraphSimulator:
 
     def get_average_state(self, Q):
         self.find_probabilities(Q)
-        average_state = np.sum(np.multiply(self.states, self.prob),axis=0)
+        average_state = np.sum(np.multiply(self.states.T, self.prob),axis=1)
         return self.reshape_to_array(average_state)
 
     def get_average_Qn(self, Q):
@@ -513,6 +513,7 @@ class GraphSimulator:
             diff_from_equi = curr_Q.flatten() - self.get_average_Qn(curr_Q.reshape((self.dotArray.getRows(),
                                      self.dotArray.getColumns())))
             res[it.multi_index] = diff_from_equi
+            it.iternext()
         for axis in range(len(res.shape)):
             res = cumtrapz(res,grid,axis=axis,initial=0)
         self.lyaponuv = res
@@ -608,7 +609,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         results.append(res)
     for res in results:
         if fullOutput:
-            I,V,n,Q,params = res
+            I,V,n,Q,params = res.get()
             ns.append(n)
             Qs.append(Q)
         else:
@@ -655,6 +656,9 @@ def getOptions():
                       default='uniform')
     parser.add_option("--full", dest="fullOutput", help="if true the "
                       "results n and Q will be also saved [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--graph", dest="use_graph", help="if true a simulation using graph solution for master equation"
+                                                        "will be used [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
@@ -769,27 +773,29 @@ if __name__ == "__main__":
     savePath = options.output_folder
     fileName = options.fileName
     fullOutput = options.fullOutput
+    use_graph = options.use_graph
 
     # Debug
-    rows = 1
-    columns = 1
-    VR0 = 0
-    VL0 = 0
-    VG = [[0]]
-    Q0 = [[0]]
-    n0 = [[0]]
-    CG = [[1]]
-    RG = [[1000]]
-    Ch = [[1,1]]
-    Cv = [[]]
-    Rh = [[1,10]]
-    Rv = [[]]
-    Vmax = 2
-    Vstep = 0.1
-    repeats = 1
-    savePath = "dbg_graph"
-    fileName = "dbg_graph"
-    fullOutput = False
+    # rows = 1
+    # columns = 1
+    # VR0 = 0
+    # VL0 = 0
+    # VG = [[0]]
+    # Q0 = [[0]]
+    # n0 = [[0]]
+    # CG = [[1]]
+    # RG = [[1000]]
+    # Ch = [[1,1]]
+    # Cv = [[]]
+    # Rh = [[1,10]]
+    # Rv = [[]]
+    # Vmax = 2
+    # Vstep = 0.1
+    # repeats = 1
+    # savePath = "dbg_graph"
+    # fileName = "dbg_graph"
+    # fullOutput = False
+    # use_graph = True
 
     # Running Simulation
     if not os.path.exists(savePath):
