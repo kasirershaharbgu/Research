@@ -141,10 +141,10 @@ class DotArray:
         self.timeStep = -10/np.min(self._JeigenValues)
         self.default_dt = -1/np.max(self._JeigenValues)
         if self.fast_relaxation:
-            invJ = self._JeigenVectors.dot(1/self._JeigenValues).dot(self._JeigenVectorsInv)
-            self._constQnPart = invJ.dot(flattenToColumn(self.VG))
-            CGMat = np.repeat(self.CG.flatten(), invJ.shape[0], axis=0)
-            self._matrixQnPart = invJ * CGMat - np.eye(invJ.shape[0])
+            invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
+            self._constQnPart = invMat.dot(flattenToColumn(self.VG))
+            CGMat = np.repeat(self.CG.flatten(), invMat.shape[0], axis=0)
+            self._matrixQnPart = invMat * CGMat - np.eye(invMat.shape[0])
         return True
 
     def developeQ(self, dt):
