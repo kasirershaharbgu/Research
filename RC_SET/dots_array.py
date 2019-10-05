@@ -23,7 +23,7 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
+    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, fastRelaxation=False):
         """
         Creates new array of quantum dots
         :param rows: number of rows (int)
@@ -39,6 +39,7 @@ class DotArray:
         :param Rv: horizontal tunnelling ressistances (rowsXcolumns+1 double array)
         :param RG: ground resistances (rowsXcolumns double array)
         """
+        self.fast_relaxation = fastRelaxation
         self.rows = rows
         self.columns = columns
         self.VL = VL
@@ -107,6 +108,7 @@ class DotArray:
                 -np.diagflat(n_diagonal, k=self.columns) -  np.diagflat(n_diagonal, k=-self.columns)
         self.invC = np.linalg.inv(C_mat)
         return True
+
     def setConstNprimePart(self):
         self._left_part_n_prime = np.copy(self.Ch[:, :-1])
         self._left_part_n_prime[:, 1:] = 0
@@ -138,6 +140,11 @@ class DotArray:
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         self.timeStep = -10/np.min(self._JeigenValues)
         self.default_dt = -1/np.max(self._JeigenValues)
+        if self.fast_relaxation:
+            invJ = self._JeigenVectors.dot(1/self._JeigenValues).dot(self._JeigenVectorsInv)
+            self._constQnPart = invJ.dot(flattenToColumn(self.VG))
+            CGMat = np.repeat(self.CG.flatten(), invJ.shape[0], axis=0)
+            self._matrixQnPart = invJ * CGMat - np.eye(invJ.shape[0])
         return True
 
     def developeQ(self, dt):
@@ -147,6 +154,9 @@ class DotArray:
         self.Q = self._JeigenVectors.dot(Q0*exponent +(
              b/self._JeigenValues)*(exponent - 1)).reshape((self.rows, self.columns))
         return True
+
+    def get_steady_Q_for_n(self):
+        return self._constQnPart + self._matrixQnPart.dot(self.getNprime())
 
     def setConstWork(self):
         invCDiagMat = np.diag(np.copy(self.invC)).reshape((self.rows,self.columns))
@@ -210,12 +220,17 @@ class DotArray:
         Calculates dt using Gillespie algorithm
         :return:
         """
+        if self.fast_relaxation:
+            Q_copy = np.copy(self.Q)
+            self.Q = self.get_steady_Q_for_n()
         rates = self.getRates()
         sum_rates = np.sum(rates)
         if sum_rates == 0:
             dt = self.default_dt
         else:
             dt = np.log(1/randomNumber)/sum_rates
+        if self.fast_relaxation:
+            self.Q = Q_copy
         return dt
 
     def nextStep(self, dt, randomNumber):
@@ -296,9 +311,9 @@ class Simulator:
     :param columns: number of columns in the array
     """
     def __init__(self, rows, columns, VL0, VR0, VG,
-                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
+                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv, fastRelaxation):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
-                                 Ch, Cv, Rh, Rv)
+                                 Ch, Cv, Rh, Rv, fastRelaxation)
         self.VL = VL0
         self.VR = VR0
         # for debug
@@ -403,9 +418,9 @@ class GraphSimulator:
     Calculating staedy state current for an array of quantum dots by using linear programming
     """
     def __init__(self, rows, columns, VL0, VR0, VG,
-                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv):
+                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv, fastRelaxation):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
-                                 Ch, Cv, Rh, Rv)
+                                 Ch, Cv, Rh, Rv, fastRelaxation)
         self.n0 = n0
         self.QG = Q0
         self.VL = VL0
@@ -424,12 +439,7 @@ class GraphSimulator:
 
     def getArrayParameters(self):
         return str(self.dotArray)
-    def set_constant_matrices(self):
-        J = self.dotArray.getJmatrix()
-        invJ = np.linalg.inv(J)
-        self._constQnPart = invJ.dot(flattenToColumn(self.dotArray.VG))
-        CGMat = np.repeat(self.dotArray.CG.flatten(),J.shape[0],axis=0)
-        self._matrixQnPart = invJ*CGMat - np.eye(J.shape[0])
+
 
     def buildGraph(self, Q):
         states = []
@@ -569,17 +579,17 @@ class GraphSimulator:
         return np.array(I), VL_vec - self.VR
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                        Vmax, Vstep, fullOutput=False, printState=False, useGraph=False):
+                        Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, fast_relaxation=False):
     if useGraph:
         simulator = GraphSimulator(rows, columns, VL0, VR0, np.array(VG0),
                                     np.array(Q0), np.array(n0), np.array(CG),
                                     np.array(RG), np.array(Ch), np.array(Cv),
-                                    np.array(Rh), np.array(Rv))
+                                    np.array(Rh), np.array(Rv), fast_relaxation)
     else:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
-                              np.array(Rh), np.array(Rv))
+                              np.array(Rh), np.array(Rv), fast_relaxation)
     out = simulator.calcIV(Vmax, Vstep,
                            fullOutput=fullOutput, print=printState)
     I = out[0]
@@ -593,12 +603,12 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep,repeats=1, savePath=".", fileName="", fullOutput=False,
-                      printState=False, checkSteadyState=False, useGraph=False):
+                      printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False):
     if checkSteadyState:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
-                              np.array(Rh), np.array(Rv))
+                              np.array(Rh), np.array(Rv), fast_relaxation)
         simulator.checkSteadyState(repeats)
         exit(0)
 
@@ -614,7 +624,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     for repeat in range(repeats):
         res = pool.apply_async(runSingleSimulation,
                                 (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                 Vmax, Vstep, fullOutput, printState, useGraph))
+                                 Vmax, Vstep, fullOutput, printState, useGraph, fast_relaxation))
         results.append(res)
     for res in results:
         if fullOutput:
@@ -629,7 +639,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     # results = []
     # for repeat in range(repeats):
     #     res = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-    #                              Vmax, Vstep, fullOutput, printState, useGraph)
+    #                              Vmax, Vstep, fullOutput, printState, useGraph, fast_relaxation)
     #     results.append(res)
     # for res in results:
     #     if fullOutput:
@@ -800,6 +810,7 @@ if __name__ == "__main__":
     fileName = options.fileName
     fullOutput = options.fullOutput
     use_graph = options.use_graph
+    fast_relaxation = options.RG_avg * options.CG_avg < options.C_avg * options.R_avg
 
     # Debug
     # rows = 1
@@ -831,6 +842,6 @@ if __name__ == "__main__":
         exit(0)
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
-                          printState=False, useGraph=use_graph)
+                          printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
