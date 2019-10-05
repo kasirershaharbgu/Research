@@ -504,18 +504,18 @@ class GraphSimulator:
         Qmax = Qmax.flatten()
         coordinates = [np.arange(Qmin[i],Qmax[i],0.1) for i in range(Qmin.size)]
         grid = np.meshgrid(coordinates)
-        grid_array = np.array(grid)
-        res = np.zeros(grid_array.shape)
+        grid_array = np.array(grid).T
+        res = np.zeros(grid[0].shape)
         it = np.nditer(grid[0], flags=['multi_index'])
         while not it.finished:
             index = it.multi_index
-            curr_Q = grid_array[:,index]
+            curr_Q = grid_array[index,:]
             diff_from_equi = curr_Q.flatten() - self.get_average_Qn(curr_Q.reshape((self.dotArray.getRows(),
                                      self.dotArray.getColumns())))
             res[it.multi_index] = diff_from_equi
             it.iternext()
         for axis in range(len(res.shape)):
-            res = cumtrapz(res,grid,axis=axis,initial=0)
+            res = cumtrapz(res,grid[axis],axis=axis,initial=0)
         self.lyaponuv = res
         self.Q_grid = grid_array
 
@@ -523,13 +523,16 @@ class GraphSimulator:
         self.set_lyaponuv(self.QG - 1, self.QG + 1)
         peaks = argrelextrema(self.lyaponuv, np.less_equal)
         Qind = np.argmin(np.abs(self.Q_grid[peaks] - self.QG))
-        self.QG = self.Q_grid[peaks[Qind]]
+        self.QG = self.Q_grid[peaks][Qind]
 
-    def calcCurrent(self):
+    def calcCurrent(self, fullOutput=False):
         self.find_next_QG()
-        self.dotArray.Q = self.QG
-        left_current = np.sum(self.prob*self.rates_diff_left)
-        right_current = np.sum(self.prob*self.rates_diff_right)
+        self.dotArray.Q = self.reshape_to_array(self.QG)
+        left_current = np.sum(self.prob*self.rates_diff_left.T)
+        right_current = np.sum(self.prob*self.rates_diff_right.T)
+        if fullOutput:
+            n_avg = self.get_average_state(self.QG)
+            return right_current, left_current, n_avg, QG
         return right_current, left_current
 
     def get_edge_rates_diff(self, rates):
@@ -543,22 +546,27 @@ class GraphSimulator:
         return left_diff, right_diff
 
     def calcIV(self, Vmax, Vstep, fullOutput=False, print=False):
-        V = []
         I = []
-        V0 = self.VL - self.VR
-        while (self.VL - self.VR < Vmax):
-            rightCurrent, leftCurrnet = self.calcCurrent()
+        if fullOutput:
+            ns = []
+            Qs = []
+        VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
+        VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+        for VL in VL_vec:
+            self.dotArray.changeVext(VL, self.VR)
+            # running once to get to steady state
+            self.calcCurrent()
+            # now we are in steady state calculate current
+            if fullOutput:
+                rightCurrent, leftCurrnet, n, Q = self.calcCurrent(fullOutput=True)
+                ns.append(n)
+                Qs.append(Q)
+            else:
+                rightCurrent, leftCurrnet = self.calcCurrent()
             I.append((rightCurrent + leftCurrnet) / 2)
-            V.append(self.VL - self.VR)
-            self.VL += Vstep
-            self.dotArray.changeVext(self.VL, self.VR)
-        while (self.VL - self.VR > V0):
-            rightCurrent, leftCurrnet = self.calcCurrent()
-            I.append((rightCurrent + leftCurrnet) / 2)
-            V.append(self.VL - self.VR)
-            self.VL -= Vstep
-            self.dotArray.changeVext(self.VL, self.VR)
-        return np.array(I), np.array(V)
+        if fullOutput:
+            return np.array(I), VL_vec - self.VR, np.array(ns), np.array(Qs)
+        return np.array(I), VL_vec - self.VR
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False):
@@ -600,6 +608,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     if fullOutput:
         ns = []
         Qs = []
+
     pool = Pool(processes=repeats)
     results = []
     for repeat in range(repeats):
@@ -615,6 +624,23 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         else:
             I, V, params = res.get()
         Is.append(I)
+
+    # dbg
+    # results = []
+    # for repeat in range(repeats):
+    #     res = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+    #                              Vmax, Vstep, fullOutput, printState, useGraph)
+    #     results.append(res)
+    # for res in results:
+    #     if fullOutput:
+    #         I,V,n,Q,params = res
+    #         ns.append(n)
+    #         Qs.append(Q)
+    #     else:
+    #         I, V, params = res
+    #     Is.append(I)
+    # dbg
+
     avgI = np.mean(np.array(Is), axis=0)
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
