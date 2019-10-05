@@ -9,6 +9,7 @@ repeats = 20
 fileName = no_disorder_big_cg
 dist = two_points
 fullOutput = True
+use_graph = False
 output_folder = Single_dot_fast_relaxation
 VG_avg = 0.0
 VG_std = 0.0
