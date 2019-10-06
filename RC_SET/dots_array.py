@@ -56,6 +56,7 @@ class DotArray:
         self.R = np.hstack((Rh.flatten(), Rh.flatten(), Rv.flatten(), Rv.flatten()))
         self.totalChargePassedRight = 0
         self.totalChargePassedLeft = 0
+        self.no_tunneling_next_time = False
         self.createCapacitanceMatrix()
         self.setDiagonalizedJ()
         self.setConstWork()
@@ -211,8 +212,6 @@ class DotArray:
     def getRates(self):
         work = self.getWork()
         work[work > 0] = 0
-        # if self.VL - self.VR == 0.48 or self.VL - self.VR == 0.52:
-        #     print(work)
         return -work / self.R
 
     def getTimeInterval(self, randomNumber):
@@ -227,6 +226,7 @@ class DotArray:
         sum_rates = np.sum(rates)
         if sum_rates == 0:
             dt = self.default_dt
+            self.no_tunneling_next_time = True
         else:
             dt = np.log(1/randomNumber)/sum_rates
         if self.fast_relaxation:
@@ -235,6 +235,9 @@ class DotArray:
 
     def nextStep(self, dt, randomNumber):
         self.developeQ(dt)
+        if self.no_tunneling_next_time:
+            self.no_tunneling_next_time = False
+            return True
         rates = self.getRates()
         if (rates == 0).all():
             return True
