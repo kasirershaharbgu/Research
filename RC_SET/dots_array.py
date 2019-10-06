@@ -12,7 +12,10 @@ from scipy.signal import argrelextrema
 MINIMUM_STEPS_PER_DOT = 1000
 
 def flattenToColumn(a):
-    return a.reshape((a.size,1))
+    return a.reshape((a.size, 1))
+
+def flattenToRow(a):
+    return a.reshape((1, a.size))
 
 class NoElectronsOnDot(RuntimeError):
     pass
@@ -144,7 +147,7 @@ class DotArray:
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
             self._constQnPart = invMat.dot(flattenToColumn(self.VG))
-            CGMat = np.repeat(self.CG.flatten(), invMat.shape[0], axis=0)
+            CGMat = np.repeat(1/flattenToRow(self.CG), invMat.shape[0], axis=0)
             self._matrixQnPart = invMat * CGMat - np.eye(invMat.shape[0])
         return True
 

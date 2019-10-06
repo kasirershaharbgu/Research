@@ -4,7 +4,7 @@ N = 1
 VR = 0.0
 Vmin = 0.0
 Vmax = 2.0
-vStep = 0.01
+vStep = 0.1
 repeats = 1
 fileName = dbg
 dist = two_points
@@ -15,11 +15,11 @@ VG_avg = 0.0
 VG_std = 0.0
 C_avg = 1.0
 C_std = 0.0
-CG_avg = 1.0
+CG_avg = 10.0
 CG_std = 0.0
 R_avg = 10.0
 R_std = 0.0
-RG_avg = 0.001
+RG_avg = 0.0001
 RG_std = 0.0
 n0_avg = 0.0
 n0_std = 0.0
@@ -29,8 +29,8 @@ Q0_std = 0.0
 Rows: 1
 Columns: 1
 VG: [[0.]]
-CG: [[1.]]
-RG: [[0.001]]
+CG: [[10.]]
+RG: [[0.0001]]
 Ch: [[1. 1.]]
 Cv: [[0.]]
 Rh: [[10. 10.]]
