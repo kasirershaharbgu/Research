@@ -2,6 +2,7 @@ __author__ = 'shahar'
 
 import numpy as np
 from matplotlib import pyplot as plt
+import matplotlib.animation as animation
 from optparse import OptionParser
 import os
 from multiprocessing import Pool
@@ -65,6 +66,9 @@ class DotArray:
         self.setConstWork()
         self.setConstMatrix()
         self.setConstNprimePart()
+        self.saveCurrentMap = False
+        self.Ih = None
+        self.Iv = None
 
     def getRows(self):
         return self.rows
@@ -78,6 +82,9 @@ class DotArray:
         """
         self.totalChargePassedRight = 0
         self.totalChargePassedLeft = 0
+        if self.saveCurrentMap:
+            self.Ih = np.zeros(self.Rh.shape)
+            self.Iv = np.zeros(self.Rv.shape)
         return True
 
     def changeVext(self, newVL, newVR):
@@ -97,6 +104,21 @@ class DotArray:
 
     def getTimeStep(self):
         return self.timeStep
+
+    def getCurrentMap(self):
+        if self.saveCurrentMap:
+            map = np.zeros((self.rows*2 - 1, self.columns+1))
+            map[::2,:] = self.Ih
+            map[1::2,:-1] = self.Iv
+            return map
+        else:
+            raise NotImplementedError
+
+    def currentMapOn(self):
+        self.saveCurrentMap = True
+
+    def currentMapOff(self):
+        self.saveCurrentMap = False
 
     def createCapacitanceMatrix(self):
         """
@@ -292,23 +314,28 @@ class DotArray:
         if ind < horzSize: # tunnel right:
             fromDot = (ind//(self.columns+1), (ind%(self.columns+1))-1)
             toDot = (fromDot[0], fromDot[1] + 1)
+            if self.saveCurrentMap:
+                self.Ih[toDot] += 1
         elif ind < horzSize*2: # tunnel left
             ind -= horzSize
             fromDot = (ind//(self.columns+1), ind%(self.columns+1))
             toDot = (fromDot[0], fromDot[1] - 1)
+            if self.saveCurrentMap:
+                self.Ih[fromDot] -= 1
         elif ind < horzSize*2 + vertSize: # tunnel down
             ind -= horzSize*2
             fromDot = (ind//self.columns, ind%self.columns)
             toDot = (fromDot[0] + 1, fromDot[1])
+            if self.saveCurrentMap:
+                self.Iv[fromDot] += 1
         else: # tunnel up
             ind -= (horzSize*2 + vertSize)
             fromDot = ((ind//self.columns) + 1, ind%self.columns)
             toDot = (fromDot[0] - 1, fromDot[1])
+            if self.saveCurrentMap:
+                self.Iv[toDot] -= 1
         self.tunnel(fromDot, toDot)
         return fromDot, toDot
-
-
-
 
 class Simulator:
     """
@@ -347,7 +374,9 @@ class Simulator:
             self.printState()
         return dt
 
-    def calcCurrent(self, t,print=False,fullOutput=False):
+    def calcCurrent(self, t,print=False,fullOutput=False, currentMap=False):
+        if currentMap:
+            self.dotArray.currentMapOn()
         self.dotArray.resetCharge()
         curr_t = 0
         steps = 0
@@ -366,9 +395,13 @@ class Simulator:
                 n_sum += curr_n*dt
                 Q_sum += curr_Q*dt
         rightCurrent, leftCurrent = self.dotArray.getCharge()
+        res = (rightCurrent/curr_t, -leftCurrent/curr_t)
         if fullOutput:
-            return rightCurrent/curr_t, -leftCurrent/curr_t, n_sum/curr_t, Q_sum/curr_t
-        return rightCurrent/curr_t, -leftCurrent/curr_t
+            res = res + (n_sum/curr_t, Q_sum/curr_t)
+        if currentMap:
+            res = res + (self.dotArray.getCurrentMap()/curr_t,)
+            self.dotArray.currentMapOff()
+        return res
 
     def checkSteadyState(self, rep):
         Ileft = []
@@ -392,11 +425,13 @@ class Simulator:
         plt.plot((np.array(Ileft) - np.array(Iright)) ** 2)
         plt.show()
 
-    def calcIV(self, Vmax, Vstep, print=False, fullOutput=False):
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print=False, currentMap=False):
         I = []
         if fullOutput:
             ns = []
             Qs = []
+        if currentMap:
+            Imaps = []
         tStep = self.dotArray.getTimeStep()
         VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
@@ -405,16 +440,21 @@ class Simulator:
             # running once to get to steady state
             self.calcCurrent(tStep)
             # now we are in steady state calculate current
+            stepRes = self.calcCurrent(tStep, print=print, fullOutput=fullOutput, currentMap=currentMap)
+            rightCurrent = stepRes[0]
+            leftCurrnet = stepRes[1]
             if fullOutput:
-                rightCurrent, leftCurrnet, n, Q = self.calcCurrent(tStep, print=print, fullOutput=True)
-                ns.append(n)
-                Qs.append(Q)
-            else:
-                rightCurrent, leftCurrnet = self.calcCurrent(tStep, print=print)
+                ns.append(stepRes[2])
+                Qs.append(stepRes[3])
+            if currentMap:
+                Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrnet)/2)
+        res = (np.array(I), VL_vec - self.VR)
         if fullOutput:
-            return np.array(I), VL_vec - self.VR, np.array(ns), np.array(Qs)
-        return np.array(I), VL_vec - self.VR
+            res = res + (np.array(ns), np.array(Qs))
+        if currentMap:
+            res = res + (np.array(Imaps),)
+        return res
 
     def printState(self):
         self.dotArray.printState()
@@ -561,7 +601,7 @@ class GraphSimulator:
         right_diff = right_tunneling_rates[:,-1] - left_tunneling_rates[:,-1]
         return left_diff, right_diff
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print=False):
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print=False, currentMap=False):
         I = []
         if fullOutput:
             ns = []
@@ -585,7 +625,8 @@ class GraphSimulator:
         return np.array(I), VL_vec - self.VR
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                        Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, fast_relaxation=False):
+                        Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, currentMap=False,
+                        fast_relaxation=False):
     if useGraph:
         simulator = GraphSimulator(rows, columns, VL0, VR0, np.array(VG0),
                                     np.array(Q0), np.array(n0), np.array(CG),
@@ -597,24 +638,19 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv), fast_relaxation)
     out = simulator.calcIV(Vmax, Vstep,
-                           fullOutput=fullOutput, print=printState)
-    I = out[0]
-    V = out[1]
+                           fullOutput=fullOutput, print=printState, currentMap=currentMap)
     array_params = simulator.getArrayParameters()
-    if fullOutput:
-        n = out[2]
-        Q = out[3]
-        return I,V,n,Q,array_params
-    return I,V,array_params
+    return out + (array_params,)
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep,repeats=1, savePath=".", fileName="", fullOutput=False,
-                      printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False):
+                      printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
+                      currentMap=False):
     if checkSteadyState:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
-                              np.array(Rh), np.array(Rv), fast_relaxation)
+                              np.array(Rh), np.array(Rv), fastRelaxation)
         simulator.checkSteadyState(repeats)
         exit(0)
 
@@ -624,23 +660,30 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     if fullOutput:
         ns = []
         Qs = []
-
+    if currentMap:
+        Imaps = []
     pool = Pool(processes=repeats)
     results = []
     for repeat in range(repeats):
         res = pool.apply_async(runSingleSimulation,
                                 (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                 Vmax, Vstep, fullOutput, printState, useGraph, fast_relaxation))
+                                 Vmax, Vstep, fullOutput, printState, useGraph, currentMap, fastRelaxation))
         results.append(res)
     for res in results:
+        result=res.get()
+        I = result[0]
+        currentMapInd = 2
         if fullOutput:
-            I,V,n,Q,params = res.get()
+            n = result[2]
+            Q = result[3]
             ns.append(n)
             Qs.append(Q)
-        else:
-            I, V, params = res.get()
+            currentMapInd=4
+        if currentMap:
+            Imaps.append(result[currentMapInd])
         Is.append(I)
-
+    V = result[1]
+    params = result[-1]
     # dbg
     # results = []
     # for repeat in range(repeats):
@@ -661,18 +704,63 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)
-        np.save(basePath + "_n.bin", avgN)
-        np.save(basePath + "_Q.bin", avgQ)
-
+        np.save(basePath + "_n", avgN)
+        np.save(basePath + "_Q", avgQ)
+        np.save(basePath + "_full_I", np.array(Is))
     fig = plt.figure()
     plt.plot(V[:V.size//2], avgI[:I.size//2], '.b',V[V.size//2:],
              avgI[I.size//2:],
              '.r')
     plt.savefig(basePath + "_IV.png")
-    np.save(basePath + "_I.bin", avgI)
-    np.save(basePath + "_V.bin", V)
+    np.save(basePath + "_I", avgI)
+    np.save(basePath + "_V", V)
     plt.close(fig)
+    if currentMap:
+        avgImaps = np.mean(np.array(Imaps),axis=0)
+        saveCurrentMaps(avgImaps,V, basePath + "_Imap")
     return params
+
+def saveCurrentMaps(Imaps, V, path):
+    Writer = animation.writers['ffmpeg']
+    writer = Writer(fps=24, bitrate=1800)
+    fig = plt.figure()
+    Imax = np.max(Imaps)
+    M,N = Imaps[0].shape
+    im = plt.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=-Imax / 2,
+                    vmax=Imax / 2, animated=True, cmap='plasma', aspect='equal')
+    text = plt.text(1, 1, 'Vext = 0')
+    plt.colorbar()
+    frames = [(Imaps[i], V[i]) for i in range(len(V))]
+    im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N),
+                                     frames=frames, interval=100,
+                                     repeat_delay=1000,
+                                     blit=True)
+    im_ani.save(path + '.mp4', writer=writer)
+    plt.close(fig)
+
+def plotCurrentMaps(im, text, M, N):
+    '''
+    updating the plot to current currents map
+    :return: image for animation
+    '''
+    J = np.zeros(((M//2)*3+1,N*3))
+    vertRows = np.arange(0,(M//2)*3+1,3)
+    vertCols = np.repeat(np.arange(0,3*N,3),2)
+    vertCols[1::2] += 1
+    horzRows = np.repeat(np.arange(1, (M//2)*3+1, 3),2)
+    horzRows[1::2] += 1
+    horzCols = np.arange(2,3*N,3)
+
+    def updateCurrent(result):
+        I, Vext = result
+        if I is None:
+            return im
+        J[np.ix_(vertRows, vertCols)] = np.repeat(I[0:M:2,:],2,axis=1)
+        J[np.ix_(horzRows, horzCols)] = np.repeat(I[1:M:2,:],2,axis=0)
+        im.set_array(J)
+        text.set_text('Vext = ' + str(Vext))
+        return im,text
+    return updateCurrent
 
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
@@ -701,6 +789,9 @@ def getOptions():
                       default=False, action='store_true')
     parser.add_option("--graph", dest="use_graph", help="if true a simulation using graph solution for master equation"
                                                         "will be used [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--current-map", dest="current_map", help="if true  clip of current distribution during"
+                                                                " simulation will be plotted [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
@@ -766,6 +857,8 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
     elif dist == 'two_points':
         if M == 1 and N == 2:
             return np.array([[avg-std,avg+std]])
+        if M == 1 and N == 3:
+            return np.array([[avg-std,avg+std, avg-std]])
         r = np.random.rand(M,N)
         r[r > 0.5] = avg + std
         r[r <= 0.5] = avg - std
@@ -817,7 +910,7 @@ if __name__ == "__main__":
     fullOutput = options.fullOutput
     use_graph = options.use_graph
     fast_relaxation = options.RG_avg * options.CG_avg < options.C_avg * options.R_avg
-
+    current_map = options.current_map
     # Debug
     # rows = 1
     # columns = 1
@@ -848,6 +941,6 @@ if __name__ == "__main__":
         exit(0)
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
-                          printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation)
+                          printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)

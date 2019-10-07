@@ -3,13 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_I.bin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_I.bin.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IV.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_Q.bin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_Q.bin.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_V.bin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_V.bin.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_n.bin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_n.bin.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_RC_SET_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_RC_SET_on_slurm.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_single_dot_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_single_dot_array_on_slurm.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_small_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_small_2d_array_on_slurm.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,7 +37,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="FullScreen" value="false" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/OneDrive/University/Princeton Courses and Seminars/Quantitative Cell Biology/numerical_projects" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../toyModel/toyModel.py" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -104,7 +102,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 0.0001 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --file-name dbg --full -o dbg" />
+      <option name="PARAMETERS" value="-M 2 -N 2 --vmin 0 --vmax 2 --vstep 0.5 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --file-name dbg_current_maps --current-map -o dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -231,35 +229,6 @@
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/../toyModel/toyModel.py</url>
-          <line>551</line>
-          <option name="timeStamp" value="119" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>403</line>
-          <option name="timeStamp" value="183" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>244</line>
-          <option name="timeStamp" value="194" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>228</line>
-          <option name="timeStamp" value="195" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>149</line>
-          <option name="timeStamp" value="196" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="coordinates" />
