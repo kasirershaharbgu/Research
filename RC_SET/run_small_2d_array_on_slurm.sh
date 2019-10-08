@@ -22,7 +22,7 @@ dist="two_points"
 r_std=0
 full=""
 currentmap=""
-
+vmax=3
 f="2_dots_arrays"
 if [ ! -d "$f" ]; then
   mkdir "$f"
