@@ -9,6 +9,7 @@ from multiprocessing import Pool
 from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
 from scipy.signal import argrelextrema
+from ast import literal_eval
 
 MINIMUM_STEPS_PER_DOT = 1000
 
@@ -820,6 +821,12 @@ def getOptions():
     parser.add_option("--r-std", dest="R_std", help="junctions "
                       "resistance std [default: %default]",
                       default=0, type=float)
+    parser.add_option("--custom-rh", dest="custom_rh", help="list of r horizontal values ordered as numpy array."
+                                                            " Overrides random r parameters [default: %default]",
+                      default="")
+    parser.add_option("--custom-rv", dest="custom_rv", help="list of r vertical values ordered as numpy array."
+                                                             " Overrides random r parameters [default: %default]",
+                      default="")
     parser.add_option("--rg-avg", dest="RG_avg", help="Gate Resistors "
                       "resistance average [default: %default]",
                       default=1, type=float)
@@ -855,10 +862,6 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
     elif dist == 'uniform':
         res = np.random.uniform(low=avg-std, high=avg+std,size=(M,N))
     elif dist == 'two_points':
-        if M == 1 and N == 2:
-            return np.array([[avg-std,avg+std]])
-        if M == 1 and N == 3:
-            return np.array([[avg-std,avg+std, avg-std]])
         r = np.random.rand(M,N)
         r[r > 0.5] = avg + std
         r[r <= 0.5] = avg - std
@@ -898,9 +901,13 @@ if __name__ == "__main__":
                             True)
     Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
                             True)
-    Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
+    if options.custom_rh and options.custom_rv:
+        Rh = literal_eval(options.custom_rh)
+        Rv = literal_eval(options.custom_rv)
+    else:
+        Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
                             True)
-    Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
+        Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
                             True)
     Vmax = options.Vmax
     Vstep = options.vStep
