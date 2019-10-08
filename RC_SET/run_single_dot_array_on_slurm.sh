@@ -22,8 +22,8 @@ columns=1
 t="2-20:00:00"
 f="Single_full_statistics"
 rg_avg=1000
-full="\"--full\"" 
-currentmap="\"\""
+full="--full" 
+currentmap=""
 r_std=9
 if [ ! -d "$f" ]; then
   mkdir "$f"

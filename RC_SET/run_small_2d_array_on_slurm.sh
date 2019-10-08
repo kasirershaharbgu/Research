@@ -18,8 +18,8 @@ vstep=0.01
 rg_avg=1000
 cg_avg=10
 t="5:00:00"
-full="\"\""
-currentmap="\"\""
+full=""
+currentmap=""
 f="2_dots_arrays"
 if [ ! -d "$f" ]; then
   mkdir "$f"

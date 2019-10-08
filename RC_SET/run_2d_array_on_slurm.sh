@@ -18,8 +18,8 @@ vstep=0.01
 rg_avg=1000
 cg_avg=10
 f="2D_square_arrays_with_current_map"
-full="\"\"" 
-currentmap="\"current-map\""
+full="" 
+currentmap="--current-map"
 t="1-10:00:00"
 rows=5
 columns=5
@@ -27,7 +27,6 @@ vmax=5
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
-
 dist="two_points"
 name="no_disorder_5_5"
 r_std=0
