@@ -1,12 +1,12 @@
 
-python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 5 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh "" --custom-rv "" --file-name two_points_disorder_5_5 -o 2D_square_arrays_with_current_map  --current-map
+python3 dots_array.py -M 2 -N 2 --vmin 0 --vmax 1 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh "" --custom-rv "" --file-name current_mp_dbg -o dbg  --current-map
 
 Traceback (most recent call last):
-  File "dots_array.py", line 952, in <module>
+  File "dots_array.py", line 951, in <module>
     printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map)
-  File "dots_array.py", line 722, in runFullSimulation
+  File "dots_array.py", line 721, in runFullSimulation
     saveCurrentMaps(avgImaps,V, basePath + "_Imap")
-  File "dots_array.py", line 740, in saveCurrentMaps
+  File "dots_array.py", line 739, in saveCurrentMaps
     im_ani.save(path + '.mp4', writer=writer)
   File "/usr/local/anaconda3/lib/python3.7/site-packages/matplotlib/animation.py", line 1174, in save
     writer.grab_frame(**savefig_kwargs)
@@ -30,4 +30,4 @@ Traceback (most recent call last):
     return _fileobj_to_fd(fileobj)
   File "/usr/local/anaconda3/lib/python3.7/selectors.py", line 40, in _fileobj_to_fd
     "{!r}".format(fileobj)) from None
-ValueError: Invalid file object: <_io.BufferedReader name=37>
+ValueError: Invalid file object: <_io.BufferedReader name=13>
