@@ -239,13 +239,7 @@ class DotArray:
     def getRates(self):
         work = self.getWork()
         work[work > 0] = 0
-        try:
-            res = -work / self.R
-        except TypeError as e:
-            print(work)
-            print(self.R)
-            raise e
-        return
+        return -work / self.R
 
     def getTimeInterval(self, randomNumber):
         """
@@ -908,6 +902,8 @@ if __name__ == "__main__":
                             True)
     Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
                             True)
+    print(options.custom_rh)
+    print(options.custom_rv)
     if options.custom_rh and options.custom_rv:
         Rh = literal_eval(options.custom_rh)
         Rv = literal_eval(options.custom_rv)
