@@ -98,7 +98,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 2 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh &quot;[[1,10,20]]&quot; --custom-rv &quot;[[]]&quot; --file-name increasing_r_1_2 -o 2_dots_arrays" />
+      <option name="PARAMETERS" value="-M 1 -N 2 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh &quot;\&quot;\&quot;&quot; --custom-rv &quot;\&quot;\&quot;&quot; --file-name increasing_r_1_2 -o 2_dots_arrays" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -225,6 +225,15 @@
     </option>
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>904</line>
+          <option name="timeStamp" value="203" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="coordinates" />

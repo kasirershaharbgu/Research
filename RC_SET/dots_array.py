@@ -902,11 +902,11 @@ if __name__ == "__main__":
                             True)
     Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
                             True)
-    print(options.custom_rh)
-    print(options.custom_rv)
-    if options.custom_rh and options.custom_rv:
-        Rh = literal_eval(options.custom_rh)
-        Rv = literal_eval(options.custom_rv)
+    print(options.custom_rh.replace('\"',''))
+    print(options.custom_rv.replace('\"',''))
+    if options.custom_rh.replace('\"','') and options.custom_rv.replace('\"',''):
+        Rh = literal_eval(options.custom_rh.replace('\"',''))
+        Rv = literal_eval(options.custom_rv.replace('\"',''))
     else:
         Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
                             True)
