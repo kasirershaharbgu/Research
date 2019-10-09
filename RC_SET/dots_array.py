@@ -239,7 +239,13 @@ class DotArray:
     def getRates(self):
         work = self.getWork()
         work[work > 0] = 0
-        return -work / self.R
+        try:
+            res = -work / self.R
+        except TypeError as e:
+            print(work)
+            print(self.R)
+            raise e
+        return
 
     def getTimeInterval(self, randomNumber):
         """
