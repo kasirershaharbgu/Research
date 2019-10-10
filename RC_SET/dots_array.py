@@ -10,6 +10,7 @@ from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
 from scipy.signal import argrelextrema
 from ast import literal_eval
+plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
 
 MINIMUM_STEPS_PER_DOT = 1000
 
