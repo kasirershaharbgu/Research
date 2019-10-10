@@ -722,8 +722,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     return params
 
 def saveCurrentMaps(Imaps, V, path):
-    Writer = animation.writers['ffmpeg']
-    writer = Writer(fps=24, bitrate=1800)
+    writer = animation.FFMpegFileWriter(fps=24, bitrate=1800)
     fig = plt.figure()
     Imax = np.max(Imaps)
     M,N = Imaps[0].shape
