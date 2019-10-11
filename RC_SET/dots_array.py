@@ -10,9 +10,9 @@ from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
 from scipy.signal import argrelextrema
 from ast import literal_eval
-plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
 
 MINIMUM_STEPS_PER_DOT = 1000
+EPS = 0.0001
 
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
@@ -468,7 +468,7 @@ class GraphSimulator:
     def __init__(self, rows, columns, VL0, VR0, VG,
                  Q0, n0, CG, RG, Ch, Cv, Rh, Rv, fastRelaxation):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
-                                 Ch, Cv, Rh, Rv, fastRelaxation)
+                                 Ch, Cv, Rh, Rv, fastRelaxation=True)
         self.n0 = n0
         self.QG = Q0
         self.VL = VL0
@@ -481,7 +481,6 @@ class GraphSimulator:
         self.rates_diff_left = None
         self.rates_diff_right = None
 
-        self.set_constant_matrices()
     def reshape_to_array(self,a):
         return a.reshape((self.dotArray.getRows(), self.dotArray.getColumns()))
 
@@ -539,10 +538,13 @@ class GraphSimulator:
         sol = []
         for i in range(null.shape[1]):
             candidate = null[:,i]
+            candidate[abs(candidate) < EPS] = 0
             if (candidate >= 0).all() or (candidate <= 0).all():
                 sol.append(candidate / np.sum(candidate))
         if len(sol) > 1:
             print("Warning - more than one solution for steady state probabilities")
+            for s in sol:
+                print(s)
         elif len(sol) < 1:
             self.prob = None
         else:
@@ -553,14 +555,10 @@ class GraphSimulator:
         average_state = np.sum(np.multiply(self.states.T, self.prob),axis=1)
         return self.reshape_to_array(average_state)
 
-    def get_average_Qn(self, Q):
-        self.dotArray.n = self.get_average_state(Q)
-        return self._constQnPart + self._matrixQnPart.dot(self.dotArray.getNprime())
-
     def set_lyaponuv(self, Qmin, Qmax):
         Qmin = Qmin.flatten()
         Qmax = Qmax.flatten()
-        coordinates = [np.arange(Qmin[i],Qmax[i],0.1) for i in range(Qmin.size)]
+        coordinates = [np.arange(Qmin[i],Qmax[i],0.01) for i in range(Qmin.size)]
         grid = np.meshgrid(coordinates)
         grid_array = np.array(grid).T
         res = np.zeros(grid[0].shape)
@@ -568,8 +566,10 @@ class GraphSimulator:
         while not it.finished:
             index = it.multi_index
             curr_Q = grid_array[index,:]
-            diff_from_equi = curr_Q.flatten() - self.get_average_Qn(curr_Q.reshape((self.dotArray.getRows(),
-                                     self.dotArray.getColumns())))
+            n = self.get_average_state(curr_Q)
+            self.dotArray.n = n
+            self.dotArray.Q = self.reshape_to_array(curr_Q)
+            diff_from_equi = curr_Q.flatten() - self.dotArray.get_steady_Q_for_n()
             res[it.multi_index] = diff_from_equi
             it.iternext()
         for axis in range(len(res.shape)):
@@ -585,12 +585,13 @@ class GraphSimulator:
 
     def calcCurrent(self, fullOutput=False):
         self.find_next_QG()
+        n_avg = self.get_average_state(self.QG)
         self.dotArray.Q = self.reshape_to_array(self.QG)
+        self.dotArray.n = n_avg
         left_current = np.sum(self.prob*self.rates_diff_left.T)
         right_current = np.sum(self.prob*self.rates_diff_right.T)
         if fullOutput:
-            n_avg = self.get_average_state(self.QG)
-            return right_current, left_current, n_avg, QG
+            return right_current, left_current, n_avg, self.reshape_to_array(self.QG)
         return right_current, left_current
 
     def get_edge_rates_diff(self, rates):
@@ -612,9 +613,6 @@ class GraphSimulator:
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         for VL in VL_vec:
             self.dotArray.changeVext(VL, self.VR)
-            # running once to get to steady state
-            self.calcCurrent()
-            # now we are in steady state calculate current
             if fullOutput:
                 rightCurrent, leftCurrnet, n, Q = self.calcCurrent(fullOutput=True)
                 ns.append(n)
@@ -647,7 +645,7 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep,repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
-                      currentMap=False):
+                      currentMap=False, dbg=False):
     if checkSteadyState:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
@@ -655,8 +653,6 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
                               np.array(Rh), np.array(Rv), fastRelaxation)
         simulator.checkSteadyState(repeats)
         exit(0)
-
-
     basePath = os.path.join(savePath, fileName)
     Is = []
     if fullOutput:
@@ -664,43 +660,49 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         Qs = []
     if currentMap:
         Imaps = []
-    pool = Pool(processes=repeats)
-    results = []
-    for repeat in range(repeats):
-        res = pool.apply_async(runSingleSimulation,
-                                (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                 Vmax, Vstep, fullOutput, printState, useGraph, currentMap, fastRelaxation))
-        results.append(res)
-    for res in results:
-        result=res.get()
-        I = result[0]
-        currentMapInd = 2
-        if fullOutput:
-            n = result[2]
-            Q = result[3]
-            ns.append(n)
-            Qs.append(Q)
-            currentMapInd=4
-        if currentMap:
-            Imaps.append(result[currentMapInd])
-        Is.append(I)
-    V = result[1]
-    params = result[-1]
-    # dbg
-    # results = []
-    # for repeat in range(repeats):
-    #     res = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-    #                              Vmax, Vstep, fullOutput, printState, useGraph, fast_relaxation)
-    #     results.append(res)
-    # for res in results:
-    #     if fullOutput:
-    #         I,V,n,Q,params = res
-    #         ns.append(n)
-    #         Qs.append(Q)
-    #     else:
-    #         I, V, params = res
-    #     Is.append(I)
-    # dbg
+    if not dbg:
+        pool = Pool(processes=repeats)
+        results = []
+        for repeat in range(repeats):
+            res = pool.apply_async(runSingleSimulation,
+                                    (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+                                     Vmax, Vstep, fullOutput, printState, useGraph, currentMap, fastRelaxation))
+            results.append(res)
+        for res in results:
+            result = res.get()
+            I = result[0]
+            currentMapInd = 2
+            if fullOutput:
+                n = result[2]
+                Q = result[3]
+                ns.append(n)
+                Qs.append(Q)
+                currentMapInd=4
+            if currentMap:
+                Imaps.append(result[currentMapInd])
+            Is.append(I)
+        V = result[1]
+        params = result[-1]
+
+    else: #dbg
+        results = []
+        for repeat in range(repeats):
+            result = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+                                         Vmax, Vstep, fullOutput, printState, useGraph, currentMap, fastRelaxation)
+            I = result[0]
+            currentMapInd = 2
+            if fullOutput:
+                n = result[2]
+                Q = result[3]
+                ns.append(n)
+                Qs.append(Q)
+                currentMapInd = 4
+            if currentMap:
+                Imaps.append(result[currentMapInd])
+            Is.append(I)
+        V = result[1]
+        params = result[-1]
+        # dbg
 
     avgI = np.mean(np.array(Is), axis=0)
     if fullOutput:
@@ -793,6 +795,8 @@ def getOptions():
                       default=False, action='store_true')
     parser.add_option("--current-map", dest="current_map", help="if true  clip of current distribution during"
                                                                 " simulation will be plotted [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--dbg", dest="dbg", help="Avoids parallel running for debugging [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
@@ -918,27 +922,7 @@ if __name__ == "__main__":
     use_graph = options.use_graph
     fast_relaxation = options.RG_avg * options.CG_avg < options.C_avg * options.R_avg
     current_map = options.current_map
-    # Debug
-    # rows = 1
-    # columns = 1
-    # VR0 = 0
-    # VL0 = 0
-    # VG = [[0]]
-    # Q0 = [[0]]
-    # n0 = [[0]]
-    # CG = [[1]]
-    # RG = [[1000]]
-    # Ch = [[1,1]]
-    # Cv = [[]]
-    # Rh = [[1,10]]
-    # Rv = [[]]
-    # Vmax = 2
-    # Vstep = 0.1
-    # repeats = 1
-    # savePath = "dbg_graph"
-    # fileName = "dbg_graph"
-    # fullOutput = False
-    # use_graph = True
+    dbg = options.dbg
 
     # Running Simulation
     if not os.path.exists(savePath):
@@ -948,6 +932,7 @@ if __name__ == "__main__":
         exit(0)
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
-                          printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map)
+                          printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map,
+                                     dbg=dbg)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)

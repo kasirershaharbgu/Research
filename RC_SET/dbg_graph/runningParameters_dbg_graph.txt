@@ -1,23 +1,27 @@
 -------Running parameters--------
-M = 2
-N = 2
+M = 1
+N = 1
 VR = 0.0
 Vmin = 0.0
 Vmax = 2.0
-vStep = 0.01
-repeats = 20
-fileName = two_points_r_disorder_2_2
+vStep = 0.1
+repeats = 1
+fileName = dbg_graph
 dist = two_points
 fullOutput = False
-output_folder = 1D_Array/2dots
+use_graph = True
+current_map = False
+output_folder = dbg_graph
 VG_avg = 0.0
 VG_std = 0.0
-C_avg = 1.0
+C_avg = 10.0
 C_std = 0.0
 CG_avg = 10.0
 CG_std = 0.0
-R_avg = 1.0
-R_std = 0.9
+R_avg = 10.0
+R_std = 0.0
+custom_rh = [[1,10]]
+custom_rv = [[]]
 RG_avg = 1000.0
 RG_std = 0.0
 n0_avg = 0.0
@@ -27,10 +31,10 @@ Q0_std = 0.0
 ----Array Parameters-----
 Rows: 1
 Columns: 1
-VG: [[0]]
-CG: [[1]]
-RG: [[1000]]
-Ch: [[1 1]]
+VG: [[0.]]
+CG: [[10.]]
+RG: [[1000.]]
+Ch: [[10. 10.]]
 Cv: [[0.]]
 Rh: [[ 1 10]]
 Rv: []
