@@ -2,15 +2,16 @@
 M = 1
 N = 2
 VR = 0.0
-Vmin = 0.0
+Vmin = -2.0
 Vmax = 3.0
 vStep = 0.01
 repeats = 20
 fileName = decreasing_r_1_2
 dist = two_points
-fullOutput = False
+fullOutput = True
 use_graph = False
 current_map = False
+dbg = False
 output_folder = 2_dots_arrays
 VG_avg = 0.0
 VG_std = 0.0
@@ -20,7 +21,7 @@ CG_avg = 10.0
 CG_std = 0.0
 R_avg = 10.0
 R_std = 0.0
-custom_rh = "[[20,10,1]]"
+custom_rh = "[[10,5,1]]"
 custom_rv = "[[]]"
 RG_avg = 1000.0
 RG_std = 0.0
@@ -36,5 +37,5 @@ CG: [[10. 10.]]
 RG: [[1000. 1000.]]
 Ch: [[1. 1. 1.]]
 Cv: [[0.]]
-Rh: [[20 10  1]]
+Rh: [[10  5  1]]
 Rv: []
