@@ -150,7 +150,8 @@ class DotArray:
         if self.saveCurrentMap:
             map = np.zeros((self.rows*2 - 1, self.columns+1))
             map[::2,:] = self.Ih
-            map[1::2,:-1] = self.Iv
+            if self.Iv.size:
+                map[1::2,:-1] = self.Iv
             return map
         else:
             raise NotImplementedError
@@ -415,7 +416,7 @@ class Simulator:
             self.printState()
         return dt
 
-    def calcCurrent(self, t,print=False,fullOutput=False, currentMap=False):
+    def calcCurrent(self, t,print_stats=False,fullOutput=False, currentMap=False):
         if currentMap:
             self.dotArray.currentMapOn()
         self.dotArray.resetCharge()
@@ -429,7 +430,7 @@ class Simulator:
             if fullOutput:
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
-            dt = self.executeStep(printState=print)
+            dt = self.executeStep(printState=print_stats)
             steps += 1
             curr_t += dt
             if fullOutput:
@@ -481,7 +482,7 @@ class Simulator:
             # running once to get to steady state
             self.calcCurrent(tStep)
             # now we are in steady state calculate current
-            stepRes = self.calcCurrent(tStep, print=print, fullOutput=fullOutput, currentMap=currentMap)
+            stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
             leftCurrnet = stepRes[1]
             if fullOutput:
@@ -701,7 +702,13 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep,repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
-                      currentMap=False, dbg=False):
+                      currentMap=False, dbg=False, plotCurrentMaps=False):
+    if plotCurrentMaps:
+        basePath = os.path.join(savePath, fileName)
+        avgImaps = np.load(basePath + "_Imap.npy")
+        V = np.load(basePath + "_V.npy")
+        saveCurrentMaps(avgImaps, V, basePath + "_Imap")
+        exit(0)
     if checkSteadyState:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
@@ -785,11 +792,12 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     plt.close(fig)
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
-        saveCurrentMaps(avgImaps,V, basePath + "_Imap")
+        np.save(basePath + "_Imap", avgImaps)
     return params
 
 def saveCurrentMaps(Imaps, V, path):
-    writer = animation.FFMpegFileWriter(fps=24, bitrate=1800, extra_args=['--verbose-debug'])
+    Writer = animation.writers['ffmpeg']
+    writer = Writer(fps=24, bitrate=1800)
     fig = plt.figure()
     Imax = np.max(Imaps)
     M,N = Imaps[0].shape
@@ -831,7 +839,6 @@ def plotCurrentMaps(im, text, M, N):
 
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
-
     # Normal parameters
     parser.add_option("-M", "--height", dest="M", help="number of lines in "
                       "the array [default: %default]", default=1, type=int)
@@ -857,8 +864,14 @@ def getOptions():
     parser.add_option("--graph", dest="use_graph", help="if true a simulation using graph solution for master equation"
                                                         "will be used [Default:%default]",
                       default=False, action='store_true')
-    parser.add_option("--current-map", dest="current_map", help="if true  clip of current distribution during"
-                                                                " simulation will be plotted [Default:%default]",
+    parser.add_option("--current-map", dest="current_map", help="if true fraes for clip of current distribution during"
+                                                                " simulation will be created and saved [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--plot-current-map", dest="plot_current_map", help="if true clip of current distribution will"
+                                                                          " be plotted using former saved frames (from"
+                                                                          " a former run with same file name and"
+                                                                          " location and the flag --current-map"
+                                                                          " [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("--dbg", dest="dbg", help="Avoids parallel running for debugging [Default:%default]",
                       default=False, action='store_true')
@@ -944,11 +957,13 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
             shape = (avg/std)**2
             scale = std**2 / avg
         res = 0.1 + np.random.gamma(shape=shape, scale=scale, size=(M,N))
+    elif dist == 'exp':
+        r = np.random.uniform(low=np.log2(avg - std), high=np.log2(avg + std), size=(M, N))
+        res = 2**r
     if only_positive and (res <= 0).any():
         print("Warnning, changing to positive distribution")
         res = res + 0.1 - np.min(res.flatten())
     return res
-
 
 if __name__ == "__main__":
     # Initializing Running Parameters
@@ -987,7 +1002,7 @@ if __name__ == "__main__":
     fast_relaxation = options.RG_avg * options.CG_avg < options.C_avg * options.R_avg
     current_map = options.current_map
     dbg = options.dbg
-
+    plot_current_map = options.plot_current_map
     # Running Simulation
     if not os.path.exists(savePath):
         os.mkdir(savePath)
@@ -997,6 +1012,6 @@ if __name__ == "__main__":
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
                           printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map,
-                                     dbg=dbg)
+                                     dbg=dbg, plotCurrentMaps=plot_current_map)
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
