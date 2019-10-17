@@ -427,7 +427,7 @@ class Simulator:
         plt.plot((np.array(Ileft) - np.array(Iright)) ** 2)
         plt.show()
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print=False, currentMap=False):
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False):
         I = []
         if fullOutput:
             ns = []
@@ -500,9 +500,9 @@ class GraphSimulator:
         right_rates_diff = []
         current_state_ind = 0
         next_state_ind = 1
+        edges_line = [0]
         while current_state_ind < len(states):
             self.dotArray.n = self.reshape_to_array(np.copy(states[current_state_ind]))
-            edges_line = [0] * (current_state_ind + 1)
             rates = self.dotArray.getRates()
             for ind,rate in enumerate(rates):
                 if rate > 0: # add new edge
@@ -518,6 +518,7 @@ class GraphSimulator:
                         edges_line[states_dict[tup_n]] += rate
                     self.dotArray.tunnel(toDot, fromDot)
             edges.append(edges_line)
+            edges_line = [0] * len(edges_line)
             current_state_ind += 1
             left_diff, right_diff = self.get_edge_rates_diff(rates)
             left_rates_diff.append(left_diff)
@@ -536,19 +537,27 @@ class GraphSimulator:
         # steady state probabilities are the belong to null-space of edgesMat.T
         null = null_space(self.edgesMat.T)
         sol = []
-        for i in range(null.shape[1]):
-            candidate = null[:,i]
-            candidate[abs(candidate) < EPS] = 0
-            if (candidate >= 0).all() or (candidate <= 0).all():
-                sol.append(candidate / np.sum(candidate))
-        if len(sol) > 1:
-            print("Warning - more than one solution for steady state probabilities")
-            for s in sol:
-                print(s)
-        elif len(sol) < 1:
-            self.prob = None
-        else:
-            self.prob = sol[0]
+        second_round = False
+        sucess = False
+        while not sucess:
+            for i in range(null.shape[1]):
+                candidate = null[:,i]
+                if second_round:
+                    candidate[np.abs(candidate) < EPS] = 0
+                if (candidate >= 0).all() or (candidate <= 0).all():
+                    sol.append(candidate / np.sum(candidate))
+            if len(sol) > 0:
+                self.prob = sol[0]
+                sucess = True
+            elif second_round:
+                self.prob = np.zeros((len(self.states),))
+                self.prob[0] = 1
+                sucess = True
+            else:
+                second_round = True
+        return True
+
+
 
     def get_average_state(self, Q):
         self.find_probabilities(Q)
@@ -559,18 +568,18 @@ class GraphSimulator:
         Qmin = Qmin.flatten()
         Qmax = Qmax.flatten()
         coordinates = [np.arange(Qmin[i],Qmax[i],0.01) for i in range(Qmin.size)]
-        grid = np.meshgrid(coordinates)
+        grid = np.meshgrid(*coordinates)
         grid_array = np.array(grid).T
         res = np.zeros(grid[0].shape)
         it = np.nditer(grid[0], flags=['multi_index'])
         while not it.finished:
             index = it.multi_index
-            curr_Q = grid_array[index,:]
+            curr_Q = grid_array[index]
             n = self.get_average_state(curr_Q)
             self.dotArray.n = n
             self.dotArray.Q = self.reshape_to_array(curr_Q)
-            diff_from_equi = curr_Q.flatten() - self.dotArray.get_steady_Q_for_n()
-            res[it.multi_index] = diff_from_equi
+            diff_from_equi = np.sum(curr_Q.flatten() - self.dotArray.get_steady_Q_for_n())
+            res[index] = diff_from_equi
             it.iternext()
         for axis in range(len(res.shape)):
             res = cumtrapz(res,grid[axis],axis=axis,initial=0)
@@ -604,7 +613,7 @@ class GraphSimulator:
         right_diff = right_tunneling_rates[:,-1] - left_tunneling_rates[:,-1]
         return left_diff, right_diff
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print=False, currentMap=False):
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False):
         I = []
         if fullOutput:
             ns = []
@@ -612,6 +621,7 @@ class GraphSimulator:
         VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         for VL in VL_vec:
+            print(VL,end=',')
             self.dotArray.changeVext(VL, self.VR)
             if fullOutput:
                 rightCurrent, leftCurrnet, n, Q = self.calcCurrent(fullOutput=True)
@@ -638,7 +648,7 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv), fast_relaxation)
     out = simulator.calcIV(Vmax, Vstep,
-                           fullOutput=fullOutput, print=printState, currentMap=currentMap)
+                           fullOutput=fullOutput, print_stats=printState, currentMap=currentMap)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
 
@@ -708,12 +718,20 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)
+        fig = plt.figure()
+        plt.plot(V[:V.size // 2], avgN[:V.size // 2, 0, 0], '.b', V[V.size // 2:], avgN[V.size // 2:, 0, 0], '.r',
+                 V[:V.size // 2], avgN[:V.size // 2, 0, 1], '.g', V[V.size // 2:], avgN[V.size // 2:, 0, 1], '.y')
+        plt.savefig(basePath + "_n.png")
+        fig = plt.figure()
+        plt.plot(V[:V.size // 2], avgQ[:V.size // 2, 0, 0], '.b', V[V.size // 2:], avgQ[V.size // 2:, 0, 0], '.r',
+                 V[:V.size // 2], avgQ[:V.size // 2, 0, 1], '.g', V[V.size // 2:], avgQ[V.size // 2:, 0, 1], '.y')
+        plt.savefig(basePath + "_Q.png")
         np.save(basePath + "_n", avgN)
         np.save(basePath + "_Q", avgQ)
         np.save(basePath + "_full_I", np.array(Is))
     fig = plt.figure()
-    plt.plot(V[:V.size//2], avgI[:I.size//2], '.b',V[V.size//2:],
-             avgI[I.size//2:],
+    plt.plot(V[:V.size//2], avgI[:V.size//2], '.b',V[V.size//2:],
+             avgI[V.size//2:],
              '.r')
     plt.savefig(basePath + "_IV.png")
     np.save(basePath + "_I", avgI)
