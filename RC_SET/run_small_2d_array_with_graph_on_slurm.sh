@@ -14,7 +14,7 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.1
+vstep=0.01
 rg_avg=1000
 cg_avg=10
 t="10:00:00"
@@ -24,7 +24,7 @@ full=""
 currentmap=""
 graph="--graph"
 vmax=2
-f="2_dots_arrays_with_graph"
+f="2_dots_arrays_graph"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
