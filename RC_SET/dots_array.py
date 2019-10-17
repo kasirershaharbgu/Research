@@ -1,6 +1,8 @@
 __author__ = 'shahar'
 
 import numpy as np
+import scipy.ndimage.filters as filters
+import scipy.ndimage.morphology as morphology
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from optparse import OptionParser
@@ -8,17 +10,54 @@ import os
 from multiprocessing import Pool
 from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
-from scipy.signal import argrelextrema
+from mpl_toolkits.mplot3d import Axes3D
 from ast import literal_eval
 
+# Gillespie Constants
 MINIMUM_STEPS_PER_DOT = 1000
+# Lyaponuv Constants
 EPS = 0.0001
+DQ = 0.1
+Q_SHIFT = 1
+
+
 
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
 
 def flattenToRow(a):
     return a.reshape((1, a.size))
+
+def local_min_func(input):
+    mid = len(input)//2
+    return (input[mid] <= input).all()
+
+def detect_local_minima(arr):
+    # https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
+    """
+    Takes an array and detects the troughs using the local minimum filter.
+    Returns a boolean mask of the troughs (i.e. 1 when
+    the pixel's value is the neighborhood minimum, 0 otherwise)
+    """
+    neighborhood = morphology.generate_binary_structure(len(arr.shape),2)
+    return np.where(filters.generic_filter(arr, local_min_func, footprint=neighborhood,
+                                           mode='constant', cval=np.min(arr)-1))
+def simple_gadient_descent(grad, x0, eps=1e-10, lr=1e-3, plot_lc=False):
+    x=x0.flatten()
+    curr_grad = grad(x)
+    if plot_lc:
+        gradvec = []
+    while np.max(curr_grad) > eps:
+        if plot_lc:
+            gradvec.append(curr_grad)
+        x = x - curr_grad*lr
+        curr_grad = grad(x)
+    if plot_lc:
+        plt.figure()
+        plt.plot(gradvec)
+    return x
+
+
 
 class NoElectronsOnDot(RuntimeError):
     pass
@@ -470,7 +509,7 @@ class GraphSimulator:
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
                                  Ch, Cv, Rh, Rv, fastRelaxation=True)
         self.n0 = n0
-        self.QG = Q0
+        self.QG = np.array([[0,0]])
         self.VL = VL0
         self.VR = VR0
 
@@ -486,7 +525,6 @@ class GraphSimulator:
 
     def getArrayParameters(self):
         return str(self.dotArray)
-
 
     def buildGraph(self, Q):
         states = []
@@ -557,8 +595,6 @@ class GraphSimulator:
                 second_round = True
         return True
 
-
-
     def get_average_state(self, Q):
         self.find_probabilities(Q)
         average_state = np.sum(np.multiply(self.states.T, self.prob),axis=1)
@@ -567,7 +603,8 @@ class GraphSimulator:
     def set_lyaponuv(self, Qmin, Qmax):
         Qmin = Qmin.flatten()
         Qmax = Qmax.flatten()
-        coordinates = [np.arange(Qmin[i],Qmax[i],0.01) for i in range(Qmin.size)]
+        dq = DQ
+        coordinates = [np.arange(Qmin[i],Qmax[i],dq) for i in range(Qmin.size)]
         grid = np.meshgrid(*coordinates)
         grid_array = np.array(grid).T
         res = np.zeros(grid[0].shape)
@@ -578,25 +615,44 @@ class GraphSimulator:
             n = self.get_average_state(curr_Q)
             self.dotArray.n = n
             self.dotArray.Q = self.reshape_to_array(curr_Q)
-            diff_from_equi = np.sum(curr_Q.flatten() - self.dotArray.get_steady_Q_for_n())
+            diff_from_equi = np.sum(flattenToColumn(curr_Q) - self.dotArray.get_steady_Q_for_n())
             res[index] = diff_from_equi
             it.iternext()
         for axis in range(len(res.shape)):
-            res = cumtrapz(res,grid[axis],axis=axis,initial=0)
+            res = cumtrapz(res,dx=dq,axis=axis,initial=0)
         self.lyaponuv = res
         self.Q_grid = grid_array
 
-    def find_next_QG(self):
-        self.set_lyaponuv(self.QG - 1, self.QG + 1)
-        peaks = argrelextrema(self.lyaponuv, np.less_equal)
-        Qind = np.argmin(np.abs(self.Q_grid[peaks] - self.QG))
+    def calc_lyaponuv_grad(self, Q):
+        n = self.get_average_state(self.reshape_to_array(Q))
+        self.dotArray.n = n
+        self.dotArray.Q = self.reshape_to_array(Q)
+        return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
+
+    def find_next_QG_using_lyaponuv(self):
+        q_shift = Q_SHIFT
+        peaks = (np.array([]),)
+        while not peaks[0].size:
+            self.set_lyaponuv(self.QG - q_shift, self.QG + q_shift)
+            q_shift *= 2
+            peaks = detect_local_minima(self.lyaponuv)
+        Qind = np.argmin(np.sum((self.Q_grid[peaks] - self.QG)**2,axis=1))
         self.QG = self.Q_grid[peaks][Qind]
+        # dbg
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+        ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
+        ax.scatter3D(self.Q_grid[peaks][:,0],self.Q_grid[peaks][:,1],self.lyaponuv[peaks],marker='o',color='red')
+
+    def find_next_QG_using_gradient_descent(self):
+        self.QG = self.reshape_to_array(simple_gadient_descent(self.calc_lyaponuv_grad,self.QG,plot_lc=False))
 
     def calcCurrent(self, fullOutput=False):
-        self.find_next_QG()
-        n_avg = self.get_average_state(self.QG)
+        self.find_next_QG_using_gradient_descent()
+        n_avg = self.reshape_to_array(self.get_average_state(self.QG))
         self.dotArray.Q = self.reshape_to_array(self.QG)
         self.dotArray.n = n_avg
+        self.n0 = np.floor(n_avg)
         left_current = np.sum(self.prob*self.rates_diff_left.T)
         right_current = np.sum(self.prob*self.rates_diff_right.T)
         if fullOutput:
@@ -615,23 +671,13 @@ class GraphSimulator:
 
     def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False):
         I = []
-        if fullOutput:
-            ns = []
-            Qs = []
         VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         for VL in VL_vec:
             print(VL,end=',')
             self.dotArray.changeVext(VL, self.VR)
-            if fullOutput:
-                rightCurrent, leftCurrnet, n, Q = self.calcCurrent(fullOutput=True)
-                ns.append(n)
-                Qs.append(Q)
-            else:
-                rightCurrent, leftCurrnet = self.calcCurrent()
+            rightCurrent, leftCurrnet = self.calcCurrent()
             I.append((rightCurrent + leftCurrnet) / 2)
-        if fullOutput:
-            return np.array(I), VL_vec - self.VR, np.array(ns), np.array(Qs)
         return np.array(I), VL_vec - self.VR
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
