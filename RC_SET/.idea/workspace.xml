@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IV.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_V.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_V.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +98,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 2 --vmin 0 --vmax 2 --vstep 1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution exp --file-name dbg -o dbg --current-map --dbg --plot-current-map" />
+      <option name="PARAMETERS" value="-M 5 -N 5 --vmin 0 --vmax 5 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution uniform --custom-rh &quot;&quot; --custom-rv &quot;&quot; --file-name uniform_disorder_5_5 -o 2D_square_arrays_with_current_map  --plot-current-map" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />

@@ -19,6 +19,8 @@ MINIMUM_STEPS_PER_DOT = 1000
 EPS = 0.0001
 DQ = 0.1
 Q_SHIFT = 1
+GRAD_REP = 5
+INI_LR = 0.001
 
 
 
@@ -42,20 +44,22 @@ def detect_local_minima(arr):
     neighborhood = morphology.generate_binary_structure(len(arr.shape),2)
     return np.where(filters.generic_filter(arr, local_min_func, footprint=neighborhood,
                                            mode='constant', cval=np.min(arr)-1))
-def simple_gadient_descent(grad, x0, eps=1e-10, lr=1e-3, plot_lc=False):
+def simple_gadient_descent(grad, x0, eps=1e-10, lr=1e-3, max_iter=1e6, plot_lc=False):
     x=x0.flatten()
     curr_grad = grad(x)
     if plot_lc:
         gradvec = []
-    while np.max(curr_grad) > eps:
+    iter=0
+    while np.max(curr_grad) > eps and iter < max_iter:
         if plot_lc:
             gradvec.append(curr_grad)
         x = x - curr_grad*lr
         curr_grad = grad(x)
+        iter += 1
     if plot_lc:
         plt.figure()
         plt.plot(gradvec)
-    return x
+    return x, iter < max_iter
 
 
 
@@ -646,7 +650,15 @@ class GraphSimulator:
         ax.scatter3D(self.Q_grid[peaks][:,0],self.Q_grid[peaks][:,1],self.lyaponuv[peaks],marker='o',color='red')
 
     def find_next_QG_using_gradient_descent(self):
-        self.QG = self.reshape_to_array(simple_gadient_descent(self.calc_lyaponuv_grad,self.QG,plot_lc=False))
+        flag = False
+        rep = 0
+        lr = INI_LR
+        while (not flag) and rep < GRAD_REP:
+            res, flag = simple_gadient_descent(self.calc_lyaponuv_grad, self.QG, lr=lr, plot_lc=False)
+            rep += 1
+            lr = lr/10
+        if flag: #if gradient descent did not converge skipping the point
+            self.QG = self.reshape_to_array(res)
 
     def calcCurrent(self, fullOutput=False):
         self.find_next_QG_using_gradient_descent()
@@ -672,14 +684,27 @@ class GraphSimulator:
 
     def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False):
         I = []
+        if fullOutput:
+            ns = []
+            Qs = []
         VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         for VL in VL_vec:
             print(VL,end=',')
             self.dotArray.changeVext(VL, self.VR)
-            rightCurrent, leftCurrnet = self.calcCurrent()
-            I.append((rightCurrent + leftCurrnet) / 2)
-        return np.array(I), VL_vec - self.VR
+            res = self.calcCurrent()
+            rightCurrent = res[0]
+            leftCurrent = res[1]
+            if fullOutput:
+                n = res[2]
+                Q = res[3]
+                ns.append(n)
+                Qs.append(Q)
+            I.append((rightCurrent + leftCurrent) / 2)
+        result = (np.array(I), VL_vec - self.VR)
+        if fullOutput:
+            result = result + (ns, Qs)
+        return result
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, currentMap=False,
