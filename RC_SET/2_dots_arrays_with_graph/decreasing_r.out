@@ -1,3 +1,4 @@
 
 python3 dots_array.py -M 1 -N 2 --vmin -2 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh "[[20,10,1]]" --custom-rv "[[]]" --file-name decreasing_r -o 2_dots_arrays_with_graph   --graph
 
+slurmstepd: error: *** JOB 1143083 ON node104 CANCELLED AT 2019-10-18T01:36:42 DUE TO TIME LIMIT ***
