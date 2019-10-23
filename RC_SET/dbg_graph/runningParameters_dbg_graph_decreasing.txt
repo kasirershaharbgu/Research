@@ -1,0 +1,42 @@
+-------Running parameters--------
+M = 1
+N = 2
+VR = 0.0
+Vmin = 0.0
+Vmax = 1.0
+vStep = 0.01
+repeats = 1
+fileName = dbg_graph_decreasing
+dist = uniform
+fullOutput = False
+use_graph = True
+current_map = False
+plot_current_map = False
+dbg = True
+output_folder = dbg_graph
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+custom_rh = [[20,10,1]]
+custom_rv = [[]]
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 2
+VG: [[0. 0.]]
+CG: [[10. 10.]]
+RG: [[1000. 1000.]]
+Ch: [[1. 1. 1.]]
+Cv: [[0.]]
+Rh: [[20 10  1]]
+Rv: []
