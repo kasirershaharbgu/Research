@@ -5,6 +5,7 @@ import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
+# from mayavi import mlab
 from optparse import OptionParser
 import os
 from multiprocessing import Pool
@@ -18,7 +19,7 @@ MINIMUM_STEPS_PER_DOT = 1000
 # Lyaponuv Constants
 EPS = 0.0001
 DQ = 0.1
-Q_SHIFT = 1
+Q_SHIFT = 2
 GRAD_REP = 5
 INI_LR = 0.001
 
@@ -210,7 +211,7 @@ class DotArray:
         self._JeigenValues, self._JeigenVectors = np.linalg.eig(self.getJmatrix())
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
-        self.timeStep = -10/np.min(self._JeigenValues)
+        self.timeStep = -10/np.max(self._JeigenValues)
         self.default_dt = -1/np.max(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
@@ -284,6 +285,12 @@ class DotArray:
         work = self.getWork()
         work[work > 0] = 0
         return -work / self.R
+
+    def getVoltages(self):
+        return self.invC.dot(self.getNprime() + flattenToColumn(self.Q))
+
+    def getVoltagesFromGround(self):
+        return self.VG - self.Q/self.CG
 
     def getTimeInterval(self, randomNumber):
         """
@@ -514,7 +521,7 @@ class GraphSimulator:
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
                                  Ch, Cv, Rh, Rv, fastRelaxation=True)
         self.n0 = n0
-        self.QG = np.array([[0,0]])
+        self.QG = Q0
         self.VL = VL0
         self.VR = VR0
 
@@ -605,34 +612,76 @@ class GraphSimulator:
         average_state = np.sum(np.multiply(self.states.T, self.prob),axis=1)
         return self.reshape_to_array(average_state)
 
-    def set_lyaponuv(self, Qmin, Qmax):
+    def get_average_voltages(self, Q):
+        n_copy = np.copy(self.dotArray.n)
+        Q_copy = np.copy(self.dotArray.Q)
+        n = self.get_average_state(Q)
+        self.dotArray.n = self.reshape_to_array(n)
+        self.dotArray.Q = self.reshape_to_array(Q)
+        v = self.dotArray.getVoltages()
+        self.dotArray.n = n_copy
+        self.dotArray.Q = Q_copy
+        return v
+
+    def get_voltages_from_ground(self, Q):
+        Q_copy = np.copy(self.dotArray.Q)
+        self.dotArray.Q = self.reshape_to_array(Q)
+        v = self.dotArray.getVoltagesFromGround()
+        self.dotArray.Q = Q_copy
+        return v
+
+    def calc_lyaponuv(self, Q):
+        n_copy = np.copy(self.dotArray.n)
+        Q_copy = np.copy(self.dotArray.Q)
+        n = self.get_average_state(Q)
+        self.dotArray.n = self.reshape_to_array(n)
+        self.dotArray.Q = self.reshape_to_array(Q)
+        diff_from_equi = np.sum(flattenToColumn(Q) - self.dotArray.get_steady_Q_for_n())
+        self.dotArray.n = n_copy
+        self.dotArray.Q = Q_copy
+        return diff_from_equi
+
+    def calc_on_grid(self, Qmin, Qmax, f, res_len=1):
         Qmin = Qmin.flatten()
         Qmax = Qmax.flatten()
         dq = DQ
-        coordinates = [np.arange(Qmin[i],Qmax[i],dq) for i in range(Qmin.size)]
+        coordinates = [np.arange(Qmin[i], Qmax[i], dq) for i in range(Qmin.size)]
         grid = np.meshgrid(*coordinates)
         grid_array = np.array(grid).T
-        res = np.zeros(grid[0].shape)
+        res = [np.zeros(grid[0].shape) for i in range(res_len)]
         it = np.nditer(grid[0], flags=['multi_index'])
         while not it.finished:
             index = it.multi_index
             curr_Q = grid_array[index]
-            n = self.get_average_state(curr_Q)
-            self.dotArray.n = n
-            self.dotArray.Q = self.reshape_to_array(curr_Q)
-            diff_from_equi = np.sum(flattenToColumn(curr_Q) - self.dotArray.get_steady_Q_for_n())
-            res[index] = diff_from_equi
+            for i in range(res_len):
+                f_res = f(curr_Q).flatten()
+                res[i][index] = f_res[i]
             it.iternext()
+        return grid_array, res
+
+    def set_lyaponuv(self, Qmin, Qmax):
+        self.Q_grid, diff_from_eq = self.calc_on_grid(Qmin, Qmax, self.calc_lyaponuv)
+        res = diff_from_eq[0]
         for axis in range(len(res.shape)):
-            res = cumtrapz(res,dx=dq,axis=axis,initial=0)
+            res = cumtrapz(res, dx=DQ, axis=axis, initial=0)
         self.lyaponuv = res
-        self.Q_grid = grid_array
 
     def calc_lyaponuv_grad(self, Q):
         n = self.get_average_state(self.reshape_to_array(Q))
         self.dotArray.n = n
         self.dotArray.Q = self.reshape_to_array(Q)
         return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
+
+    def plot_average_voltages(self, Qmin, Qmax):
+        Q_grid, voltages = self.calc_on_grid(Qmin, Qmax, self.get_average_voltages, res_len=Qmin.size)
+        _, voltages_from_ground = self.calc_on_grid(Qmin, Qmax, self.get_voltages_from_ground, res_len=Qmin.size)
+        fig1 = mlab.figure()
+        surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages[0], colormap='Blues')
+        surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages_from_ground[0], colormap='Oranges')
+        fig1 = mlab.figure()
+        surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages[1], colormap='Blues')
+        surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages_from_ground[1], colormap='Oranges')
+        mlab.show()
 
     def find_next_QG_using_lyaponuv(self):
         q_shift = Q_SHIFT
@@ -647,7 +696,8 @@ class GraphSimulator:
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
-        ax.scatter3D(self.Q_grid[peaks][:,0],self.Q_grid[peaks][:,1],self.lyaponuv[peaks],marker='o',color='red')
+        ax.scatter3D(self.Q_grid[peaks][Qind,0],self.Q_grid[peaks][Qind,1],self.lyaponuv[peaks][Qind],marker='o',color='red')
+        plt.show()
 
     def find_next_QG_using_gradient_descent(self):
         flag = False
@@ -662,6 +712,11 @@ class GraphSimulator:
 
     def calcCurrent(self, fullOutput=False):
         self.find_next_QG_using_gradient_descent()
+        #dbg
+        # self.find_next_QG_using_lyaponuv()
+        # print(self.QG)
+        # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
+        #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
         self.dotArray.Q = self.reshape_to_array(self.QG)
         self.dotArray.n = n_avg
