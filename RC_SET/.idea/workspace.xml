@@ -3,15 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_tmp0000000.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_tmp0000001.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_tmp0000002.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_tmp0000003.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_tmp0000004.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_small_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_small_2d_array_on_slurm.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_small_2d_array_with_graph_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_small_2d_array_with_graph_on_slurm.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
