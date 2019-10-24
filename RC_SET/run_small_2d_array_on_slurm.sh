@@ -22,7 +22,7 @@ dist="two_points"
 r_std=0
 graph=""
 full="--full"
-currentmap="\"\""
+currentmap=""
 vmax=3
 f="2_dots_arrays_gillespie"
 if [ ! -d "$f" ]; then
