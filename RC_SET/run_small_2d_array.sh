@@ -33,21 +33,21 @@ vg_avg=1
 file_name="increasing_r_vg_1"
 custom_rh="\"[[1,10,20]]\""
 custom_rv="\"[[]]\""
-qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$f/$name.out" -V run_RC_SET.sh
+qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$out/$file_name.out" -V run_RC_SET.sh
 
 file_name="decreasing_r_vg_1"
 custom_rh="\"[[20,10,1]]\""
 custom_rv="\"[[]]\""
-qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$f/$name.out" -V run_RC_SET.sh
+qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$out/$file_name.out" -V run_RC_SET.sh
 
 vg_avg=1
 vg_std=1
 file_name="increasing_r_noisy_vg"
 custom_rh="\"[[1,10,20]]\""
 custom_rv="\"[[]]\""
-qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$f/$name.out" -V run_RC_SET.sh
+qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$out/$file_name.out" -V run_RC_SET.sh
 
 file_name="decreasing_r_noisy_vg"
 custom_rh="\"[[20,10,1]]\""
 custom_rv="\"[[]]\""
-qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$f/$name.out" -V run_RC_SET.sh
+qsub -S /bin/bash -cwd -N "$file_name" -q jdubi.q -o "$out/$file_name.out" -V run_RC_SET.sh
