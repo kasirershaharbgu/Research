@@ -1,33 +1,3 @@
 
 python3 dots_array.py -M 1 -N 2 --vmin -2 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh "[[20,10,1]]" --custom-rv "[[]]" --file-name decreasing_r -o 2_dots_arrays_graph_lyaponuv_clip   --graph
 
-multiprocessing.pool.RemoteTraceback: 
-"""
-Traceback (most recent call last):
-  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 121, in worker
-    result = (True, func(*args, **kwds))
-  File "dots_array.py", line 783, in runSingleSimulation
-    fullOutput=fullOutput, print_stats=printState, currentMap=currentMap, basePath=basePath)
-  File "dots_array.py", line 755, in calcIV
-    res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
-  File "dots_array.py", line 723, in calcCurrent
-    self.find_next_QG_using_lyaponuv(basePath)
-  File "dots_array.py", line 697, in find_next_QG_using_lyaponuv
-    self.set_lyaponuv(self.QG - Q_SHIFT, self.QG + Q_SHIFT)
-  File "dots_array.py", line 664, in set_lyaponuv
-    self.Q_grid, diff_from_eq = self.calc_on_grid(Qmin, Qmax, self.calc_lyaponuv)
-  File "dots_array.py", line 656, in calc_on_grid
-    curr_Q = grid_array[index]
-IndexError: index 40 is out of bounds for axis 1 with size 40
-"""
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "dots_array.py", line 1095, in <module>
-    dbg=dbg, plotCurrentMaps=plot_current_map)
-  File "dots_array.py", line 821, in runFullSimulation
-    result = res.get()
-  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 683, in get
-    raise self._value
-IndexError: index 40 is out of bounds for axis 1 with size 40
