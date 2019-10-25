@@ -478,7 +478,7 @@ class Simulator:
         plt.plot((np.array(Ileft) - np.array(Iright)) ** 2)
         plt.show()
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False):
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath=""):
         I = []
         if fullOutput:
             ns = []
