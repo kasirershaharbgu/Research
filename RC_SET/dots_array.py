@@ -674,6 +674,7 @@ class GraphSimulator:
         return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
 
     def plot_average_voltages(self, Qmin, Qmax):
+        from mayavi import mlab
         Q_grid, voltages = self.calc_on_grid(Qmin, Qmax, self.get_average_voltages, res_len=Qmin.size)
         _, voltages_from_ground = self.calc_on_grid(Qmin, Qmax, self.get_voltages_from_ground, res_len=Qmin.size)
         fig1 = mlab.figure()
@@ -720,7 +721,7 @@ class GraphSimulator:
     def calcCurrent(self, fullOutput=False, basePath=""):
         self.find_next_QG_using_gradient_descent()
         #dbg
-        self.find_next_QG_using_lyaponuv(basePath)
+        # self.find_next_QG_using_lyaponuv(basePath)
         # print(self.QG)
         # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
