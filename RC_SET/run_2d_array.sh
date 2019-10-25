@@ -21,17 +21,12 @@ f="2D_square_arrays_with_current_map_bgu"
 full="" 
 graph=""
 currentmap="--current-map"
-rows=5
-columns=5
-vmax=5
+vmax=20
 custom_rh="\"\""
 custom_rv="\"\""
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
-dist="two_points"
-name="no_disorder_5_5"
-r_std=0
 
 rows=2
 columns=2
