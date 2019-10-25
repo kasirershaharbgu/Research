@@ -1,3 +1,0 @@
-slurmstepd: error: Job 1129705 exceeded memory limit (2053104 > 2048000), being killed
-slurmstepd: error: Exceeded job memory limit
-slurmstepd: error: *** JOB 1129705 ON node010 CANCELLED AT 2019-10-07T12:33:15 ***

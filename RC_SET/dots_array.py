@@ -685,25 +685,22 @@ class GraphSimulator:
         mlab.show()
 
     def find_next_QG_using_lyaponuv(self, basePath):
-        q_shift = Q_SHIFT
-        peaks = (np.array([]),)
-        while not peaks[0].size:
-            self.set_lyaponuv(self.QG - q_shift, self.QG + q_shift)
-            q_shift *= 2
-            peaks = detect_local_minima(self.lyaponuv)
-        Qind = np.argmin(np.sum((self.Q_grid[peaks] - self.QG)**2,axis=1))
+        # q_shift = Q_SHIFT
+        # peaks = (np.array([]),)
+        # while not peaks[0].size:
+        #     self.set_lyaponuv(self.QG - q_shift, self.QG + q_shift)
+        #     q_shift *= 2
+        #     peaks = detect_local_minima(self.lyaponuv)
+        # Qind = np.argmin(np.sum((self.Q_grid[peaks] - self.QG)**2,axis=1))
         # self.QG = self.Q_grid[peaks][Qind]
         # dbg
+        self.set_lyaponuv(self.QG - Q_SHIFT, self.QG + Q_SHIFT)
         fig = plt.figure()
-        # ax = fig.gca(projection='3d')
-        # ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
-        # ax.scatter3D(self.Q_grid[peaks][Qind,0],self.Q_grid[peaks][Qind,1],self.lyaponuv[peaks][Qind],marker='o',color='red')
-        # ax.scatter3D(self.Q_grid[peaks][Qind, 0], self.Q_grid[peaks][Qind, 1], self.lyaponuv[peaks][Qind], marker='o',
-        #              color='red')
-        ax = fig.gca()
-        ax.plot(self.Q_grid[:,0],self.lyaponuv)
-        ax.plot(self.Q_grid[peaks][Qind], self.lyaponuv[peaks][Qind], marker='o', color='red')
-        ax.plot([self.QG[0,0], self.QG[0,0]], [np.min(self.lyaponuv), np.max(self.lyaponuv)], color='green')
+        ax = fig.gca(projection='3d')
+        ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
+        x = np.searchsorted(self.Q_grid[:,0,0], self.QG[0,0])
+        y = np.searchsorted(self.Q_grid[0,:,1], self.QG[0,1])
+        ax.scatter3D(self.QG[0,0], self.QG[0,1], self.lyaponuv[x,y], marker='o',color='red')
         str_ind = "0"*(4-len(str(self.counter))) + str(self.counter)
         plt.savefig(basePath + "Lyaponuv_" + str_ind)
         plt.close(fig)
