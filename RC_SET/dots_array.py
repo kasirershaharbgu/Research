@@ -212,7 +212,7 @@ class DotArray:
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         self.timeStep = -10/np.max(self._JeigenValues)
-        self.default_dt = -1/np.max(self._JeigenValues)
+        self.default_dt = -1/np.min(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
             self._constQnPart = invMat.dot(flattenToColumn(self.VG))
