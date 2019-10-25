@@ -648,7 +648,7 @@ class GraphSimulator:
         dq = DQ
         coordinates = [np.arange(Qmin[i], Qmax[i], dq) for i in range(Qmin.size)]
         grid = np.meshgrid(*coordinates)
-        grid_array = np.array(grid).T
+        grid_array = np.moveaxis(np.array(grid),0,-1)
         res = [np.zeros(grid[0].shape) for i in range(res_len)]
         it = np.nditer(grid[0], flags=['multi_index'])
         while not it.finished:
@@ -721,7 +721,7 @@ class GraphSimulator:
     def calcCurrent(self, fullOutput=False, basePath=""):
         self.find_next_QG_using_gradient_descent()
         #dbg
-        # self.find_next_QG_using_lyaponuv(basePath)
+        self.find_next_QG_using_lyaponuv(basePath)
         # print(self.QG)
         # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
