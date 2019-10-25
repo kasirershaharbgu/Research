@@ -212,7 +212,7 @@ class DotArray:
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         self.timeStep = -10/np.max(self._JeigenValues)
-        self.default_dt = -1/np.max(self._JeigenValues)
+        self.default_dt = -1/np.min(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
             self._constQnPart = invMat.dot(flattenToColumn(self.VG))
@@ -648,7 +648,7 @@ class GraphSimulator:
         dq = DQ
         coordinates = [np.arange(Qmin[i], Qmax[i], dq) for i in range(Qmin.size)]
         grid = np.meshgrid(*coordinates)
-        grid_array = np.array(grid).T
+        grid_array = np.moveaxis(np.array(grid),0,-1)
         res = [np.zeros(grid[0].shape) for i in range(res_len)]
         it = np.nditer(grid[0], flags=['multi_index'])
         while not it.finished:
@@ -674,6 +674,7 @@ class GraphSimulator:
         return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
 
     def plot_average_voltages(self, Qmin, Qmax):
+        from mayavi import mlab
         Q_grid, voltages = self.calc_on_grid(Qmin, Qmax, self.get_average_voltages, res_len=Qmin.size)
         _, voltages_from_ground = self.calc_on_grid(Qmin, Qmax, self.get_voltages_from_ground, res_len=Qmin.size)
         fig1 = mlab.figure()
