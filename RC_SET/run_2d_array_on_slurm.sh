@@ -18,6 +18,7 @@ vstep=0.01
 rg_avg=1000
 cg_avg=10
 f="2D_square_arrays_with_current_map_big_voltage"
+r_std=0
 full="" 
 graph=""
 currentmap="--current-map"
