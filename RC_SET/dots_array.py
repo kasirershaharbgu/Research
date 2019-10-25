@@ -51,7 +51,7 @@ def simple_gadient_descent(grad, x0, eps=1e-10, lr=1e-3, max_iter=1e6, plot_lc=F
     if plot_lc:
         gradvec = []
     iter=0
-    while np.max(curr_grad) > eps and iter < max_iter:
+    while np.max(np.abs(curr_grad)) > eps and iter < max_iter:
         if plot_lc:
             gradvec.append(curr_grad)
         x = x - curr_grad*lr
@@ -524,6 +524,7 @@ class GraphSimulator:
         self.QG = Q0
         self.VL = VL0
         self.VR = VR0
+        self.counter = 0
 
         self.edgesMat = None
         self.states = None
@@ -683,7 +684,7 @@ class GraphSimulator:
         surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages_from_ground[1], colormap='Oranges')
         mlab.show()
 
-    def find_next_QG_using_lyaponuv(self):
+    def find_next_QG_using_lyaponuv(self, basePath):
         q_shift = Q_SHIFT
         peaks = (np.array([]),)
         while not peaks[0].size:
@@ -691,13 +692,22 @@ class GraphSimulator:
             q_shift *= 2
             peaks = detect_local_minima(self.lyaponuv)
         Qind = np.argmin(np.sum((self.Q_grid[peaks] - self.QG)**2,axis=1))
-        self.QG = self.Q_grid[peaks][Qind]
+        # self.QG = self.Q_grid[peaks][Qind]
         # dbg
         fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
-        ax.scatter3D(self.Q_grid[peaks][Qind,0],self.Q_grid[peaks][Qind,1],self.lyaponuv[peaks][Qind],marker='o',color='red')
-        plt.show()
+        # ax = fig.gca(projection='3d')
+        # ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
+        # ax.scatter3D(self.Q_grid[peaks][Qind,0],self.Q_grid[peaks][Qind,1],self.lyaponuv[peaks][Qind],marker='o',color='red')
+        # ax.scatter3D(self.Q_grid[peaks][Qind, 0], self.Q_grid[peaks][Qind, 1], self.lyaponuv[peaks][Qind], marker='o',
+        #              color='red')
+        ax = fig.gca()
+        ax.plot(self.Q_grid[:,0],self.lyaponuv)
+        ax.plot(self.Q_grid[peaks][Qind], self.lyaponuv[peaks][Qind], marker='o', color='red')
+        ax.plot([self.QG[0,0], self.QG[0,0]], [np.min(self.lyaponuv), np.max(self.lyaponuv)], color='green')
+        str_ind = "0"*(4-len(str(self.counter))) + str(self.counter)
+        plt.savefig(basePath + "Lyaponuv_" + str_ind)
+        plt.close(fig)
+        self.counter += 1
 
     def find_next_QG_using_gradient_descent(self):
         flag = False
@@ -710,16 +720,14 @@ class GraphSimulator:
         if flag: #if gradient descent did not converge skipping the point
             self.QG = self.reshape_to_array(res)
 
-    def calcCurrent(self, fullOutput=False):
+    def calcCurrent(self, fullOutput=False, basePath=""):
         self.find_next_QG_using_gradient_descent()
         #dbg
-        # self.find_next_QG_using_lyaponuv()
+        self.find_next_QG_using_lyaponuv(basePath)
         # print(self.QG)
         # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
-        self.dotArray.Q = self.reshape_to_array(self.QG)
-        self.dotArray.n = n_avg
         self.n0 = np.floor(n_avg)
         left_current = np.sum(self.prob*self.rates_diff_left.T)
         right_current = np.sum(self.prob*self.rates_diff_right.T)
@@ -737,7 +745,7 @@ class GraphSimulator:
         right_diff = right_tunneling_rates[:,-1] - left_tunneling_rates[:,-1]
         return left_diff, right_diff
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False):
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath=""):
         I = []
         if fullOutput:
             ns = []
@@ -747,7 +755,7 @@ class GraphSimulator:
         for VL in VL_vec:
             print(VL,end=',')
             self.dotArray.changeVext(VL, self.VR)
-            res = self.calcCurrent()
+            res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
             leftCurrent = res[1]
             if fullOutput:
@@ -763,7 +771,7 @@ class GraphSimulator:
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, currentMap=False,
-                        fast_relaxation=False):
+                        fast_relaxation=False, basePath=""):
     if useGraph:
         simulator = GraphSimulator(rows, columns, VL0, VR0, np.array(VG0),
                                     np.array(Q0), np.array(n0), np.array(CG),
@@ -775,7 +783,7 @@ def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, col
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv), fast_relaxation)
     out = simulator.calcIV(Vmax, Vstep,
-                           fullOutput=fullOutput, print_stats=printState, currentMap=currentMap)
+                           fullOutput=fullOutput, print_stats=printState, currentMap=currentMap, basePath=basePath)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
 
@@ -809,7 +817,8 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
                                     (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                     Vmax, Vstep, fullOutput, printState, useGraph, currentMap, fastRelaxation))
+                                     Vmax, Vstep, fullOutput, printState, useGraph, currentMap,
+                                     fastRelaxation, basePath))
             results.append(res)
         for res in results:
             result = res.get()
@@ -831,7 +840,8 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         results = []
         for repeat in range(repeats):
             result = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                         Vmax, Vstep, fullOutput, printState, useGraph, currentMap, fastRelaxation)
+                                         Vmax, Vstep, fullOutput, printState, useGraph, currentMap,
+                                         fastRelaxation, basePath)
             I = result[0]
             currentMapInd = 2
             if fullOutput:
@@ -851,13 +861,6 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)
-        fig = plt.figure()
-        plt.plot(V[:V.size // 2], avgN[:V.size // 2, 0, 0], '.b', V[V.size // 2:], avgN[V.size // 2:, 0, 0], '.r',
-                 V[:V.size // 2], avgN[:V.size // 2, 0, 1], '.g', V[V.size // 2:], avgN[V.size // 2:, 0, 1], '.y')
-        plt.savefig(basePath + "_n.png")
-        fig = plt.figure()
-        plt.plot(V[:V.size // 2], avgQ[:V.size // 2, 0, 0], '.b', V[V.size // 2:], avgQ[V.size // 2:, 0, 0], '.r',
-                 V[:V.size // 2], avgQ[:V.size // 2, 0, 1], '.g', V[V.size // 2:], avgQ[V.size // 2:, 0, 1], '.y')
         plt.savefig(basePath + "_Q.png")
         np.save(basePath + "_n", avgN)
         np.save(basePath + "_Q", avgQ)
