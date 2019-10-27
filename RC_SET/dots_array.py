@@ -19,7 +19,7 @@ MINIMUM_STEPS_PER_DOT = 1000
 # Lyaponuv Constants
 EPS = 0.0001
 DQ = 0.1
-Q_SHIFT = 2
+Q_SHIFT = [[2,1]]
 GRAD_REP = 5
 INI_LR = 0.001
 
@@ -647,7 +647,7 @@ class GraphSimulator:
         Qmax = Qmax.flatten()
         dq = DQ
         coordinates = [np.arange(Qmin[i], Qmax[i], dq) for i in range(Qmin.size)]
-        grid = np.meshgrid(*coordinates)
+        grid = np.meshgrid(*coordinates, indexing='ij')
         grid_array = np.moveaxis(np.array(grid),0,-1)
         res = [np.zeros(grid[0].shape) for i in range(res_len)]
         it = np.nditer(grid[0], flags=['multi_index'])
@@ -699,8 +699,8 @@ class GraphSimulator:
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
-        x = np.searchsorted(self.Q_grid[:,0,0], self.QG[0,0])
-        y = np.searchsorted(self.Q_grid[0,:,1], self.QG[0,1])
+        y = np.searchsorted(self.Q_grid[:,0,0], self.QG[0,0])
+        x = np.searchsorted(self.Q_grid[0,:,1], self.QG[0,1])
         ax.scatter3D(self.QG[0,0], self.QG[0,1], self.lyaponuv[x,y], marker='o',color='red')
         str_ind = "0"*(4-len(str(self.counter))) + str(self.counter)
         plt.savefig(basePath + "Lyaponuv_" + str_ind)
