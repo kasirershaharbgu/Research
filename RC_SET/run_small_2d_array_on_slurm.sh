@@ -5,7 +5,7 @@ vr=0
 vg_avg=0
 vg_std=0
 c_avg=1
-c_std=0
+c_std=0.5
 cg_std=0
 r_avg=10
 rg_std=0
@@ -17,14 +17,14 @@ q_std=0
 vstep=0.01
 rg_avg=1000
 cg_avg=10
-t="3:00:00"
-dist="two_points"
+t="20:00:00"
+dist="uniform"
 r_std=0
 graph=""
 full="--full"
 currentmap=""
-vmax=3
-f="2_dots_arrays_gillespie"
+vmax=5
+f="2_dots_arrays_c_disorder"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
