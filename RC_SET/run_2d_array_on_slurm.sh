@@ -23,7 +23,7 @@ full=""
 graph=""
 currentmap="--current-map"
 t="3-10:00:00"
-vmax=20
+vmax=2
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi

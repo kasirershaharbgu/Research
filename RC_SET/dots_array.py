@@ -73,7 +73,7 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, fastRelaxation=False):
+    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False):
         """
         Creates new array of quantum dots
         :param rows: number of rows (int)
@@ -104,6 +104,7 @@ class DotArray:
         self.Rh = Rh
         self.Rv = Rv
         self.R = np.hstack((Rh.flatten(), Rh.flatten(), Rv.flatten(), Rv.flatten()))
+        self.temperature = temperature
         self.totalChargePassedRight = 0
         self.totalChargePassedLeft = 0
         self.no_tunneling_next_time = False
@@ -115,6 +116,7 @@ class DotArray:
         self.saveCurrentMap = False
         self.Ih = None
         self.Iv = None
+
 
     def getRows(self):
         return self.rows
@@ -282,9 +284,17 @@ class DotArray:
         return variableWork + self.constWork
 
     def getRates(self):
+        """
+        Returns the tunnelling rate between neighboring dots
+        :param T: temperature (in energy units = e^2[V])
+        """
         work = self.getWork()
-        work[work > 0] = 0
+        if self.temperature == 0:
+            work[work > 0] = 0
+        else:
+            work = work/(1 - np.exp(work/self.temperature))
         return -work / self.R
+
 
     def getVoltages(self):
         return self.invC.dot(self.getNprime() + flattenToColumn(self.Q))
@@ -397,9 +407,9 @@ class Simulator:
     :param columns: number of columns in the array
     """
     def __init__(self, rows, columns, VL0, VR0, VG,
-                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv, fastRelaxation):
+                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
-                                 Ch, Cv, Rh, Rv, fastRelaxation)
+                                 Ch, Cv, Rh, Rv, temperature, fastRelaxation)
         self.VL = VL0
         self.VR = VR0
         # for debug
@@ -514,12 +524,12 @@ class Simulator:
 
 class GraphSimulator:
     """
-    Calculating staedy state current for an array of quantum dots by using linear programming
+    Calculating steady state current for an array of quantum dots by using linear programming
     """
     def __init__(self, rows, columns, VL0, VR0, VG,
-                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv, fastRelaxation):
+                 Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
-                                 Ch, Cv, Rh, Rv, fastRelaxation=True)
+                                 Ch, Cv, Rh, Rv, temperature, fastRelaxation=fastRelaxation)
         self.n0 = n0
         self.QG = Q0
         self.VL = VL0
@@ -769,24 +779,24 @@ class GraphSimulator:
 
 def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, currentMap=False,
-                        fast_relaxation=False, basePath=""):
+                        temperature=0, fast_relaxation=False, basePath=""):
     if useGraph:
         simulator = GraphSimulator(rows, columns, VL0, VR0, np.array(VG0),
                                     np.array(Q0), np.array(n0), np.array(CG),
                                     np.array(RG), np.array(Ch), np.array(Cv),
-                                    np.array(Rh), np.array(Rv), fast_relaxation)
+                                    np.array(Rh), np.array(Rv), temperature, fast_relaxation)
     else:
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
-                              np.array(Rh), np.array(Rv), fast_relaxation)
+                              np.array(Rh), np.array(Rv), temperature, fast_relaxation)
     out = simulator.calcIV(Vmax, Vstep,
                            fullOutput=fullOutput, print_stats=printState, currentMap=currentMap, basePath=basePath)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                      Vmax, Vstep,repeats=1, savePath=".", fileName="", fullOutput=False,
+                      Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False):
     if plotCurrentMaps:
@@ -799,7 +809,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
-                              np.array(Rh), np.array(Rv), fastRelaxation)
+                              np.array(Rh), np.array(Rv), temperature, fastRelaxation)
         simulator.checkSteadyState(repeats)
         exit(0)
     basePath = os.path.join(savePath, fileName)
@@ -815,7 +825,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
                                     (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                                     Vmax, Vstep, fullOutput, printState, useGraph, currentMap,
+                                     Vmax, Vstep, fullOutput, printState, useGraph, currentMap, temperature,
                                      fastRelaxation, basePath))
             results.append(res)
         for res in results:
@@ -839,7 +849,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         for repeat in range(repeats):
             result = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                                          Vmax, Vstep, fullOutput, printState, useGraph, currentMap,
-                                         fastRelaxation, basePath)
+                                         temperature, fastRelaxation, basePath)
             I = result[0]
             currentMapInd = 2
             if fullOutput:
@@ -921,6 +931,8 @@ def plotCurrentMaps(im, text, M, N):
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
     # Normal parameters
+    parser.add_option("-T", "--temperature", dest="T",
+                      help="Environment temperatue in units of e^2 [default: %default]", default=0, type=float)
     parser.add_option("-M", "--height", dest="M", help="number of lines in "
                       "the array [default: %default]", default=1, type=int)
     parser.add_option("-N", "--width", dest="N", help="number of columns in "
@@ -1054,6 +1066,7 @@ if __name__ == "__main__":
     VR0 = options.VR
     VL0 = VR0 + options.Vmin
     dist = options.dist
+    T = options.T
     VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                              False)
     Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
@@ -1090,9 +1103,19 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
+    # import cProfile, pstats, io
+    # from pstats import SortKey
+    # pr = cProfile.Profile()
+    # pr.enable()
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
-                          Vmax, Vstep, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
+                          Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
                           printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map)
+    # pr.disable()
+    # s = io.StringIO()
+    # sortby = SortKey.CUMULATIVE
+    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    # ps.print_stats()
+    # print(s.getvalue())
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
