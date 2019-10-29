@@ -259,6 +259,7 @@ class DotArray:
         vertConstWork = (0.5*commonVert).flatten()
 
         self.constWork = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
+        self.variableWork = np.zeros(self.constWork.shape)
         return True
 
     def setConstMatrix(self):
@@ -280,8 +281,13 @@ class DotArray:
         q = self.getNprime() + flattenToColumn(self.Q)
         variableRightWork = (self.horizontalMatrix.dot(q)).flatten()
         variableDownWork = (self.verticalMatrix.dot(q)).flatten()
-        variableWork = np.hstack((variableRightWork, -variableRightWork, variableDownWork, -variableDownWork))
-        return variableWork + self.constWork
+        variableRightWorkLen = variableRightWork.size
+        variableDownWorkLen = variableDownWork.size
+        self.variableWork[:variableRightWorkLen] = variableRightWork
+        self.variableWork[variableRightWorkLen:2*variableRightWorkLen] = -variableRightWork
+        self.variableWork[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] = variableDownWork
+        self.variableWork[2 * variableRightWorkLen + variableDownWorkLen:] = -variableDownWork
+        return self.variableWork + self.constWork
 
     def getRates(self):
         """
