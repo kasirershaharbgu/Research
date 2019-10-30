@@ -1,6 +1,6 @@
 #!/bin/bash
 
-vmin=-2
+vmin=0
 vr=0
 vg_avg=0
 vg_std=0
@@ -14,7 +14,7 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.01
+vstep=0.1
 rg_avg=1000
 cg_avg=10
 t="20:00:00"
@@ -23,8 +23,8 @@ r_std=0
 graph=""
 full="--full"
 currentmap=""
-vmax=5
-f="2_dots_arrays_c_disorder"
+vmax=30
+f="2_dots_arrays_c_disorder_high_v"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
