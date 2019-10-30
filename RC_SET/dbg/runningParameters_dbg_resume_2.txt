@@ -5,15 +5,16 @@ N = 2
 VR = 0.0
 Vmin = 0.0
 Vmax = 30.0
-vStep = 1.0
+vStep = 3.0
 repeats = 1
-fileName = dbg
+fileName = dbg_resume_2
 dist = two_points
 fullOutput = False
 use_graph = False
 current_map = False
 plot_current_map = False
 dbg = True
+resume = True
 output_folder = dbg
 VG_avg = 0.0
 VG_std = 0.0
@@ -24,7 +25,7 @@ CG_std = 0.0
 R_avg = 10.0
 R_std = 9.0
 custom_rh = [[1,10,20]]
-custom_rv = 
+custom_rv = [[]]
 RG_avg = 1000.0
 RG_std = 0.0
 n0_avg = 0.0
@@ -39,5 +40,5 @@ CG: [[10. 10.]]
 RG: [[1000. 1000.]]
 Ch: [[0.1 1.9 0.1]]
 Cv: [[0.]]
-Rh: [[ 1. 19. 19.]]
+Rh: [[ 1 10 20]]
 Rv: []
