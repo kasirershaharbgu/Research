@@ -1265,8 +1265,6 @@ if __name__ == "__main__":
     current_map = options.current_map
     dbg = options.dbg
     resume = options.resume
-    if dbg:
-        Ch = [[0.1,1.9,0.1]]
     plot_current_map = options.plot_current_map
     # Running Simulation
     if not os.path.exists(savePath):
