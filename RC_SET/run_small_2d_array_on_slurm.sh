@@ -22,9 +22,9 @@ dist="uniform"
 r_std=0
 graph=""
 full="--full"
-currentmap="--currentmap"
+currentmap="--current-map"
 vmax=30
-f="2_dots_arrays_c_disorder_high_v"
+f="2_vertical_dots_arrays_c_disorder"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
