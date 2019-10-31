@@ -219,6 +219,7 @@ class DotArray:
         self._JeigenValues, self._JeigenVectors = np.linalg.eig(self.getJmatrix())
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
+        print(-1/self._JeigenValues)
         self.timeStep = -10/np.max(self._JeigenValues)
         self.default_dt = -1/np.min(self._JeigenValues)
         if self.fast_relaxation:
@@ -1169,6 +1170,12 @@ def getOptions():
     parser.add_option("--custom-rv", dest="custom_rv", help="list of r vertical values ordered as numpy array."
                                                              " Overrides random r parameters [default: %default]",
                       default="")
+    parser.add_option("--custom-ch", dest="custom_ch", help="list of c horizontal values ordered as numpy array."
+                                                            " Overrides random c parameters [default: %default]",
+                      default="")
+    parser.add_option("--custom-cv", dest="custom_cv", help="list of c vertical values ordered as numpy array."
+                                                            " Overrides random c parameters [default: %default]",
+                      default="")
     parser.add_option("--rg-avg", dest="RG_avg", help="Gate Resistors "
                       "resistance average [default: %default]",
                       default=1, type=float)
@@ -1242,10 +1249,14 @@ if __name__ == "__main__":
     n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
     CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist,True)
     RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist,True)
-    Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
-                            True)
-    Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
-                            True)
+    if options.custom_ch.replace('\"', '') and options.custom_cv.replace('\"', ''):
+        Ch = literal_eval(options.custom_ch.replace('\"', ''))
+        Cv = literal_eval(options.custom_cv.replace('\"', ''))
+    else:
+        Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
+                                 True)
+        Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
+                                 True)
     if options.custom_rh.replace('\"','') and options.custom_rv.replace('\"',''):
         Rh = literal_eval(options.custom_rh.replace('\"',''))
         Rv = literal_eval(options.custom_rv.replace('\"',''))
