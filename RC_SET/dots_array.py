@@ -147,6 +147,12 @@ class DotArray:
     def getGroundCharge(self):
         return np.copy(self.Q)
 
+    def setOccupation(self, n):
+        self.n = n
+
+    def setGroundCharge(self, Q):
+        self.Q = Q
+
     def getCharge(self):
         return self.totalChargePassedRight, self.totalChargePassedLeft
 
@@ -412,12 +418,13 @@ class Simulator:
     :param rows: number of rows in the array
     :param columns: number of columns in the array
     """
-    def __init__(self, rows, columns, VL0, VR0, VG,
+    def __init__(self, index, rows, columns, VL0, VR0, VG,
                  Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
                                  Ch, Cv, Rh, Rv, temperature, fastRelaxation)
         self.VL = VL0
         self.VR = VR0
+        self.index = index
         # for debug
     #     self.randomGen = self.getRandom()
     #
@@ -494,17 +501,71 @@ class Simulator:
         plt.plot((np.array(Ileft) - np.array(Iright)) ** 2)
         plt.show()
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath=""):
-        I = []
+    def saveState(self, I, V, n=None, Q=None, Imaps=None, fullOutput=False, currentMap=False, basePath=''):
+        baseName = basePath + "_temp_" + str(self.index)
+        np.save(baseName + "_I", np.array(I))
+        np.save(baseName + "_Vind", np.array(V))
         if fullOutput:
-            ns = []
-            Qs = []
+            np.save(baseName + "_ns", np.array(n))
+            np.save(baseName + "_Qs", np.array(Q))
+        np.save(baseName + "_n", self.dotArray.getOccupation())
+        np.save(baseName + "_Q", self.dotArray.getGroundCharge())
         if currentMap:
-            Imaps = []
+            np.save(baseName + "_current_map", np.array(Imaps))
+
+    def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
+        baseName = basePath + "_temp_" + str(self.index)
+        I = np.load(baseName + "_I.npy")
+        Vind = np.load(baseName + "_Vind.npy")
+        n = np.load(baseName + "_n.npy")
+        Q = np.load(baseName + "_Q.npy")
+        res = (I,Vind,n,Q)
+        if fullOutput:
+            ns = np.load(baseName + "_ns.npy")
+            Qs = np.load(baseName + "_Qs.npy")
+            res = res + (ns, Qs)
+        if currentMap:
+            Imaps = np.load(baseName + "_current_map.npy")
+            res = res + (Imaps,)
+        return res
+
+    def clearState(self, fullOutput=False, currentMap=False, basePath=''):
+        baseName = basePath + "_temp_" + str(self.index)
+        os.remove(baseName + "_I.npy")
+        os.remove(baseName + "_Vind.npy")
+        os.remove(baseName + "_n.npy")
+        os.remove(baseName + "_Q.npy")
+        if fullOutput:
+            os.remove(baseName + "_ns.npy")
+            os.remove(baseName + "_Qs.npy")
+        if currentMap:
+            os.remove(baseName + "_current_map.npy")
+        return True
+
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
+        I = []
+        ns = []
+        Qs = []
+        Imaps = []
         tStep = self.dotArray.getTimeStep()
         VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
-        for VL in VL_vec:
+        VL_res = np.copy(VL_vec)
+        Vind_addition = 0
+        if resume:
+            resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
+            I = list(resumeParams[0])
+            Vind = int(resumeParams[1])
+            VL_vec = VL_vec[Vind+1:]
+            Vind_addition = Vind + 1
+            self.dotArray.setOccupation(resumeParams[2])
+            self.dotArray.setGroundCharge(resumeParams[3])
+            if fullOutput:
+                ns = list(resumeParams[4])
+                Qs = list(resumeParams[5])
+            if currentMap:
+                self.Imaps = list(resumeParams[6])
+        for Vind, VL in enumerate(VL_vec):
             self.dotArray.changeVext(VL, self.VR)
             # running once to get to steady state
             self.calcCurrent(tStep)
@@ -518,11 +579,14 @@ class Simulator:
             if currentMap:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrnet)/2)
-        res = (np.array(I), VL_vec - self.VR)
+            self.saveState(I, [Vind + Vind_addition], ns, Qs, Imaps, fullOutput=fullOutput,
+                           currentMap=currentMap, basePath=basePath)
+        res = (np.array(I), VL_res - self.VR)
         if fullOutput:
             res = res + (np.array(ns), np.array(Qs))
         if currentMap:
             res = res + (np.array(Imaps),)
+        self.clearState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
         return res
 
     def printState(self):
@@ -532,7 +596,7 @@ class GraphSimulator:
     """
     Calculating steady state current for an array of quantum dots by using linear programming
     """
-    def __init__(self, rows, columns, VL0, VR0, VG,
+    def __init__(self, index, rows, columns, VL0, VR0, VG,
                  Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation):
         self.dotArray = DotArray(rows, columns, VL0, VR0, VG, Q0, n0, CG, RG,
                                  Ch, Cv, Rh, Rv, temperature, fastRelaxation=fastRelaxation)
@@ -541,6 +605,7 @@ class GraphSimulator:
         self.VL = VL0
         self.VR = VR0
         self.counter = 0
+        self.index = index
 
         self.edgesMat = None
         self.states = None
@@ -759,14 +824,60 @@ class GraphSimulator:
         right_diff = right_tunneling_rates[:,-1] - left_tunneling_rates[:,-1]
         return left_diff, right_diff
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath=""):
-        I = []
+    def saveState(self, I, Vind, n=None, Q=None, fullOutput=False, basePath=''):
+        baseName = basePath + "_temp_" + str(self.index)
+        np.save(baseName + "_I", np.array(I))
+        np.save(baseName + "_Vind", np.array(Vind))
         if fullOutput:
-            ns = []
-            Qs = []
+            np.save(baseName + "_ns", np.array(n))
+            np.save(baseName + "_Qs", np.array(Q))
+        np.save(baseName + "_n", self.n0)
+        np.save(baseName + "_Q", self.QG)
+
+    def loadState(self, fullOutput=False, basePath=''):
+        baseName = basePath + "_temp_" + str(self.index)
+        I = np.load(baseName + "_I.npy")
+        Vind = np.load(baseName + "_Vind.npy")
+        n = np.load(baseName + "_n.npy")
+        Q = np.load(baseName + "_Q.npy")
+        res = (I,Vind, n, Q)
+        if fullOutput:
+            ns = np.load(baseName + "_ns.npy")
+            Qs = np.load(baseName + "_Qs.npy")
+            res = res + (ns, Qs)
+        return res
+
+    def removeState(self, fullOutput=False, basePath=''):
+        baseName = basePath + "_temp_" + str(self.index)
+        os.remove(baseName + "_I.npy")
+        os.remove(baseName + "_Vind.npy")
+        os.remove(baseName + "_n.npy")
+        os.remove(baseName + "_Q.npy")
+        if fullOutput:
+            os.remove(baseName + "_ns.npy")
+            os.remove(baseName + "_Qs.npy")
+        return True
+
+    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
+        I = []
+        ns = []
+        Qs = []
+        Vind_addition = 0
         VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
-        for VL in VL_vec:
+        VL_res = np.copy(VL_vec)
+        if resume:
+            resumeParams = self.loadState(fullOutput=fullOutput, basePath=basePath)
+            I = list(resumeParams[0])
+            Vind = int(resumeParams[1])
+            VL_vec = VL_vec[Vind+1:]
+            Vind_addition = Vind + 1
+            self.n0 = resumeParams[2]
+            self.QG = resumeParams[3]
+            if fullOutput:
+                ns = list(resumeParams[4])
+                Qs = list(resumeParams[5])
+        for Vind,VL in enumerate(VL_vec):
             print(VL,end=',')
             self.dotArray.changeVext(VL, self.VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
@@ -778,33 +889,74 @@ class GraphSimulator:
                 ns.append(n)
                 Qs.append(Q)
             I.append((rightCurrent + leftCurrent) / 2)
-        result = (np.array(I), VL_vec - self.VR)
+            self.saveState(I, [Vind + Vind_addition], ns, Qs, fullOutput=fullOutput, basePath=basePath)
+        result = (np.array(I), VL_res - self.VR)
         if fullOutput:
             result = result + (ns, Qs)
+        self.removeState(fullOutput=fullOutput, basePath=basePath)
         return result
 
-def runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+def runSingleSimulation(index, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, currentMap=False,
-                        temperature=0, fast_relaxation=False, basePath=""):
+                        temperature=0, fast_relaxation=False, basePath="", resume=False):
     if useGraph:
-        simulator = GraphSimulator(rows, columns, VL0, VR0, np.array(VG0),
+        simulator = GraphSimulator(index, rows, columns, VL0, VR0, np.array(VG0),
                                     np.array(Q0), np.array(n0), np.array(CG),
                                     np.array(RG), np.array(Ch), np.array(Cv),
                                     np.array(Rh), np.array(Rv), temperature, fast_relaxation)
     else:
-        simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
+        simulator = Simulator(index, rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv), temperature, fast_relaxation)
-    out = simulator.calcIV(Vmax, Vstep,
-                           fullOutput=fullOutput, print_stats=printState, currentMap=currentMap, basePath=basePath)
+    out = simulator.calcIV(Vmax, Vstep, fullOutput=fullOutput, print_stats=printState,
+                           currentMap=currentMap, basePath=basePath, resume=resume)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
+
+def saveRandomParams(VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,basePath):
+    baseName = basePath + "_temp_"
+    np.save(baseName + "VG", VG)
+    np.save(baseName + "Q0", Q0)
+    np.save(baseName + "n0", n0)
+    np.save(baseName + "CG", CG)
+    np.save(baseName + "RG", RG)
+    np.save(baseName + "Ch", Ch)
+    np.save(baseName + "Cv", Cv)
+    np.save(baseName + "Rh", Rh)
+    np.save(baseName + "Rv", Rv)
+    return True
+
+def loadRandomParams(basePath):
+    baseName = basePath + "_temp_"
+    VG0 = np.load(baseName + "VG.npy")
+    Q0 = np.load(baseName + "Q0.npy")
+    n0 = np.load(baseName + "n0.npy")
+    CG = np.load(baseName + "CG.npy")
+    RG = np.load(baseName + "RG.npy")
+    Ch = np.load(baseName + "Ch.npy")
+    Cv = np.load(baseName + "Cv.npy")
+    Rh = np.load(baseName + "Rh.npy")
+    Rv = np.load(baseName + "Rv.npy")
+    return VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv
+
+def removeRandomParams(basePath):
+    baseName = basePath + "_temp_"
+    VG0 = os.remove(baseName + "VG.npy")
+    Q0 = os.remove(baseName + "Q0.npy")
+    n0 = os.remove(baseName + "n0.npy")
+    CG = os.remove(baseName + "CG.npy")
+    RG = os.remove(baseName + "RG.npy")
+    Ch = os.remove(baseName + "Ch.npy")
+    Cv = os.remove(baseName + "Cv.npy")
+    Rh = os.remove(baseName + "Rh.npy")
+    Rv = os.remove(baseName + "Rv.npy")
+    return True
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
-                      currentMap=False, dbg=False, plotCurrentMaps=False):
+                      currentMap=False, dbg=False, plotCurrentMaps=False, resume=False):
     if plotCurrentMaps:
         basePath = os.path.join(savePath, fileName)
         avgImaps = np.load(basePath + "_Imap.npy")
@@ -812,13 +964,20 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         saveCurrentMaps(avgImaps, V, basePath + "_Imap")
         exit(0)
     if checkSteadyState:
-        simulator = Simulator(rows, columns, VL0, VR0, np.array(VG0),
+        simulator = Simulator(0, rows, columns, VL0, VR0, np.array(VG0),
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv), temperature, fastRelaxation)
         simulator.checkSteadyState(repeats)
         exit(0)
     basePath = os.path.join(savePath, fileName)
+    if not resume:
+        saveRandomParams(np.array(VG0),
+                         np.array(Q0), np.array(n0), np.array(CG),
+                         np.array(RG), np.array(Ch), np.array(Cv),
+                         np.array(Rh), np.array(Rv),basePath)
+    else:
+        VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loadRandomParams(basePath)
     Is = []
     if fullOutput:
         ns = []
@@ -830,9 +989,9 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         results = []
         for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
-                                    (VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+                                    (repeat, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                                      Vmax, Vstep, fullOutput, printState, useGraph, currentMap, temperature,
-                                     fastRelaxation, basePath))
+                                     fastRelaxation, basePath, resume))
             results.append(res)
         for res in results:
             result = res.get()
@@ -853,9 +1012,9 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     else: #dbg
         results = []
         for repeat in range(repeats):
-            result = runSingleSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+            result = runSingleSimulation(repeat, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                                          Vmax, Vstep, fullOutput, printState, useGraph, currentMap,
-                                         temperature, fastRelaxation, basePath)
+                                         temperature, fastRelaxation, basePath, resume)
             I = result[0]
             currentMapInd = 2
             if fullOutput:
@@ -890,6 +1049,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
+    removeRandomParams(basePath)
     return params
 
 def saveCurrentMaps(Imaps, V, path):
@@ -974,6 +1134,8 @@ def getOptions():
                       default=False, action='store_true')
     parser.add_option("--dbg", dest="dbg", help="Avoids parallel running for debugging [Default:%default]",
                       default=False, action='store_true')
+    parser.add_option("--resume", dest="resume", help="Resume failed run from last checkpoint [Default:%default]",
+                      default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
                       default='.')
@@ -1039,7 +1201,7 @@ def saveParameters(path, fileName, options, array_params):
 def create_random_array(M,N, avg, std, dist, only_positive=False):
     if std == 0:
         res = avg*np.ones((M, N))
-    elif dist == 'uniform':
+    elif dist == 'uniform' or (dist == 'exp' and not only_positive):
         res = np.random.uniform(low=avg-std, high=avg+std,size=(M,N))
     elif dist == 'two_points':
         r = np.random.rand(M,N)
@@ -1057,7 +1219,7 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
             scale = std**2 / avg
         res = 0.1 + np.random.gamma(shape=shape, scale=scale, size=(M,N))
     elif dist == 'exp':
-        r = np.random.uniform(low=np.log2(avg - std), high=np.log2(avg + std), size=(M, N))
+        r = np.random.uniform(low=np.log2(max(avg - std,0.01)), high=np.log2(max(avg + std,0.01)), size=(M, N))
         res = 2**r
     if only_positive and (res <= 0).any():
         print("Warnning, changing to positive distribution")
@@ -1102,6 +1264,7 @@ if __name__ == "__main__":
     fast_relaxation = options.RG_avg * options.CG_avg < options.C_avg * options.R_avg
     current_map = options.current_map
     dbg = options.dbg
+    resume = options.resume
     plot_current_map = options.plot_current_map
     # Running Simulation
     if not os.path.exists(savePath):
@@ -1116,7 +1279,7 @@ if __name__ == "__main__":
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
                           printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map,
-                                     dbg=dbg, plotCurrentMaps=plot_current_map)
+                                     dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume)
     # pr.disable()
     # s = io.StringIO()
     # sortby = SortKey.CUMULATIVE

@@ -14,16 +14,16 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.01
+vstep=0.1
 rg_avg=1000
 cg_avg=10
-f="2D_square_arrays_with_current_map_big_voltage_c_disorder"
+f="2D_square_arrays_with_current_map_big_v_c_disorder"
 r_std=0
 full="" 
 graph=""
 currentmap="--current-map"
 t="3-10:00:00"
-vmax=2
+vmax=30
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
