@@ -220,7 +220,7 @@ class DotArray:
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         print(-1/self._JeigenValues)
-        self.timeStep = -10/np.max(self._JeigenValues)
+        self.timeStep = -1/np.max(self._JeigenValues)
         self.default_dt = -1/np.min(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
@@ -483,14 +483,20 @@ class Simulator:
     def checkSteadyState(self, rep):
         Ileft = []
         Iright = []
-        t = self.dotArray.getTimeStep()
+        ns = []
+        Qs = []
+        t = self.dotArray.getTimeStep()/10
         for r in range(rep):
             # running once to get to steady state
-            self.calcCurrent(t)
+            # self.calcCurrent(t)
             # now we are in steady state calculate current
-            rightCurrent, leftCurrnet = self.calcCurrent(t)
+            rightCurrent, leftCurrnet, n, Q = self.calcCurrent(t, fullOutput=True)
             Ileft.append(leftCurrnet)
             Iright.append(rightCurrent)
+            ns.append(n)
+            Qs.append(Q)
+        ns = np.array(ns)
+        Qs = np.array(Qs)
         x = t*np.arange(rep)
         print("Mean right: " + str(np.average(Iright))+ " Var right: " + str(np.var(Iright)))
         print("Mean left: " + str(np.average(Ileft))+ " Var left: " + str(np.var(Ileft)))
@@ -500,6 +506,10 @@ class Simulator:
         plt.plot(x,Ileft, x,Iright, x, (np.array(Ileft) - np.array(Iright))**2)
         plt.figure()
         plt.plot((np.array(Ileft) - np.array(Iright)) ** 2)
+        plt.figure()
+        plt.plot(x, ns[:,0,:], x, ns[:,1,:])
+        plt.figure()
+        plt.plot(x, Qs[:,0,:], x, Qs[:,1,:])
         plt.show()
 
     def saveState(self, I, V, n=None, Q=None, Imaps=None, fullOutput=False, currentMap=False, basePath=''):
@@ -569,7 +579,7 @@ class Simulator:
         for Vind, VL in enumerate(VL_vec):
             self.dotArray.changeVext(VL, self.VR)
             # running once to get to steady state
-            self.calcCurrent(tStep)
+            self.calcCurrent(tStep/10)
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
@@ -970,6 +980,8 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv), temperature, fastRelaxation)
         simulator.checkSteadyState(repeats)
+        simulator.dotArray.changeVext(VL0+Vstep, VR0)
+        simulator.checkSteadyState(repeats)
         exit(0)
     basePath = os.path.join(savePath, fileName)
     if not resume:
@@ -1290,7 +1302,7 @@ if __name__ == "__main__":
     array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
                           printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map,
-                                     dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume)
+                                     dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume, checkSteadyState=False)
     # pr.disable()
     # s = io.StringIO()
     # sortby = SortKey.CUMULATIVE
