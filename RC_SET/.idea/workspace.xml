@@ -3,19 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/decreasing_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/decreasing_r_2_1.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/increasing_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/increasing_r_2_1.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/one_big_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/one_big_r_2_1.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_CG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Ch.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Cv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Q0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_RG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Rh.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Rv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_VG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_small_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_small_2d_array_on_slurm.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +98,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 1 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh &quot;[[1,10]]&quot; --custom-rv &quot;[[]]&quot; --file-name dbg_c_disorder_9 -o dbg --dbg" />
+      <option name="PARAMETERS" value="-M 5 -N 5 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 100 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh &quot;&quot; --custom-rv &quot;&quot; --file-name no_disorder_5_5 -o 2D_square_arrays_with_current_map_cg_100  --plot-current-map" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -228,15 +216,6 @@
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>571</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="coordinates" />
