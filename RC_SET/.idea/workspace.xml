@@ -3,7 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/decreasing_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/decreasing_r_2_1.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/increasing_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/increasing_r_2_1.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/one_big_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/one_big_r_2_1.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2_dots_arrays_c_disorder_high_v/zigzag_r_2_1_temp_n0.npy" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -193,15 +205,6 @@
       <updated>1554818916059</updated>
     </task>
     <servers />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
