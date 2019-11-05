@@ -219,7 +219,7 @@ class DotArray:
         self._JeigenValues, self._JeigenVectors = np.linalg.eig(self.getJmatrix())
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
-        print(-1/self._JeigenValues)
+        # print(-1/self._JeigenValues)
         self.timeStep = -1/np.max(self._JeigenValues)
         self.default_dt = -1/np.min(self._JeigenValues)
         if self.fast_relaxation:
