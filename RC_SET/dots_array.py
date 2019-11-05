@@ -575,7 +575,8 @@ class Simulator:
                 ns = list(resumeParams[4])
                 Qs = list(resumeParams[5])
             if currentMap:
-                self.Imaps = list(resumeParams[6])
+                Imaps = list(resumeParams[6])
+
         for Vind, VL in enumerate(VL_vec):
             self.dotArray.changeVext(VL, self.VR)
             # running once to get to steady state
@@ -814,8 +815,8 @@ class GraphSimulator:
         self.find_next_QG_using_gradient_descent()
         #dbg
         self.find_next_QG_using_lyaponuv(basePath)
-        # print(self.QG)
-        # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
+        print(self.QG)
+        self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
         self.n0 = np.floor(n_avg)
@@ -953,15 +954,15 @@ def loadRandomParams(basePath):
 
 def removeRandomParams(basePath):
     baseName = basePath + "_temp_"
-    VG0 = os.remove(baseName + "VG.npy")
-    Q0 = os.remove(baseName + "Q0.npy")
-    n0 = os.remove(baseName + "n0.npy")
-    CG = os.remove(baseName + "CG.npy")
-    RG = os.remove(baseName + "RG.npy")
-    Ch = os.remove(baseName + "Ch.npy")
-    Cv = os.remove(baseName + "Cv.npy")
-    Rh = os.remove(baseName + "Rh.npy")
-    Rv = os.remove(baseName + "Rv.npy")
+    os.remove(baseName + "VG.npy")
+    os.remove(baseName + "Q0.npy")
+    os.remove(baseName + "n0.npy")
+    os.remove(baseName + "CG.npy")
+    os.remove(baseName + "RG.npy")
+    os.remove(baseName + "Ch.npy")
+    os.remove(baseName + "Cv.npy")
+    os.remove(baseName + "Rh.npy")
+    os.remove(baseName + "Rv.npy")
     return True
 
 def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
@@ -992,11 +993,9 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     else:
         VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loadRandomParams(basePath)
     Is = []
-    if fullOutput:
-        ns = []
-        Qs = []
-    if currentMap:
-        Imaps = []
+    ns = []
+    Qs = []
+    Imaps = []
     if not dbg:
         pool = Pool(processes=repeats)
         results = []
@@ -1023,7 +1022,6 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         params = result[-1]
 
     else: #dbg
-        results = []
         for repeat in range(repeats):
             result = runSingleSimulation(repeat, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                                          Vmax, Vstep, fullOutput, printState, useGraph, currentMap,
@@ -1047,7 +1045,6 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)
-        plt.savefig(basePath + "_Q.png")
         np.save(basePath + "_n", avgN)
         np.save(basePath + "_Q", avgQ)
         np.save(basePath + "_full_I", np.array(Is))
