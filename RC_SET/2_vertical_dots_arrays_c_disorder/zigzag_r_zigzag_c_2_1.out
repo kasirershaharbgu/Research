@@ -1,4 +1,53 @@
 
-python3 dots_array.py -M 2 -N 1 --vmin 0 --vmax 30 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution uniform --custom-rh "[[10,1],[1,10]]" --custom-rv "[[1]]" --custom-ch "[[10,1],[1,10]]" --custom-cv "[[1]]" --file-name zigzag_r_zigzag_c_2_1 -o 2_vertical_dots_arrays_c_disorder --full --current-map 
+python3 dots_array.py -M 2 -N 1 --vmin 0 --vmax 30 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution uniform --custom-rh "[[10,1],[1,10]]" --custom-rv "[[1]]" --custom-ch "[[10,1],[1,10]]" --custom-cv "[[1]]" --file-name zigzag_r_zigzag_c_2_1 -o 2_vertical_dots_arrays_c_disorder --full --current-map  --resume
 
-slurmstepd: error: *** JOB 1171057 ON node011 CANCELLED AT 2019-11-02T13:33:55 DUE TO TIME LIMIT ***
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+[[5652.17391304]
+ [5238.0952381 ]]
+Traceback (most recent call last):
+  File "dots_array.py", line 1293, in <module>
+    if not os.path.exists(savePath):
+  File "dots_array.py", line 1051, in runFullSimulation
+    np.save(basePath + "_n", avgN)
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py", line 2920, in mean
+    out=out, **kwargs)
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/core/_methods.py", line 75, in _mean
+    ret = umr_sum(arr, axis, dtype, out, keepdims)
+ValueError: operands could not be broadcast together with shapes (285,3,2) (283,3,2) 
