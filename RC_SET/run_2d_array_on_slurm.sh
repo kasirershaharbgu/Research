@@ -23,7 +23,7 @@ full=""
 graph=""
 currentmap="--current-map"
 t="10:00:00"
-resume="--resume"
+resume=""
 vSym="--symmetric-v"
 vmax=4
 if [ ! -d "$f" ]; then
