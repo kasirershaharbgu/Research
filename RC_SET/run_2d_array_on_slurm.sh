@@ -14,7 +14,7 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.1
+vstep=0.01
 rg_avg=1000
 cg_avg=10
 f="2D_square_arrays_with_current_map_symmetric_v"
@@ -22,10 +22,10 @@ r_std=9
 full="" 
 graph=""
 currentmap="--current-map"
-t="10:00:00"
+t="5:00:00"
 resume=""
 vSym="--symmetric-v"
-vmax=4
+vmax=2
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
