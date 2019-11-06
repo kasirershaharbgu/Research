@@ -553,21 +553,30 @@ class Simulator:
             os.remove(baseName + "_current_map.npy")
         return True
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
+    def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
         I = []
         ns = []
         Qs = []
         Imaps = []
         tStep = self.dotArray.getTimeStep()
+        if vSym:
+            Vstep /= 2
+            Vmax /= 2
+            VR_vec = np.arange(self.VR, -Vmax + self.VR, -Vstep)
+            VR_vec = np.hstack((VR_vec, np.flip(VR_vec)))
         VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         VL_res = np.copy(VL_vec)
+        if not vSym:
+            VR_vec = self.VR*np.ones(VL_vec.shape)
+        VR_res = np.copy(VR_vec)
         Vind_addition = 0
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
             I = list(resumeParams[0])
             Vind = int(resumeParams[1])
             VL_vec = VL_vec[Vind+1:]
+            VR_vec = VR_vec[Vind+1:]
             Vind_addition = Vind + 1
             self.dotArray.setOccupation(resumeParams[2])
             self.dotArray.setGroundCharge(resumeParams[3])
@@ -576,9 +585,9 @@ class Simulator:
                 Qs = list(resumeParams[5])
             if currentMap:
                 Imaps = list(resumeParams[6])
-
-        for Vind, VL in enumerate(VL_vec):
-            self.dotArray.changeVext(VL, self.VR)
+        Vind = 0
+        for VL,VR in zip(VL_vec, VR_vec):
+            self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
             self.calcCurrent(tStep/10)
             # now we are in steady state calculate current
@@ -593,7 +602,7 @@ class Simulator:
             I.append((rightCurrent+leftCurrnet)/2)
             self.saveState(I, [Vind + Vind_addition], ns, Qs, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
-        res = (np.array(I), VL_res - self.VR)
+        res = (np.array(I), VL_res - VR_res)
         if fullOutput:
             res = res + (np.array(ns), np.array(Qs))
         if currentMap:
@@ -870,28 +879,39 @@ class GraphSimulator:
             os.remove(baseName + "_Qs.npy")
         return True
 
-    def calcIV(self, Vmax, Vstep, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
+    def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False,
+               basePath="", resume=False):
         I = []
         ns = []
         Qs = []
         Vind_addition = 0
+        if vSym:
+            Vstep /= 2
+            Vmax /= 2
+            VR_vec = np.arange(self.VR, -Vmax + self.VR, -Vstep)
+            VR_vec = np.hstack((VR_vec, np.flip(VR_vec)))
         VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
         VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         VL_res = np.copy(VL_vec)
+        if not vSym:
+            VR_vec = self.VR*np.ones(VL_vec.shape)
+        VR_res = np.copy(VR_vec)
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, basePath=basePath)
             I = list(resumeParams[0])
             Vind = int(resumeParams[1])
             VL_vec = VL_vec[Vind+1:]
+            VR_vec = VR_vec[Vind+1:]
             Vind_addition = Vind + 1
             self.n0 = resumeParams[2]
             self.QG = resumeParams[3]
             if fullOutput:
                 ns = list(resumeParams[4])
                 Qs = list(resumeParams[5])
-        for Vind,VL in enumerate(VL_vec):
-            print(VL,end=',')
-            self.dotArray.changeVext(VL, self.VR)
+        Vind = 0
+        for VL,VR in zip(VL_vec,VR_res):
+            print(VL-VR,end=',')
+            self.dotArray.changeVext(VL, VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
             leftCurrent = res[1]
@@ -902,13 +922,14 @@ class GraphSimulator:
                 Qs.append(Q)
             I.append((rightCurrent + leftCurrent) / 2)
             self.saveState(I, [Vind + Vind_addition], ns, Qs, fullOutput=fullOutput, basePath=basePath)
-        result = (np.array(I), VL_res - self.VR)
+            Vind += 1
+        result = (np.array(I), VL_res - VR_res)
         if fullOutput:
             result = result + (ns, Qs)
         self.removeState(fullOutput=fullOutput, basePath=basePath)
         return result
 
-def runSingleSimulation(index, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+def runSingleSimulation(index, VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                         Vmax, Vstep, fullOutput=False, printState=False, useGraph=False, currentMap=False,
                         temperature=0, fast_relaxation=False, basePath="", resume=False):
     if useGraph:
@@ -921,7 +942,7 @@ def runSingleSimulation(index, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, ro
                               np.array(Q0), np.array(n0), np.array(CG),
                               np.array(RG), np.array(Ch), np.array(Cv),
                               np.array(Rh), np.array(Rv), temperature, fast_relaxation)
-    out = simulator.calcIV(Vmax, Vstep, fullOutput=fullOutput, print_stats=printState,
+    out = simulator.calcIV(Vmax, Vstep, vSym, fullOutput=fullOutput, print_stats=printState,
                            currentMap=currentMap, basePath=basePath, resume=resume)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
@@ -965,7 +986,7 @@ def removeRandomParams(basePath):
     os.remove(baseName + "Rv.npy")
     return True
 
-def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, resume=False):
@@ -1001,7 +1022,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
         results = []
         for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
-                                    (repeat, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+                                    (repeat, VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                                      Vmax, Vstep, fullOutput, printState, useGraph, currentMap, temperature,
                                      fastRelaxation, basePath, resume))
             results.append(res)
@@ -1023,7 +1044,7 @@ def runFullSimulation(VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, colum
 
     else: #dbg
         for repeat in range(repeats):
-            result = runSingleSimulation(repeat, VL0, VR0, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
+            result = runSingleSimulation(repeat, VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                                          Vmax, Vstep, fullOutput, printState, useGraph, currentMap,
                                          temperature, fastRelaxation, basePath, resume)
             I = result[0]
@@ -1120,6 +1141,8 @@ def getOptions():
                       " [default: %default]", default=10, type=float)
     parser.add_option("--vstep", dest="vStep", help="size of voltage step["
                     "default: %default]", default=1, type=float)
+    parser.add_option("--symmetric-v", dest="vSym", help="Voltage raises symmetric on VR and VL["
+                                                    "default: %default]", default=False, action='store_true')
     parser.add_option("--repeats", dest="repeats",
                       help="how many times to run calculation for averaging"
                       " [default: %default]", default=1, type=int)
@@ -1276,6 +1299,7 @@ if __name__ == "__main__":
                             True)
     Vmax = options.Vmax
     Vstep = options.vStep
+    vSym = options.vSym
     repeats = options.repeats
     savePath = options.output_folder
     fileName = options.fileName
@@ -1296,7 +1320,7 @@ if __name__ == "__main__":
     # from pstats import SortKey
     # pr = cProfile.Profile()
     # pr.enable()
-    array_params = runFullSimulation(VL0, VR0, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
+    array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                           Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName, fullOutput=fullOutput,
                           printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume, checkSteadyState=False)
