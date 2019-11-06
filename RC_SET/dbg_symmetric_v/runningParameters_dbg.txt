@@ -5,7 +5,7 @@ N = 1
 VR = 0.0
 Vmin = 0.0
 Vmax = 2.0
-vStep = 0.1
+vStep = 0.01
 vSym = True
 repeats = 1
 fileName = dbg
@@ -25,8 +25,8 @@ CG_avg = 10.0
 CG_std = 0.0
 R_avg = 1.0
 R_std = 0.0
-custom_rh = 
-custom_rv = 
+custom_rh = [[1,10]]
+custom_rv = [[]]
 custom_ch = 
 custom_cv = 
 RG_avg = 1000.0
@@ -43,5 +43,5 @@ CG: [[10.]]
 RG: [[1000.]]
 Ch: [[1. 1.]]
 Cv: [[0.]]
-Rh: [[1. 1.]]
+Rh: [[ 1 10]]
 Rv: []
