@@ -1,3 +1,0 @@
-
-python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 100 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution exp --custom-rh "" --custom-rv "" --file-name exp_disorder_5_5 -o 2D_square_arrays_with_current_map_cg_100  --current-map 
-

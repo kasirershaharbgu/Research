@@ -1,0 +1,47 @@
+-------Running parameters--------
+T = 0.3
+M = 1
+N = 1
+VR = 0.0
+Vmin = 0.0
+Vmax = 2.0
+vStep = 0.1
+vSym = True
+repeats = 1
+fileName = dbg_finite_T
+dist = uniform
+fullOutput = False
+use_graph = False
+current_map = False
+plot_current_map = False
+dbg = True
+resume = False
+output_folder = dbg
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.2
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+custom_rh = 
+custom_rv = 
+custom_ch = 
+custom_cv = 
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 1
+VG: [[0.]]
+CG: [[10.]]
+RG: [[1000.]]
+Ch: [[0.98503336 0.80015657]]
+Cv: [[0.]]
+Rh: [[18.41235952  3.00287126]]
+Rv: []
