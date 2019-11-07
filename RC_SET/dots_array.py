@@ -562,13 +562,15 @@ class Simulator:
         if vSym:
             Vstep /= 2
             Vmax /= 2
-            VR_vec = np.arange(self.VR, -Vmax + self.VR, -Vstep)
+            VR_vec = np.arange(self.VR-(self.VL/2), self.VR - Vmax, -Vstep)
             VR_vec = np.hstack((VR_vec, np.flip(VR_vec)))
-        VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
-        VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+            VL_vec = np.arange(self.VL/2+self.VR, Vmax + self.VR, Vstep)
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+        else:
+            VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+            VR_vec = self.VR * np.ones(VL_vec.shape)
         VL_res = np.copy(VL_vec)
-        if not vSym:
-            VR_vec = self.VR*np.ones(VL_vec.shape)
         VR_res = np.copy(VR_vec)
         Vind_addition = 0
         if resume:
