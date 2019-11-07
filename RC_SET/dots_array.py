@@ -10,7 +10,8 @@ from optparse import OptionParser
 import os
 from multiprocessing import Pool
 from scipy.linalg import null_space
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumtrapz, quad
+from scipy.interpolate import  interp1d
 from mpl_toolkits.mplot3d import Axes3D
 from ast import literal_eval
 
@@ -61,6 +62,107 @@ def simple_gadient_descent(grad, x0, eps=1e-10, lr=1e-3, max_iter=1e6, plot_lc=F
         plt.figure()
         plt.plot(gradvec)
     return x, iter < max_iter
+
+# Methods for calculating superconducting related tunneling rates
+
+def high_impadance_p(Ec,T,kappa):
+    sigma = 4*np.pi*(kappa**2)*Ec*T
+    mu = k^2*Ec
+    def f(x):
+        return np.exp(-((x-mu)**2)/sigma)/np.sqrt(sigma)
+    return f
+
+def fermi_dirac_dist(T):
+    def f(x):
+        return 1/(1 + np.exp(x/T))
+    return f
+
+def qp_density_of_states(energy_gap):
+    def f(x):
+        if np.abs(x) <= energy_gap:
+            return 0
+        else:
+            return np.abs(x) / np.sqrt(x**2-energy_gap**2)
+    return f
+
+def cp_tunneling(Ej, Ec, T):
+    p = high_impadance_p(Ec, T, 2)
+    def f(x):
+        return ((np.pi*Ej**2)/2) * p(x)
+    return f
+
+def qp_tunneling(Ec, gap, T):
+    p = high_impadance_p(Ec, T, 1)
+    N = qp_density_of_states(gap)
+    fer = fermi_dirac_dist(T)
+
+    def integrand(x1, x2, deltaE):
+        return N(x1)*N(x2+deltaE)*fer(x1)*(1-fer(x2+deltaE))*p(x1-x2)
+
+    def int1(x2, deltaE):
+        return quad(integrand, -np.inf, np.inf, args=(x2, deltaE))[0]
+
+    def int2(deltaE):
+        return quad(int1, -np.inf, np.inf, args=(deltaE,))[0]
+
+    return int2
+
+
+class TunnelingRateCalculator:
+
+    def __init__(self, deltaEmin, deltaEmax, deltaEstep, qp_func, cp_func):
+        self.deltaEmin = deltaEmin
+        self.deltaEmax = deltaEmax
+        self.deltaEstep = deltaEstep
+        self.deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
+        self.qp_func = qp_func
+        self.cp_func = cp_func
+        self.cp_vals = self.cp_func(self.deltaEvals)
+        self.cp_approx = None
+        self.qp_vals = self.qp_func(self.deltaEvals)
+        self.qp_approx = None
+        self.set_qp()
+        self.set_cp()
+
+    def get_approximation(self, inputs, values):
+        return interp1d(inputs, values, assume_sorted=True)
+
+    def set_qp(self):
+        self.qp_approx = self.get_approximation(self.deltaEvals, self.qp_vals)
+
+    def set_cp(self):
+        self.cp_approx = self.get_approximation(self.deltaEvals, self.cp_vals)
+
+    def increase_high_limit(self):
+        new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
+        new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
+        new_qp_vals = self.qp_func(new_inputs)
+        new_cp_vals = self.cp_func(new_inputs)
+        self.deltaEmax = new_deltaEmax
+        self.deltaEvals = np.hstack((self.deltaEvals, new_inputs))
+        self.qp_vals = np.hstack((self.qp_vals, new_qp_vals))
+        self.cp_vals = np.hstack((self.cp_vals, new_cp_vals))
+        self.set_qp()
+        self.set_cp()
+
+    def decrease_low_limit(self):
+        new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
+        new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
+        new_qp_vals = self.qp_func(new_inputs)
+        new_cp_vals = self.cp_func(new_inputs)
+        self.deltaEmin = new_deltaEmin
+        self.deltaEvals = np.hstack((new_inputs, self.deltaEvals, ))
+        self.qp_vals = np.hstack((new_qp_vals, self.qp_vals))
+        self.cp_vals = np.hstack((new_cp_vals, self.cp_vals))
+        self.set_qp()
+        self.set_cp()
+
+    def get_tunnling_rates(self, deltaE):
+        if self.deltaEmin >= deltaE:
+            self.decrease_low_limit()
+        if self.deltaEmax <= deltaE:
+            self.increase_high_limit()
+        return self.cp_approx(deltaE), self.qp_approx(deltaE)
 
 
 
