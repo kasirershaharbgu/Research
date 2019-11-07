@@ -26,9 +26,9 @@ resume=""
 full="--full"
 vSym="--symmetric-v"
 resume=""
-T=0.1
+T=0.01
 vmax=2
-f="2X2_dots_arrays_symmetric_v_finite_T"
+f="2X2_dots_arrays_symmetric_v_finite_T_0.01"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi

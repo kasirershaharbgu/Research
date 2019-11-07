@@ -305,7 +305,9 @@ class DotArray:
         if self.temperature == 0:
             work[work > 0] = 0
         else:
-            work = work/(1 - np.exp(work/self.temperature))
+            notToSmall = np.abs(work) > EPS
+            work[np.logical_not(notToSmall)] = -self.temperature
+            work[notToSmall] = work[notToSmall]/(1 - np.exp(work[notToSmall]/self.temperature))
         return -work / self.R
 
 
