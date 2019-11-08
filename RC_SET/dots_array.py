@@ -66,10 +66,10 @@ def simple_gadient_descent(grad, x0, eps=1e-10, lr=1e-3, max_iter=1e6, plot_lc=F
 # Methods for calculating superconducting related tunneling rates
 
 def high_impadance_p(Ec,T,kappa):
-    sigma = 4*np.pi*(kappa**2)*Ec*T
-    mu = k^2*Ec
+    sigma = 4*(kappa**2)*Ec*T
+    mu = kappa^2*Ec
     def f(x):
-        return np.exp(-((x-mu)**2)/sigma)/np.sqrt(sigma)
+        return np.exp(-((x-mu)**2)/sigma)/np.sqrt(sigma*np.pi)
     return f
 
 def fermi_dirac_dist(T):
@@ -88,7 +88,7 @@ def qp_density_of_states(energy_gap):
 def cp_tunneling(Ej, Ec, T):
     p = high_impadance_p(Ec, T, 2)
     def f(x):
-        return ((np.pi*Ej**2)/2) * p(x)
+        return (np.pi*Ej)**2 * p(x)
     return f
 
 def qp_tunneling(Ec, gap, T):
@@ -107,9 +107,7 @@ def qp_tunneling(Ec, gap, T):
 
     return int2
 
-
 class TunnelingRateCalculator:
-
     def __init__(self, deltaEmin, deltaEmax, deltaEstep, qp_func, cp_func):
         self.deltaEmin = deltaEmin
         self.deltaEmax = deltaEmax
@@ -348,22 +346,22 @@ class DotArray:
         upperCDiag = np.pad(np.diag(np.copy(self.invC),k=1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         upperCDiag[:,-1] = 0
         upperCDiag  = np.pad(upperCDiag,((0,0),(1,0)),mode='constant')
-        commonHorz = np.pad(invCDiagMat,((0,0),(1,0)),mode='constant') + np.pad(invCDiagMat,((0,0),(0,1)),mode='constant')\
+        self.commonHorz = np.pad(invCDiagMat,((0,0),(1,0)),mode='constant') + np.pad(invCDiagMat,((0,0),(0,1)),mode='constant')\
                         - lowerCDiag - upperCDiag
 
         lowerNCDiag = np.diag(np.copy(self.invC),k=-self.columns).reshape((self.rows-1,self.columns))
         upperNCDiag = np.diag(np.copy(self.invC),k=self.columns).reshape((self.rows-1,self.columns))
-        commonVert = invCDiagMat[1:,:] + invCDiagMat[:-1,:] - lowerNCDiag - upperNCDiag
+        self.commonVert = invCDiagMat[1:,:] + invCDiagMat[:-1,:] - lowerNCDiag - upperNCDiag
 
-        additionalLeft = np.zeros((self.rows,self.columns+1))
-        additionalLeft[:,0] = self.VL
-        additionalLeft[:,-1] = -self.VR
-        leftConstWork = (0.5*commonHorz + additionalLeft).flatten()
+        self.additionalLeft = np.zeros((self.rows,self.columns+1))
+        self.additionalLeft[:,0] = self.VL
+        self.additionalLeft[:,-1] = -self.VR
+        leftConstWork = (0.5*self.commonHorz + self.additionalLeft).flatten()
 
-        additionalRight = -additionalLeft
-        rightConstWork = (0.5*commonHorz + additionalRight).flatten()
+        additionalRight = -self.additionalLeft
+        rightConstWork = (0.5*self.commonHorz + additionalRight).flatten()
 
-        vertConstWork = (0.5*commonVert).flatten()
+        vertConstWork = (0.5*self.commonVert).flatten()
 
         self.constWork = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
         self.variableWork = np.zeros(self.constWork.shape)
@@ -486,37 +484,55 @@ class DotArray:
             res += "\n" + param
         return res
 
-    def executeAction(self, ind):
+    def executeAction(self, ind, charge=1):
         horzSize = self.rows*(self.columns+1)
         vertSize = (self.rows - 1)*self.columns
         if ind < horzSize: # tunnel right:
             fromDot = (ind//(self.columns+1), (ind%(self.columns+1))-1)
             toDot = (fromDot[0], fromDot[1] + 1)
             if self.saveCurrentMap:
-                self.Ih[toDot] += 1
+                self.Ih[toDot] += charge
         elif ind < horzSize*2: # tunnel left
             ind -= horzSize
             fromDot = (ind//(self.columns+1), ind%(self.columns+1))
             toDot = (fromDot[0], fromDot[1] - 1)
             if self.saveCurrentMap:
-                self.Ih[fromDot] -= 1
+                self.Ih[fromDot] -= charge
         elif ind < horzSize*2 + vertSize: # tunnel down
             ind -= horzSize*2
             fromDot = (ind//self.columns, ind%self.columns)
             toDot = (fromDot[0] + 1, fromDot[1])
             if self.saveCurrentMap:
-                self.Iv[fromDot] += 1
+                self.Iv[fromDot] += charge
         else: # tunnel up
             ind -= (horzSize*2 + vertSize)
             fromDot = ((ind//self.columns) + 1, ind%self.columns)
             toDot = (fromDot[0] - 1, fromDot[1])
             if self.saveCurrentMap:
-                self.Iv[toDot] -= 1
+                self.Iv[toDot] -= charge
         self.tunnel(fromDot, toDot)
         return fromDot, toDot
 
-# class JJArray(DotArray):
-#     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False):
+class JJArray(DotArray):
+    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
+                 temperature, scGap, fastRelaxation=False):
+        DotArray.__init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
+                          temperature, fastRelaxation=fast_relaxation)
+        self.gap = scGap
+        self.Ej = self.getEj()
+        self.Ec = 1/np.mean(CG)
+        self.rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling(self.Ec, self.gap, self.temperature),
+                                                       cp_tunneling(self.Ej, self.Ec, self.temperature))
+
+
+    def getEj(self):
+        return ((self.gap)/(8*self.R))*np.tanh(self.gap/(2*T))
+
+    def getWork(self):
+        qp_work = super().getWork()
+        cp_work = np.zeros(qp_work.shape)
+
+
 
 class Simulator:
     """
