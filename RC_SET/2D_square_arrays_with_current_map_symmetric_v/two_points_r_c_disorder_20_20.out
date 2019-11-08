@@ -1,6 +1,29 @@
 
-python3 dots_array.py -M 20 -N 20 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.2 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 60 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution two_points --custom-rh  --custom-rv  --custom-ch  --custom-cv  --file-name two_points_r_c_disorder_20_20 -o 2D_square_arrays_with_current_map_symmetric_v  --current-map   --symmetric-v
+python3 dots_array.py -M 20 -N 20 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.2 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 60 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution two_points --custom-rh  --custom-rv  --custom-ch  --custom-cv  --file-name two_points_r_c_disorder_20_20 -o 2D_square_arrays_with_current_map_symmetric_v  --current-map  --resume --symmetric-v
 
-slurmstepd: error: Job 1198206 exceeded memory limit (10240132 > 10240000), being killed
-slurmstepd: error: Exceeded job memory limit
-slurmstepd: error: *** JOB 1198206 ON node013 CANCELLED AT 2019-11-08T08:14:11 ***
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "dots_array.py", line 1053, in runSingleSimulation
+    currentMap=currentMap, basePath=basePath, resume=resume)
+  File "dots_array.py", line 682, in calcIV
+    resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
+  File "dots_array.py", line 634, in loadState
+    I = np.load(baseName + "_I.npy")
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/lib/npyio.py", line 384, in load
+    fid = open(file, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '2D_square_arrays_with_current_map_symmetric_v/two_points_r_c_disorder_20_20_temp_0_I.npy'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "dots_array.py", line 1433, in <module>
+    dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume, checkSteadyState=False)
+  File "dots_array.py", line 1137, in runFullSimulation
+    result = res.get()
+  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 683, in get
+    raise self._value
+FileNotFoundError: [Errno 2] No such file or directory: '2D_square_arrays_with_current_map_symmetric_v/two_points_r_c_disorder_20_20_temp_0_I.npy'
