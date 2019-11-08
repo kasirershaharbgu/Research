@@ -515,8 +515,8 @@ class DotArray:
         self.tunnel(fromDot, toDot)
         return fromDot, toDot
 
-class JJArray(DotArray):
-    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False):
+# class JJArray(DotArray):
+#     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False):
 
 class Simulator:
     """
