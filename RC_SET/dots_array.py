@@ -164,8 +164,6 @@ class TunnelingRateCalculator:
             self.increase_high_limit()
         return self.cp_approx(deltaE), self.qp_approx(deltaE)
 
-
-
 class NoElectronsOnDot(RuntimeError):
     pass
 
@@ -451,19 +449,19 @@ class DotArray:
         self.executeAction(actionInd)
         return True
 
-    def tunnel(self, fromDot, toDot):
+    def tunnel(self, fromDot, toDot, charges=1):
         if fromDot[1] == self.columns:
-            self.totalChargePassedRight -= 1
+            self.totalChargePassedRight -= charges
         elif fromDot[1] == -1:
-            self.totalChargePassedLeft -= 1
+            self.totalChargePassedLeft -= charges
         else:
             self.n[fromDot] -= 1
         if toDot[1] == self.columns:
-            self.totalChargePassedRight += 1
+            self.totalChargePassedRight += charges
         elif toDot[1] == -1:
-            self.totalChargePassedLeft += 1
+            self.totalChargePassedLeft += charges
         else:
-            self.n[toDot] += 1
+            self.n[toDot] += charges
         return True
 
     def printState(self):
@@ -516,6 +514,9 @@ class DotArray:
                 self.Iv[toDot] -= 1
         self.tunnel(fromDot, toDot)
         return fromDot, toDot
+
+class JJArray(DotArray):
+    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False):
 
 class Simulator:
     """
