@@ -1207,9 +1207,9 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, resume=False, superconducting=False,
                       gap=0):
+    basePath = os.path.join(savePath, fileName)
     if plotCurrentMaps:
         print("Plotting Current Maps")
-        basePath = os.path.join(savePath, fileName)
         avgImaps = np.load(basePath + "_Imap.npy")
         V = np.load(basePath + "_V.npy")
         saveCurrentMaps(avgImaps, V, basePath + "_Imap")
@@ -1240,7 +1240,6 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         simulator.dotArray.changeVext(VL0+Vstep, VR0)
         simulator.checkSteadyState(repeats)
         exit(0)
-    basePath = os.path.join(savePath, fileName)
     Is = []
     ns = []
     Qs = []
