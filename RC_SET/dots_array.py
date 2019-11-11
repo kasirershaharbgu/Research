@@ -95,37 +95,26 @@ def qp_tunneling(Ec, gap, T):
     p = high_impadance_p(Ec, T, 1)
     N = qp_density_of_states(gap - EPS)
     fer = fermi_dirac_dist(T)
-    sigma = 4 * Ec * T
 
     def integrand(x2, x1, deltaE):
-        return N(x1)*N(x2+deltaE)*fer(x1)*(1-fer(x2+deltaE))*p(x1-x2)
+        return N(x1)*N(x2)*fer(-x1)*fer(x2)*p(x2-x1 + deltaE)
 
     def integrate_single(deltaE):
-        LIMITING_FACTOR = 100
-        part1 = 0
-        part2 = 0
-        part3 = 0
-        part4 = 0
-        if -LIMITING_FACTOR*sigma/10 < -gap:
-            if -LIMITING_FACTOR*T < -gap - deltaE:
-                part1 = dblquad(integrand, -LIMITING_FACTOR*sigma/10, -gap, lambda x: -LIMITING_FACTOR*T,
-                                lambda x: -gap - deltaE, args=(deltaE,))[0]
-            if gap - deltaE < LIMITING_FACTOR*sigma/10:
-                part2 = dblquad(integrand, -LIMITING_FACTOR*sigma/10, -gap, lambda x: gap - deltaE,
-                                lambda x: LIMITING_FACTOR*sigma, args=(deltaE,))[0]
-        if gap < LIMITING_FACTOR*T:
-            if -LIMITING_FACTOR*T < -gap - deltaE:
-                 part3 = dblquad(integrand, gap, LIMITING_FACTOR*T, lambda x: -LIMITING_FACTOR*T,
-                                 lambda x: -gap - deltaE, args=(deltaE,))[0]
-            if gap - deltaE < LIMITING_FACTOR*sigma/10:
-                part4 = dblquad(integrand, gap, LIMITING_FACTOR*T, lambda x: gap - deltaE,
-                                lambda x: LIMITING_FACTOR*sigma/10, args=(deltaE,))[0]
+        part1 = dblquad(integrand, -np.infty, -gap, lambda x: -np.infty,
+                                lambda x: -gap, args=(deltaE,))[0]
+        part2 = dblquad(integrand, -np.infty, -gap, lambda x: gap,
+                        lambda x: np.infty, args=(deltaE,))[0]
+        part3 = dblquad(integrand, gap, np.infty, lambda x: -np.infty,
+                        lambda x: -gap, args=(deltaE,))[0]
+        part4 = dblquad(integrand, gap, np.infty, lambda x: gap,
+                       lambda x: np.infty, args=(deltaE,))[0]
+
         return part1 + part2 + part3 + part4
 
     def integrate(deltaE):
         res = np.zeros(deltaE.shape)
         for ind,val in enumerate(deltaE):
-            res[ind] = integrate_single(val)
+            res[ind] = np.exp(val/T)*integrate_single(val)
         return res
     return integrate
 
@@ -154,6 +143,7 @@ class TunnelingRateCalculator:
         self.deltaEvals = np.hstack((self.deltaEvals, new_inputs))
         self.vals = np.hstack((self.qp_vals, new_vals))
         self.set_approx()
+        print("High limit increased, Emax= " + str(self.deltaEmax))
 
     def decrease_low_limit(self):
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
@@ -163,6 +153,7 @@ class TunnelingRateCalculator:
         self.deltaEvals = np.hstack((new_inputs, self.deltaEvals))
         self.vals = np.hstack((new_vals, self.vals))
         self.set_approx()
+        print("Low limit dencreased, Emin= " + str(self.deltaEmin))
 
     def get_tunnling_rates(self, deltaE):
         if self.deltaEmin >= deltaE:
@@ -376,7 +367,7 @@ class DotArray:
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         # print(-1/self._JeigenValues)
         self.timeStep = -1/np.max(self._JeigenValues)
-        self.default_dt = -1/np.min(self._JeigenValues)
+        self.default_dt = -1/np.average(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
             self._constQnPart = invMat.dot(flattenToColumn(self.VG))
@@ -582,14 +573,14 @@ class JJArray(DotArray):
                                                           qp_tunneling(self.Ec, self.gap, self.temperature))
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01,
                                                           cp_tunneling(self.Ej, self.Ec, self.temperature))
-
+        print("Rates were calculated")
         # dbg
-        fig1 = self.qp_rate_calculator.plot_rate()
-        fig2 = self.cp_rate_calculator.plot_rate()
-        plt.show()
-        plt.close(fig1)
-        plt.close(fig2)
-        exit(0)
+        # fig1 = self.qp_rate_calculator.plot_rate()
+        # fig2 = self.cp_rate_calculator.plot_rate()
+        # plt.show()
+        # plt.close(fig1)
+        # plt.close(fig2)
+        # exit(0)
 
     def __copy__(self):
         copy_array = super().__copy__()
@@ -832,6 +823,7 @@ class Simulator:
             if currentMap:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrnet)/2)
+            print(VL - VR, end=',')
             self.saveState(I, [Vind + Vind_addition], ns, Qs, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), VL_res - VR_res)
@@ -1216,38 +1208,45 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       currentMap=False, dbg=False, plotCurrentMaps=False, resume=False, superconducting=False,
                       gap=0):
     if plotCurrentMaps:
+        print("Plotting Current Maps")
         basePath = os.path.join(savePath, fileName)
         avgImaps = np.load(basePath + "_Imap.npy")
         V = np.load(basePath + "_V.npy")
         saveCurrentMaps(avgImaps, V, basePath + "_Imap")
         exit(0)
+    if not resume:
+        print("Saving array parameters")
+        saveRandomParams(np.array(VG0),
+                         np.array(Q0), np.array(n0), np.array(CG),
+                         np.array(RG), np.array(Ch), np.array(Cv),
+                         np.array(Rh), np.array(Rv), basePath)
+    else:
+        print("Loading array parameters")
+        VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loadRandomParams(basePath)
     if superconducting:
         prototypeArray = JJArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                  np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
                                  temperature, gap, fastRelaxation=fastRelaxation)
+        print("Superconducting prototype array was created")
     else:
         prototypeArray = DotArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                   np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
                                   temperature, fastRelaxation=fastRelaxation)
+        print("Normal prototype array was created")
     if checkSteadyState:
+        print("Running steady state convergance check")
         simulator = Simulator(0, VL0, VR0, Q0, n0, prototypeArray)
         simulator.checkSteadyState(repeats)
         simulator.dotArray.changeVext(VL0+Vstep, VR0)
         simulator.checkSteadyState(repeats)
         exit(0)
     basePath = os.path.join(savePath, fileName)
-    if not resume:
-        saveRandomParams(np.array(VG0),
-                         np.array(Q0), np.array(n0), np.array(CG),
-                         np.array(RG), np.array(Ch), np.array(Cv),
-                         np.array(Rh), np.array(Rv), basePath)
-    else:
-        VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loadRandomParams(basePath)
     Is = []
     ns = []
     Qs = []
     Imaps = []
     if not dbg:
+        print("Starting parallel run")
         pool = Pool(processes=repeats)
         results = []
         for repeat in range(repeats):
@@ -1273,6 +1272,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         params = result[-1]
 
     else: #dbg
+        print("Starting serial run")
         for repeat in range(repeats):
             result = runSingleSimulation(repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                          printState, useGraph, currentMap,basePath, resume)
@@ -1290,7 +1290,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         V = result[1]
         params = result[-1]
         # dbg
-
+    print("Saving results")
     avgI = np.mean(np.array(Is), axis=0)
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
@@ -1560,21 +1560,21 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-    # import cProfile, pstats, io
-    # from pstats import SortKey
-    # pr = cProfile.Profile()
-    # pr.enable()
+    import cProfile, pstats, io
+    from pstats import SortKey
+    pr = cProfile.Profile()
+    pr.enable()
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap)
-    # pr.disable()
-    # s = io.StringIO()
-    # sortby = SortKey.CUMULATIVE
-    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    # ps.print_stats()
-    # print(s.getvalue())
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
