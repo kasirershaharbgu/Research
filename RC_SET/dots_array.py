@@ -27,7 +27,6 @@ GRAD_REP = 5
 INI_LR = 0.001
 
 
-
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
 
@@ -67,98 +66,115 @@ def simple_gadient_descent(grad, x0, eps=1e-10, lr=1e-3, max_iter=1e6, plot_lc=F
 
 # Methods for calculating superconducting related tunneling rates
 
-def high_impadance_p(Ec,T,kappa):
+def high_impadance_p(x,Ec,T,kappa):
     sigma = 4*(kappa**2)*Ec*T
     mu = kappa**2*Ec
-    def f(x):
-        return norm.pdf(x, loc=mu, scale=np.sqrt(sigma))
-    return f
+    return norm.pdf(x, loc=mu, scale=np.sqrt(sigma))
 
-def fermi_dirac_dist(T):
-    def f(x):
-        return 1/(1 + np.exp(x/T))
-    return f
+def fermi_dirac_dist(x,T):
+    return 1/(1 + np.exp(x/T))
 
-def qp_density_of_states(energy_gap):
-    def f(x):
-        return np.abs(x) / np.sqrt(x**2-energy_gap**2)
+def qp_density_of_states(x,energy_gap):
+    return np.abs(x) / np.sqrt(x**2-energy_gap**2)
 
-    return f
+def cp_tunneling(x, Ec, Ej, T):
+    return (np.pi*Ej)**2 * high_impadance_p(x, Ec, T, 2)
 
-def cp_tunneling(Ej, Ec, T):
-    p = high_impadance_p(Ec, T, 2)
-    def f(x):
-        return (np.pi*Ej)**2 * p(x)
-    return f
+def qp_integrand(x2, x1, deltaE, Ec, gap, T):
+    return qp_density_of_states(x1, gap)*qp_density_of_states(x2, gap)*fermi_dirac_dist(-x1, T)\
+           *fermi_dirac_dist(x2, T)*high_impadance_p(x2-x1 - deltaE, Ec, T, 1)
 
-def qp_tunneling(Ec, gap, T):
-    p = high_impadance_p(Ec, T, 1)
-    N = qp_density_of_states(gap - EPS)
-    fer = fermi_dirac_dist(T)
+def qp_tunneling_single(deltaE, Ec, gap, T):
+    part1 = dblquad(qp_integrand, -np.infty, -gap, lambda x: -np.infty,
+                    lambda x: -gap, args=(deltaE,Ec, gap, T))[0]
+    part2 = dblquad(qp_integrand, -np.infty, -gap, lambda x: gap,
+                    lambda x: np.infty, args=(deltaE,Ec, gap, T))[0]
+    part3 = dblquad(qp_integrand, gap, np.infty, lambda x: -np.infty,
+                    lambda x: -gap, args=(deltaE,Ec, gap, T))[0]
+    part4 = dblquad(qp_integrand, gap, np.infty, lambda x: gap,
+                    lambda x: np.infty, args=(deltaE,Ec, gap, T))[0]
+    return part1 + part2 + part3 + part4
 
-    def integrand(x2, x1, deltaE):
-        return N(x1)*N(x2)*fer(-x1)*fer(x2)*p(x2-x1 + deltaE)
-
-    def integrate_single(deltaE):
-        part1 = dblquad(integrand, -np.infty, -gap, lambda x: -np.infty,
-                                lambda x: -gap, args=(deltaE,))[0]
-        part2 = dblquad(integrand, -np.infty, -gap, lambda x: gap,
-                        lambda x: np.infty, args=(deltaE,))[0]
-        part3 = dblquad(integrand, gap, np.infty, lambda x: -np.infty,
-                        lambda x: -gap, args=(deltaE,))[0]
-        part4 = dblquad(integrand, gap, np.infty, lambda x: gap,
-                       lambda x: np.infty, args=(deltaE,))[0]
-
-        return part1 + part2 + part3 + part4
-
-    def integrate(deltaE):
+def qp_tunneling(deltaE, Ec, gap, T):
         res = np.zeros(deltaE.shape)
         for ind,val in enumerate(deltaE):
-            res[ind] = np.exp(val/T)*integrate_single(val)
+            res[ind] = np.exp(val/T)*qp_tunneling_single(val, Ec, gap, T)
         return res
-    return integrate
 
 class TunnelingRateCalculator:
-    def __init__(self, deltaEmin, deltaEmax, deltaEstep, rateFunc):
+    def __init__(self, deltaEmin, deltaEmax, deltaEstep, rateFunc, Ec, T, otherParam, dirPath):
+        self.T = T
+        self.otherParam = otherParam
+        self.Ec = Ec
+        self.dirName = os.path.join(dirPath, "tunneling_rate_" + str(self.T) + "_" + str(self.otherParam))
+        if not os.path.isdir(dirPath):
+            os.mkdir(dirPath)
         self.deltaEmin = deltaEmin
         self.deltaEmax = deltaEmax
         self.deltaEstep = deltaEstep
-        self.deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
         self.rateFunc = rateFunc
-        self.vals = self.rateFunc(self.deltaEvals)
-        self.approx = None
+        self.set_results()
         self.set_approx()
 
-    def get_approximation(self, inputs, values):
-        return interp1d(inputs, values, assume_sorted=True)
+    def set_results(self):
+        can_load = False
+        deltaEmin = None
+        deltaEmax = None
+        deltaEstep = None
+        if os.path.isdir(self.dirName):
+            deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
+            deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
+            deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))
+            can_load = deltaEmin <= self.deltaEmin and deltaEmax >= self.deltaEmax and deltaEstep <= self.deltaEstep
+        else:
+            os.mkdir(self.dirName, 744)
+        if can_load:
+            self.deltaEstep = deltaEstep
+            self.deltaEmax = deltaEmax
+            self.deltaEmin = deltaEmin
+            self.deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
+            self.vals = np.load(os.path.join(self.dirName, "vals.npy"))
+        else:
+            self.deltaEvals = np.arange(self.deltaEmin, self.deltaEmax, self.deltaEstep)
+            self.vals = self.rateFunc(self.deltaEvals, self.Ec, self.otherParam, self.T)
+            self.saveVals()
+        return True
+
+    def saveVals(self):
+        np.save(os.path.join(self.dirName, "deltaEmin"), self.deltaEmin)
+        np.save(os.path.join(self.dirName, "deltaEmax"), self.deltaEmax)
+        np.save(os.path.join(self.dirName, "deltaEstep"), self.deltaEstep)
+        np.save(os.path.join(self.dirName, "vals"), self.vals)
 
     def set_approx(self):
-        self.qp_approx = self.get_approximation(self.deltaEvals, self.vals)
+        self.approx = interp1d(self.deltaEvals, self.vals, assume_sorted=True)
 
     def increase_high_limit(self):
         new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
         new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
-        new_vals = self.rateFunc(new_inputs)
+        new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
         self.deltaEmax = new_deltaEmax
         self.deltaEvals = np.hstack((self.deltaEvals, new_inputs))
-        self.vals = np.hstack((self.qp_vals, new_vals))
+        self.vals = np.hstack((self.vals, new_vals))
+        self.saveVals()
         self.set_approx()
         print("High limit increased, Emax= " + str(self.deltaEmax))
 
     def decrease_low_limit(self):
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
         new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
-        new_vals = self.rateFunc(new_inputs)
+        new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
         self.deltaEmin = new_deltaEmin
         self.deltaEvals = np.hstack((new_inputs, self.deltaEvals))
         self.vals = np.hstack((new_vals, self.vals))
+        self.saveVals()
         self.set_approx()
         print("Low limit dencreased, Emin= " + str(self.deltaEmin))
 
     def get_tunnling_rates(self, deltaE):
-        if self.deltaEmin >= deltaE:
+        while self.deltaEmin - np.min(deltaE) >= -EPS:
             self.decrease_low_limit()
-        if self.deltaEmax <= deltaE:
+        while self.deltaEmax - np.max(deltaE) <= EPS:
             self.increase_high_limit()
         return self.approx(deltaE)
 
@@ -166,7 +182,6 @@ class TunnelingRateCalculator:
         fig = plt.figure()
         plt.plot(self.deltaEvals, self.vals, '.')
         return fig
-
 
 class NoElectronsOnDot(RuntimeError):
     pass
@@ -220,6 +235,8 @@ class DotArray:
         self.saveCurrentMap = False
         self.Ih = None
         self.Iv = None
+        self.I_left_sqr_avg = 0  # for std calculations
+        self.I_right_sqr_avg = 0
 
     def __copy__(self):
         copy_array = object.__new__(type(self))
@@ -263,6 +280,8 @@ class DotArray:
         copy_array.saveCurrentMap = self.saveCurrentMap
         copy_array.Ih = self.Ih
         copy_array.Iv = self.Iv
+        copy_array.I_left_sqr_avg = self.I_left_sqr_avg
+        copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         return copy_array
 
     def getRows(self):
@@ -277,6 +296,8 @@ class DotArray:
         """
         self.totalChargePassedRight = 0
         self.totalChargePassedLeft = 0
+        self.I_left_sqr_avg = 0
+        self.I_right_sqr_avg = 0
         if self.saveCurrentMap:
             self.Ih = np.zeros(self.Rh.shape)
             self.Iv = np.zeros(self.Rv.shape)
@@ -302,6 +323,9 @@ class DotArray:
 
     def getCharge(self):
         return self.totalChargePassedRight, self.totalChargePassedLeft
+
+    def getIsqr(self):
+        return self.I_right_sqr_avg, self.I_left_sqr_avg
 
     def getTimeStep(self):
         return self.timeStep
@@ -333,7 +357,7 @@ class DotArray:
         second_diagonal = second_diagonal[:-1]
         n_diagonal = np.copy(self.Cv[1:,:])
         C_mat = np.diagflat(diagonal) - np.diagflat(second_diagonal,k=1) - np.diagflat(second_diagonal,k=-1)\
-                -np.diagflat(n_diagonal, k=self.columns) -  np.diagflat(n_diagonal, k=-self.columns)
+                -np.diagflat(n_diagonal, k=self.columns) - np.diagflat(n_diagonal, k=-self.columns)
         self.invC = np.linalg.inv(C_mat)
         return True
 
@@ -366,7 +390,7 @@ class DotArray:
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         # print(-1/self._JeigenValues)
-        self.timeStep = -1/np.max(self._JeigenValues)
+        self.timeStep = -10/np.max(self._JeigenValues)
         self.default_dt = -1/np.average(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
@@ -492,22 +516,26 @@ class DotArray:
             return True
         cumRates = np.cumsum(rates)
         actionInd = np.searchsorted(cumRates, randomNumber*cumRates[-1])
-        self.executeAction(actionInd)
+        self.executeAction(actionInd, dt)
         return True
 
-    def tunnel(self, fromDot, toDot, charges=1):
+    def tunnel(self, fromDot, toDot, dt, charge=1):
         if fromDot[1] == self.columns:
-            self.totalChargePassedRight -= charges
+            self.totalChargePassedRight -= charge
+            self.I_right_sqr_avg += charge**2/dt
         elif fromDot[1] == -1:
-            self.totalChargePassedLeft -= charges
+            self.totalChargePassedLeft -= charge
+            self.I_left_sqr_avg += charge**2/dt
         else:
             self.n[fromDot] -= 1
         if toDot[1] == self.columns:
-            self.totalChargePassedRight += charges
+            self.totalChargePassedRight += charge
+            self.I_right_sqr_avg += charge**2/dt
         elif toDot[1] == -1:
-            self.totalChargePassedLeft += charges
+            self.totalChargePassedLeft += charge
+            self.I_left_sqr_avg += charge**2/dt
         else:
-            self.n[toDot] += charges
+            self.n[toDot] += charge
         return True
 
     def printState(self):
@@ -532,7 +560,7 @@ class DotArray:
             res += "\n" + param
         return res
 
-    def executeAction(self, ind, charge=1):
+    def executeAction(self, ind, dt, charge=1):
         horzSize = self.rows*(self.columns+1)
         vertSize = (self.rows - 1)*self.columns
         if ind < horzSize: # tunnel right:
@@ -558,7 +586,7 @@ class DotArray:
             toDot = (fromDot[0] - 1, fromDot[1])
             if self.saveCurrentMap:
                 self.Iv[toDot] -= charge
-        self.tunnel(fromDot, toDot)
+        self.tunnel(fromDot, toDot, dt, charge=charge)
         return fromDot, toDot
 
 class JJArray(DotArray):
@@ -569,18 +597,17 @@ class JJArray(DotArray):
         self.gap = scGap
         self.Ej = self.getEj()
         self.Ec = 1/np.mean(CG)
-        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01,
-                                                          qp_tunneling(self.Ec, self.gap, self.temperature))
-        self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01,
-                                                          cp_tunneling(self.Ej, self.Ec, self.temperature))
+        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, scGap,
+                                                          "quasi_particles_rate")
+        self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
+                                                          "cooper_pairs_rate")
         print("Rates were calculated")
         # dbg
-        # fig1 = self.qp_rate_calculator.plot_rate()
-        # fig2 = self.cp_rate_calculator.plot_rate()
-        # plt.show()
-        # plt.close(fig1)
-        # plt.close(fig2)
-        # exit(0)
+        fig1 = self.qp_rate_calculator.plot_rate()
+        fig2 = self.cp_rate_calculator.plot_rate()
+        plt.show()
+        plt.close(fig1)
+        plt.close(fig2)
 
     def __copy__(self):
         copy_array = super().__copy__()
@@ -626,14 +653,14 @@ class JJArray(DotArray):
             self.rates[mid:] = self.cp_rate_calculator.get_tunnling_rates(-cp_work) / (self.R**2)
         return self.rates
 
-    def executeAction(self, ind, charge=1):
+    def executeAction(self, ind, dt, charge=1):
         horzSize = self.rows*(self.columns+1)
         vertSize = (self.rows - 1)*self.columns
         if ind < 2*(horzSize + vertSize):
-            fromDot, toDot = super().executeAction(ind, charge=1)
+            fromDot, toDot = super().executeAction(ind, dt,charge=1)
         else:
             ind = ind - 2*(horzSize + vertSize)
-            fromDot, toDot = super().executeAction(ind, charge=2)
+            fromDot, toDot = super().executeAction(ind, dt, charge=2)
         return fromDot, toDot
 
 class Simulator:
@@ -644,6 +671,8 @@ class Simulator:
     """
     def __init__(self, index, VL0, VR0, Q0, n0, dotArray):
         self.dotArray = copy(dotArray)
+        self.dotArray.setGroundCharge(Q0)
+        self.dotArray.setOccupation(n0)
         self.VL = VL0
         self.VR = VR0
         self.index = index
@@ -679,23 +708,29 @@ class Simulator:
         curr_t = 0
         steps = 0
         if fullOutput:
-            n_sum = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
-            Q_sum = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
+            n_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
+            n_var = np.zeros(n_avg.shape)
+            Q_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
+            Q_var = np.zeros(Q_avg.shape)
         min_steps = MINIMUM_STEPS_PER_DOT*(self.dotArray.getColumns()*self.dotArray.getRows())
+        curr_n = self.dotArray.getOccupation()
+        curr_Q = self.dotArray.getGroundCharge()
         while curr_t < t or steps < min_steps:
-            if fullOutput:
-                curr_n = self.dotArray.getOccupation()
-                curr_Q = self.dotArray.getGroundCharge()
             dt = self.executeStep(printState=print_stats)
             steps += 1
-            curr_t += dt
             if fullOutput:
-                n_sum += curr_n*dt
-                Q_sum += curr_Q*dt
+                n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
+                Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var, curr_t, dt)
+                curr_n = self.dotArray.getOccupation()
+                curr_Q = self.dotArray.getGroundCharge()
+            curr_t += dt
         rightCurrent, leftCurrent = self.dotArray.getCharge()
-        res = (rightCurrent/curr_t, -leftCurrent/curr_t)
+        rightCurrentSqr, leftCurrentSqr = self.dotArray.getIsqr()
+        rightCurrentErr = np.sqrt((1/(steps - 1)) * (rightCurrentSqr/curr_t - rightCurrent**2/curr_t**2))
+        leftCurrentErr = np.sqrt((1/ (steps - 1)) * (leftCurrentSqr/curr_t - leftCurrent**2/curr_t**2))
+        res = (rightCurrent/curr_t, -leftCurrent/curr_t, rightCurrentErr, leftCurrentErr)
         if fullOutput:
-            res = res + (n_sum/curr_t, Q_sum/curr_t)
+            res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
         if currentMap:
             res = res + (self.dotArray.getCurrentMap()/curr_t,)
             self.dotArray.currentMapOff()
@@ -711,7 +746,8 @@ class Simulator:
             # running once to get to steady state
             # self.calcCurrent(t)
             # now we are in steady state calculate current
-            rightCurrent, leftCurrnet, n, Q = self.calcCurrent(t, fullOutput=True)
+            rightCurrent, leftCurrnet, rightCurrentErr, leftCurrentErr, n, Q, nErr, QErr =\
+                self.calcCurrent(t, fullOutput=True)
             Ileft.append(leftCurrnet)
             Iright.append(rightCurrent)
             ns.append(n)
@@ -733,13 +769,17 @@ class Simulator:
         plt.plot(x, Qs[:,0,:], x, Qs[:,1,:])
         plt.show()
 
-    def saveState(self, I, V, n=None, Q=None, Imaps=None, fullOutput=False, currentMap=False, basePath=''):
+    def saveState(self, I, IErr, V, n=None, Q=None, nErr=None, QErr=None, Imaps=None,
+                  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         np.save(baseName + "_I", np.array(I))
+        np.save(baseName + "_IErr", np.array(IErr))
         np.save(baseName + "_Vind", np.array(V))
         if fullOutput:
             np.save(baseName + "_ns", np.array(n))
             np.save(baseName + "_Qs", np.array(Q))
+            np.save(baseName + "_nsErr", np.array(nErr))
+            np.save(baseName + "_QsErr", np.array(QErr))
         np.save(baseName + "_n", self.dotArray.getOccupation())
         np.save(baseName + "_Q", self.dotArray.getGroundCharge())
         if currentMap:
@@ -748,14 +788,17 @@ class Simulator:
     def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         I = np.load(baseName + "_I.npy")
+        IErr = np.load(baseName + "_IErr.npy")
         Vind = np.load(baseName + "_Vind.npy")
         n = np.load(baseName + "_n.npy")
         Q = np.load(baseName + "_Q.npy")
-        res = (I,Vind,n,Q)
+        res = (I,IErr,Vind,n,Q)
         if fullOutput:
             ns = np.load(baseName + "_ns.npy")
             Qs = np.load(baseName + "_Qs.npy")
-            res = res + (ns, Qs)
+            nsErr = np.load(baseName + "_nsErr.npy")
+            QsErr = np.load(baseName + "_QsErr.npy")
+            res = res + (ns, Qs,nsErr, QsErr)
         if currentMap:
             Imaps = np.load(baseName + "_current_map.npy")
             res = res + (Imaps,)
@@ -764,20 +807,26 @@ class Simulator:
     def clearState(self, fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         os.remove(baseName + "_I.npy")
+        os.remove(baseName + "_IErr.npy")
         os.remove(baseName + "_Vind.npy")
         os.remove(baseName + "_n.npy")
         os.remove(baseName + "_Q.npy")
         if fullOutput:
             os.remove(baseName + "_ns.npy")
             os.remove(baseName + "_Qs.npy")
+            os.remove(baseName + "_nsErr.npy")
+            os.remove(baseName + "_QsErr.npy")
         if currentMap:
             os.remove(baseName + "_current_map.npy")
         return True
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
         I = []
+        IErr = []
         ns = []
         Qs = []
+        nsErr = []
+        QsErr = []
         Imaps = []
         tStep = self.dotArray.getTimeStep()
         if vSym:
@@ -797,17 +846,20 @@ class Simulator:
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
             I = list(resumeParams[0])
-            Vind = int(resumeParams[1])
+            IErr = list(resumeParams[1])
+            Vind = int(resumeParams[2])
             VL_vec = VL_vec[Vind+1:]
             VR_vec = VR_vec[Vind+1:]
             Vind_addition = Vind + 1
-            self.dotArray.setOccupation(resumeParams[2])
-            self.dotArray.setGroundCharge(resumeParams[3])
+            self.dotArray.setOccupation(resumeParams[3])
+            self.dotArray.setGroundCharge(resumeParams[2])
             if fullOutput:
-                ns = list(resumeParams[4])
-                Qs = list(resumeParams[5])
+                ns = list(resumeParams[5])
+                Qs = list(resumeParams[6])
+                nsErr = list(resumeParams[7])
+                QsErr = list(resumeParams[8])
             if currentMap:
-                Imaps = list(resumeParams[6])
+                Imaps = list(resumeParams[9])
         Vind = 0
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
@@ -816,19 +868,24 @@ class Simulator:
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
-            leftCurrnet = stepRes[1]
+            leftCurrent = stepRes[1]
+            rightCurrentErr = stepRes[2]
+            leftCurrentErr = stepRes[3]
             if fullOutput:
-                ns.append(stepRes[2])
-                Qs.append(stepRes[3])
+                ns.append(stepRes[4])
+                Qs.append(stepRes[5])
+                nsErr.append(stepRes[6])
+                QsErr.append(stepRes[7])
             if currentMap:
                 Imaps.append(stepRes[-1])
-            I.append((rightCurrent+leftCurrnet)/2)
+            I.append((rightCurrent+leftCurrent)/2)
+            IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
             print(VL - VR, end=',')
-            self.saveState(I, [Vind + Vind_addition], ns, Qs, Imaps, fullOutput=fullOutput,
+            self.saveState(I, IErr, [Vind + Vind_addition], ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
-        res = (np.array(I), VL_res - VR_res)
+        res = (np.array(I), np.array(IErr), VL_res - VR_res)
         if fullOutput:
-            res = res + (np.array(ns), np.array(Qs))
+            res = res + (np.array(ns), np.array(Qs), np.array(nsErr), np.array(QsErr))
         if currentMap:
             res = res + (np.array(Imaps),)
         self.clearState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
@@ -836,6 +893,36 @@ class Simulator:
 
     def printState(self):
         self.dotArray.printState()
+
+    def update_statistics(self, value, avg, n_var, total_time, time_step):
+        """
+        Updating the statistics of a measured value according to West's
+        algorithm (as described in https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2973983/)
+        :param value: Measured value this step
+        :param avg: Average up to this step (result of last call to this function)
+        :param n_var: non-normalized variance up to this step (result of last call to this function)
+        :param total_time: Total simulation time not including last step
+        :param new_time: The time of the last step
+        :return: (avg, n_var) Upadted values.
+        to get the actual variance use Var = (n*n_var)/((n-1)*total_time)
+        """
+        new_time = total_time + time_step
+        dist_from_avg = value - avg
+        local_std = dist_from_avg*time_step / new_time
+        new_n_var = n_var + dist_from_avg*total_time*local_std
+        new_avg = avg + local_std
+        return new_avg, new_n_var
+
+    def get_err(self, n_var, steps, time):
+        """
+        Returns the standard error of mean of a variable based on the
+        non-normalized variance (see method "update_statistics")
+        :param n_var: non-normalized variance
+        :param steps: number of steps for data point
+        :param time: total running time for data point
+        :return: standart deviation
+        """
+        return np.sqrt((1/((steps-1)*time))*n_var)
 
 class GraphSimulator:
     """
@@ -881,7 +968,7 @@ class GraphSimulator:
             rates = self.dotArray.getRates()
             for ind,rate in enumerate(rates):
                 if rate > 0: # add new edge
-                    fromDot, toDot = self.dotArray.executeAction(ind)
+                    fromDot, toDot = self.dotArray.executeAction(ind,0)
                     n = np.copy(self.dotArray.n).flatten()
                     tup_n = tuple(n)
                     if tup_n not in states_dict:
@@ -1145,9 +1232,9 @@ class GraphSimulator:
             I.append((rightCurrent + leftCurrent) / 2)
             self.saveState(I, [Vind + Vind_addition], ns, Qs, fullOutput=fullOutput, basePath=basePath)
             Vind += 1
-        result = (np.array(I), VL_res - VR_res)
+        result = (np.array(I), np.zeros(I.shape), VL_res - VR_res)
         if fullOutput:
-            result = result + (ns, Qs)
+            result = result + (ns, Qs, np.zeros(ns.shape), np.zeros(Qs.shape))
         self.removeState(fullOutput=fullOutput, basePath=basePath)
         return result
 
@@ -1241,8 +1328,11 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         simulator.checkSteadyState(repeats)
         exit(0)
     Is = []
+    IsErr = []
     ns = []
     Qs = []
+    nsErr = []
+    QsErr = []
     Imaps = []
     if not dbg:
         print("Starting parallel run")
@@ -1256,18 +1346,23 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         for res in results:
             result = res.get()
             I = result[0]
-            print(I)
-            currentMapInd = 2
+            IErr = result[1]
+            currentMapInd = 3
             if fullOutput:
-                n = result[2]
-                Q = result[3]
+                n = result[3]
+                Q = result[4]
+                nErr = result[5]
+                QErr = result[6]
                 ns.append(n)
                 Qs.append(Q)
-                currentMapInd=4
+                nsErr.append(nErr)
+                QsErr.append(QErr)
+                currentMapInd = 7
             if currentMap:
                 Imaps.append(result[currentMapInd])
             Is.append(I)
-        V = result[1]
+            IsErr.append(IErr)
+        V = result[2]
         params = result[-1]
 
     else: #dbg
@@ -1276,33 +1371,49 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
             result = runSingleSimulation(repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                          printState, useGraph, currentMap,basePath, resume)
             I = result[0]
-            currentMapInd = 2
+            IErr = result[1]
+            currentMapInd = 3
             if fullOutput:
-                n = result[2]
-                Q = result[3]
+                n = result[3]
+                Q = result[4]
+                nErr = result[5]
+                QErr = result[6]
                 ns.append(n)
                 Qs.append(Q)
-                currentMapInd = 4
+                nsErr.append(nErr)
+                QsErr.append(QErr)
+                currentMapInd = 7
             if currentMap:
                 Imaps.append(result[currentMapInd])
             Is.append(I)
-        V = result[1]
+            IsErr.append(IErr)
+        V = result[2]
         params = result[-1]
         # dbg
     print("Saving results")
     avgI = np.mean(np.array(Is), axis=0)
+    avgIErr = np.sqrt(np.sum(np.array(IsErr)**2, axis=0))/len(IsErr)
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)
+        avgNErr = np.sqrt(np.sum(np.array(nsErr) ** 2, axis=0)) / len(nsErr)
+        avgQErr = np.sqrt(np.sum(np.array(QsErr) ** 2, axis=0)) / len(QsErr)
         np.save(basePath + "_n", avgN)
         np.save(basePath + "_Q", avgQ)
+        np.save(basePath + "_nErr", avgNErr)
+        np.save(basePath + "_QErr", avgQErr)
         np.save(basePath + "_full_I", np.array(Is))
+        np.save(basePath + "_full_IErr", np.array(IsErr))
     fig = plt.figure()
-    plt.plot(V[:V.size//2], avgI[:V.size//2], '.b',V[V.size//2:],
-             avgI[V.size//2:],
-             '.r')
+    IplusErr = avgI + avgIErr
+    IminusErr = avgI - avgIErr
+    plt.plot(V[:V.size//2], avgI[:V.size//2], 'b-',V[:V.size//2], IplusErr[:V.size//2], 'b--',
+             V[:V.size//2], IminusErr[:V.size//2], 'b--',
+             V[V.size//2:], avgI[V.size//2:], 'r-',V[V.size//2:], IplusErr[V.size//2:], 'r--',
+             V[V.size//2:], IminusErr[V.size//2:], 'r--')
     plt.savefig(basePath + "_IV.png")
     np.save(basePath + "_I", avgI)
+    np.save(basePath + "_IErr", avgIErr)
     np.save(basePath + "_V", V)
     plt.close(fig)
     if currentMap:
