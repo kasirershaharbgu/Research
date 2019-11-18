@@ -1670,21 +1670,21 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-    import cProfile, pstats, io
-    from pstats import SortKey
-    pr = cProfile.Profile()
-    pr.enable()
+    # import cProfile, pstats, io
+    # from pstats import SortKey
+    # pr = cProfile.Profile()
+    # pr.enable()
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap)
-    pr.disable()
-    s = io.StringIO()
-    sortby = SortKey.CUMULATIVE
-    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    ps.print_stats()
-    print(s.getvalue())
+    # pr.disable()
+    # s = io.StringIO()
+    # sortby = SortKey.CUMULATIVE
+    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    # ps.print_stats()
+    # print(s.getvalue())
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
