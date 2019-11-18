@@ -1,3 +1,0 @@
-
-python3 dots_array.py -M 2 -N 2 --vmin -2 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution uniform --custom-rh "[[10,1,1],[10,1,10]]" --custom-rv "[[1,1]]" --custom-ch "[[1,1,1],[0.5,0.5,0.5]]" --custom-cv "[[0.5,0.5]]" --file-name decreasing_r_one_big_one_small_c_small_connect_c_small_connect_r_2_2 -o 2X2_dots_arrays_symmetric_v --full --current-map  , --symmetric-v
-
