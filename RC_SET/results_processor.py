@@ -230,7 +230,7 @@ class MultiResultAnalyzer:
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
 
-        
+
 
 
 
