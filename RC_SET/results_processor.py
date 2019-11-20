@@ -7,7 +7,7 @@ import os
 EPS = 1e-3
 class SingleResultsProcessor:
     """ Used for proccessing result from one dot array simulation"""
-    def __init__(self, directory, file_name):
+    def __init__(self, directory, file_name, fullOutput=False):
         self.basePath = os.path.join(directory, file_name)
         self.fileName = file_name
         self.directory = directory
@@ -21,6 +21,8 @@ class SingleResultsProcessor:
         self.mid_idx = 0
         self.runningParams = dict()
         self.arrayParams = dict()
+        self.load_results(fullOutput=fullOutput)
+        self.load_params()
 
     def load_results(self, fullOutput=False):
         I_file = os.path.join(self.basePath + '_I.npy')
@@ -43,22 +45,30 @@ class SingleResultsProcessor:
 
     def load_params(self):
         params_file = os.path.join(self.directory,"runningParameters_" + self.fileName + ".txt")
+        multi_line = False
         with open(params_file, 'r') as f:
+            start = False
             for line in f:
                 if ' = ' in line:
                     splitted = line.split(' = ')
-                    dictionary = self.runningParams
+                    key = splitted[0]
+                    try:
+                        value = literal_eval(splitted[1].rstrip('\n'))
+                    except Exception:
+                        value = splitted[1].rstrip('\n')
+                    self.runningParams[key] = value
                 elif ': ' in line:
+                    if start:
+                        key = splitted[0]
+                        try:
+                            value = literal_eval(splitted[1].rstrip('\n').replace('  ',' ').replace(' ',','))
+                        except Exception:
+                            value = splitted[1].rstrip('\n')
+                        self.arrayParams[key] = value
+                    start = True
                     splitted = line.split(': ')
-                    dictionary = self.arrayParams
-                else:
-                    continue
-                key = splitted[0]
-                try:
-                    value = literal_eval(splitted[1])
-                except Exception:
-                    value = splitted[1]
-                dictionary[key] = value
+                elif start:
+                    splitted[1] = splitted[1].replace('\n',' ') + line
         return True
 
     def get_array_param(self, key):
@@ -70,11 +80,11 @@ class SingleResultsProcessor:
     def calc_hysteresis_score(self):
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
-        score = -integrate.cumtrapz(self.I, self.V)
-        low_err = -integrate.cumtrapz(IplusErr[:self.mid_idx], self.V[:self.mid_idx]) -\
-                integrate.cumtrapz(IminusErr[self.mid_idx:], self.V[self.mid_idx:])
-        high_err = -integrate.cumtrapz(IminusErr[:self.mid_idx], self.V[:self.mid_idx]) - \
-                  integrate.cumtrapz(IplusErr[self.mid_idx:], self.V[self.mid_idx:])
+        score = -integrate.trapz(self.I, self.V)
+        low_err = -integrate.trapz(IplusErr[:self.mid_idx], self.V[:self.mid_idx]) -\
+                integrate.trapz(IminusErr[self.mid_idx:], self.V[self.mid_idx:])
+        high_err = -integrate.trapz(IminusErr[:self.mid_idx], self.V[:self.mid_idx]) - \
+                  integrate.trapz(IplusErr[self.mid_idx:], self.V[self.mid_idx:])
         return score, high_err-score, score-low_err
 
     def calc_blockade(self):
@@ -111,9 +121,52 @@ class SingleResultsProcessor:
                     low_err = np.max(IminusErr[in_window]) - np.min(IplusErr[in_window])
         return score, high_err-score, score-low_err
 
+    def plot_results(self, fullOutput=False):
+        IplusErr = self.I + self.IErr
+        IminusErr = self.I - self.IErr
+        plt.figure()
+        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b',
+                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r',
+                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
+                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+        plt.xlabel('Voltage')
+        plt.ylabel('Current')
+        if fullOutput:
+            plt.figure()
+            n = self.n.reshape((n.shape[0], n.shape[1] * n.shape[2]))
+            Q = self.Q.reshape((Q.shape[0], Q.shape[1] * Q.shape[2]))
+            nErr = self.nErr.reshape((nErr.shape[0], nErr.shape[1] * nErr.shape[2]))
+            QErr = self.QErr.reshape((QErr.shape[0], QErr.shape[1] * QErr.shape[2]))
+            nplusErr = n + nErr
+            nminusErr = n - nErr
+            QplusErr = Q + QErr
+            QminusErr = Q - QErr
+            for i in range(len(n[0])):
+                plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
+                         self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
+                         self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
+                plt.xlabel('Voltage')
+                plt.ylabel('Occupation')
+            plt.figure()
+            for i in range(len(Q[0])):
+                plt.plot(self.V[:self.mid_idx], Q[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], Q[self.mid_idx:, i], 'r',
+                         self.V[:self.mid_idx], QplusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], QplusErr[self.mid_idx:, i], 'r--',
+                         self.V[:self.mid_idx], QminusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
+                plt.xlabel('Voltage')
+                plt.ylabel('Chagre')
+        plt.show()
+
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
-    def __init__(self, directories_list, files_list, relevant_array_params, relevant_running_params, out_directory):
+    def __init__(self, directories_list, files_list, relevant_running_params, relevant_array_params, out_directory):
         """
         Initializing analyzer
         :param directories_list: list of directories for result files
@@ -136,6 +189,7 @@ class MultiResultAnalyzer:
         self.blockadeScoresLowErr = []
         self.arrayParams = {p: [] for p in relevant_array_params}
         self.runningParams = {p: [] for p in relevant_running_params}
+        self.load_data()
 
     def load_data(self):
         """
@@ -223,12 +277,38 @@ class MultiResultAnalyzer:
             x = self.runningParams[parameter_name]
         else:
             x = self.runningParams[parameter_name]
+        x, y, y_high_err, y_low_err = self.average_similar_results(x, y, y_high_err, y_low_err)
         errors = [y_low_err, y_high_err]
         fig = plt.figure()
-        plt.errorbar(x, y, yerr=errors)
+        plt.errorbar(x, y, yerr=errors, marker='o')
         plt.title(title)
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
+
+    def average_similar_results(self, xs, ys, ys_high_err, ys_low_err):
+        new_x = []
+        new_y = []
+        new_y_high_err = []
+        new_y_low_err = []
+        for x in xs:
+            if x not in new_x:
+                new_x.append(x)
+                indices = np.array(xs) == x
+                relevant_ys = np.array(ys[indices])
+                relevant_high_err = np.array(ys_high_err[indices])
+                relevant_low_err = np.array(ys_low_err[indices])
+                new_y.append(np.average(relevant_ys))
+                new_y_high_err.append(np.sqrt(np.average(relevant_high_err**2)))
+                new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)))
+        return new_x, new_y, new_y_high_err, new_y_low_err
+
+
+if __name__ == "__main__":
+    directory_list = ["C:\\Users\\shahar\\Research\\RC_SET\\3X3_array_statistics"] * 10
+    files_list = ["c_std_0.1_r_std_0.5_run_" + str(i) for i in range(1,11)]
+    m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [], "dbg")
+    m.plot_score('hysteresis', 'R_std', 'dbg')
+
 
 
 
