@@ -806,22 +806,6 @@ class Simulator:
             res = res + (Imaps,)
         return res
 
-    def clearState(self, fullOutput=False, currentMap=False, basePath=''):
-        baseName = basePath + "_temp_" + str(self.index)
-        os.remove(baseName + "_I.npy")
-        os.remove(baseName + "_IErr.npy")
-        os.remove(baseName + "_Vind.npy")
-        os.remove(baseName + "_n.npy")
-        os.remove(baseName + "_Q.npy")
-        if fullOutput:
-            os.remove(baseName + "_ns.npy")
-            os.remove(baseName + "_Qs.npy")
-            os.remove(baseName + "_nsErr.npy")
-            os.remove(baseName + "_QsErr.npy")
-        if currentMap:
-            os.remove(baseName + "_current_map.npy")
-        return True
-
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
         I = []
         IErr = []
@@ -866,7 +850,7 @@ class Simulator:
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
-            self.calcCurrent(tStep)
+            self.calcCurrent(tStep/10)
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
@@ -882,7 +866,7 @@ class Simulator:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
-            print(VL - VR, end=',')
+            # print(VL - VR, end=',')
             self.saveState(I, IErr, [Vind + Vind_addition], ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
@@ -890,7 +874,6 @@ class Simulator:
             res = res + (np.array(ns), np.array(Qs), np.array(nsErr), np.array(QsErr))
         if currentMap:
             res = res + (np.array(Imaps),)
-        self.clearState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
         print("total steps = " + str(self.steps))
         return res
 
@@ -939,7 +922,6 @@ class GraphSimulator:
         self.VR = VR0
         self.counter = 0
         self.index = index
-
         self.edgesMat = None
         self.states = None
         self.prob = None
@@ -1180,19 +1162,9 @@ class GraphSimulator:
             res = res + (ns, Qs)
         return res
 
-    def removeState(self, fullOutput=False, basePath=''):
-        baseName = basePath + "_temp_" + str(self.index)
-        os.remove(baseName + "_I.npy")
-        os.remove(baseName + "_Vind.npy")
-        os.remove(baseName + "_n.npy")
-        os.remove(baseName + "_Q.npy")
-        if fullOutput:
-            os.remove(baseName + "_ns.npy")
-            os.remove(baseName + "_Qs.npy")
-        return True
-
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False,
                basePath="", resume=False):
+        # TODO: add error calculation
         I = []
         ns = []
         Qs = []
@@ -1238,7 +1210,6 @@ class GraphSimulator:
         result = (np.array(I), np.zeros(I.shape), VL_res - VR_res)
         if fullOutput:
             result = result + (ns, Qs, np.zeros(ns.shape), np.zeros(Qs.shape))
-        self.removeState(fullOutput=fullOutput, basePath=basePath)
         return result
 
 def runSingleSimulation(index, VL0, VR0, vSym, Q0, n0,Vmax, Vstep, dotArray,
@@ -1422,8 +1393,26 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
+    for index in range(repeats):
+        removeState(index, basePath, fullOutput, currentMap)
     removeRandomParams(basePath)
     return params
+
+def removeState(index, fullOutput=False, basePath='', currentMap=False):
+    baseName = basePath + "_temp_" + str(index)
+    os.remove(baseName + "_I.npy")
+    os.remove(baseName + "_IErr.npy")
+    os.remove(baseName + "_Vind.npy")
+    os.remove(baseName + "_n.npy")
+    os.remove(baseName + "_Q.npy")
+    if fullOutput:
+        os.remove(baseName + "_ns.npy")
+        os.remove(baseName + "_Qs.npy")
+        os.remove(baseName + "_nsErr.npy")
+        os.remove(baseName + "_QsErr.npy")
+    if currentMap:
+        os.remove(baseName + "_current_map.npy")
+    return True
 
 def saveCurrentMaps(Imaps, V, path):
     Writer = animation.writers['ffmpeg']
