@@ -11,6 +11,7 @@ class SingleResultsProcessor:
         self.basePath = os.path.join(directory, file_name)
         self.fileName = file_name
         self.directory = directory
+        self.full = fullOutput
         self.I = None
         self.V = None
         self.IErr = None
@@ -121,7 +122,7 @@ class SingleResultsProcessor:
                     low_err = np.max(IminusErr[in_window]) - np.min(IplusErr[in_window])
         return score, high_err-score, score-low_err
 
-    def plot_results(self, fullOutput=False):
+    def plot_results(self):
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
         plt.figure()
@@ -133,12 +134,12 @@ class SingleResultsProcessor:
                  self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
         plt.xlabel('Voltage')
         plt.ylabel('Current')
-        if fullOutput:
+        if self.full:
             plt.figure()
-            n = self.n.reshape((n.shape[0], n.shape[1] * n.shape[2]))
-            Q = self.Q.reshape((Q.shape[0], Q.shape[1] * Q.shape[2]))
-            nErr = self.nErr.reshape((nErr.shape[0], nErr.shape[1] * nErr.shape[2]))
-            QErr = self.QErr.reshape((QErr.shape[0], QErr.shape[1] * QErr.shape[2]))
+            n = self.n.reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
+            Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
+            nErr = self.nErr.reshape((self.nErr.shape[0], self.nErr.shape[1] *self. nErr.shape[2]))
+            QErr = self.QErr.reshape((self.QErr.shape[0], self.QErr.shape[1] * self.QErr.shape[2]))
             nplusErr = n + nErr
             nminusErr = n - nErr
             QplusErr = Q + QErr
@@ -162,7 +163,6 @@ class SingleResultsProcessor:
                          self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
-        plt.show()
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
@@ -304,11 +304,16 @@ class MultiResultAnalyzer:
 
 
 if __name__ == "__main__":
-    directory_list = ["C:\\Users\\shahar\\Research\\RC_SET\\3X3_array_statistics"] * 10
-    files_list = ["c_std_0.1_r_std_0.5_run_" + str(i) for i in range(1,11)]
-    m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [], "dbg")
-    m.plot_score('hysteresis', 'R_std', 'dbg')
-
+    # directory_list = ["C:\\Users\\shahar\\Research\\RC_SET\\3X3_array_statistics"] * 10
+    # files_list = ["c_std_0.1_r_std_0.5_run_" + str(i) for i in range(1,11)]
+    # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [], "dbg")
+    # m.plot_score('hysteresis', 'R_std', 'dbg')
+    # s = SingleResultsProcessor("3X3_array_statistics","c_std_0.1_r_std_0.5_run_4",fullOutput=False)
+    s = SingleResultsProcessor("dbg", "dbg", fullOutput=True)
+    s1 = SingleResultsProcessor("dbg", "dbg1", fullOutput=True)
+    s.plot_results()
+    s1.plot_results()
+    plt.show()
 
 
 
