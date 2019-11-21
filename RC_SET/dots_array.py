@@ -676,6 +676,7 @@ class Simulator:
         self.VL = VL0
         self.VR = VR0
         self.index = index
+        self.steps = 0
         # for debug
     #     self.randomGen = self.getRandom()
     #
@@ -724,6 +725,7 @@ class Simulator:
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
             curr_t += dt
+        self.steps += steps
         rightCurrent, leftCurrent = self.dotArray.getCharge()
         rightCurrentSqr, leftCurrentSqr = self.dotArray.getIsqr()
         rightCurrentErr = np.sqrt((1/(steps - 1)) * (rightCurrentSqr/curr_t - rightCurrent**2/curr_t**2))
@@ -864,7 +866,7 @@ class Simulator:
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
-            self.calcCurrent(tStep/10)
+            self.calcCurrent(tStep)
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
@@ -889,6 +891,7 @@ class Simulator:
         if currentMap:
             res = res + (np.array(Imaps),)
         self.clearState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
+        print("total steps = " + str(self.steps))
         return res
 
     def printState(self):
