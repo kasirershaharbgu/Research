@@ -771,12 +771,11 @@ class Simulator:
         plt.plot(x, Qs[:,0,:], x, Qs[:,1,:])
         plt.show()
 
-    def saveState(self, I, IErr, V, n=None, Q=None, nErr=None, QErr=None, Imaps=None,
+    def saveState(self, I, IErr, n=None, Q=None, nErr=None, QErr=None, Imaps=None,
                   fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         np.save(baseName + "_I", np.array(I))
         np.save(baseName + "_IErr", np.array(IErr))
-        np.save(baseName + "_Vind", np.array(V))
         if fullOutput:
             np.save(baseName + "_ns", np.array(n))
             np.save(baseName + "_Qs", np.array(Q))
@@ -791,10 +790,9 @@ class Simulator:
         baseName = basePath + "_temp_" + str(self.index)
         I = np.load(baseName + "_I.npy")
         IErr = np.load(baseName + "_IErr.npy")
-        Vind = np.load(baseName + "_Vind.npy")
         n = np.load(baseName + "_n.npy")
         Q = np.load(baseName + "_Q.npy")
-        res = (I,IErr,Vind,n,Q)
+        res = (I,IErr,n,Q)
         if fullOutput:
             ns = np.load(baseName + "_ns.npy")
             Qs = np.load(baseName + "_Qs.npy")
@@ -833,20 +831,19 @@ class Simulator:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
             I = list(resumeParams[0])
             IErr = list(resumeParams[1])
-            Vind = int(resumeParams[2])
-            VL_vec = VL_vec[Vind+1:]
-            VR_vec = VR_vec[Vind+1:]
-            Vind_addition = Vind + 1
-            self.dotArray.setOccupation(resumeParams[3])
-            self.dotArray.setGroundCharge(resumeParams[2])
+            Vind = len(I)
+            VL_vec = VL_vec[Vind:]
+            VR_vec = VR_vec[Vind:]
+            Vind_addition = Vind
+            self.dotArray.setOccupation(resumeParams[2])
+            self.dotArray.setGroundCharge(resumeParams[3])
             if fullOutput:
-                ns = list(resumeParams[5])
-                Qs = list(resumeParams[6])
-                nsErr = list(resumeParams[7])
-                QsErr = list(resumeParams[8])
+                ns = list(resumeParams[4])
+                Qs = list(resumeParams[5])
+                nsErr = list(resumeParams[6])
+                QsErr = list(resumeParams[7])
             if currentMap:
-                Imaps = list(resumeParams[9])
-        Vind = 0
+                Imaps = list(resumeParams[8])
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
@@ -867,7 +864,7 @@ class Simulator:
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
             # print(VL - VR, end=',')
-            self.saveState(I, IErr, [Vind + Vind_addition], ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
+            self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
         if fullOutput:
@@ -1142,7 +1139,6 @@ class GraphSimulator:
     def saveState(self, I, Vind, n=None, Q=None, fullOutput=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         np.save(baseName + "_I", np.array(I))
-        np.save(baseName + "_Vind", np.array(Vind))
         if fullOutput:
             np.save(baseName + "_ns", np.array(n))
             np.save(baseName + "_Qs", np.array(Q))
@@ -1152,10 +1148,9 @@ class GraphSimulator:
     def loadState(self, fullOutput=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         I = np.load(baseName + "_I.npy")
-        Vind = np.load(baseName + "_Vind.npy")
         n = np.load(baseName + "_n.npy")
         Q = np.load(baseName + "_Q.npy")
-        res = (I,Vind, n, Q)
+        res = (I, n, Q)
         if fullOutput:
             ns = np.load(baseName + "_ns.npy")
             Qs = np.load(baseName + "_Qs.npy")
@@ -1183,16 +1178,15 @@ class GraphSimulator:
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, basePath=basePath)
             I = list(resumeParams[0])
-            Vind = int(resumeParams[1])
-            VL_vec = VL_vec[Vind+1:]
-            VR_vec = VR_vec[Vind+1:]
-            Vind_addition = Vind + 1
-            self.n0 = resumeParams[2]
-            self.QG = resumeParams[3]
+            Vind = len(I)
+            VL_vec = VL_vec[Vind:]
+            VR_vec = VR_vec[Vind:]
+            Vind_addition = Vind
+            self.n0 = resumeParams[1]
+            self.QG = resumeParams[2]
             if fullOutput:
-                ns = list(resumeParams[4])
-                Qs = list(resumeParams[5])
-        Vind = 0
+                ns = list(resumeParams[3])
+                Qs = list(resumeParams[4])
         for VL,VR in zip(VL_vec,VR_res):
             print(VL-VR,end=',')
             self.dotArray.changeVext(VL, VR)
@@ -1205,8 +1199,7 @@ class GraphSimulator:
                 ns.append(n)
                 Qs.append(Q)
             I.append((rightCurrent + leftCurrent) / 2)
-            self.saveState(I, [Vind + Vind_addition], ns, Qs, fullOutput=fullOutput, basePath=basePath)
-            Vind += 1
+            self.saveState(I, ns, Qs, fullOutput=fullOutput, basePath=basePath)
         result = (np.array(I), np.zeros(I.shape), VL_res - VR_res)
         if fullOutput:
             result = result + (ns, Qs, np.zeros(ns.shape), np.zeros(Qs.shape))
@@ -1341,7 +1334,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
 
     else: #dbg
         print("Starting serial run")
-        for repeat in range(repeats):
+        for repeat in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 17, 19]:
             result = runSingleSimulation(repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                          printState, useGraph, currentMap,basePath, resume)
             I = result[0]
@@ -1402,7 +1395,6 @@ def removeState(index, fullOutput=False, basePath='', currentMap=False):
     baseName = basePath + "_temp_" + str(index)
     os.remove(baseName + "_I.npy")
     os.remove(baseName + "_IErr.npy")
-    os.remove(baseName + "_Vind.npy")
     os.remove(baseName + "_n.npy")
     os.remove(baseName + "_Q.npy")
     if fullOutput:
