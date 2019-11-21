@@ -4,3 +4,24 @@ python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0
 Loading array parameters
 Normal prototype array was created
 Starting parallel run
+total steps = 35633505
+total steps = 35633505
+total steps = 38151086
+total steps = 41647600
+total steps = 35633505
+total steps = 35633505
+total steps = 35633505
+total steps = 36244098
+total steps = 35633505
+total steps = 36244098
+total steps = 40891591
+total steps = 35633505
+total steps = 36244098
+total steps = 37377180
+total steps = 36244098
+total steps = 36899323
+total steps = 36899323
+total steps = 38814534
+total steps = 38814534
+total steps = 41647600
+Saving results

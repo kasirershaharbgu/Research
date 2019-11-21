@@ -1,7 +1,6 @@
 
-python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 1.5 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name c_std_0.1_r_std_1.5_run_9 -o 3X3_array_statistics     --symmetric-v
+python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 1.5 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name c_std_0.1_r_std_1.5_run_9 -o 3X3_array_statistics    --resume --symmetric-v
 
-Saving array parameters
+Loading array parameters
 Normal prototype array was created
 Starting parallel run
-slurmstepd: error: *** JOB 1222361 ON node012 CANCELLED AT 2019-11-19T19:35:13 DUE TO TIME LIMIT ***
