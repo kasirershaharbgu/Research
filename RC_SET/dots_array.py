@@ -1305,7 +1305,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         print("Starting parallel run")
         pool = Pool(processes=repeats)
         results = []
-        for repeat in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 17, 19]:
+        for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
                                     (repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                      printState, useGraph, currentMap,basePath, resume))
@@ -1334,7 +1334,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
 
     else: #dbg
         print("Starting serial run")
-        for repeat in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 17, 19]:
+        for repeat in range(repeats):
             result = runSingleSimulation(repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                          printState, useGraph, currentMap,basePath, resume)
             I = result[0]
@@ -1386,8 +1386,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
-    for index in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 17, 19]:
-        removeState(index, basePath, fullOutput, currentMap)
+    for index in range(repeats):
+        removeState(index, fullOutput, basePath, currentMap)
     removeRandomParams(basePath)
     return params
 
