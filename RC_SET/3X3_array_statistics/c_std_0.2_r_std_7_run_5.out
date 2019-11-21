@@ -1,0 +1,14 @@
+
+python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.2 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 7 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name c_std_0.2_r_std_7_run_5 -o 3X3_array_statistics     --symmetric-v
+
+Saving array parameters
+Traceback (most recent call last):
+  File "dots_array.py", line 1682, in <module>
+    checkSteadyState=False, superconducting=sc, gap=gap)
+  File "dots_array.py", line 1309, in runFullSimulation
+    np.array(Rh), np.array(Rv), basePath)
+  File "dots_array.py", line 1259, in saveRandomParams
+    np.save(baseName + "RG", RG)
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/lib/npyio.py", line 502, in save
+    fid = open(file, "wb")
+OSError: [Errno 122] Disk quota exceeded: '3X3_array_statistics/c_std_0.2_r_std_7_run_5_temp_RG.npy'
