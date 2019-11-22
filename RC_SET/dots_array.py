@@ -237,6 +237,8 @@ class DotArray:
         self.Iv = None
         self.I_left_sqr_avg = 0  # for std calculations
         self.I_right_sqr_avg = 0
+        self.horz_moves = 0
+        self.vert_moves = 0
 
     def __copy__(self):
         copy_array = object.__new__(type(self))
@@ -282,6 +284,8 @@ class DotArray:
         copy_array.Iv = self.Iv
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
+        copy_array.horz_moves = self.horz_moves
+        copy_array.vert_moves = self.vert_moves
         return copy_array
 
     def getRows(self):
@@ -568,24 +572,28 @@ class DotArray:
             toDot = (fromDot[0], fromDot[1] + 1)
             if self.saveCurrentMap:
                 self.Ih[toDot] += charge
+            self.horz_moves += 1
         elif ind < horzSize*2: # tunnel left
             ind -= horzSize
             fromDot = (ind//(self.columns+1), ind%(self.columns+1))
             toDot = (fromDot[0], fromDot[1] - 1)
             if self.saveCurrentMap:
                 self.Ih[fromDot] -= charge
+            self.horz_moves += 1
         elif ind < horzSize*2 + vertSize: # tunnel down
             ind -= horzSize*2
             fromDot = (ind//self.columns, ind%self.columns)
             toDot = (fromDot[0] + 1, fromDot[1])
             if self.saveCurrentMap:
                 self.Iv[fromDot] += charge
+            self.vert_moves += 1
         else: # tunnel up
             ind -= (horzSize*2 + vertSize)
             fromDot = ((ind//self.columns) + 1, ind%self.columns)
             toDot = (fromDot[0] - 1, fromDot[1])
             if self.saveCurrentMap:
                 self.Iv[toDot] -= charge
+            self.vert_moves += 1
         self.tunnel(fromDot, toDot, dt, charge=charge)
         return fromDot, toDot
 
@@ -826,7 +834,6 @@ class Simulator:
             VR_vec = self.VR * np.ones(VL_vec.shape)
         VL_res = np.copy(VL_vec)
         VR_res = np.copy(VR_vec)
-        Vind_addition = 0
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
             I = list(resumeParams[0])
@@ -834,7 +841,6 @@ class Simulator:
             Vind = len(I)
             VL_vec = VL_vec[Vind:]
             VR_vec = VR_vec[Vind:]
-            Vind_addition = Vind
             self.dotArray.setOccupation(resumeParams[2])
             self.dotArray.setGroundCharge(resumeParams[3])
             if fullOutput:
