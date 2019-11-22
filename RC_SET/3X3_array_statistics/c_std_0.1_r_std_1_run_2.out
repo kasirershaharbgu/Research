@@ -4,4 +4,24 @@ python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0
 Loading array parameters
 Normal prototype array was created
 Starting parallel run
-slurmstepd: error: *** JOB 1225206 ON node013 CANCELLED AT 2019-11-21T23:50:11 DUE TO TIME LIMIT ***
+total steps = 0
+total steps = 0
+total steps = 0
+total steps = 6160022
+total steps = 18555317
+total steps = 34559570
+total steps = 33656626
+total steps = 30237767
+total steps = 32782976
+total steps = 31837402
+total steps = 33656626
+total steps = 32782976
+total steps = 33656626
+total steps = 33656626
+total steps = 32782976
+total steps = 33656626
+total steps = 33656626
+total steps = 33656626
+total steps = 33656626
+total steps = 37280311
+Saving results
