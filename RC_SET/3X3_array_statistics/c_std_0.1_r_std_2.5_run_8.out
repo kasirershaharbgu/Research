@@ -1,7 +1,46 @@
 
-python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 2.5 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name c_std_0.1_r_std_2.5_run_8 -o 3X3_array_statistics     --symmetric-v
+python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 2.5 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name c_std_0.1_r_std_2.5_run_8 -o 3X3_array_statistics    --resume --symmetric-v
 
-Saving array parameters
+Loading array parameters
 Normal prototype array was created
 Starting parallel run
-slurmstepd: error: *** JOB 1222380 ON node011 CANCELLED AT 2019-11-20T08:54:18 DUE TO TIME LIMIT ***
+total steps = 2831476
+total steps = 4558336
+total steps = 2158122
+total steps = 3692605
+total steps = 3806743
+total steps = 3119126
+total steps = 2416332
+total steps = 4266987
+total steps = 4349606
+total steps = 4349606
+total steps = 4266987
+total steps = 4724240
+total steps = 4550438
+total steps = 5214118
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "dots_array.py", line 1222, in runSingleSimulation
+    currentMap=currentMap, basePath=basePath, resume=resume)
+  File "dots_array.py", line 838, in calcIV
+    resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
+  File "dots_array.py", line 799, in loadState
+    I = np.load(baseName + "_I.npy")
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/lib/npyio.py", line 384, in load
+    fid = open(file, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_11_I.npy'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "dots_array.py", line 1672, in <module>
+    checkSteadyState=False, superconducting=sc, gap=gap)
+  File "dots_array.py", line 1320, in runFullSimulation
+    result = res.get()
+  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 683, in get
+    raise self._value
+FileNotFoundError: [Errno 2] No such file or directory: '3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_11_I.npy'
