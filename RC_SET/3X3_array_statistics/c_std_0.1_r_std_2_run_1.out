@@ -4,40 +4,34 @@ python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0
 Loading array parameters
 Normal prototype array was created
 Starting parallel run
-total steps = 1149257
-total steps = 957822
-total steps = 1530863
-total steps = 1310852
-total steps = 1453941
-total steps = 1530863
-total steps = 1530863
-total steps = 1256438
-total steps = 1823027
-total steps = 1687902
-total steps = 1923233
-multiprocessing.pool.RemoteTraceback: 
-"""
-Traceback (most recent call last):
-  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 121, in worker
-    result = (True, func(*args, **kwds))
-  File "dots_array.py", line 1222, in runSingleSimulation
-    currentMap=currentMap, basePath=basePath, resume=resume)
-  File "dots_array.py", line 838, in calcIV
-    resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
-  File "dots_array.py", line 799, in loadState
-    I = np.load(baseName + "_I.npy")
-  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/lib/npyio.py", line 384, in load
-    fid = open(file, "rb")
-FileNotFoundError: [Errno 2] No such file or directory: '3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_2_I.npy'
-"""
-
-The above exception was the direct cause of the following exception:
-
+Saving results
+total steps = 46639904
+total steps = 48571734
+total steps = 50568674
+total steps = 57842744
+total steps = 67310766
+total steps = 67310766
+total steps = 67310766
+total steps = 67264858
+total steps = 68544119
+total steps = 68544119
+total steps = 68544119
+total steps = 68544119
+total steps = 68544119
+total steps = 68544119
+total steps = 69716872
+total steps = 69716872
+total steps = 70949184
+total steps = 68544119
+total steps = 69716872
+total steps = 68544119
 Traceback (most recent call last):
   File "dots_array.py", line 1672, in <module>
     checkSteadyState=False, superconducting=sc, gap=gap)
-  File "dots_array.py", line 1320, in runFullSimulation
-    result = res.get()
-  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 683, in get
-    raise self._value
-FileNotFoundError: [Errno 2] No such file or directory: '3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_2_I.npy'
+  File "dots_array.py", line 1368, in runFullSimulation
+    avgIErr = np.sqrt(np.sum(np.array(IsErr)**2, axis=0))/len(IsErr)
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py", line 1930, in sum
+    initial=initial)
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py", line 83, in _wrapreduction
+    return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+ValueError: operands could not be broadcast together with shapes (400,) (399,) 

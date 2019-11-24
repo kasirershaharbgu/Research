@@ -4,29 +4,17 @@ python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0
 Loading array parameters
 Normal prototype array was created
 Starting parallel run
-multiprocessing.pool.RemoteTraceback: 
-"""
-Traceback (most recent call last):
-  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 121, in worker
-    result = (True, func(*args, **kwds))
-  File "dots_array.py", line 1222, in runSingleSimulation
-    currentMap=currentMap, basePath=basePath, resume=resume)
-  File "dots_array.py", line 838, in calcIV
-    resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
-  File "dots_array.py", line 799, in loadState
-    I = np.load(baseName + "_I.npy")
-  File "/usr/local/anaconda3/lib/python3.7/site-packages/numpy/lib/npyio.py", line 384, in load
-    fid = open(file, "rb")
-FileNotFoundError: [Errno 2] No such file or directory: '3X3_array_statistics/c_std_0.1_r_std_2_run_9_temp_0_I.npy'
-"""
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "dots_array.py", line 1672, in <module>
-    checkSteadyState=False, superconducting=sc, gap=gap)
-  File "dots_array.py", line 1320, in runFullSimulation
-    result = res.get()
-  File "/usr/local/anaconda3/lib/python3.7/multiprocessing/pool.py", line 683, in get
-    raise self._value
-FileNotFoundError: [Errno 2] No such file or directory: '3X3_array_statistics/c_std_0.1_r_std_2_run_9_temp_0_I.npy'
+total steps = 120130480
+total steps = 100288318
+total steps = 100288318
+total steps = 122009773
+total steps = 122009773
+total steps = 122009773
+total steps = 122009773
+total steps = 102046503
+total steps = 122009773
+total steps = 122009773
+total steps = 122009773
+total steps = 123914769
+total steps = 122009773
+Saving results
