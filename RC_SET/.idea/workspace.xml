@@ -3,6 +3,258 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_10.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_10_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_10_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_10_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_10_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_2.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_2_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_2_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_2_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_2_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_3.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_3_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_3_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_0_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_10_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_11_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_12_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_13_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_14_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_15_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_16_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_17_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_18_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_19_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_1_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_2_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_3_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_4_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_5_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_6_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_7_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_8_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_4_temp_9_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_6.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_6_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_6_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_6_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_6_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_7.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_7_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_7_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_7_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_7_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_0_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_10_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_12_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_14_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_16_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_18_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_19_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_1_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_2_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_3_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_4_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_5_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_6_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_7_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_8_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2.5_run_8_temp_9_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_0_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_0_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_0_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_0_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_0_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_10_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_10_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_10_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_10_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_10_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_11_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_11_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_11_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_11_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_11_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_12_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_12_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_12_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_12_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_12_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_13_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_13_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_13_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_13_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_13_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_14_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_14_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_14_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_14_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_14_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_15_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_15_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_15_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_15_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_15_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_16_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_16_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_16_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_16_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_16_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_17_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_17_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_17_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_17_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_17_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_18_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_18_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_18_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_18_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_18_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_19_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_19_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_19_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_19_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_19_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_1_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_1_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_1_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_2_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_2_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_2_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_2_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_3_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_3_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_3_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_4_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_4_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_4_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_4_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_5_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_5_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_5_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_5_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_5_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_6_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_6_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_6_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_6_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_6_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_7_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_7_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_7_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_7_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_7_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_8_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_8_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_8_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_8_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_8_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_9_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_9_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_9_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_9_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_1_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_3.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_3_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_3_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_5.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_5_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_5_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_5_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_5_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_0_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_10_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_11_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_12_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_13_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_14_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_15_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_16_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_17_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_18_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_19_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_1_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_2_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_3_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_4_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_5_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_6_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_7_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_8_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_8_temp_9_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_9.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_9_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_9_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_9_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_9_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_2_run_9_temp_9_Vind.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_2.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_2_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_2_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_2_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_2_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_3.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_3_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/c_std_0.1_r_std_3.5_run_3_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2.5_run_10.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2.5_run_2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2.5_run_3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2.5_run_4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2.5_run_6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2.5_run_7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2.5_run_8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2_run_3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2_run_5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2_run_8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_2_run_9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_3.5_run_2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/3X3_array_statistics/runningParameters_c_std_0.1_r_std_3.5_run_3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Ch.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Ch.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Cv.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Cv.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rh.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Rh.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rv.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Rv.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_statistics_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_statistics_on_slurm.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +349,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 3 -N 3 --vmin 1 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 1.5 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg --symmetric-v --dbg" />
+      <option name="PARAMETERS" value="-M 3 -N 3 --vmin 1 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0.5 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg --symmetric-v --dbg --resume" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -247,8 +499,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>857</line>
-          <option name="timeStamp" value="51" />
+          <line>858</line>
+          <option name="timeStamp" value="64" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>860</line>
+          <option name="timeStamp" value="66" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>787</line>
+          <option name="timeStamp" value="70" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

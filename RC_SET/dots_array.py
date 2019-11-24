@@ -237,8 +237,6 @@ class DotArray:
         self.Iv = None
         self.I_left_sqr_avg = 0  # for std calculations
         self.I_right_sqr_avg = 0
-        self.horz_moves = 0
-        self.vert_moves = 0
 
     def __copy__(self):
         copy_array = object.__new__(type(self))
@@ -284,8 +282,6 @@ class DotArray:
         copy_array.Iv = self.Iv
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
-        copy_array.horz_moves = self.horz_moves
-        copy_array.vert_moves = self.vert_moves
         return copy_array
 
     def getRows(self):
@@ -572,28 +568,24 @@ class DotArray:
             toDot = (fromDot[0], fromDot[1] + 1)
             if self.saveCurrentMap:
                 self.Ih[toDot] += charge
-            self.horz_moves += 1
         elif ind < horzSize*2: # tunnel left
             ind -= horzSize
             fromDot = (ind//(self.columns+1), ind%(self.columns+1))
             toDot = (fromDot[0], fromDot[1] - 1)
             if self.saveCurrentMap:
                 self.Ih[fromDot] -= charge
-            self.horz_moves += 1
         elif ind < horzSize*2 + vertSize: # tunnel down
             ind -= horzSize*2
             fromDot = (ind//self.columns, ind%self.columns)
             toDot = (fromDot[0] + 1, fromDot[1])
             if self.saveCurrentMap:
                 self.Iv[fromDot] += charge
-            self.vert_moves += 1
         else: # tunnel up
             ind -= (horzSize*2 + vertSize)
             fromDot = ((ind//self.columns) + 1, ind%self.columns)
             toDot = (fromDot[0] - 1, fromDot[1])
             if self.saveCurrentMap:
                 self.Iv[toDot] -= charge
-            self.vert_moves += 1
         self.tunnel(fromDot, toDot, dt, charge=charge)
         return fromDot, toDot
 
@@ -684,7 +676,6 @@ class Simulator:
         self.VL = VL0
         self.VR = VR0
         self.index = index
-        self.steps = 0
         # for debug
     #     self.randomGen = self.getRandom()
     #
@@ -733,7 +724,6 @@ class Simulator:
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
             curr_t += dt
-        self.steps += steps
         rightCurrent, leftCurrent = self.dotArray.getCharge()
         rightCurrentSqr, leftCurrentSqr = self.dotArray.getIsqr()
         rightCurrentErr = np.sqrt((1/(steps - 1)) * (rightCurrentSqr/curr_t - rightCurrent**2/curr_t**2))
@@ -782,8 +772,6 @@ class Simulator:
     def saveState(self, I, IErr, n=None, Q=None, nErr=None, QErr=None, Imaps=None,
                   fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
-        np.save(baseName + "_I", np.array(I))
-        np.save(baseName + "_IErr", np.array(IErr))
         if fullOutput:
             np.save(baseName + "_ns", np.array(n))
             np.save(baseName + "_Qs", np.array(Q))
@@ -793,22 +781,37 @@ class Simulator:
         np.save(baseName + "_Q", self.dotArray.getGroundCharge())
         if currentMap:
             np.save(baseName + "_current_map", np.array(Imaps))
+        np.save(baseName + "_I", np.array(I))
+        np.save(baseName + "_IErr", np.array(IErr))
 
     def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         I = np.load(baseName + "_I.npy")
+        loadLen = len(I)
         IErr = np.load(baseName + "_IErr.npy")
+        if len(IErr) > loadLen:
+            IErr = IErr[:loadLen]
         n = np.load(baseName + "_n.npy")
         Q = np.load(baseName + "_Q.npy")
         res = (I,IErr,n,Q)
         if fullOutput:
             ns = np.load(baseName + "_ns.npy")
+            if len(ns) > loadLen:
+                ns = ns[:, loadLen, :, :]
             Qs = np.load(baseName + "_Qs.npy")
+            if len(Qs) > loadLen:
+                Qs = Qs[:, loadLen, :, :]
             nsErr = np.load(baseName + "_nsErr.npy")
+            if len(nsErr) > loadLen:
+                nsErr = nsErr[:, loadLen, :, :]
             QsErr = np.load(baseName + "_QsErr.npy")
+            if len(QsErr) > loadLen:
+                QsErr = QsErr[:, loadLen, :, :]
             res = res + (ns, Qs,nsErr, QsErr)
         if currentMap:
             Imaps = np.load(baseName + "_current_map.npy")
+            if len(Imaps) > loadLen:
+                Imaps = Imaps[:, loadLen, :, :]
             res = res + (Imaps,)
         return res
 
@@ -877,7 +880,6 @@ class Simulator:
             res = res + (np.array(ns), np.array(Qs), np.array(nsErr), np.array(QsErr))
         if currentMap:
             res = res + (np.array(Imaps),)
-        print("total steps = " + str(self.steps))
         return res
 
     def printState(self):
@@ -1144,12 +1146,13 @@ class GraphSimulator:
 
     def saveState(self, I, Vind, n=None, Q=None, fullOutput=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
-        np.save(baseName + "_I", np.array(I))
         if fullOutput:
             np.save(baseName + "_ns", np.array(n))
             np.save(baseName + "_Qs", np.array(Q))
         np.save(baseName + "_n", self.n0)
         np.save(baseName + "_Q", self.QG)
+        np.save(baseName + "_I", np.array(I))
+
 
     def loadState(self, fullOutput=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
