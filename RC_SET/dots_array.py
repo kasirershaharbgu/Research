@@ -237,6 +237,7 @@ class DotArray:
         self.Iv = None
         self.I_left_sqr_avg = 0  # for std calculations
         self.I_right_sqr_avg = 0
+        self.totalAction = np.zeros((self.rows, self.columns))
 
     def __copy__(self):
         copy_array = object.__new__(type(self))
@@ -282,6 +283,7 @@ class DotArray:
         copy_array.Iv = self.Iv
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
+        copy_array.totalAction = np.copy(self.totalAction)
         return copy_array
 
     def getRows(self):
@@ -391,7 +393,7 @@ class DotArray:
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         # print(-1/self._JeigenValues)
         self.timeStep = -10/np.max(self._JeigenValues)
-        self.default_dt = -1/np.average(self._JeigenValues)
+        self.default_dt = -1/np.min(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
             self._constQnPart = invMat.dot(flattenToColumn(self.VG))
@@ -506,6 +508,9 @@ class DotArray:
             self.Q = Q_copy
         return dt
 
+    def getLeapingTimeInterval(self):
+        return self.default_dt/1000
+
     def nextStep(self, dt, randomNumber):
         self.developeQ(dt)
         if self.no_tunneling_next_time:
@@ -518,6 +523,15 @@ class DotArray:
         actionInd = np.searchsorted(cumRates, randomNumber*cumRates[-1])
         self.executeAction(actionInd, dt)
         return True
+
+    def nextLeapingSteps(self, dt):
+        self.developeQ(dt)
+        if self.no_tunneling_next_time:
+            self.no_tunneling_next_time = False
+            return True
+        rates = self.getRates()
+        actionVec = np.random.poisson(lam=rates*dt, size=rates.size)
+        self.executeMultipleActions(actionVec, dt)
 
     def tunnel(self, fromDot, toDot, dt, charge=1):
         if fromDot[1] == self.columns:
@@ -559,6 +573,29 @@ class DotArray:
         for param in [rows, columns, VG, CG, RG, Ch, Cv, Rh, Rv]:
             res += "\n" + param
         return res
+
+    def executeMultipleActions(self, actionVec, dt, charge=1):
+        horzSize = self.rows * (self.columns + 1)
+        vertSize = (self.rows - 1) * self.columns
+        right, left, down, up = np.split(actionVec,[horzSize, 2*horzSize, 2*horzSize+vertSize])
+        right = right.reshape(self.rows, self.columns + 1)*charge
+        left = left.reshape(self.rows, self.columns + 1)*charge
+        down = down.reshape(self.rows - 1, self.columns)*charge
+        up = up.reshape(self.rows - 1, self.columns)*charge
+        total_passed_right = np.sum(right[:,-1] - left[:,-1])
+        total_passed_left = np.sum(left[:,0] - right[:,0])
+        self.totalChargePassedRight += total_passed_right
+        self.totalChargePassedLeft += total_passed_left
+        self.I_right_sqr_avg += total_passed_right**2/dt
+        self.I_left_sqr_avg += total_passed_left**2/dt
+        self.totalAction[:,:] = 0
+        self.totalAction += (left[:,1:] - left[:,:-1] + right[:,:-1] - right[:,1:])
+        self.totalAction[1:,:] += (down - up)
+        self.totalAction[:-1,:] += (up - down)
+        self.n += self.totalAction
+        if self.saveCurrentMap:
+            self.Ih += right - left
+            self.Iv += down - up
 
     def executeAction(self, ind, dt, charge=1):
         horzSize = self.rows*(self.columns+1)
@@ -691,6 +728,13 @@ class Simulator:
     def getArrayParameters(self):
         return str(self.dotArray)
 
+    def executeLeapingStep(self, printState=False):
+        dt = self.dotArray.getLeapingTimeInterval()
+        self.dotArray.nextLeapingSteps(dt)
+        if printState:
+            self.printState()
+        return dt
+
     def executeStep(self, printState=False):
         r = np.random.rand(2)
         # for debug
@@ -716,7 +760,8 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         while curr_t < t or steps < min_steps:
-            dt = self.executeStep(printState=print_stats)
+            # dt = self.executeStep(printState=print_stats)
+            dt = self.executeLeapingStep(print_stats)
             steps += 1
             if fullOutput:
                 n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
@@ -872,7 +917,7 @@ class Simulator:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
-            # print(VL - VR, end=',')
+            print(VL - VR, end=',')
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)

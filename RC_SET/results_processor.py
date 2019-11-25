@@ -259,13 +259,21 @@ class MultiResultAnalyzer:
             indices = indices.intersection(good_inds)
         indices = list(indices)
         scores = scores[indices]
-        bins = 5
+        bins = max(len(scores)//10, 5)
         fig = plt.figure()
         plt.hist(scores, bins=bins)
         plt.title(title)
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
         np.save(os.path.join(self.outDir,title), np.array(scores))
+
+    def get_y_label(self, score_name):
+        if score_name == "hysteresis":
+            return "loop area"
+        elif score_name == "jump":
+            return "voltage diff for biggest jump"
+        elif score_name == "blockade":
+            return "threshold voltage"
 
     def plot_score(self, score_name, parameter_name, title, runningParam=True):
         """
@@ -283,6 +291,8 @@ class MultiResultAnalyzer:
         fig = plt.figure()
         plt.errorbar(x, y, yerr=errors, marker='o')
         plt.title(title)
+        plt.xlabel(parameter_name)
+        plt.ylabel(self.get_y_label(score_name))
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
         np.save(os.path.join(self.outDir, title + "parameter"), np.array(x))
@@ -303,8 +313,8 @@ class MultiResultAnalyzer:
                 relevant_high_err = np.array(ys_high_err[indices])
                 relevant_low_err = np.array(ys_low_err[indices])
                 new_y.append(np.average(relevant_ys))
-                new_y_high_err.append(np.sqrt(np.average(relevant_high_err**2)))
-                new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)))
+                new_y_high_err.append(np.sqrt(np.average(relevant_high_err**2)/relevant_high_err.size))
+                new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)/relevant_low_err.size))
         return new_x, new_y, new_y_high_err, new_y_low_err
 
 
@@ -312,13 +322,16 @@ if __name__ == "__main__":
     directory_list = ["C:\\Users\\shahar\\Research\\RC_SET\\3X3_array_statistics_r_avg_10"] * 90
     files_list = ["c_std_0.1_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
     m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [], "3X3_array_statistics_r_avg_10")
-    m.plot_score('hysteresis', 'R_std', 'c_std_0.1_r_std_1_hysteresis')
-    m.plot_score('jump', 'R_std', 'c_std_0.1_r_std_1_jump')
-    m.plot_score('blockade', 'R_std', 'c_std_0.1_r_std_1_blockade')
+    m.plot_score('hysteresis', 'R_std', 'c_std_0.1_hysteresis')
+    m.plot_score('jump', 'R_std', 'c_std_0.1_jump')
+    m.plot_score('blockade', 'R_std', 'c_std_0.1_blockade')
     for r_std in range(1,10):
         for score in ['hysteresis', 'jump', 'blockade']:
             m.plot_hystogram(score, {"R_std": [r_std], "C_std": [0.1]}, {},
                              "c_std_0.1_r_std_" + str(r_std) + "_" + score + "_hystogram")
+    for score in ['hysteresis', 'jump', 'blockade']:
+        m.plot_hystogram(score, {"C_std": [0.1]}, {},
+                             "c_std_0.1_" + score + "_hystogram")
     # s = SingleResultsProcessor("3X3_array_statistics","c_std_0.1_r_std_0.5_run_4",fullOutput=False)
 
 
