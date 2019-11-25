@@ -38,7 +38,7 @@ fi
 rows=3
 columns=3
 c_std=0.1
-for r_std in 3 4 5
+for r_std in 6 7 8
 do
 	for run in 1 2 3 4 5 6 7 8 9 10
 	do
