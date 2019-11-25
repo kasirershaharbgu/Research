@@ -1,3 +1,0 @@
-
-python3 dots_array.py -M 1 -N 1 --vmin -2 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.5 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution uniform --custom-rh  --custom-rv  --file-name r_disorder_big_cg -o single_c_disorder --full "" 
-
