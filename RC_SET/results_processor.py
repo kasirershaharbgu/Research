@@ -4,7 +4,7 @@ from scipy import integrate
 from ast import literal_eval
 import os
 
-EPS = 1e-3
+EPS = 1e-6
 class SingleResultsProcessor:
     """ Used for proccessing result from one dot array simulation"""
     def __init__(self, directory, file_name, fullOutput=False):
@@ -200,7 +200,7 @@ class MultiResultAnalyzer:
             processor.load_results()
             hyst, hystHigh, hystLow = processor.calc_hysteresis_score()
             block, blockHigh, blockLow = processor.calc_blockade()
-            jump, jumpHigh, jumpLow = processor.calc_jumps_score(0.3)
+            jump, jumpHigh, jumpLow = processor.calc_jumps_score(0.1)
             self.hysteresisScores.append(hyst)
             self.hysteresisScoresHighErr.append(hystHigh)
             self.hysteresisScoresLowErr.append(hystLow)
@@ -259,12 +259,13 @@ class MultiResultAnalyzer:
             indices = indices.intersection(good_inds)
         indices = list(indices)
         scores = scores[indices]
-        bins = max(scores.size//10, 10)
+        bins = 5
         fig = plt.figure()
         plt.hist(scores, bins=bins)
         plt.title(title)
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
+        np.save(os.path.join(self.outDir,title), np.array(scores))
 
     def plot_score(self, score_name, parameter_name, title, runningParam=True):
         """
@@ -284,6 +285,10 @@ class MultiResultAnalyzer:
         plt.title(title)
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
+        np.save(os.path.join(self.outDir, title + "parameter"), np.array(x))
+        np.save(os.path.join(self.outDir, title + "score"), np.array(y))
+        np.save(os.path.join(self.outDir, title + "score_high_err"), np.array(y_high_err))
+        np.save(os.path.join(self.outDir, title + "score_low_err"), np.array(y_low_err))
 
     def average_similar_results(self, xs, ys, ys_high_err, ys_low_err):
         new_x = []
@@ -304,16 +309,18 @@ class MultiResultAnalyzer:
 
 
 if __name__ == "__main__":
-    # directory_list = ["C:\\Users\\shahar\\Research\\RC_SET\\3X3_array_statistics"] * 10
-    # files_list = ["c_std_0.1_r_std_0.5_run_" + str(i) for i in range(1,11)]
-    # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [], "dbg")
-    # m.plot_score('hysteresis', 'R_std', 'dbg')
+    directory_list = ["C:\\Users\\shahar\\Research\\RC_SET\\3X3_array_statistics_r_avg_10"] * 90
+    files_list = ["c_std_0.1_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
+    m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [], "3X3_array_statistics_r_avg_10")
+    m.plot_score('hysteresis', 'R_std', 'c_std_0.1_r_std_1_hysteresis')
+    m.plot_score('jump', 'R_std', 'c_std_0.1_r_std_1_jump')
+    m.plot_score('blockade', 'R_std', 'c_std_0.1_r_std_1_blockade')
+    for r_std in range(1,10):
+        for score in ['hysteresis', 'jump', 'blockade']:
+            m.plot_hystogram(score, {"R_std": [r_std], "C_std": [0.1]}, {},
+                             "c_std_0.1_r_std_" + str(r_std) + "_" + score + "_hystogram")
     # s = SingleResultsProcessor("3X3_array_statistics","c_std_0.1_r_std_0.5_run_4",fullOutput=False)
-    s = SingleResultsProcessor("dbg", "dbg", fullOutput=True)
-    s1 = SingleResultsProcessor("dbg", "dbg1", fullOutput=True)
-    s.plot_results()
-    s1.plot_results()
-    plt.show()
+
 
 
 
