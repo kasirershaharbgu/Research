@@ -1,9 +1,0 @@
-dots_array.py:1060: RuntimeWarning: invalid value encountered in log2
-  r = np.random.uniform(low=np.log2(avg - std), high=np.log2(avg + std), size=(M, N))
-Traceback (most recent call last):
-  File "dots_array.py", line 1077, in <module>
-    False)
-  File "dots_array.py", line 1060, in create_random_array
-    r = np.random.uniform(low=np.log2(avg - std), high=np.log2(avg + std), size=(M, N))
-  File "mtrand.pyx", line 1304, in mtrand.RandomState.uniform
-OverflowError: Range exceeds valid bounds
