@@ -940,7 +940,7 @@ class Simulator:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
-            print(VL - VR, end=',')
+            # print(VL - VR, end=',')
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
@@ -1733,19 +1733,19 @@ if __name__ == "__main__":
         exit(0)
     import cProfile, pstats, io
     from pstats import SortKey
-    pr = cProfile.Profile()
-    pr.enable()
+    # pr = cProfile.Profile()
+    # pr.enable()
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap)
-    pr.disable()
-    s = io.StringIO()
-    sortby = SortKey.CUMULATIVE
-    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    ps.print_stats()
-    print(s.getvalue())
-    saveParameters(savePath, fileName, options, array_params)
-    exit(0)
+    # pr.disable()
+    # s = io.StringIO()
+    # sortby = SortKey.CUMULATIVE
+    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    # ps.print_stats()
+    # print(s.getvalue())
+    # saveParameters(savePath, fileName, options, array_params)
+    # exit(0)
