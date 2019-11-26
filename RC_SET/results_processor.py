@@ -319,19 +319,20 @@ class MultiResultAnalyzer:
 
 
 if __name__ == "__main__":
-    directory_list = ["C:\\Users\\shahar\\Research\\RC_SET\\3X3_array_statistics_r_avg_10"] * 90
-    files_list = ["c_std_0.1_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
-    m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [], "3X3_array_statistics_r_avg_10")
-    m.plot_score('hysteresis', 'R_std', 'c_std_0.1_hysteresis')
-    m.plot_score('jump', 'R_std', 'c_std_0.1_jump')
-    m.plot_score('blockade', 'R_std', 'c_std_0.1_blockade')
+    directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * 90
+    files_list = ["c_std_0.2_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
+    m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
+                            "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
+    m.plot_score('hysteresis', 'R_std', 'c_std_0.2_hysteresis')
+    m.plot_score('jump', 'R_std', 'c_std_0.2_jump')
+    m.plot_score('blockade', 'R_std', 'c_std_0.2_blockade')
     for r_std in range(1,10):
         for score in ['hysteresis', 'jump', 'blockade']:
-            m.plot_hystogram(score, {"R_std": [r_std], "C_std": [0.1]}, {},
-                             "c_std_0.1_r_std_" + str(r_std) + "_" + score + "_hystogram")
+            m.plot_hystogram(score, {"R_std": [r_std], "C_std": [0.2]}, {},
+                             "c_std_0.2_r_std_" + str(r_std) + "_" + score + "_hystogram")
     for score in ['hysteresis', 'jump', 'blockade']:
-        m.plot_hystogram(score, {"C_std": [0.1]}, {},
-                             "c_std_0.1_" + score + "_hystogram")
+        m.plot_hystogram(score, {"C_std": [0.2]}, {},
+                             "c_std_0.2_" + score + "_hystogram")
     # s = SingleResultsProcessor("3X3_array_statistics","c_std_0.1_r_std_0.5_run_4",fullOutput=False)
 
 
