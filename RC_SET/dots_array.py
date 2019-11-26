@@ -25,7 +25,7 @@ DQ = 0.1
 Q_SHIFT = 2
 GRAD_REP = 5
 INI_LR = 0.001
-
+TAU_EPS = 0.01
 
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
@@ -509,7 +509,30 @@ class DotArray:
         return dt
 
     def getLeapingTimeInterval(self):
-        return self.default_dt/1000
+        rates = self.getRates()
+        if (rates <= 0).all():
+            self.no_tunneling_next_time = True
+            return self.default_dt
+        horzSize = self.rows * (self.columns + 1)
+        vertSize = (self.rows - 1) * self.columns
+        right, left, down, up = np.split(rates, [horzSize, 2 * horzSize, 2 * horzSize + vertSize])
+        right = right.reshape(self.rows, self.columns + 1)
+        left = left.reshape(self.rows, self.columns + 1)
+        down = down.reshape(self.rows - 1, self.columns)
+        up = up.reshape(self.rows - 1, self.columns)
+        tunnelingTo = right[:,:-1] + left[:,1:]
+        tunnelingTo[1:,:] += down
+        tunnelingTo[:-1,:] += up
+        tunnelingFrom = right[:,1:] + left[:,:-1]
+        tunnelingFrom[1:,:] += up
+        tunnelingFrom[:-1,:] += down
+        changeAvg = np.abs(tunnelingTo - tunnelingFrom)
+        changeVar = tunnelingTo + tunnelingFrom
+        smallestChange = TAU_EPS*np.abs(np.copy(self.n))
+        smallestChange[smallestChange < 1] = 1
+        tau1 = np.min(smallestChange[changeAvg > 0]/changeAvg[changeAvg > 0])
+        tau2 = np.min(smallestChange[changeVar>0]**2/changeVar[changeVar>0])
+        return min(tau1, tau2)
 
     def nextStep(self, dt, randomNumber):
         self.developeQ(dt)
@@ -1708,21 +1731,21 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-    # import cProfile, pstats, io
-    # from pstats import SortKey
-    # pr = cProfile.Profile()
-    # pr.enable()
+    import cProfile, pstats, io
+    from pstats import SortKey
+    pr = cProfile.Profile()
+    pr.enable()
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap)
-    # pr.disable()
-    # s = io.StringIO()
-    # sortby = SortKey.CUMULATIVE
-    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    # ps.print_stats()
-    # print(s.getvalue())
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
