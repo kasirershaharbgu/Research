@@ -25,7 +25,7 @@ DQ = 0.1
 Q_SHIFT = 2
 GRAD_REP = 5
 INI_LR = 0.001
-TAU_EPS = 0.01
+TAU_EPS = 0.03
 
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
@@ -192,7 +192,8 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False):
+    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False,
+                 tauLeaping=False):
         """
         Creates new array of quantum dots
         :param rows: number of rows (int)
@@ -233,11 +234,18 @@ class DotArray:
         self.setConstMatrix()
         self.setConstNprimePart()
         self.saveCurrentMap = False
-        self.Ih = None
-        self.Iv = None
+        self.Ih = np.zeros(self.Rh.shape)
+        self.Iv = np.zeros(self.Rv.shape)
         self.I_left_sqr_avg = 0  # for std calculations
         self.I_right_sqr_avg = 0
-        self.totalAction = np.zeros((self.rows, self.columns))
+        # Memory initialization for tau leaping
+        self.tauLeaping = tauLeaping
+        if tauLeaping:
+            self.totalAction = np.zeros((self.rows, self.columns))
+            self.right = np.zeros((self.rows, self.columns + 1))
+            self.left = np.zeros((self.rows, self.columns + 1))
+            self.down = np.zeros((self.rows - 1, self.columns))
+            self.up = np.zeros((self.rows - 1, self.columns))
 
     def __copy__(self):
         copy_array = object.__new__(type(self))
@@ -279,11 +287,16 @@ class DotArray:
         copy_array._left_part_n_prime = self._left_part_n_prime
         copy_array._right_part_n_prime = self._right_part_n_prime
         copy_array.saveCurrentMap = self.saveCurrentMap
-        copy_array.Ih = self.Ih
-        copy_array.Iv = self.Iv
+        copy_array.Ih = np.copy(self.Ih)
+        copy_array.Iv = np.copy(self.Iv)
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
+        # tau leaping
         copy_array.totalAction = np.copy(self.totalAction)
+        copy_array.left = np.copy(self.left)
+        copy_array.right = np.copy(self.right)
+        copy_array.down = np.copy(self.down)
+        copy_array.up = np.copy(self.up)
         return copy_array
 
     def getRows(self):
@@ -301,8 +314,8 @@ class DotArray:
         self.I_left_sqr_avg = 0
         self.I_right_sqr_avg = 0
         if self.saveCurrentMap:
-            self.Ih = np.zeros(self.Rh.shape)
-            self.Iv = np.zeros(self.Rv.shape)
+            self.Ih[:,:]= 0
+            self.Iv[:,:] = 0
         return True
 
     def changeVext(self, newVL, newVR):
@@ -335,9 +348,9 @@ class DotArray:
     def getCurrentMap(self):
         if self.saveCurrentMap:
             map = np.zeros((self.rows*2 - 1, self.columns+1))
-            map[::2,:] = self.Ih
+            map[::2,:] = np.copy(self.Ih)
             if self.Iv.size:
-                map[1::2,:-1] = self.Iv
+                map[1::2,:-1] = np.copy(self.Iv)
             return map
         else:
             raise NotImplementedError
@@ -515,17 +528,16 @@ class DotArray:
             return self.default_dt
         horzSize = self.rows * (self.columns + 1)
         vertSize = (self.rows - 1) * self.columns
-        right, left, down, up = np.split(rates, [horzSize, 2 * horzSize, 2 * horzSize + vertSize])
-        right = right.reshape(self.rows, self.columns + 1)
-        left = left.reshape(self.rows, self.columns + 1)
-        down = down.reshape(self.rows - 1, self.columns)
-        up = up.reshape(self.rows - 1, self.columns)
-        tunnelingTo = right[:,:-1] + left[:,1:]
-        tunnelingTo[1:,:] += down
-        tunnelingTo[:-1,:] += up
-        tunnelingFrom = right[:,1:] + left[:,:-1]
-        tunnelingFrom[1:,:] += up
-        tunnelingFrom[:-1,:] += down
+        self.right[:,:] = rates[:horzSize].reshape(self.right.shape)
+        self.left[:,:] = rates[horzSize:2*horzSize].reshape(self.left.shape)
+        self.down[:,:] = rates[2*horzSize:2*horzSize + vertSize].reshape(self.up.shape)
+        self.up[:,:] = rates[2*horzSize + vertSize:].reshape(self.down.shape)
+        tunnelingTo = self.right[:,:-1] + self.left[:,1:]
+        tunnelingTo[1:,:] += self.down
+        tunnelingTo[:-1,:] += self.up
+        tunnelingFrom = self.right[:,1:] + self.left[:,:-1]
+        tunnelingFrom[1:,:] += self.up
+        tunnelingFrom[:-1,:] += self.down
         changeAvg = np.abs(tunnelingTo - tunnelingFrom)
         changeVar = tunnelingTo + tunnelingFrom
         smallestChange = TAU_EPS*np.abs(np.copy(self.n))
@@ -600,25 +612,24 @@ class DotArray:
     def executeMultipleActions(self, actionVec, dt, charge=1):
         horzSize = self.rows * (self.columns + 1)
         vertSize = (self.rows - 1) * self.columns
-        right, left, down, up = np.split(actionVec,[horzSize, 2*horzSize, 2*horzSize+vertSize])
-        right = right.reshape(self.rows, self.columns + 1)*charge
-        left = left.reshape(self.rows, self.columns + 1)*charge
-        down = down.reshape(self.rows - 1, self.columns)*charge
-        up = up.reshape(self.rows - 1, self.columns)*charge
-        total_passed_right = np.sum(right[:,-1] - left[:,-1])
-        total_passed_left = np.sum(left[:,0] - right[:,0])
+        self.right[:,:] = actionVec[:horzSize].reshape(self.right.shape)*charge
+        self.left[:,:] = actionVec[horzSize:2 * horzSize].reshape(self.left.shape)*charge
+        self.down[:,:] = actionVec[2 * horzSize:2 * horzSize + vertSize].reshape(self.down.shape)*charge
+        self.up[:,:] = actionVec[2 * horzSize + vertSize:].reshape(self.up.shape)*charge
+        total_passed_right = np.sum(self.right[:,-1] - self.left[:,-1])
+        total_passed_left = np.sum(self.left[:,0] - self.right[:,0])
         self.totalChargePassedRight += total_passed_right
         self.totalChargePassedLeft += total_passed_left
         self.I_right_sqr_avg += total_passed_right**2/dt
         self.I_left_sqr_avg += total_passed_left**2/dt
         self.totalAction[:,:] = 0
-        self.totalAction += (left[:,1:] - left[:,:-1] + right[:,:-1] - right[:,1:])
-        self.totalAction[1:,:] += (down - up)
-        self.totalAction[:-1,:] += (up - down)
+        self.totalAction += self.left[:,1:] - self.left[:,:-1] + self.right[:,:-1] - self.right[:,1:]
+        self.totalAction[1:,:] += self.down - self.up
+        self.totalAction[:-1,:] += self.up - self.down
         self.n += self.totalAction
         if self.saveCurrentMap:
-            self.Ih += right - left
-            self.Iv += down - up
+            self.Ih += self.right - self.left
+            self.Iv += self.down - self.up
 
     def executeAction(self, ind, dt, charge=1):
         horzSize = self.rows*(self.columns+1)
@@ -651,9 +662,9 @@ class DotArray:
 
 class JJArray(DotArray):
     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                 temperature, scGap, fastRelaxation=False):
+                 temperature, scGap, fastRelaxation=False, tauLeaping=False):
         DotArray.__init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                          temperature, fastRelaxation=fastRelaxation)
+                          temperature, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping)
         self.gap = scGap
         self.Ej = self.getEj()
         self.Ec = 1/np.mean(CG)
@@ -736,6 +747,7 @@ class Simulator:
         self.VL = VL0
         self.VR = VR0
         self.index = index
+        self.tauLeaping = dotArray.tauLeaping
         # for debug
     #     self.randomGen = self.getRandom()
     #
@@ -783,8 +795,10 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         while curr_t < t or steps < min_steps:
-            dt = self.executeStep(printState=print_stats)
-            # dt = self.executeLeapingStep(print_stats)
+            if self.tauLeaping:
+                dt = self.executeLeapingStep(printState=print_stats)
+            else:
+                dt = self.executeStep(printState=print_stats)
             steps += 1
             if fullOutput:
                 n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
@@ -1337,7 +1351,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, resume=False, superconducting=False,
-                      gap=0):
+                      gap=0, leaping=False):
     basePath = os.path.join(savePath, fileName)
     if plotCurrentMaps:
         print("Plotting Current Maps")
@@ -1357,12 +1371,12 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if superconducting:
         prototypeArray = JJArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                  np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                 temperature, gap, fastRelaxation=fastRelaxation)
+                                 temperature, gap, fastRelaxation=fastRelaxation, tauLeaping=leaping)
         print("Superconducting prototype array was created")
     else:
         prototypeArray = DotArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                   np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                  temperature, fastRelaxation=fastRelaxation)
+                                  temperature, fastRelaxation=fastRelaxation, tauLeaping=leaping)
         print("Normal prototype array was created")
     if checkSteadyState:
         print("Running steady state convergance check")
@@ -1580,6 +1594,8 @@ def getOptions():
                       default=False, action='store_true')
     parser.add_option("--superconducting", dest="sc", help="use superconducting array [Default:%default]",
                       default=False, action='store_true')
+    parser.add_option("--tau-leaping", dest="leaping", help="use tau leaping approximation [Default:%default]",
+                      default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
                       default='.')
@@ -1689,6 +1705,7 @@ if __name__ == "__main__":
     T = options.T
     gap = options.gap
     sc = options.sc
+    leaping = options.leaping
     VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                              False)
     Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
@@ -1740,7 +1757,7 @@ if __name__ == "__main__":
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
-                                     checkSteadyState=False, superconducting=sc, gap=gap)
+                                     checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
     # pr.disable()
     # s = io.StringIO()
     # sortby = SortKey.CUMULATIVE
@@ -1748,4 +1765,4 @@ if __name__ == "__main__":
     # ps.print_stats()
     # print(s.getvalue())
     # saveParameters(savePath, fileName, options, array_params)
-    # exit(0)
+    exit(0)
