@@ -1,30 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_blockade.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_blockadeparameter.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_blockadescore.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_blockadescore_high_err.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_blockadescore_low_err.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_hysteresis.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_hysteresisparameter.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_hysteresisscore.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_hysteresisscore_high_err.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_hysteresisscore_low_err.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_jump.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_jumpparameter.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_jumpscore.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_jumpscore_high_err.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/3X3_array_statistics_r_avg_10/c_std_0.1_r_std_1_jumpscore_low_err.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Ch.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Ch.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Cv.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Cv.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rh.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Rh.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rv.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Rv.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-    </list>
+    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
