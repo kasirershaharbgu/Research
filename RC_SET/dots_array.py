@@ -760,8 +760,8 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         while curr_t < t or steps < min_steps:
-            # dt = self.executeStep(printState=print_stats)
-            dt = self.executeLeapingStep(print_stats)
+            dt = self.executeStep(printState=print_stats)
+            # dt = self.executeLeapingStep(print_stats)
             steps += 1
             if fullOutput:
                 n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
