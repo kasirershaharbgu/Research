@@ -291,12 +291,14 @@ class DotArray:
         copy_array.Iv = np.copy(self.Iv)
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
+        copy_array.tauLeaping = self.tauLeaping
         # tau leaping
-        copy_array.totalAction = np.copy(self.totalAction)
-        copy_array.left = np.copy(self.left)
-        copy_array.right = np.copy(self.right)
-        copy_array.down = np.copy(self.down)
-        copy_array.up = np.copy(self.up)
+        if copy_array.tauLeaping:
+            copy_array.totalAction = np.copy(self.totalAction)
+            copy_array.left = np.copy(self.left)
+            copy_array.right = np.copy(self.right)
+            copy_array.down = np.copy(self.down)
+            copy_array.up = np.copy(self.up)
         return copy_array
 
     def getRows(self):
@@ -523,7 +525,7 @@ class DotArray:
 
     def getLeapingTimeInterval(self):
         rates = self.getRates()
-        if (rates <= 0).all():
+        if (rates <= EPS).all():
             self.no_tunneling_next_time = True
             return self.default_dt
         horzSize = self.rows * (self.columns + 1)
@@ -542,9 +544,19 @@ class DotArray:
         changeVar = tunnelingTo + tunnelingFrom
         smallestChange = TAU_EPS*np.abs(np.copy(self.n))
         smallestChange[smallestChange < 1] = 1
-        tau1 = np.min(smallestChange[changeAvg > 0]/changeAvg[changeAvg > 0])
-        tau2 = np.min(smallestChange[changeVar>0]**2/changeVar[changeVar>0])
-        return min(tau1, tau2)
+        tau = 0
+        if (changeAvg > 0).any():
+            tau = np.min(smallestChange[changeAvg > 0] / changeAvg[changeAvg > 0])
+        if (changeVar > 0).any():
+            tau2 = np.min(smallestChange[changeVar > 0]**2/changeVar[changeVar > 0])
+            if tau > 0:
+                tau = min(tau, tau2)
+            else:
+                tau = tau2
+        if tau <= 0:
+            tau = self.default_dt
+            self.no_tunneling_next_time = True
+        return tau
 
     def nextStep(self, dt, randomNumber):
         self.developeQ(dt)
