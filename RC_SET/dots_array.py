@@ -17,15 +17,18 @@ from mpl_toolkits.mplot3d import Axes3D
 from ast import literal_eval
 from copy import copy
 
-# Gillespie Constants
-MINIMUM_STEPS_PER_DOT = 1000
-# Lyaponuv Constants
+
 EPS = 0.0001
+# Gillespie Constants
+MIN_STEPS = 1000
+# Tau Leaping Constants
+TAU_EPS = 0.03
+# Lyaponuv Constants
 DQ = 0.1
 Q_SHIFT = 2
 GRAD_REP = 5
 INI_LR = 0.001
-TAU_EPS = 0.03
+
 
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
@@ -214,11 +217,11 @@ class DotArray:
         self.columns = columns
         self.VL = VL
         self.VR = VR
-        self.VG = VG
-        self.Q = Q0
-        self.n = n0
+        self.VG = flattenToColumn(VG)
+        self.Q = flattenToColumn(Q0)
+        self.n = flattenToColumn(n0)
         self.CG = CG
-        self.RG = RG
+        self.RG = flattenToColumn(RG)
         self.Ch = Ch
         self.Cv = np.vstack((np.zeros((1,columns)),Cv)) if Cv.size else np.zeros((1,1))
         self.Rh = Rh
@@ -280,7 +283,9 @@ class DotArray:
         copy_array.commonHorz = self.commonHorz
         copy_array.commonVert = self.commonVert
         copy_array.additionalLeft = self.additionalLeft
-        copy_array.constWork = self.constWork
+        copy_array.leftConstWork = self.leftConstWork
+        copy_array.rightConstWork = self.rightConstWork
+        copy_array.vertConstWork = self.vertConstWork
         copy_array.variableWork = np.copy(self.variableWork)
         copy_array.horizontalMatrix = self.horizontalMatrix
         copy_array.verticalMatrix = self.verticalMatrix
@@ -292,6 +297,7 @@ class DotArray:
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         copy_array.tauLeaping = self.tauLeaping
+        copy_array._Q_eigenbasis = self._Q_eigenbasis
         # tau leaping
         if copy_array.tauLeaping:
             copy_array.totalAction = np.copy(self.totalAction)
@@ -327,16 +333,16 @@ class DotArray:
         return True
 
     def getOccupation(self):
-        return np.copy(self.n)
+        return np.copy(self.n).reshape((self.rows, self.columns))
 
     def getGroundCharge(self):
-        return np.copy(self.Q)
+        return np.copy(self.Q).reshape((self.rows, self.columns))
 
     def setOccupation(self, n):
-        self.n = n
+        self.n = flattenToColumn(n)
 
     def setGroundCharge(self, Q):
-        self.Q = Q
+        self.Q = flattenToColumn(Q)
 
     def getCharge(self):
         return self.totalChargePassedRight, self.totalChargePassedLeft
@@ -383,17 +389,19 @@ class DotArray:
         self._left_part_n_prime[:, 1:] = 0
         self._right_part_n_prime = np.copy(self.Ch[:, 1:])
         self._right_part_n_prime[:, :-1] = 0
+        self._right_part_n_prime = flattenToColumn(self._right_part_n_prime)
+        self._left_part_n_prime = flattenToColumn(self._left_part_n_prime)
         return True
 
     def getNprime(self):
-        return flattenToColumn(self.n + self._left_part_n_prime*self.VL + self._right_part_n_prime*self.VR)
+        return self.n + self._left_part_n_prime*self.VL + self._right_part_n_prime*self.VR
 
     def getbVector(self):
         """
         For developement of Q by dQ/dt=JQ +b
         """
-        res = -self.invC.dot(self.getNprime()) + flattenToColumn(self.VG)
-        return res / flattenToColumn(self.RG)
+        res = -self.invC.dot(self.getNprime()) + self.VG
+        return res / self.RG
 
     def getJmatrix(self):
         """
@@ -411,17 +419,17 @@ class DotArray:
         self.default_dt = -1/np.min(self._JeigenValues)
         if self.fast_relaxation:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
-            self._constQnPart = invMat.dot(flattenToColumn(self.VG))
+            self._constQnPart = invMat.dot(self.VG)
             CGMat = np.repeat(1/flattenToRow(self.CG), invMat.shape[0], axis=0)
             self._matrixQnPart = invMat * CGMat - np.eye(invMat.shape[0])
+        self._Q_eigenbasis = self._JeigenVectorsInv.dot(self.Q)
         return True
 
     def developeQ(self, dt):
-        Q0 = self._JeigenVectorsInv.dot(flattenToColumn(self.Q))
         b = self._JeigenVectorsInv.dot(self.getbVector())
         exponent = np.exp(self._JeigenValues*dt)
-        self.Q = self._JeigenVectors.dot(Q0*exponent +(
-             b/self._JeigenValues)*(exponent - 1)).reshape((self.rows, self.columns))
+        self._Q_eigenbasis = self._Q_eigenbasis*exponent +(b/self._JeigenValues)*(exponent - 1)
+        self.Q = self._JeigenVectors.dot(self._Q_eigenbasis)
         return True
 
     def get_steady_Q_for_n(self):
@@ -445,15 +453,15 @@ class DotArray:
         self.additionalLeft = np.zeros((self.rows,self.columns+1))
         self.additionalLeft[:,0] = self.VL
         self.additionalLeft[:,-1] = -self.VR
-        leftConstWork = (0.5*self.commonHorz + self.additionalLeft).flatten()
+        self.leftConstWork = (0.5*self.commonHorz + self.additionalLeft).flatten()
 
         additionalRight = -self.additionalLeft
-        rightConstWork = (0.5*self.commonHorz + additionalRight).flatten()
+        self.rightConstWork = (0.5*self.commonHorz + additionalRight).flatten()
 
-        vertConstWork = (0.5*self.commonVert).flatten()
-
-        self.constWork = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
-        self.variableWork = np.zeros(self.constWork.shape)
+        self.vertConstWork = (0.5*self.commonVert).flatten()
+        self.variableWork = np.zeros((4*self.rows*self.columns + 2*(self.rows - self.columns),))
+        # self.constWork = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
+        # self.variableWork = np.zeros(self.constWork.shape)
         return True
 
     def setConstMatrix(self):
@@ -472,16 +480,16 @@ class DotArray:
         return True
 
     def getWork(self):
-        q = self.getNprime() + flattenToColumn(self.Q)
+        q = self.getNprime() + self.Q
         variableRightWork = (self.horizontalMatrix.dot(q)).flatten()
         variableDownWork = (self.verticalMatrix.dot(q)).flatten()
         variableRightWorkLen = variableRightWork.size
         variableDownWorkLen = variableDownWork.size
-        self.variableWork[:variableRightWorkLen] = variableRightWork
-        self.variableWork[variableRightWorkLen:2*variableRightWorkLen] = -variableRightWork
-        self.variableWork[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] = variableDownWork
-        self.variableWork[2 * variableRightWorkLen + variableDownWorkLen:] = -variableDownWork
-        return self.variableWork + self.constWork
+        self.variableWork[:variableRightWorkLen] = variableRightWork + self.rightConstWork
+        self.variableWork[variableRightWorkLen:2*variableRightWorkLen] = -variableRightWork + self.leftConstWork
+        self.variableWork[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] = variableDownWork + self.vertConstWork
+        self.variableWork[2 * variableRightWorkLen + variableDownWorkLen:] = -variableDownWork + self.vertConstWork
+        return self.variableWork
 
     def getRates(self):
         """
@@ -499,10 +507,10 @@ class DotArray:
 
 
     def getVoltages(self):
-        return self.invC.dot(self.getNprime() + flattenToColumn(self.Q))
+        return self.invC.dot(self.getNprime() + self.Q).reshape(self.rows, self.columns)
 
     def getVoltagesFromGround(self):
-        return self.VG - self.Q/self.CG
+        return (self.VG - self.Q/self.CG).reshape(self.rows, self.columns)
 
     def getTimeInterval(self, randomNumber):
         """
@@ -542,7 +550,7 @@ class DotArray:
         tunnelingFrom[:-1,:] += self.down
         changeAvg = np.abs(tunnelingTo - tunnelingFrom)
         changeVar = tunnelingTo + tunnelingFrom
-        smallestChange = TAU_EPS*np.abs(np.copy(self.n))
+        smallestChange = TAU_EPS*np.abs(self.getOccupation())
         smallestChange[smallestChange < 1] = 1
         tau = 0
         if (changeAvg > 0).any():
@@ -588,7 +596,7 @@ class DotArray:
             self.totalChargePassedLeft -= charge
             self.I_left_sqr_avg += charge**2/dt
         else:
-            self.n[fromDot] -= 1
+            self.n[fromDot[0]*self.columns + fromDot[1],0] -= charge
         if toDot[1] == self.columns:
             self.totalChargePassedRight += charge
             self.I_right_sqr_avg += charge**2/dt
@@ -596,7 +604,7 @@ class DotArray:
             self.totalChargePassedLeft += charge
             self.I_left_sqr_avg += charge**2/dt
         else:
-            self.n[toDot] += charge
+            self.n[toDot[0]*self.columns + toDot[1],0] += charge
         return True
 
     def printState(self):
@@ -638,7 +646,7 @@ class DotArray:
         self.totalAction += self.left[:,1:] - self.left[:,:-1] + self.right[:,:-1] - self.right[:,1:]
         self.totalAction[1:,:] += self.down - self.up
         self.totalAction[:-1,:] += self.up - self.down
-        self.n += self.totalAction
+        self.n += flattenToColumn(self.totalAction)
         if self.saveCurrentMap:
             self.Ih += self.right - self.left
             self.Iv += self.down - self.up
@@ -706,20 +714,19 @@ class JJArray(DotArray):
 
     def setConstWork(self):
         super().setConstWork()
-        leftConstWork = 2*(self.commonHorz + self.additionalLeft).flatten()
+        leftConstWorkCp = 2*(self.commonHorz + self.additionalLeft).flatten()
 
         additionalRight = -self.additionalLeft
-        rightConstWork = 2*(self.commonHorz + additionalRight).flatten()
+        rightConstWorkCp = 2*(self.commonHorz + additionalRight).flatten()
 
-        vertConstWork = (2*self.commonVert).flatten()
+        vertConstWorkCp = (2*self.commonVert).flatten()
 
-        self.constWork_cp = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
-        self.variableWork_cp = np.zeros(self.constWork.shape)
-        self.rates = np.zeros((2*self.constWork.shape[0],))
+        self.constWorkCp = np.hstack((rightConstWorkCp, leftConstWorkCp, vertConstWorkCp, vertConstWorkCp))
+        self.rates = np.zeros(2*self.variableWork.shape)
 
     def getWork(self):
         qp_work = super().getWork()
-        cp_work = 2*self.variableWork + self.variableWork_cp
+        cp_work = 2*self.variableWork + self.constWorkCp
         return qp_work, cp_work
 
     def getRates(self):
@@ -803,10 +810,9 @@ class Simulator:
             n_var = np.zeros(n_avg.shape)
             Q_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
             Q_var = np.zeros(Q_avg.shape)
-        min_steps = MINIMUM_STEPS_PER_DOT*(self.dotArray.getColumns()*self.dotArray.getRows())
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
-        while curr_t < t or steps < min_steps:
+        while curr_t < t or steps < MIN_STEPS:
             if self.tauLeaping:
                 dt = self.executeLeapingStep(printState=print_stats)
             else:
@@ -858,9 +864,9 @@ class Simulator:
         plt.figure()
         plt.plot((np.array(Ileft) - np.array(Iright)) ** 2)
         plt.figure()
-        plt.plot(x, ns[:,0,:], x, ns[:,1,:])
+        plt.plot(x, ns.reshape((ns.shape[0], ns.shape[1]*ns.shape[2])))
         plt.figure()
-        plt.plot(x, Qs[:,0,:], x, Qs[:,1,:])
+        plt.plot(x, Qs.reshape((Qs.shape[0], Qs.shape[1]*Qs.shape[2])))
         plt.show()
 
     def saveState(self, I, IErr, n=None, Q=None, nErr=None, QErr=None, Imaps=None,
@@ -950,7 +956,7 @@ class Simulator:
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
-            self.calcCurrent(tStep/10)
+            self.calcCurrent(tStep)
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
@@ -1038,7 +1044,7 @@ class GraphSimulator:
         states = []
         states_dict = dict()
         edges = []
-        self.dotArray.Q = np.copy(Q)
+        self.dotArray.setGroundCharge(np.copy(Q))
         states.append(np.copy(self.n0).flatten())
         tup_n = tuple(self.n0.flatten())
         states_dict[tup_n] = 0
@@ -1048,12 +1054,12 @@ class GraphSimulator:
         next_state_ind = 1
         edges_line = [0]
         while current_state_ind < len(states):
-            self.dotArray.n = self.reshape_to_array(np.copy(states[current_state_ind]))
+            self.dotArray.setOccupation(self.reshape_to_array(np.copy(states[current_state_ind])))
             rates = self.dotArray.getRates()
             for ind,rate in enumerate(rates):
                 if rate > 0: # add new edge
                     fromDot, toDot = self.dotArray.executeAction(ind,0)
-                    n = np.copy(self.dotArray.n).flatten()
+                    n = self.dotArray.getOccupation()
                     tup_n = tuple(n)
                     if tup_n not in states_dict:
                         states_dict[tup_n] = next_state_ind
@@ -1109,32 +1115,32 @@ class GraphSimulator:
         return self.reshape_to_array(average_state)
 
     def get_average_voltages(self, Q):
-        n_copy = np.copy(self.dotArray.n)
-        Q_copy = np.copy(self.dotArray.Q)
+        n_copy = self.dotArray.getOccupation()
+        Q_copy = self.dotArray.getGroundCharge()
         n = self.get_average_state(Q)
-        self.dotArray.n = self.reshape_to_array(n)
-        self.dotArray.Q = self.reshape_to_array(Q)
+        self.dotArray.setOccupation(n)
+        self.dotArray.setOccupation(Q)
         v = self.dotArray.getVoltages()
-        self.dotArray.n = n_copy
-        self.dotArray.Q = Q_copy
+        self.dotArray.setOccupation(n_copy)
+        self.dotArray.setGroundCharge(Q_copy)
         return v
 
     def get_voltages_from_ground(self, Q):
-        Q_copy = np.copy(self.dotArray.Q)
-        self.dotArray.Q = self.reshape_to_array(Q)
+        Q_copy = self.dotArray.getGroundCharge()
+        self.dotArray.setGroundCharge(Q)
         v = self.dotArray.getVoltagesFromGround()
-        self.dotArray.Q = Q_copy
+        self.dotArray.setGroundCharge(Q_copy)
         return v
 
     def calc_lyaponuv(self, Q):
-        n_copy = np.copy(self.dotArray.n)
-        Q_copy = np.copy(self.dotArray.Q)
+        n_copy = self.dotArray.getOccupation()
+        Q_copy = self.dotArray.getGroundCharge()
         n = self.get_average_state(Q)
-        self.dotArray.n = self.reshape_to_array(n)
-        self.dotArray.Q = self.reshape_to_array(Q)
+        self.dotArray.setOccupation(n)
+        self.dotArray.setGroundCharge(Q)
         diff_from_equi = np.sum(flattenToColumn(Q) - self.dotArray.get_steady_Q_for_n())
-        self.dotArray.n = n_copy
-        self.dotArray.Q = Q_copy
+        self.dotArray.setOccupation(n_copy)
+        self.dotArray.setGroundCharge(Q_copy)
         return diff_from_equi
 
     def calc_on_grid(self, Qmin, Qmax, f, res_len=1):
@@ -1164,8 +1170,8 @@ class GraphSimulator:
 
     def calc_lyaponuv_grad(self, Q):
         n = self.get_average_state(self.reshape_to_array(Q))
-        self.dotArray.n = n
-        self.dotArray.Q = self.reshape_to_array(Q)
+        self.dotArray.setOccupation(n)
+        self.dotArray.setGroundCharge(Q)
         return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
 
     def plot_average_voltages(self, Qmin, Qmax):
@@ -1760,21 +1766,21 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-    import cProfile, pstats, io
-    from pstats import SortKey
-    pr = cProfile.Profile()
-    pr.enable()
+    # import cProfile, pstats, io
+    # from pstats import SortKey
+    # pr = cProfile.Profile()
+    # pr.enable()
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
-    pr.disable()
-    s = io.StringIO()
-    sortby = SortKey.CUMULATIVE
-    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    ps.print_stats()
-    print(s.getvalue())
+    # pr.disable()
+    # s = io.StringIO()
+    # sortby = SortKey.CUMULATIVE
+    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    # ps.print_stats()
+    # print(s.getvalue())
     saveParameters(savePath, fileName, options, array_params)
     exit(0)
