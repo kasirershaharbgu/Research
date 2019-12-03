@@ -1,0 +1,63 @@
+-------Running parameters--------
+T = 0.0
+gap = 0
+M = 3
+N = 3
+VR = 0.0
+Vmin = 0.0
+Vmax = 2.0
+vStep = 0.01
+vSym = True
+repeats = 20
+fileName = c_std_0.4_r_std_5_run_4
+dist = exp
+fullOutput = False
+use_graph = False
+current_map = False
+plot_current_map = False
+dbg = False
+resume = False
+sc = False
+leaping = False
+output_folder = 3X3_array_statistics_r_avg_10
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.4
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 5.0
+custom_rh = ""
+custom_rv = ""
+custom_ch = ""
+custom_cv = ""
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 3
+Columns: 3
+VG: [[0. 0. 0.]
+ [0. 0. 0.]
+ [0. 0. 0.]]
+CG: [[10. 10. 10.]
+ [10. 10. 10.]
+ [10. 10. 10.]]
+RG: [[1000. 1000. 1000.]
+ [1000. 1000. 1000.]
+ [1000. 1000. 1000.]]
+Ch: [[0.65922088 1.01090775 0.72840608 0.67350546]
+ [1.39772474 1.20792769 1.3132943  0.99908607]
+ [0.77936296 0.86068246 0.80431299 1.30443722]]
+Cv: [[0.         0.         0.        ]
+ [0.91061346 0.73218893 1.12094963]
+ [1.35183299 0.68506629 0.94662605]]
+Rh: [[ 6.27987682  5.6551     11.67285266  9.94629376]
+ [ 5.3877015   6.55288538  9.55601675 10.70603211]
+ [ 5.01837911 10.15171063 12.8227739   7.37521925]]
+Rv: [[14.6429981  11.26982017 14.25105557]
+ [ 8.99336172  9.00657614  5.65545812]]
