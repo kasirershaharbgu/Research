@@ -1,0 +1,19 @@
+
+python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.5 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.01 --distribution exp --custom-rh "" --custom-rv "" --custom-ch  --custom-cv  --file-name array_10_10_tau_leaping -o big_array  --current-map   --symmetric-v --tau-leaping
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+
+python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.5 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.01 --distribution exp --custom-rh "" --custom-rv "" --custom-ch  --custom-cv  --file-name array_10_10_tau_leaping -o big_array  --current-map   --symmetric-v --tau-leaping
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+
+python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 5 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.5 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.01 --distribution exp --custom-rh "" --custom-rv "" --custom-ch  --custom-cv  --file-name array_10_10_tau_leaping -o big_array  --current-map   --symmetric-v --tau-leaping
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+Saving results
