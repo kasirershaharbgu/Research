@@ -20,7 +20,11 @@ from copy import copy
 
 EPS = 0.0001
 # Gillespie Constants
-MIN_STEPS = 1000
+MIN_STEPS = 100
+STEADY_STATE_VAR = 1e-4
+ALLOWED_ERR = 1e-3
+STEADY_STATE_REP = 10
+
 # Tau Leaping Constants
 TAU_EPS = 0.03
 # Lyaponuv Constants
@@ -799,7 +803,7 @@ class Simulator:
             self.printState()
         return dt
 
-    def calcCurrent(self, t,print_stats=False,fullOutput=False, currentMap=False):
+    def calcCurrent(self, t,print_stats=False, fullOutput=False, currentMap=False):
         if currentMap:
             self.dotArray.currentMapOn()
         self.dotArray.resetCharge()
@@ -812,7 +816,8 @@ class Simulator:
             Q_var = np.zeros(Q_avg.shape)
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
-        while curr_t < t or steps < MIN_STEPS:
+        err = 2*ALLOWED_ERR
+        while err > ALLOWED_ERR:
             if self.tauLeaping:
                 dt = self.executeLeapingStep(printState=print_stats)
             else:
@@ -824,10 +829,12 @@ class Simulator:
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
             curr_t += dt
-        rightCurrent, leftCurrent = self.dotArray.getCharge()
-        rightCurrentSqr, leftCurrentSqr = self.dotArray.getIsqr()
-        rightCurrentErr = np.sqrt((1/(steps - 1)) * (rightCurrentSqr/curr_t - rightCurrent**2/curr_t**2))
-        leftCurrentErr = np.sqrt((1/ (steps - 1)) * (leftCurrentSqr/curr_t - leftCurrent**2/curr_t**2))
+            if steps%MIN_STEPS == 0:
+                rightCurrent, leftCurrent = self.dotArray.getCharge()
+                rightCurrentSqr, leftCurrentSqr = self.dotArray.getIsqr()
+                rightCurrentErr = np.sqrt((1/(steps-1)) * (rightCurrentSqr/curr_t - rightCurrent**2/curr_t**2))
+                leftCurrentErr = np.sqrt((1/(steps-1)) * (leftCurrentSqr/curr_t - leftCurrent**2/curr_t**2))
+                err = max(rightCurrentErr, leftCurrentErr)
         res = (rightCurrent/curr_t, -leftCurrent/curr_t, rightCurrentErr, leftCurrentErr)
         if fullOutput:
             res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
@@ -835,6 +842,33 @@ class Simulator:
             res = res + (self.dotArray.getCurrentMap()/curr_t,)
             self.dotArray.currentMapOff()
         return res
+
+    def getToSteadyState(self, t):
+        Qerr = 2*STEADY_STATE_VAR
+        var = STEADY_STATE_VAR
+        t = t/(STEADY_STATE_REP**2)
+        curr_Q = self.dotArray.getGroundCharge()
+        not_decreasing_count = 0
+        while Qerr > var and not_decreasing_count < 10:
+            Qs = []
+            for run in range(STEADY_STATE_REP):
+                curr_Qs = []
+                curr_t = 0
+                while curr_t < t:
+                    if self.tauLeaping:
+                        dt = self.executeLeapingStep()
+                    else:
+                        dt = self.executeStep()
+                    curr_t += dt
+                    curr_Qs.append(curr_Q*dt)
+                    curr_Q = self.dotArray.getGroundCharge()
+                Qs.append(np.sum(curr_Qs, axis=0)/curr_t)
+            new_Qerr = np.max(np.var(Qs, axis=0))
+            if new_Qerr > Qerr:
+                not_decreasing_count += 1
+            Qerr = new_Qerr
+
+        return True
 
     def checkSteadyState(self, rep):
         Ileft = []
@@ -956,7 +990,7 @@ class Simulator:
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
-            self.calcCurrent(tStep)
+            self.getToSteadyState(tStep)
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
@@ -972,7 +1006,7 @@ class Simulator:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
-            # print(VL - VR, end=',')
+            print(VL - VR, end=',')
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
@@ -1272,7 +1306,6 @@ class GraphSimulator:
         I = []
         ns = []
         Qs = []
-        Vind_addition = 0
         if vSym:
             Vstep /= 2
             Vmax /= 2
@@ -1290,13 +1323,12 @@ class GraphSimulator:
             Vind = len(I)
             VL_vec = VL_vec[Vind:]
             VR_vec = VR_vec[Vind:]
-            Vind_addition = Vind
             self.n0 = resumeParams[1]
             self.QG = resumeParams[2]
             if fullOutput:
                 ns = list(resumeParams[3])
                 Qs = list(resumeParams[4])
-        for VL,VR in zip(VL_vec,VR_res):
+        for VL,VR in zip(VL_vec,VR_vec):
             print(VL-VR,end=',')
             self.dotArray.changeVext(VL, VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
@@ -1766,21 +1798,21 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-    # import cProfile, pstats, io
-    # from pstats import SortKey
-    # pr = cProfile.Profile()
-    # pr.enable()
+    import cProfile, pstats, io
+    from pstats import SortKey
+    pr = cProfile.Profile()
+    pr.enable()
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
-    # pr.disable()
-    # s = io.StringIO()
-    # sortby = SortKey.CUMULATIVE
-    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    # ps.print_stats()
-    # print(s.getvalue())
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
     saveParameters(savePath, fileName, options, array_params)
     exit(0)

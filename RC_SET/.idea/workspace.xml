@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="" />
+    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IV.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_V.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_V.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_CG.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_CG.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Ch.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Ch.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Cv.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Cv.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Q0.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Q0.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_RG.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_RG.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rh.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Rh.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rv.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_Rv.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_VG.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_VG.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_n0.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_n0.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +112,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 1 --vmax 5 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 10 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --file-name dbg -o dbg --symmetric-v --dbg --tau-leaping" />
+      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --custom-rh &quot;[[1,10]]&quot; --custom-rv &quot;[[]]&quot; --distribution exp --file-name dbg -o dbg --symmetric-v --dbg --tau-leaping --resume" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -250,13 +267,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>560</line>
-          <option name="timeStamp" value="92" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>554</line>
-          <option name="timeStamp" value="93" />
+          <line>832</line>
+          <option name="timeStamp" value="104" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
