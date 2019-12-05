@@ -4,3 +4,4 @@ python3 dots_array.py -M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0
 Saving array parameters
 Normal prototype array was created
 Starting parallel run
+slurmstepd: error: *** JOB 1244755 ON node013 CANCELLED AT 2019-12-05T15:08:37 DUE TO TIME LIMIT ***
