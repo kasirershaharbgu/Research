@@ -35,8 +35,8 @@ if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
 
-rows=10
-columns=10
+rows=20
+columns=20
 leaping="--tau-leaping"
 c_std=0.5
 r_std=9
