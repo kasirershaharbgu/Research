@@ -31,6 +31,7 @@ class SingleResultsProcessor:
         IErr_file = os.path.join(self.basePath + '_IErr.npy')
         self.I = np.load(I_file)
         self.IErr = np.load(IErr_file)
+        # self.IErr = np.zeros(self.I.shape)
         self.V = np.load(V_file)
         self.mid_idx = self.V.size // 2
         if fullOutput:
@@ -42,6 +43,8 @@ class SingleResultsProcessor:
             self.Q = np.load(Q_file)
             self.nErr = np.load(nErr_file)
             self.QErr = np.load(QErr_file)
+            # self.nErr = np.zeros(self.n.shape)
+            # self.QErr = np.zeros(self.Q.shape)
         return True
 
     def load_params(self):
@@ -319,22 +322,23 @@ class MultiResultAnalyzer:
 
 
 if __name__ == "__main__":
-    directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * 90
-    files_list = ["c_std_0.3_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
-    m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
-                            "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
-    m.plot_score('hysteresis', 'R_std', 'c_std_0.3_hysteresis')
-    m.plot_score('jump', 'R_std', 'c_std_0.3_jump')
-    m.plot_score('blockade', 'R_std', 'c_std_0.3_blockade')
-    for r_std in range(1,10):
-        for score in ['hysteresis', 'jump', 'blockade']:
-            m.plot_hystogram(score, {"R_std": [r_std], "C_std": [0.3]}, {},
-                             "c_std_0.3_r_std_" + str(r_std) + "_" + score + "_hystogram")
-    for score in ['hysteresis', 'jump', 'blockade']:
-        m.plot_hystogram(score, {"C_std": [0.3]}, {},
-                             "c_std_0.3_" + score + "_hystogram")
-    # s = SingleResultsProcessor("3X3_array_statistics","c_std_0.1_r_std_0.5_run_4",fullOutput=False)
-
+    # directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * 90
+    # files_list = ["c_std_0.3_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
+    # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
+    #                         "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
+    # m.plot_score('hysteresis', 'R_std', 'c_std_0.3_hysteresis')
+    # m.plot_score('jump', 'R_std', 'c_std_0.3_jump')
+    # m.plot_score('blockade', 'R_std', 'c_std_0.3_blockade')
+    # for r_std in range(1,10):
+    #     for score in ['hysteresis', 'jump', 'blockade']:
+    #         m.plot_hystogram(score, {"R_std": [r_std], "C_std": [0.3]}, {},
+    #                          "c_std_0.3_r_std_" + str(r_std) + "_" + score + "_hystogram")
+    # for score in ['hysteresis', 'jump', 'blockade']:
+    #     m.plot_hystogram(score, {"C_std": [0.3]}, {},
+    #                          "c_std_0.3_" + score + "_hystogram")
+    s = SingleResultsProcessor("dbg","dbg",fullOutput=True)
+    s.plot_results()
+    plt.show()
 
 
 

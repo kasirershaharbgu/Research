@@ -17,12 +17,12 @@ q_std=0
 vstep=0.01
 rg_avg=1000
 cg_avg=10
-t="05:00:00"
+t="10:00:00"
 dist="exp"
 r_std=0
 graph=""
 currentmap=""
-full=""
+resume=""
 vSym="--symmetric-v"
 resume=""
 custom_rh="\"\""
@@ -37,8 +37,8 @@ if [ ! -d "$f" ]; then
 fi
 rows=3
 columns=3
-c_std=0.6
-for r_std in 5 6 7 
+c_std=0.4
+for r_std in 1 2 3  
 do
 	for run in 1 2 3 4 5 6 7 8 9 10
 	do

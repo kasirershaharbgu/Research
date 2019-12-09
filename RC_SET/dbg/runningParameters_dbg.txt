@@ -1,35 +1,35 @@
 -------Running parameters--------
-T = 0.0
+T = 0.01
 gap = 0
-M = 1
-N = 1
+M = 3
+N = 3
 VR = 0.0
 Vmin = 0.0
-Vmax = 2.0
-vStep = 0.01
-vSym = True
+Vmax = 1.0
+vStep = 0.1
+vSym = False
 repeats = 1
 fileName = dbg
 dist = exp
-fullOutput = False
+fullOutput = True
 use_graph = False
-current_map = False
+current_map = True
 plot_current_map = False
 dbg = True
 resume = False
 sc = False
-leaping = True
+leaping = False
 output_folder = dbg
 VG_avg = 0.0
 VG_std = 0.0
 C_avg = 1.0
-C_std = 0.0
+C_std = 0.1
 CG_avg = 10.0
 CG_std = 0.0
-R_avg = 1.0
-R_std = 0.0
-custom_rh = [[1,10]]
-custom_rv = [[]]
+R_avg = 10.0
+R_std = 5.0
+custom_rh = 
+custom_rv = 
 custom_ch = 
 custom_cv = 
 RG_avg = 1000.0
@@ -39,12 +39,43 @@ n0_std = 0.0
 Q0_avg = 0.0
 Q0_std = 0.0
 ----Array Parameters-----
-Rows: 1
-Columns: 1
-VG: [[0.]]
-CG: [[10.]]
-RG: [[1000.]]
-Ch: [[1. 1.]]
-Cv: [[0.]]
-Rh: [[ 1 10]]
-Rv: []
+Rows: 3
+Columns: 3
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]]
+RG: [[1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]]
+Ch: [[1.05081254 0.90573859 1.04361644 0.91763923]
+ [1.00020653 0.9923333  1.06367729 0.99758266]
+ [0.92578596 1.02324804 0.91706289 1.02819789]]
+Cv: [[0.         0.         0.        ]
+ [1.00871883 1.00363305 1.04110312]
+ [1.06463809 0.98422968 0.93809407]]
+Rh: [[10.81001224  7.8407302  11.67146524 10.5339542 ]
+ [13.98968378 10.5120248   9.57939887 10.08988799]
+ [ 9.28256178 10.60922852  9.74448819  8.33475483]]
+Rv: [[ 5.34200644 11.52518475  6.55567278]
+ [13.47174419  6.73424467  5.46205038]]

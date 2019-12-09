@@ -29,7 +29,7 @@ STEADY_STATE_REP = 10
 TAU_EPS = 0.03
 # Lyaponuv Constants
 DQ = 0.1
-Q_SHIFT = 2
+Q_SHIFT = 10
 GRAD_REP = 5
 INI_LR = 0.001
 
@@ -224,7 +224,7 @@ class DotArray:
         self.VG = flattenToColumn(VG)
         self.Q = flattenToColumn(Q0)
         self.n = flattenToColumn(n0)
-        self.CG = CG
+        self.CG = flattenToColumn(CG)
         self.RG = flattenToColumn(RG)
         self.Ch = Ch
         self.Cv = np.vstack((np.zeros((1,columns)),Cv)) if Cv.size else np.zeros((1,1))
@@ -1006,7 +1006,7 @@ class Simulator:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
-            print(VL - VR, end=',')
+            # print(VL - VR, end=',')
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
@@ -1092,8 +1092,8 @@ class GraphSimulator:
             rates = self.dotArray.getRates()
             for ind,rate in enumerate(rates):
                 if rate > 0: # add new edge
-                    fromDot, toDot = self.dotArray.executeAction(ind,0)
-                    n = self.dotArray.getOccupation()
+                    fromDot, toDot = self.dotArray.executeAction(ind,1)
+                    n = self.dotArray.getOccupation().flatten()
                     tup_n = tuple(n)
                     if tup_n not in states_dict:
                         states_dict[tup_n] = next_state_ind
@@ -1102,7 +1102,7 @@ class GraphSimulator:
                         edges_line.append(rate)
                     else:
                         edges_line[states_dict[tup_n]] += rate
-                    self.dotArray.tunnel(toDot, fromDot)
+                    self.dotArray.tunnel(toDot, fromDot,1)
             edges.append(edges_line)
             edges_line = [0] * len(edges_line)
             current_state_ind += 1
@@ -1256,8 +1256,8 @@ class GraphSimulator:
     def calcCurrent(self, fullOutput=False, basePath=""):
         self.find_next_QG_using_gradient_descent()
         #dbg
-        self.find_next_QG_using_lyaponuv(basePath)
-        print(self.QG)
+        # self.find_next_QG_using_lyaponuv(basePath)
+        # print(self.QG)
         self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
@@ -1278,7 +1278,7 @@ class GraphSimulator:
         right_diff = right_tunneling_rates[:,-1] - left_tunneling_rates[:,-1]
         return left_diff, right_diff
 
-    def saveState(self, I, Vind, n=None, Q=None, fullOutput=False, basePath=''):
+    def saveState(self, I, n=None, Q=None, fullOutput=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         if fullOutput:
             np.save(baseName + "_ns", np.array(n))
@@ -1403,6 +1403,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       currentMap=False, dbg=False, plotCurrentMaps=False, resume=False, superconducting=False,
                       gap=0, leaping=False):
     basePath = os.path.join(savePath, fileName)
+    if useGraph:
+        fastRelaxation = True
     if plotCurrentMaps:
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
@@ -1798,21 +1800,25 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-    import cProfile, pstats, io
-    from pstats import SortKey
-    pr = cProfile.Profile()
-    pr.enable()
+
+    # import cProfile, pstats, io
+    # from pstats import SortKey
+    # pr = cProfile.Profile()
+    # pr.enable()
+
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
-    pr.disable()
-    s = io.StringIO()
-    sortby = SortKey.CUMULATIVE
-    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    ps.print_stats()
-    print(s.getvalue())
     saveParameters(savePath, fileName, options, array_params)
+
+    # pr.disable()
+    # s = io.StringIO()
+    # sortby = SortKey.CUMULATIVE
+    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    # ps.print_stats()
+    # print(s.getvalue())
+
     exit(0)
