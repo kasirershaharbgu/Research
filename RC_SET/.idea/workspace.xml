@@ -2,14 +2,50 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/big_array/array_10_10_Imap.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/runningParameters_single_dot_r_disorder_reversed.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_I.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_IErr.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_IV.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_Q.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_QErr.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_V.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_full_I.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_full_IErr.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_n.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_nErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_I.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IV.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_QErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_V.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_V.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_full_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_full_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_nErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_small_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_small_2d_array.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_Qs.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_QsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_ns.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_0_nsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/single_dot/single_dot_r_disorder_reversed_temp_n0.npy" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -104,7 +140,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 5 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;[[10,1]]&quot; --custom-rv &quot;[[]]&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name single_dot_r_disorder_reversed -o single_dot --full --dbg" />
+      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 2 --vstep 1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.5 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.01 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch --custom-cv --file-name dbg_finit_dos -o dbg --symmetric-v --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -258,9 +294,10 @@
           <option name="timeStamp" value="77" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="not (self.n == 0).all() " language="Python" />
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>832</line>
-          <option name="timeStamp" value="104" />
+          <line>520</line>
+          <option name="timeStamp" value="106" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -6,10 +6,10 @@ N = 1
 VR = 0.0
 Vmin = 0.0
 Vmax = 2.0
-vStep = 0.1
+vStep = 0.01
 vSym = False
 repeats = 1
-fileName = dbg
+fileName = single_dot_r_disorder_reversed
 dist = exp
 fullOutput = True
 use_graph = False
@@ -19,16 +19,16 @@ dbg = True
 resume = False
 sc = False
 leaping = False
-output_folder = dbg
+output_folder = single_dot
 VG_avg = 0.0
 VG_std = 0.0
 C_avg = 1.0
-C_std = 0.0
+C_std = 0.1
 CG_avg = 10.0
 CG_std = 0.0
 R_avg = 10.0
-R_std = 0.0
-custom_rh = [[1,10]]
+R_std = 5.0
+custom_rh = [[10,1]]
 custom_rv = [[]]
 custom_ch = 
 custom_cv = 
@@ -44,7 +44,7 @@ Columns: 1
 VG: [[0.]]
 CG: [[10.]]
 RG: [[1000.]]
-Ch: [[1. 1.]]
+Ch: [[0.98178252 0.92565692]]
 Cv: [[0.]]
-Rh: [[ 1 10]]
+Rh: [[10  1]]
 Rv: []

@@ -24,6 +24,7 @@ MIN_STEPS = 100
 STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-3
 STEADY_STATE_REP = 10
+INV_DOS = 0.01
 
 # Tau Leaping Constants
 TAU_EPS = 0.03
@@ -243,8 +244,12 @@ class DotArray:
         self.saveCurrentMap = False
         self.Ih = np.zeros(self.Rh.shape)
         self.Iv = np.zeros(self.Rv.shape)
-        self.I_left_sqr_avg = 0  # for std calculations
+        # for std calculations
+        self.I_left_sqr_avg = 0
         self.I_right_sqr_avg = 0
+        # for variable R calculation
+        self._leftnExponent = np.ones((self.rows, self.columns+1))
+        self._rightnExponent = np.ones((self.rows, self.columns + 1))
         # Memory initialization for tau leaping
         self.tauLeaping = tauLeaping
         if tauLeaping:
@@ -301,7 +306,9 @@ class DotArray:
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         copy_array.tauLeaping = self.tauLeaping
-        copy_array._Q_eigenbasis = self._Q_eigenbasis
+        copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
+        copy_array._leftnExponent = np.copy(self._leftnExponent)
+        copy_array._rightnExponent = np.copy(self._rightnExponent)
         # tau leaping
         if copy_array.tauLeaping:
             copy_array.totalAction = np.copy(self.totalAction)
@@ -507,8 +514,19 @@ class DotArray:
             notToSmall = np.abs(work) > EPS
             work[np.logical_not(notToSmall)] = -self.temperature
             work[notToSmall] = work[notToSmall]/(1 - np.exp(work[notToSmall]/self.temperature))
+        self.modifyR()
         return -work / self.R
 
+    def modifyR(self):
+        nExponent = np.exp(-INV_DOS*self.n).reshape((self.rows, self.columns))
+        self._rightnExponent[:,1:] = nExponent
+        self._leftnExponent[:,:-1] = nExponent
+        horzSize = self.Rh.size
+        vertSize = self.Rv.size
+        self.R[:horzSize] = (self.Rh*self._rightnExponent).flatten()
+        self.R[horzSize:2*horzSize] = (self.Rh * self._leftnExponent).flatten()
+        self.R[2*horzSize:2*horzSize+vertSize] = (self.Rv*nExponent[:-1,:]).flatten()
+        self.R[2 * horzSize + vertSize:] = (self.Rv * nExponent[1:, :]).flatten()
 
     def getVoltages(self):
         return self.invC.dot(self.getNprime() + self.Q).reshape(self.rows, self.columns)
@@ -1329,7 +1347,7 @@ class GraphSimulator:
                 ns = list(resumeParams[3])
                 Qs = list(resumeParams[4])
         for VL,VR in zip(VL_vec,VR_vec):
-            print(VL-VR,end=',')
+            # print(VL-VR,end=',')
             self.dotArray.changeVext(VL, VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
