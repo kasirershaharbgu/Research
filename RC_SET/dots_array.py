@@ -471,6 +471,7 @@ class DotArray:
 
         self.vertConstWork = (0.5*self.commonVert).flatten()
         self.variableWork = np.zeros((4*self.rows*self.columns + 2*(self.rows - self.columns),))
+        self.rates = np.zeros(self.variableWork.shape)
         # self.constWork = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
         # self.variableWork = np.zeros(self.constWork.shape)
         return True
@@ -514,8 +515,9 @@ class DotArray:
             notToSmall = np.abs(work) > EPS
             work[np.logical_not(notToSmall)] = -self.temperature
             work[notToSmall] = work[notToSmall]/(1 - np.exp(work[notToSmall]/self.temperature))
-        self.modifyR()
-        return -work / self.R
+        # self.modifyR()
+        self.rates = -work / self.R
+        return self.rates
 
     def modifyR(self):
         nExponent = np.exp(-INV_DOS*self.n).reshape((self.rows, self.columns))
@@ -593,10 +595,10 @@ class DotArray:
         if self.no_tunneling_next_time:
             self.no_tunneling_next_time = False
             return True
-        rates = self.getRates()
-        if (rates == 0).all():
+        # rates = self.getRates()
+        if (self.rates == 0).all():
             return True
-        cumRates = np.cumsum(rates)
+        cumRates = np.cumsum(self.rates)
         actionInd = np.searchsorted(cumRates, randomNumber*cumRates[-1])
         self.executeAction(actionInd, dt)
         return True
@@ -606,8 +608,8 @@ class DotArray:
         if self.no_tunneling_next_time:
             self.no_tunneling_next_time = False
             return True
-        rates = self.getRates()
-        actionVec = np.random.poisson(lam=rates*dt, size=rates.size)
+        # rates = self.getRates()
+        actionVec = np.random.poisson(lam=self.rates*dt, size=self.rates.size)
         self.executeMultipleActions(actionVec, dt)
 
     def tunnel(self, fromDot, toDot, dt, charge=1):
@@ -1024,7 +1026,7 @@ class Simulator:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
-            # print(VL - VR, end=',')
+            print(VL - VR, end=',')
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
@@ -1819,10 +1821,10 @@ if __name__ == "__main__":
         print("the given path exists but is a file")
         exit(0)
 
-    # import cProfile, pstats, io
-    # from pstats import SortKey
-    # pr = cProfile.Profile()
-    # pr.enable()
+    import cProfile, pstats, io
+    from pstats import SortKey
+    pr = cProfile.Profile()
+    pr.enable()
 
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
@@ -1832,11 +1834,11 @@ if __name__ == "__main__":
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
     saveParameters(savePath, fileName, options, array_params)
 
-    # pr.disable()
-    # s = io.StringIO()
-    # sortby = SortKey.CUMULATIVE
-    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    # ps.print_stats()
-    # print(s.getvalue())
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
 
     exit(0)
