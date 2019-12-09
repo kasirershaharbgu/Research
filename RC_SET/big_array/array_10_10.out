@@ -28,3 +28,4 @@ python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 5 --vstep 0.1 --vr 0 --vg-avg 
 Saving array parameters
 Normal prototype array was created
 Starting parallel run
+Saving results
