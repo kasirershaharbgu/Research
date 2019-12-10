@@ -24,6 +24,7 @@ MIN_STEPS = 100
 STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-3
 STEADY_STATE_REP = 10
+INV_DOS = 0.01
 
 # Tau Leaping Constants
 TAU_EPS = 0.03
@@ -243,8 +244,12 @@ class DotArray:
         self.saveCurrentMap = False
         self.Ih = np.zeros(self.Rh.shape)
         self.Iv = np.zeros(self.Rv.shape)
-        self.I_left_sqr_avg = 0  # for std calculations
+        # for std calculations
+        self.I_left_sqr_avg = 0
         self.I_right_sqr_avg = 0
+        # for variable R calculation
+        self._leftnExponent = np.ones((self.rows, self.columns+1))
+        self._rightnExponent = np.ones((self.rows, self.columns + 1))
         # Memory initialization for tau leaping
         self.tauLeaping = tauLeaping
         if tauLeaping:
@@ -301,7 +306,11 @@ class DotArray:
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         copy_array.tauLeaping = self.tauLeaping
-        copy_array._Q_eigenbasis = self._Q_eigenbasis
+        copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
+        copy_array._leftnExponent = np.copy(self._leftnExponent)
+        copy_array._rightnExponent = np.copy(self._rightnExponent)
+        copy_array.rates = np.copy(self.rates)
+        copy_array.cumRates = np.copy(self.cumRates)
         # tau leaping
         if copy_array.tauLeaping:
             copy_array.totalAction = np.copy(self.totalAction)
@@ -464,6 +473,8 @@ class DotArray:
 
         self.vertConstWork = (0.5*self.commonVert).flatten()
         self.variableWork = np.zeros((4*self.rows*self.columns + 2*(self.rows - self.columns),))
+        self.rates = np.zeros(self.variableWork.shape)
+        self.cumRates = np.zeros(self.variableWork.shape)
         # self.constWork = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
         # self.variableWork = np.zeros(self.constWork.shape)
         return True
@@ -507,8 +518,20 @@ class DotArray:
             notToSmall = np.abs(work) > EPS
             work[np.logical_not(notToSmall)] = -self.temperature
             work[notToSmall] = work[notToSmall]/(1 - np.exp(work[notToSmall]/self.temperature))
-        return -work / self.R
+        self.modifyR()
+        self.rates = -work / self.R
+        return self.rates
 
+    def modifyR(self):
+        nExponent = np.exp(-INV_DOS*self.n).reshape((self.rows, self.columns))
+        self._rightnExponent[:,1:] = nExponent
+        self._leftnExponent[:,:-1] = nExponent
+        horzSize = self.Rh.size
+        vertSize = self.Rv.size
+        self.R[:horzSize] = (self.Rh*self._rightnExponent).flatten()
+        self.R[horzSize:2*horzSize] = (self.Rh * self._leftnExponent).flatten()
+        self.R[2*horzSize:2*horzSize+vertSize] = (self.Rv*nExponent[:-1,:]).flatten()
+        self.R[2 * horzSize + vertSize:] = (self.Rv * nExponent[1:, :]).flatten()
 
     def getVoltages(self):
         return self.invC.dot(self.getNprime() + self.Q).reshape(self.rows, self.columns)
@@ -525,7 +548,8 @@ class DotArray:
             Q_copy = np.copy(self.Q)
             self.Q = self.get_steady_Q_for_n()
         rates = self.getRates()
-        sum_rates = np.sum(rates)
+        np.cumsum(rates, out=self.cumRates)
+        sum_rates = self.cumRates[-1]
         if sum_rates == 0:
             dt = self.default_dt
             self.no_tunneling_next_time = True
@@ -575,11 +599,9 @@ class DotArray:
         if self.no_tunneling_next_time:
             self.no_tunneling_next_time = False
             return True
-        rates = self.getRates()
-        if (rates == 0).all():
+        if (self.rates == 0).all():
             return True
-        cumRates = np.cumsum(rates)
-        actionInd = np.searchsorted(cumRates, randomNumber*cumRates[-1])
+        actionInd = np.searchsorted(self.cumRates, randomNumber*self.cumRates[-1])
         self.executeAction(actionInd, dt)
         return True
 
@@ -588,8 +610,8 @@ class DotArray:
         if self.no_tunneling_next_time:
             self.no_tunneling_next_time = False
             return True
-        rates = self.getRates()
-        actionVec = np.random.poisson(lam=rates*dt, size=rates.size)
+        # rates = self.getRates()
+        actionVec = np.random.poisson(lam=self.rates*dt, size=self.rates.size)
         self.executeMultipleActions(actionVec, dt)
 
     def tunnel(self, fromDot, toDot, dt, charge=1):
@@ -1006,7 +1028,8 @@ class Simulator:
                 Imaps.append(stepRes[-1])
             I.append((rightCurrent+leftCurrent)/2)
             IErr.append(np.sqrt((rightCurrentErr**2+leftCurrentErr**2))/2)
-            # print(VL - VR, end=',')
+            if self.index == 0:
+                print(VL - VR, end=',')
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
@@ -1329,7 +1352,8 @@ class GraphSimulator:
                 ns = list(resumeParams[3])
                 Qs = list(resumeParams[4])
         for VL,VR in zip(VL_vec,VR_vec):
-            print(VL-VR,end=',')
+            if self.index == 0:
+                print(VL-VR,end=',')
             self.dotArray.changeVext(VL, VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
@@ -1800,11 +1824,11 @@ if __name__ == "__main__":
     elif not os.path.isdir(savePath):
         print("the given path exists but is a file")
         exit(0)
-
-    # import cProfile, pstats, io
-    # from pstats import SortKey
-    # pr = cProfile.Profile()
-    # pr.enable()
+    if dbg:
+        import cProfile, pstats, io
+        from pstats import SortKey
+        pr = cProfile.Profile()
+        pr.enable()
 
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
@@ -1814,11 +1838,12 @@ if __name__ == "__main__":
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
     saveParameters(savePath, fileName, options, array_params)
 
-    # pr.disable()
-    # s = io.StringIO()
-    # sortby = SortKey.CUMULATIVE
-    # ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    # ps.print_stats()
-    # print(s.getvalue())
+    if dbg:
+        pr.disable()
+        s = io.StringIO()
+        sortby = SortKey.CUMULATIVE
+        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        ps.print_stats()
+        print(s.getvalue())
 
     exit(0)
