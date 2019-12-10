@@ -336,7 +336,7 @@ if __name__ == "__main__":
     # for score in ['hysteresis', 'jump', 'blockade']:
     #     m.plot_hystogram(score, {"C_std": [0.4]}, {},
     #                          "c_std_0.5_" + score + "_hystogram")
-    s = SingleResultsProcessor("dbg","dbg",fullOutput=True)
+    s = SingleResultsProcessor("single_dot","single_dot_r_disorder_reversed",fullOutput=True)
     s.plot_results()
     plt.show()
 
