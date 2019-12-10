@@ -22,7 +22,7 @@ dist="exp"
 r_std=0
 graph=""
 currentmap=""
-resume=""
+resume="--resume"
 vSym="--symmetric-v"
 resume=""
 custom_rh="\"\""
@@ -31,14 +31,15 @@ custom_ch="\"\""
 custom_cv="\"\""
 T=0
 vmax=2
-f="3X3_array_statistics_r_avg_10"
+f="3X3_array_statistics_r_avg_10_finite_dos"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
 rows=3
 columns=3
-c_std=0.4
-for r_std in 1 2 3  
+c_std=0.5
+r_std=5
+for cg_std in 0 1 5  
 do
 	for run in 1 2 3 4 5 6 7 8 9 10
 	do
