@@ -14,7 +14,7 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.01
+vstep=0.005
 rg_avg=1000
 cg_avg=10
 t="10:00:00"
@@ -29,9 +29,9 @@ custom_rh="\"\""
 custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
-T=0
-vmax=2
-f="3X3_array_statistics_r_avg_10_finite_dos"
+T=0.01
+vmax=1.3
+f="3X3_array_statistics_r_avg_10_finite_dos_finite_T"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
