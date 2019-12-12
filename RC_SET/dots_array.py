@@ -519,7 +519,7 @@ class DotArray:
             notToSmall = np.abs(work) > EPS
             work[np.logical_not(notToSmall)] = -self.temperature
             work[notToSmall] = work[notToSmall]/(1 - np.exp(work[notToSmall]/self.temperature))
-        self.modifyR()
+        # self.modifyR()
         self.rates = -work / self.R
         return self.rates
 
