@@ -1,9 +1,11 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import colors
 from scipy import integrate
 from ast import literal_eval
 import os
 import re
+from mpl_toolkits.mplot3d import Axes3D
 
 EPS = 1e-6
 class SingleResultsProcessor:
@@ -292,30 +294,55 @@ class MultiResultAnalyzer:
         elif score_name == "blockade":
             return "threshold voltage"
 
-    def plot_score(self, score_name, parameter_name, title, runningParam=True):
+    def plot_score(self, score_name, parameter_names, title, runningParam=True, plot=True):
         """
         Plots score asa function of given parameter
         :param score_name: relevant score name (hysteresis, jump, blockade)
         :param parameter_name: relevant parameter
         """
-        y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
-        if runningParam:
-            x = self.runningParams[parameter_name]
+        if len(parameter_names) == 1:
+            parameter_name = parameter_names[0]
+            y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
+            if runningParam:
+                x = self.runningParams[parameter_name]
+            else:
+                x = self.arrayParams[parameter_name]
+            x, y, y_high_err, y_low_err = self.average_similar_results(x, y, y_high_err, y_low_err)
+            errors = [y_low_err, y_high_err]
+            fig = plt.figure()
+            plt.errorbar(x, y, yerr=errors, marker='o')
+            plt.title(title)
+            plt.xlabel(parameter_name)
+            plt.ylabel(self.get_y_label(score_name))
+            plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
+            plt.close(fig)
+            np.save(os.path.join(self.outDir, title + "parameter"), np.array(x))
+            np.save(os.path.join(self.outDir, title + "score"), np.array(y))
+            np.save(os.path.join(self.outDir, title + "score_high_err"), np.array(y_high_err))
+            np.save(os.path.join(self.outDir, title + "score_low_err"), np.array(y_low_err))
+        elif len(parameter_names) == 2:
+            z, z_high_err, z_low_err = self.get_relevant_scores(score_name)
+            if runningParam:
+                x = self.runningParams[parameter_names[0]]
+                y = self.runningParams[parameter_names[1]]
+            else:
+                x = self.arrayParams[parameter_names[0]]
+                y = self.arrayParams[parameter_names[1]]
+            points = [(x[i],y[i]) for i in range(len(x))]
+            points, z, z_high_err, z_low_err = self.average_similar_results(points, z, z_high_err, z_low_err)
+            x = [point[0] for point in points]
+            y = [point[1] for point in points]
+            fig = plt.figure()
+            plt.scatter(x, y, c=z, cmap='viridis',norm=colors.LogNorm())
+            plt.title(title)
+            plt.xlabel(parameter_names[0])
+            plt.ylabel(parameter_names[1])
+            cbar = plt.colorbar()
+            cbar.set_label(self.get_y_label(score_name))
+            plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
+            plt.close(fig)
         else:
-            x = self.runningParams[parameter_name]
-        x, y, y_high_err, y_low_err = self.average_similar_results(x, y, y_high_err, y_low_err)
-        errors = [y_low_err, y_high_err]
-        fig = plt.figure()
-        plt.errorbar(x, y, yerr=errors, marker='o')
-        plt.title(title)
-        plt.xlabel(parameter_name)
-        plt.ylabel(self.get_y_label(score_name))
-        plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
-        plt.close(fig)
-        np.save(os.path.join(self.outDir, title + "parameter"), np.array(x))
-        np.save(os.path.join(self.outDir, title + "score"), np.array(y))
-        np.save(os.path.join(self.outDir, title + "score_high_err"), np.array(y_high_err))
-        np.save(os.path.join(self.outDir, title + "score_low_err"), np.array(y_low_err))
+            raise NotImplementedError
 
     def average_similar_results(self, xs, ys, ys_high_err, ys_low_err):
         new_x = []
@@ -325,7 +352,7 @@ class MultiResultAnalyzer:
         for x in xs:
             if x not in new_x:
                 new_x.append(x)
-                indices = np.array(xs) == x
+                indices = [i for i, val in enumerate(xs) if val == x]
                 relevant_ys = np.array(ys[indices])
                 relevant_high_err = np.array(ys_high_err[indices])
                 relevant_low_err = np.array(ys_low_err[indices])
@@ -336,21 +363,31 @@ class MultiResultAnalyzer:
 
 
 if __name__ == "__main__":
-    files_list = ["c_std_" + str(k) + "_r_std_" + str(i) + "_run_" + str(j) for k in [0.1,0.2,0.3,0.4,0.5,0.6] for i in range(1,10) for j in range(1,11)]
+    # for c_std in [0.1, 0.2, 0.3, 0.4, 0.5]:
+    #     files_list = ["c_std_" + str(c_std) + "_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
+    #     directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * len(files_list)
+    #     m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
+    #                             "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
+    #     m.plot_score('hysteresis', ['R_std'], 'c_std_' + str(c_std) + '_hysteresis')
+    #     m.plot_score('jump', ['R_std'], 'c_std_' + str(c_std) + '_jump')
+    #     m.plot_score('blockade', ['R_std'], 'c_std_' + str(c_std) + '_blockade')
+    #     for r_std in range(1,10):
+    #         for score in ['hysteresis', 'jump', 'blockade']:
+    #             m.plot_hystogram(score, {"R_std": [r_std], "C_std": [c_std]}, {},
+    #                              "c_std_" + str(c_std) + "_r_std_" + str(r_std) + "_" + score + "_hystogram")
+    #     for score in ['hysteresis', 'jump', 'blockade']:
+    #         m.plot_hystogram(score, {"C_std": [c_std]}, {},
+    #                              "c_std_" +  str(c_std) + "_" + score + "_hystogram")
+
+    files_list = ["c_std_" + str(c_std) + "_r_std_" + str(i) + "_run_" + str(j) for c_std in [0.1,0.2,0.3,0.4,0.5] for i in range(1,10) for j in range(1,11)]
     directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * len(files_list)
     m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
                             "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
-    for c_std in [0.1,0.2,0.3,0.4,0.5,0.6]:
-        m.plot_score('hysteresis', 'R_std', 'c_std_' + str(c_std) + '_hysteresis')
-        m.plot_score('jump', 'R_std', 'c_std_' + str(c_std) + '_jump')
-        m.plot_score('blockade', 'R_std', 'c_std_' + str(c_std) + '_blockade')
-        for r_std in range(1,10):
-            for score in ['hysteresis', 'jump', 'blockade']:
-                m.plot_hystogram(score, {"R_std": [r_std], "C_std": [c_std]}, {},
-                                 "c_std_" + str(c_std) + "_r_std_" + str(r_std) + "_" + score + "_hystogram")
-        for score in ['hysteresis', 'jump', 'blockade']:
-            m.plot_hystogram(score, {"C_std": [c_std]}, {},
-                                 "c_std_" +  str(c_std) + "_" + score + "_hystogram")
+    m.plot_score('hysteresis', ['R_std','C_std'], 'all_hysteresis')
+    m.plot_score('jump', ['R_std','C_std'], 'all_jump')
+    m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
+
+
     # s = SingleResultsProcessor("finit_dos_shorter_run","array_3_3_finit_dos_cg_disorder_refine",fullOutput=True)
     # s.plot_results()
     # plt.show()

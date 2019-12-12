@@ -1282,7 +1282,7 @@ class GraphSimulator:
         #dbg
         # self.find_next_QG_using_lyaponuv(basePath)
         # print(self.QG)
-        self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
+        # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
         self.n0 = np.floor(n_avg)
@@ -1366,9 +1366,9 @@ class GraphSimulator:
                 Qs.append(Q)
             I.append((rightCurrent + leftCurrent) / 2)
             self.saveState(I, ns, Qs, fullOutput=fullOutput, basePath=basePath)
-        result = (np.array(I), np.zeros(I.shape), VL_res - VR_res)
+        result = (np.array(I), np.zeros((len(I),)), VL_res - VR_res)
         if fullOutput:
-            result = result + (ns, Qs, np.zeros(ns.shape), np.zeros(Qs.shape))
+            result = result + (ns, Qs, np.zeros((len(ns),)), np.zeros((len(Qs),)))
         return result
 
 def runSingleSimulation(index, VL0, VR0, vSym, Q0, n0,Vmax, Vstep, dotArray,
@@ -1430,6 +1430,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         fastRelaxation = True
+        repeats = 1
     if plotCurrentMaps:
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
@@ -1555,21 +1556,23 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
     for index in range(repeats):
-        removeState(index, fullOutput, basePath, currentMap)
+        removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
     removeRandomParams(basePath)
     return params
 
-def removeState(index, fullOutput=False, basePath='', currentMap=False):
+def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=False):
     baseName = basePath + "_temp_" + str(index)
     os.remove(baseName + "_I.npy")
-    os.remove(baseName + "_IErr.npy")
+    if not graph:
+        os.remove(baseName + "_IErr.npy")
     os.remove(baseName + "_n.npy")
     os.remove(baseName + "_Q.npy")
     if fullOutput:
         os.remove(baseName + "_ns.npy")
         os.remove(baseName + "_Qs.npy")
-        os.remove(baseName + "_nsErr.npy")
-        os.remove(baseName + "_QsErr.npy")
+        if not graph:
+            os.remove(baseName + "_nsErr.npy")
+            os.remove(baseName + "_QsErr.npy")
     if currentMap:
         os.remove(baseName + "_current_map.npy")
     return True
