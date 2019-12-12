@@ -1827,6 +1827,34 @@ if __name__ == "__main__":
         runningParams, arrayParams = load_params_from_file(params_file)
         rows = runningParams['M']
         columns = runningParams['N']
+    else:
+        rows = options.M
+        columns = options.N
+    VR0 = options.VR
+    VL0 = VR0 + options.Vmin
+    dist = options.dist
+    T = options.T
+    gap = options.gap
+    sc = options.sc
+    leaping = options.leaping
+    Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
+                             False)
+    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist, False)
+    Vmax = options.Vmax
+    Vstep = options.vStep
+    vSym = options.vSym
+    repeats = options.repeats
+    savePath = options.output_folder
+    fileName = options.fileName
+    fullOutput = options.fullOutput
+    use_graph = options.use_graph
+    fast_relaxation = options.RG_avg * options.CG_avg < options.C_avg * options.R_avg
+    current_map = options.current_map
+    dbg = options.dbg
+    resume = options.resume
+    plot_current_map = options.plot_current_map
+    params_file = options.params_path
+    if params_file:
         VG = arrayParams['VG']
         CG = arrayParams['CG']
         RG = arrayParams['RG']
@@ -1836,8 +1864,6 @@ if __name__ == "__main__":
         Rh = arrayParams['Rh']
         Rv = arrayParams['Rv']
     else:
-        rows = options.M
-        columns = options.N
         VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                                  False)
         CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist, True)
@@ -1858,29 +1884,7 @@ if __name__ == "__main__":
                                      True)
             Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
                                      True)
-    VR0 = options.VR
-    VL0 = VR0 + options.Vmin
-    dist = options.dist
-    T = options.T
-    gap = options.gap
-    sc = options.sc
-    leaping = options.leaping
-    Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
-                             False)
-    n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
-    Vmax = options.Vmax
-    Vstep = options.vStep
-    vSym = options.vSym
-    repeats = options.repeats
-    savePath = options.output_folder
-    fileName = options.fileName
-    fullOutput = options.fullOutput
-    use_graph = options.use_graph
-    fast_relaxation = options.RG_avg * options.CG_avg < options.C_avg * options.R_avg
-    current_map = options.current_map
-    dbg = options.dbg
-    resume = options.resume
-    plot_current_map = options.plot_current_map
+
     # Running Simulation
     if not os.path.exists(savePath):
         os.mkdir(savePath)
