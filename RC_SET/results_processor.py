@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from scipy import integrate
 from ast import literal_eval
 import os
+import re
 
 EPS = 1e-6
 class SingleResultsProcessor:
@@ -49,7 +50,6 @@ class SingleResultsProcessor:
 
     def load_params(self):
         params_file = os.path.join(self.directory,"runningParameters_" + self.fileName + ".txt")
-        multi_line = False
         with open(params_file, 'r') as f:
             start = False
             for line in f:
@@ -65,7 +65,11 @@ class SingleResultsProcessor:
                     if start:
                         key = splitted[0]
                         try:
-                            value = literal_eval(splitted[1].rstrip('\n').replace('  ',' ').replace(' ',','))
+                            splitted[1] = splitted[1].rstrip('\n')
+                            splitted[1] = re.sub('\[\s+', '[', splitted[1])
+                            splitted[1] = re.sub('\s+\]', ']', splitted[1])
+                            splitted[1] = re.sub('\s+', ',', splitted[1])
+                            value = literal_eval(splitted[1])
                         except Exception:
                             value = splitted[1].rstrip('\n')
                         self.arrayParams[key] = value
@@ -73,6 +77,16 @@ class SingleResultsProcessor:
                     splitted = line.split(': ')
                 elif start:
                     splitted[1] = splitted[1].replace('\n',' ') + line
+            key = splitted[0]
+            try:
+                splitted[1] = splitted[1].rstrip('\n')
+                splitted[1] = re.sub('\[\s+', '[', splitted[1])
+                splitted[1] = re.sub('\s+\]', ']', splitted[1])
+                splitted[1] = re.sub('\s+', ',', splitted[1])
+                value = literal_eval(splitted[1])
+            except Exception:
+                value = splitted[1].rstrip('\n')
+            self.arrayParams[key] = value
         return True
 
     def get_array_param(self, key):
@@ -336,7 +350,7 @@ if __name__ == "__main__":
     # for score in ['hysteresis', 'jump', 'blockade']:
     #     m.plot_hystogram(score, {"C_std": [0.4]}, {},
     #                          "c_std_0.5_" + score + "_hystogram")
-    s = SingleResultsProcessor("single_dot","single_dot_r_disorder_reversed",fullOutput=True)
+    s = SingleResultsProcessor("finit_dos_shorter_run","array_3_3_finit_dos_cg_disorder_refine",fullOutput=True)
     s.plot_results()
     plt.show()
 

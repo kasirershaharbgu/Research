@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 # from mayavi import mlab
 from optparse import OptionParser
+import re
 import os
 from multiprocessing import Pool
 from scipy.linalg import null_space
@@ -518,7 +519,7 @@ class DotArray:
             notToSmall = np.abs(work) > EPS
             work[np.logical_not(notToSmall)] = -self.temperature
             work[notToSmall] = work[notToSmall]/(1 - np.exp(work[notToSmall]/self.temperature))
-        self.modifyR()
+        # self.modifyR()
         self.rates = -work / self.R
         return self.rates
 
@@ -1675,6 +1676,12 @@ def getOptions():
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
                       default='.')
+    parser.add_option("-i", "--load-from-file", dest="params_path",
+                      help="If a parameters file is given all the array parameters would be loaded from that"
+                           " file. The file should be in the same format as the resulted parameter file for a run."
+                           " Ignores all other array related parameters, so the array owuld be exactly as specified in"
+                           " the given file. [default: '']",
+                      default='')
 
     # Disorder Parameters
     parser.add_option("--vg-avg", dest="VG_avg", help="Gate voltage average  (in units of"
@@ -1770,11 +1777,87 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
         res = res + 0.1 - np.min(res.flatten())
     return res
 
+def load_params_from_file(file_path):
+    runningParams = dict()
+    arrayParams = dict()
+    with open(file_path, 'r') as f:
+        start = False
+        for line in f:
+            if ' = ' in line:
+                splitted = line.split(' = ')
+                key = splitted[0]
+                try:
+                    value = literal_eval(splitted[1].rstrip('\n'))
+                except Exception:
+                    value = splitted[1].rstrip('\n')
+                runningParams[key] = value
+            elif ': ' in line:
+                if start:
+                    key = splitted[0]
+                    try:
+                        splitted[1] = splitted[1].rstrip('\n')
+                        splitted[1] = re.sub('\[\s+','[',splitted[1])
+                        splitted[1] = re.sub('\s+\]', ']', splitted[1])
+                        splitted[1] = re.sub('\s+', ',', splitted[1])
+                        value = literal_eval(splitted[1])
+                    except Exception:
+                        value = splitted[1].rstrip('\n')
+                    arrayParams[key] = value
+                start = True
+                splitted = line.split(': ')
+            elif start:
+                splitted[1] = splitted[1].replace('\n',' ') + line
+        key = splitted[0]
+        try:
+            splitted[1] = splitted[1].rstrip('\n')
+            splitted[1] = re.sub('\[\s+', '[', splitted[1])
+            splitted[1] = re.sub('\s+\]', ']', splitted[1])
+            splitted[1] = re.sub('\s+', ',', splitted[1])
+            value = literal_eval(splitted[1])
+        except Exception:
+            value = splitted[1].rstrip('\n')
+        arrayParams[key] = value
+    return runningParams, arrayParams
+
 if __name__ == "__main__":
     # Initializing Running Parameters
     options, args = getOptions()
-    rows = options.M
-    columns = options.N
+    params_file = options.params_path
+    if params_file:
+        runningParams, arrayParams = load_params_from_file(params_file)
+        rows = runningParams['M']
+        columns = runningParams['N']
+        VG = arrayParams['VG']
+        CG = arrayParams['CG']
+        RG = arrayParams['RG']
+        Ch = arrayParams['Ch']
+        Cv = arrayParams['Cv']
+        Cv = Cv[1:]
+        Rh = arrayParams['Rh']
+        Rv = arrayParams['Rv']
+    else:
+        rows = options.M
+        columns = options.N
+        VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
+                                 False)
+        CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist, True)
+        RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist, True)
+        if options.custom_ch.replace('\"', '') and options.custom_cv.replace('\"', ''):
+            Ch = literal_eval(options.custom_ch.replace('\"', ''))
+            Cv = literal_eval(options.custom_cv.replace('\"', ''))
+        else:
+            Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
+                                     True)
+            Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
+                                     True)
+        if options.custom_rh.replace('\"', '') and options.custom_rv.replace('\"', ''):
+            Rh = literal_eval(options.custom_rh.replace('\"', ''))
+            Rv = literal_eval(options.custom_rv.replace('\"', ''))
+        else:
+            Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
+                                     True)
+            Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
+                                     True)
     VR0 = options.VR
     VL0 = VR0 + options.Vmin
     dist = options.dist
@@ -1782,29 +1865,9 @@ if __name__ == "__main__":
     gap = options.gap
     sc = options.sc
     leaping = options.leaping
-    VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
-                             False)
     Q0 = create_random_array(rows, columns, options.Q0_avg, options.Q0_std, dist,
                              False)
     n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist,False)
-    CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist,True)
-    RG = create_random_array(rows, columns, options.RG_avg, options.RG_std, dist,True)
-    if options.custom_ch.replace('\"', '') and options.custom_cv.replace('\"', ''):
-        Ch = literal_eval(options.custom_ch.replace('\"', ''))
-        Cv = literal_eval(options.custom_cv.replace('\"', ''))
-    else:
-        Ch = create_random_array(rows, columns + 1, options.C_avg, options.C_std, dist,
-                                 True)
-        Cv = create_random_array(rows - 1, columns, options.C_avg, options.C_std, dist,
-                                 True)
-    if options.custom_rh.replace('\"','') and options.custom_rv.replace('\"',''):
-        Rh = literal_eval(options.custom_rh.replace('\"',''))
-        Rv = literal_eval(options.custom_rv.replace('\"',''))
-    else:
-        Rh = create_random_array(rows, columns + 1, options.R_avg, options.R_std, dist,
-                            True)
-        Rv = create_random_array(rows - 1, columns, options.R_avg, options.R_std, dist,
-                            True)
     Vmax = options.Vmax
     Vstep = options.vStep
     vSym = options.vSym
