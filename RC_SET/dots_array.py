@@ -202,7 +202,7 @@ class DotArray:
     """
 
     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False,
-                 tauLeaping=False):
+                 tauLeaping=False, modifyR=False):
         """
         Creates new array of quantum dots
         :param rows: number of rows (int)
@@ -245,12 +245,14 @@ class DotArray:
         self.saveCurrentMap = False
         self.Ih = np.zeros(self.Rh.shape)
         self.Iv = np.zeros(self.Rv.shape)
+        self.use_modifyR=modifyR
         # for std calculations
         self.I_left_sqr_avg = 0
         self.I_right_sqr_avg = 0
         # for variable R calculation
-        self._leftnExponent = np.ones((self.rows, self.columns+1))
-        self._rightnExponent = np.ones((self.rows, self.columns + 1))
+        if self.use_modifyR:
+            self._leftnExponent = np.ones((self.rows, self.columns+1))
+            self._rightnExponent = np.ones((self.rows, self.columns + 1))
         # Memory initialization for tau leaping
         self.tauLeaping = tauLeaping
         if tauLeaping:
@@ -307,9 +309,11 @@ class DotArray:
         copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         copy_array.tauLeaping = self.tauLeaping
+        copy_array.use_modifyR = self.use_modifyR
         copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
-        copy_array._leftnExponent = np.copy(self._leftnExponent)
-        copy_array._rightnExponent = np.copy(self._rightnExponent)
+        if self.use_modifyR:
+            copy_array._leftnExponent = np.copy(self._leftnExponent)
+            copy_array._rightnExponent = np.copy(self._rightnExponent)
         copy_array.rates = np.copy(self.rates)
         copy_array.cumRates = np.copy(self.cumRates)
         # tau leaping
@@ -519,7 +523,8 @@ class DotArray:
             notToSmall = np.abs(work) > EPS
             work[np.logical_not(notToSmall)] = -self.temperature
             work[notToSmall] = work[notToSmall]/(1 - np.exp(work[notToSmall]/self.temperature))
-        # self.modifyR()
+        if self.use_modifyR:
+            self.modifyR()
         self.rates = -work / self.R
         return self.rates
 
@@ -709,9 +714,9 @@ class DotArray:
 
 class JJArray(DotArray):
     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                 temperature, scGap, fastRelaxation=False, tauLeaping=False):
+                 temperature, scGap, fastRelaxation=False, tauLeaping=False, modifyR=False):
         DotArray.__init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                          temperature, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping)
+                          temperature, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
         self.gap = scGap
         self.Ej = self.getEj()
         self.Ec = 1/np.mean(CG)
@@ -1426,7 +1431,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, resume=False, superconducting=False,
-                      gap=0, leaping=False):
+                      gap=0, leaping=False, modifyR=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         fastRelaxation = True
@@ -1449,12 +1454,12 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if superconducting:
         prototypeArray = JJArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                  np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                 temperature, gap, fastRelaxation=fastRelaxation, tauLeaping=leaping)
+                                 temperature, gap, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
         print("Superconducting prototype array was created")
     else:
         prototypeArray = DotArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                   np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                  temperature, fastRelaxation=fastRelaxation, tauLeaping=leaping)
+                                  temperature, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
         print("Normal prototype array was created")
     if checkSteadyState:
         print("Running steady state convergance check")
@@ -1676,6 +1681,11 @@ def getOptions():
                       default=False, action='store_true')
     parser.add_option("--tau-leaping", dest="leaping", help="use tau leaping approximation [Default:%default]",
                       default=False, action='store_true')
+    parser.add_option("--variable-ef", dest="modifyR", help="if true Fermi energy level for each island will be changed "
+                                                            "according to constant density of states assumption, else"
+                                                            " it will be assumed constant (infinite density of states"
+                                                            " [Default:%default]",
+                      default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
                       default='.')
@@ -1856,7 +1866,7 @@ if __name__ == "__main__":
     dbg = options.dbg
     resume = options.resume
     plot_current_map = options.plot_current_map
-    params_file = options.params_path
+    modifyR = options.modifyR
     if params_file:
         VG = arrayParams['VG']
         CG = arrayParams['CG']
@@ -1905,7 +1915,8 @@ if __name__ == "__main__":
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
-                                     checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
+                                     checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping,
+                                     modifyR=modifyR)
     saveParameters(savePath, fileName, options, array_params)
 
     if dbg:
