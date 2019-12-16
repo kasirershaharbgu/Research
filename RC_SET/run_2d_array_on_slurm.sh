@@ -21,7 +21,8 @@ t="5-10:00:00"
 dist="exp"
 r_std=0
 graph=""
-currentmap=""
+currentmap="--current-map"
+full=""
 resume=""
 vSym="--symmetric-v"
 resume=""
@@ -31,7 +32,7 @@ custom_ch="\"\""
 custom_cv="\"\""
 T=0.01
 vmax=5
-f="big_array_finite_T_slurm"
+f="big_array_finite_T_slurm_tau_leaping"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
