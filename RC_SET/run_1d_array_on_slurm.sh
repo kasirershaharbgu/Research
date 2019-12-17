@@ -22,12 +22,12 @@ dist="exp"
 r_std=0
 graph=""
 currentmap="--current-map"
-full=""
+full="--full"
 resume=""
 vSym="--symmetric-v"
 resume=""
-leaping="--tau-leaping"
-efermi="--variable-ef"
+leaping=""
+efermi=""
 custom_rh="\"\""
 custom_rv="\"\""
 custom_ch="\"\""
@@ -39,7 +39,7 @@ if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
 rows=1
-columns=20
+columns=10
 for run in 1 2 3
 do
 	name="1_20_run_${run}"
