@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_1d_temp_0_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_1d_temp_0_I.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_1d_temp_0_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_1d_temp_0_IErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_1d_temp_0_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_1d_temp_0_Q.npy" afterDir="false" />
