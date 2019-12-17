@@ -278,7 +278,7 @@ class DotArray:
         copy_array.Cv = self.Cv
         copy_array.Rh = self.Rh
         copy_array.Rv = self.Rv
-        copy_array.R = self.R
+        copy_array.R = np.copy(self.R)
         copy_array.temperature = self.temperature
         copy_array.totalChargePassedRight = self.totalChargePassedLeft
         copy_array.totalChargePassedLeft = self.totalChargePassedRight
