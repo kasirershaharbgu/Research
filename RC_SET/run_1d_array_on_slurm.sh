@@ -14,7 +14,7 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.01
+vstep=0.05
 rg_avg=1000
 cg_avg=10
 t="1:00:00"
@@ -33,7 +33,7 @@ custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 T=0.01
-vmax=3
+vmax=5
 f="1d_array"
 if [ ! -d "$f" ]; then
   mkdir "$f"
