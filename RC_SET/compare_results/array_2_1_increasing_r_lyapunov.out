@@ -1,3 +1,15 @@
 
 python3 dots_array.py -M 2 -N 1 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh [[1 --custom-rv [[1]] --custom-ch  --custom-cv  --file-name array_2_1_increasing_r_lyapunov -o compare_results --full  --graph  --symmetric-v 
 
+
+python3 dots_array.py -M 2 -N 1 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "[[1,10],[1,10]]" --custom-rv "[[1]]" --custom-ch "" --custom-cv "" --file-name array_2_1_increasing_r_lyapunov -o compare_results --full  --graph  --symmetric-v 
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+0.0,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.2,0.21,0.22,0.23,0.24,0.25,0.26,0.27,0.28,0.29,0.3,0.31,0.32,0.33,0.34,0.35000000000000003,0.36,0.37,0.38,
+python3 dots_array.py -M 2 -N 1 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "[[1,10],[1,10]]" --custom-rv "[[1]]" --custom-ch "" --custom-cv "" --file-name array_2_1_increasing_r_lyapunov -o compare_results --full  --graph  --symmetric-v 
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run

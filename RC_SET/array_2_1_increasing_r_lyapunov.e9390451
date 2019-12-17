@@ -1,0 +1,42 @@
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/gpfs0/jdubi/users/kasirer/Python-3.7/lib/python3.7/multiprocessing/pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "dots_array.py", line 1382, in runSingleSimulation
+    currentMap=currentMap, basePath=basePath, resume=resume)
+  File "dots_array.py", line 1359, in calcIV
+    res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
+  File "dots_array.py", line 1281, in calcCurrent
+    self.find_next_QG_using_gradient_descent()
+  File "dots_array.py", line 1274, in find_next_QG_using_gradient_descent
+    res, flag = simple_gadient_descent(self.calc_lyaponuv_grad, self.QG, lr=lr, plot_lc=False)
+  File "dots_array.py", line 61, in simple_gadient_descent
+    curr_grad = grad(x)
+  File "dots_array.py", line 1230, in calc_lyaponuv_grad
+    n = self.get_average_state(self.reshape_to_array(Q))
+  File "dots_array.py", line 1171, in get_average_state
+    self.find_probabilities(Q)
+  File "dots_array.py", line 1148, in find_probabilities
+    null = null_space(self.edgesMat.T)
+  File "/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/scipy/linalg/decomp_svd.py", line 384, in null_space
+    u, s, vh = svd(A, full_matrices=True)
+  File "/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/scipy/linalg/decomp_svd.py", line 109, in svd
+    a1 = _asarray_validated(a, check_finite=check_finite)
+  File "/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/scipy/_lib/_util.py", line 239, in _asarray_validated
+    a = toarray(a)
+  File "/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/numpy/lib/function_base.py", line 498, in asarray_chkfinite
+    "array must not contain infs or NaNs")
+ValueError: array must not contain infs or NaNs
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "dots_array.py", line 1908, in <module>
+    checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping)
+  File "dots_array.py", line 1483, in runFullSimulation
+    result = res.get()
+  File "/gpfs0/jdubi/users/kasirer/Python-3.7/lib/python3.7/multiprocessing/pool.py", line 657, in get
+    raise self._value
+ValueError: array must not contain infs or NaNs
