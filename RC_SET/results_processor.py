@@ -379,18 +379,18 @@ if __name__ == "__main__":
     #         m.plot_hystogram(score, {"C_std": [c_std]}, {},
     #                              "c_std_" +  str(c_std) + "_" + score + "_hystogram")
 
-    files_list = ["c_std_" + str(c_std) + "_r_std_" + str(i) + "_run_" + str(j) for c_std in [0.1,0.2,0.3,0.4,0.5] for i in range(1,10) for j in range(1,11)]
-    directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * len(files_list)
-    m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
-                            "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
-    m.plot_score('hysteresis', ['R_std','C_std'], 'all_hysteresis')
-    m.plot_score('jump', ['R_std','C_std'], 'all_jump')
-    m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
+    # files_list = ["c_std_" + str(c_std) + "_r_std_" + str(i) + "_run_" + str(j) for c_std in [0.1,0.2,0.3,0.4,0.5] for i in range(1,10) for j in range(1,11)]
+    # directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * len(files_list)
+    # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
+    #                         "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
+    # m.plot_score('hysteresis', ['R_std','C_std'], 'all_hysteresis')
+    # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
+    # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    # s = SingleResultsProcessor("finit_dos_shorter_run","array_3_3_finit_dos_cg_disorder_refine",fullOutput=True)
-    # s.plot_results()
-    # plt.show()
+    s = SingleResultsProcessor("1d_array","1_10_shorter_run_1",fullOutput=True)
+    s.plot_results()
+    plt.show()
 
 
 
