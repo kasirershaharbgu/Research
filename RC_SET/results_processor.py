@@ -173,6 +173,9 @@ class SingleResultsProcessor:
                 plt.xlabel('Voltage')
                 plt.ylabel('Occupation')
             plt.figure()
+            plt.imshow(n.T)
+            plt.colorbar()
+            plt.figure()
             for i in range(len(Q[0])):
                 plt.plot(self.V[:self.mid_idx], Q[:self.mid_idx, i], 'b',
                          self.V[self.mid_idx:], Q[self.mid_idx:, i], 'r',
@@ -182,6 +185,9 @@ class SingleResultsProcessor:
                          self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
+            plt.figure()
+            plt.imshow(Q.T)
+            plt.colorbar()
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
@@ -388,7 +394,7 @@ if __name__ == "__main__":
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    s = SingleResultsProcessor("1d_array","1_10_shorter_run_1",fullOutput=True)
+    s = SingleResultsProcessor("C:\\Users\\shahar\\Research\\old_results\\1D_Array","1_10_run_3",fullOutput=True)
     s.plot_results()
     plt.show()
 

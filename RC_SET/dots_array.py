@@ -202,7 +202,7 @@ class DotArray:
     """
 
     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False,
-                 tauLeaping=False, modifyR=False):
+                 tauLeaping=False, modifyR=False, constQ=False):
         """
         Creates new array of quantum dots
         :param rows: number of rows (int)
@@ -219,6 +219,7 @@ class DotArray:
         :param RG: ground resistances (rowsXcolumns double array)
         """
         self.fast_relaxation = fastRelaxation
+        self.constQ = constQ
         self.rows = rows
         self.columns = columns
         self.VL = VL
@@ -289,7 +290,7 @@ class DotArray:
         copy_array._JeigenVectorsInv = self._JeigenVectorsInv
         copy_array.timeStep = self.timeStep
         copy_array.default_dt = self.default_dt
-        if self.fast_relaxation:
+        if self.fast_relaxation or self.constQ:
             copy_array._constQnPart = self._constQnPart
             copy_array._matrixQnPart = self._matrixQnPart
         copy_array.commonHorz = self.commonHorz
@@ -311,6 +312,7 @@ class DotArray:
         copy_array.tauLeaping = self.tauLeaping
         copy_array.use_modifyR = self.use_modifyR
         copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
+        copy_array.constQ = self.constQ
         if self.use_modifyR:
             copy_array._leftnExponent = np.copy(self._leftnExponent)
             copy_array._rightnExponent = np.copy(self._rightnExponent)
@@ -435,7 +437,7 @@ class DotArray:
         # print(-1/self._JeigenValues)
         self.timeStep = -10/np.max(self._JeigenValues)
         self.default_dt = -1/np.min(self._JeigenValues)
-        if self.fast_relaxation:
+        if self.fast_relaxation or self.constQ:
             invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
             self._constQnPart = invMat.dot(self.VG)
             CGMat = np.repeat(1/flattenToRow(self.CG), invMat.shape[0], axis=0)
@@ -480,8 +482,6 @@ class DotArray:
         self.variableWork = np.zeros((4*self.rows*self.columns + 2*(self.rows - self.columns),))
         self.rates = np.zeros(self.variableWork.shape)
         self.cumRates = np.zeros(self.variableWork.shape)
-        # self.constWork = np.hstack((rightConstWork, leftConstWork, vertConstWork, vertConstWork))
-        # self.variableWork = np.zeros(self.constWork.shape)
         return True
 
     def setConstMatrix(self):
@@ -516,7 +516,9 @@ class DotArray:
         Returns the tunnelling rate between neighboring dots
         :param T: temperature (in energy units = e^2[V])
         """
-        work = self.getWork()
+        if not self.constQ:
+            self.getWork()
+        work = self.variableWork
         if self.temperature == 0:
             work[work > 0] = 0
         else:
@@ -527,6 +529,21 @@ class DotArray:
             self.modifyR()
         self.rates = -work / self.R
         return self.rates
+
+    def updateWorkForConstQ(self, fromDot, toDot):
+        row1 = fromDot[0]*self.columns + fromDot[1]
+        row2 = toDot[0]*self.columns + toDot[1]
+        variableRightWorkLen = (self.columns + 1)*self.rows
+        variableDownWorkLen = self.columns*(self.rows - 1)
+        deltaRightWork = self.horizontalMatrix[:,row2] - self.horizontalMatrix[:,row1]
+        deltaLeftWork = -deltaRightWork
+        deltaDownWork = self.verticalMatrix[:,row2] - self.verticalMatrix[:,row1]
+        deltaUpWork = -deltaDownWork
+        self.variableWork[:variableRightWorkLen] += deltaRightWork
+        self.variableWork[variableRightWorkLen:2 * variableRightWorkLen] += deltaLeftWork
+        self.variableWork[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] += deltaDownWork
+        self.variableWork[2 * variableRightWorkLen + variableDownWorkLen:] += deltaUpWork
+        return self.variableWork
 
     def modifyR(self):
         nExponent = np.exp(-INV_DOS*self.n).reshape((self.rows, self.columns))
@@ -601,7 +618,8 @@ class DotArray:
         return tau
 
     def nextStep(self, dt, randomNumber):
-        self.developeQ(dt)
+        if not self.constQ:
+            self.developeQ(dt)
         if self.no_tunneling_next_time:
             self.no_tunneling_next_time = False
             return True
@@ -612,11 +630,11 @@ class DotArray:
         return True
 
     def nextLeapingSteps(self, dt):
-        self.developeQ(dt)
+        if not self.constQ:
+            self.developeQ(dt)
         if self.no_tunneling_next_time:
             self.no_tunneling_next_time = False
             return True
-        # rates = self.getRates()
         actionVec = np.random.poisson(lam=self.rates*dt, size=self.rates.size)
         self.executeMultipleActions(actionVec, dt)
 
@@ -710,6 +728,8 @@ class DotArray:
             if self.saveCurrentMap:
                 self.Iv[toDot] -= charge
         self.tunnel(fromDot, toDot, dt, charge=charge)
+        if self.constQ:
+            self.updateWorkForConstQ(fromDot, toDot)
         return fromDot, toDot
 
 class JJArray(DotArray):
@@ -791,7 +811,7 @@ class Simulator:
     :param rows: number of rows in the array
     :param columns: number of columns in the array
     """
-    def __init__(self, index, VL0, VR0, Q0, n0, dotArray):
+    def __init__(self, index, VL0, VR0, Q0, n0, dotArray, constQ=False):
         self.dotArray = copy(dotArray)
         self.dotArray.setGroundCharge(Q0)
         self.dotArray.setOccupation(n0)
@@ -799,6 +819,12 @@ class Simulator:
         self.VR = VR0
         self.index = index
         self.tauLeaping = dotArray.tauLeaping
+        self.constQ = constQ
+        if self.constQ:
+            self.n = n0
+            self.Q = Q0
+
+
         # for debug
     #     self.randomGen = self.getRandom()
     #
@@ -831,9 +857,14 @@ class Simulator:
             self.printState()
         return dt
 
-    def calcCurrent(self, t,print_stats=False, fullOutput=False, currentMap=False):
+    def calcCurrent(self,print_stats=False, fullOutput=False, currentMap=False):
         if currentMap:
             self.dotArray.currentMapOn()
+        if self.constQ:
+            self.find_next_QG_using_gradient_descent()
+            self.dotArray.setOccupation(self.n)
+            self.dotArray.setGroundCharge(self.Q)
+            self.dotArray.getWork()
         self.dotArray.resetCharge()
         curr_t = 0
         steps = 0
@@ -870,6 +901,71 @@ class Simulator:
             res = res + (self.dotArray.getCurrentMap()/curr_t,)
             self.dotArray.currentMapOff()
         return res
+
+    def calcAverageNForGivenQ(self, Q, n0, calcVoltages=False):
+        curr_t = 0
+        steps = 0
+        n_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
+        n_var = np.zeros(n_avg.shape)
+        self.dotArray.setGroundCharge(Q)
+        self.dotArray.setOccupation(n0)
+        self.dotArray.getWork()
+        curr_n = n0
+        err = 2*0.01
+        while err > 0.01:
+            if self.tauLeaping:
+                dt = self.executeLeapingStep()
+            else:
+                dt = self.executeStep()
+            steps += 1
+            n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
+            curr_n = self.dotArray.getOccupation()
+            curr_t += dt
+            if steps%MIN_STEPS == 0:
+                err = np.max(self.get_err(n_var, steps, curr_t))
+        res = (n_avg, self.get_err(n_var, steps, curr_t))
+        if calcVoltages:
+            self.dotArray.setOccupation(n_avg)
+            v = self.dotArray.getVoltages()
+            v_from_ground = self.dotArray.getVoltagesFromGround()
+            res = res + (v, v_from_ground)
+        return res
+
+    def calc_lyaponuv_grad(self, Q):
+        n_avg, _ = self.calcAverageNForGivenQ(Q, self.n)
+        self.dotArray.setOccupation(n_avg)
+        self.dotArray.setGroundCharge(Q)
+        self.n = np.round(n_avg)
+        return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
+
+    def find_next_QG_using_gradient_descent(self):
+        flag = False
+        rep = 0
+        lr = INI_LR
+        while (not flag) and rep < GRAD_REP:
+            res, flag = simple_gadient_descent(self.calc_lyaponuv_grad, self.Q, lr=lr, plot_lc=False)
+            rep += 1
+            lr = lr/10
+        if flag: #if gradient descent did not converge skipping the point
+            self.Q = res
+
+    def plotAverageVoltages(self, Q0, dQ, n0, points_num):
+        size = self.dotArray.rows*self.dotArray.columns
+        vs = np.zeros((points_num,size))
+        vgs = np.zeros((points_num,size))
+        Qmagnitude = np.zeros((points_num,))
+        Q=Q0
+        for point in range(points_num):
+            _,_,v,vg = self.calcAverageNForGivenQ(Q, n0, calcVoltages=True)
+            vs[point,:] = v
+            vgs[point,:] = vg
+            Qmagnitude[point] = np.sqrt(np.sum(Q**2))
+            Q += dQ
+        for dot in range(size):
+            plt.figure()
+            plt.plot(Qmagnitude, vs[:,dot], 'b',
+                     Qmagnitude, vgs[:,dot], 'r')
+        plt.show()
 
     def getToSteadyState(self, t):
         Qerr = 2*STEADY_STATE_VAR
@@ -977,7 +1073,8 @@ class Simulator:
             res = res + (Imaps,)
         return res
 
-    def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False, basePath="", resume=False):
+    def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False,
+               currentMap=False, basePath="", resume=False):
         I = []
         IErr = []
         ns = []
@@ -1018,9 +1115,10 @@ class Simulator:
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
-            self.getToSteadyState(tStep)
+            if not self.constQ:
+                self.getToSteadyState(tStep)
             # now we are in steady state calculate current
-            stepRes = self.calcCurrent(tStep, print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             rightCurrent = stepRes[0]
             leftCurrent = stepRes[1]
             rightCurrentErr = stepRes[2]
@@ -1431,7 +1529,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, resume=False, superconducting=False,
-                      gap=0, leaping=False, modifyR=False):
+                      gap=0, leaping=False, modifyR=False, plotVoltages=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         fastRelaxation = True
@@ -1467,6 +1565,16 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         simulator.checkSteadyState(repeats)
         simulator.dotArray.changeVext(VL0+Vstep, VR0)
         simulator.checkSteadyState(repeats)
+        exit(0)
+
+    if plotVoltages:
+        print("Plotting voltages")
+        points_num = 100
+        Q0 = np.array([[1,1,0.1]])
+        dQ = np.array([[0,0,0.01]])
+        VL0 = 1
+        simulator = Simulator(0, VL0, VR0, Q0, n0, prototypeArray)
+        simulator.plotAverageVoltages(Q0,dQ,n0,points_num)
         exit(0)
     Is = []
     IsErr = []
@@ -1916,7 +2024,7 @@ if __name__ == "__main__":
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping,
-                                     modifyR=modifyR)
+                                     modifyR=modifyR, plotVoltages=True)
     saveParameters(savePath, fileName, options, array_params)
 
     if dbg:
