@@ -146,11 +146,11 @@ class SingleResultsProcessor:
         IminusErr = self.I - self.IErr
         plt.figure()
         plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b',
-                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r',
-                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
-                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r')
+                 # self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
+                 # self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
+                 # self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
+                 # self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
         plt.xlabel('Voltage')
         plt.ylabel('Current')
         if self.full:
@@ -394,7 +394,7 @@ if __name__ == "__main__":
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    s = SingleResultsProcessor("C:\\Users\\shahar\\Research\\old_results\\1D_Array","1_10_run_3",fullOutput=True)
+    s = SingleResultsProcessor("dbg_1d","array_1_10_r_disorder_cg_disorder_run_1",fullOutput=True)
     s.plot_results()
     plt.show()
 

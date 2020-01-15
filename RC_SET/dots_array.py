@@ -23,7 +23,7 @@ EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 100
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-4
+ALLOWED_ERR = 1e-5
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
@@ -540,11 +540,9 @@ class DotArray:
         return self.rates
 
     def getCurrentFromRates(self):
-        leftCurrent = np.sum(self.rates[:self.variableRightWorkLen:self.columns+1]) -\
-                      np.sum(self.rates[self.variableRightWorkLen:2*self.variableRightWorkLen:self.columns+1])
-        rightCurrent = np.sum(self.rates[self.columns:self.variableRightWorkLen:self.columns + 1]) -\
-                       np.sum(self.rates[self.variableRightWorkLen + self.columns:2 * self.variableRightWorkLen:self.columns + 1])
-        return (leftCurrent + rightCurrent)/2
+        current = np.sum(self.rates[:self.variableRightWorkLen]) -\
+                      np.sum(self.rates[self.variableRightWorkLen:2*self.variableRightWorkLen])
+        return current/(self.columns+1)
 
     def updateWorkForConstQ(self, fromDot, toDot):
         row1 = fromDot[0]*self.columns + fromDot[1] if 0 <= fromDot[1] < self.columns else None
@@ -904,15 +902,15 @@ class Simulator:
         curr_I = 0
         err = 2*ALLOWED_ERR
         errors = []
-        while err > ALLOWED_ERR and err > 0.01*I_avg:
+        while err > ALLOWED_ERR:
             if self.tauLeaping:
                 dt = self.executeLeapingStep(printState=print_stats)
             else:
                 dt = self.executeStep(printState=print_stats)
             steps += 1
+            curr_I = self.dotArray.getCurrentFromRates()
             I_avg, I_var = self.update_statistics(curr_I, I_avg, I_var,
                                                   curr_t, dt)
-            curr_I = self.dotArray.getCurrentFromRates()
             if fullOutput:
                 n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
                 Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var, curr_t, dt)
@@ -927,6 +925,9 @@ class Simulator:
                 # err = max(rightCurrentErr, leftCurrentErr)
                 err = self.get_err(I_var, steps, curr_t)
                 errors.append(err)
+                if err < I_avg*0.01:
+                    break
+        # res = ((rightCurrent - leftCurrent)/2, err)
         res = (I_avg, err)
         if fullOutput:
             res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
@@ -1006,7 +1007,7 @@ class Simulator:
         t = t/(STEADY_STATE_REP**2)
         curr_Q = self.dotArray.getGroundCharge()
         not_decreasing_count = 0
-        while Qerr > var and not_decreasing_count < 10:
+        while Qerr > var and not_decreasing_count < 100:
             Qs = []
             for run in range(STEADY_STATE_REP):
                 curr_Qs = []
@@ -1034,7 +1035,7 @@ class Simulator:
         t = self.dotArray.getTimeStep()/10
         for r in range(rep):
             # running once to get to steady state
-            # self.calcCurrent(t)
+            self.calcCurrent(t)
             # now we are in steady state calculate current
             current, currentErr, n, Q, nErr, QErr =\
                 self.calcCurrent(t, fullOutput=True)
