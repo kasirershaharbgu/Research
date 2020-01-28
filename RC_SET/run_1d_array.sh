@@ -15,7 +15,7 @@ n_std=0
 q_avg=0
 q_std=0
 vstep=0.01
-rg_avg=1000
+rg_avg=100
 cg_avg=10
 dist="exp"
 r_std=9
@@ -31,8 +31,8 @@ custom_rh="\"\""
 custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
-T=0.01
-vmax=5
+T=0
+vmax=4
 f="1d_array_bgu"
 if [ ! -d "$f" ]; then
   mkdir "$f"
