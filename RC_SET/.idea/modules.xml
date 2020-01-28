@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../toyModel/.idea/Numerics.iml" filepath="$PROJECT_DIR$/../toyModel/.idea/Numerics.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/RC_SET.iml" filepath="$PROJECT_DIR$/.idea/RC_SET.iml" />
     </modules>
   </component>

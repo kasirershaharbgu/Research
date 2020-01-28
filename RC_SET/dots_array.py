@@ -21,9 +21,9 @@ from copy import copy
 
 EPS = 0.0001
 # Gillespie Constants
-MIN_STEPS = 100
+MIN_STEPS = 1000
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-5
+ALLOWED_ERR = 1e-2
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
@@ -252,8 +252,8 @@ class DotArray:
         self.Iv = np.zeros(self.Rv.shape)
         self.use_modifyR=modifyR
         # for std calculations
-        self.I_left_sqr_avg = 0
-        self.I_right_sqr_avg = 0
+        # self.I_left_sqr_avg = 0
+        # self.I_right_sqr_avg = 0
 
         # for variable R calculation
         if self.use_modifyR:
@@ -297,9 +297,8 @@ class DotArray:
         copy_array._JeigenVectorsInv = self._JeigenVectorsInv
         copy_array.timeStep = self.timeStep
         copy_array.default_dt = self.default_dt
-        if self.fast_relaxation or self.constQ:
-            copy_array._constQnPart = self._constQnPart
-            copy_array._matrixQnPart = self._matrixQnPart
+        copy_array._constQnPart = self._constQnPart
+        copy_array._matrixQnPart = self._matrixQnPart
         copy_array.commonHorz = self.commonHorz
         copy_array.commonVert = self.commonVert
         copy_array.additionalLeft = self.additionalLeft
@@ -314,8 +313,8 @@ class DotArray:
         copy_array.saveCurrentMap = self.saveCurrentMap
         copy_array.Ih = np.copy(self.Ih)
         copy_array.Iv = np.copy(self.Iv)
-        copy_array.I_left_sqr_avg = self.I_left_sqr_avg
-        copy_array.I_right_sqr_avg = self.I_right_sqr_avg
+        # copy_array.I_left_sqr_avg = self.I_left_sqr_avg
+        # copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         copy_array.tauLeaping = self.tauLeaping
         copy_array.use_modifyR = self.use_modifyR
         copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
@@ -346,8 +345,8 @@ class DotArray:
         """
         self.totalChargePassedRight = 0
         self.totalChargePassedLeft = 0
-        self.I_left_sqr_avg = 0
-        self.I_right_sqr_avg = 0
+        # self.I_left_sqr_avg = 0
+        # self.I_right_sqr_avg = 0
         if self.saveCurrentMap:
             self.Ih[:,:]= 0
             self.Iv[:,:] = 0
@@ -374,8 +373,8 @@ class DotArray:
     def getCharge(self):
         return self.totalChargePassedRight, self.totalChargePassedLeft
 
-    def getIsqr(self):
-        return self.I_right_sqr_avg, self.I_left_sqr_avg
+    # def getIsqr(self):
+    #     return self.I_right_sqr_avg, self.I_left_sqr_avg
 
     def getTimeStep(self):
         return self.timeStep
@@ -423,6 +422,9 @@ class DotArray:
     def getNprime(self):
         return self.n + self._left_part_n_prime*self.VL + self._right_part_n_prime*self.VR
 
+    def getNprimeForGivenN(self,n):
+        return flattenToColumn(n) + self._left_part_n_prime*self.VL + self._right_part_n_prime*self.VR
+
     def getbVector(self):
         """
         For developement of Q by dQ/dt=JQ +b
@@ -443,12 +445,11 @@ class DotArray:
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         # print(-1/self._JeigenValues)
         self.timeStep = -10/np.max(self._JeigenValues)
-        self.default_dt = -1/np.min(self._JeigenValues)
-        if self.fast_relaxation or self.constQ:
-            invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
-            self._constQnPart = invMat.dot(self.VG)
-            CGMat = np.repeat(1/flattenToRow(self.CG), invMat.shape[0], axis=0)
-            self._matrixQnPart = invMat * CGMat - np.eye(invMat.shape[0])
+        self.default_dt = -0.1/np.min(self._JeigenValues)
+        invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
+        self._constQnPart = invMat.dot(self.VG)
+        CGMat = np.repeat(1/flattenToRow(self.CG), invMat.shape[0], axis=0)
+        self._matrixQnPart = invMat * CGMat - np.eye(invMat.shape[0])
         self._Q_eigenbasis = self._JeigenVectorsInv.dot(self.Q)
         return True
 
@@ -461,6 +462,12 @@ class DotArray:
 
     def get_steady_Q_for_n(self):
         return self._constQnPart + self._matrixQnPart.dot(self.getNprime())
+
+    def get_steady_Q_for_given_n(self, n):
+        return self._constQnPart + self._matrixQnPart.dot(self.getNprimeForGivenN(n))
+
+    def get_dist_from_steady(self, n):
+        return (self.Q - self.get_steady_Q_for_given_n(n))**2
 
     def setConstWork(self):
         invCDiagMat = np.diag(np.copy(self.invC)).reshape((self.rows,self.columns))
@@ -589,20 +596,33 @@ class DotArray:
         Calculates dt using Gillespie algorithm
         :return:
         """
-        if self.fast_relaxation:
-            Q_copy = np.copy(self.Q)
-            self.Q = self.get_steady_Q_for_n()
         rates = self.getRates()
         np.cumsum(rates, out=self.cumRates)
         sum_rates = self.cumRates[-1]
+        intervals = 0
         if sum_rates == 0:
-            dt = self.default_dt
             self.no_tunneling_next_time = True
+            return self.default_dt, intervals
+        dt = np.log(1 / randomNumber) / sum_rates
+        if self.constQ:
+            out_of_interval = False
         else:
-            dt = np.log(1/randomNumber)/sum_rates
-        if self.fast_relaxation:
-            self.Q = Q_copy
-        return dt
+            out_of_interval = dt > self.default_dt
+        while out_of_interval:
+            intervals += 1
+            self.developeQ(self.default_dt)
+            rates = self.getRates()
+            np.cumsum(rates, out=self.cumRates)
+            new_sum_rates = self.cumRates[-1]
+            if new_sum_rates == 0:
+                self.no_tunneling_next_time = True
+                return self.default_dt, intervals
+            dt = (dt - self.default_dt)*(new_sum_rates/sum_rates)
+            sum_rates = new_sum_rates
+            out_of_interval = dt > self.default_dt
+            if np.max(self.get_dist_from_steady(self.n)) < ALLOWED_ERR:
+                break
+        return dt, intervals
 
     def getLeapingTimeInterval(self):
         rates = self.getRates()
@@ -648,7 +668,7 @@ class DotArray:
         if (self.rates == 0).all():
             return True
         actionInd = np.searchsorted(self.cumRates, randomNumber*self.cumRates[-1])
-        self.executeAction(actionInd, dt)
+        self.executeAction(actionInd)
         return True
 
     def nextLeapingSteps(self, dt):
@@ -658,23 +678,19 @@ class DotArray:
             self.no_tunneling_next_time = False
             return True
         actionVec = np.random.poisson(lam=self.rates*dt, size=self.rates.size)
-        self.executeMultipleActions(actionVec, dt)
+        self.executeMultipleActions(actionVec)
 
-    def tunnel(self, fromDot, toDot, dt, charge=1):
+    def tunnel(self, fromDot, toDot, charge=1):
         if fromDot[1] == self.columns:
             self.totalChargePassedRight -= charge
-            self.I_right_sqr_avg += charge**2/dt
         elif fromDot[1] == -1:
             self.totalChargePassedLeft -= charge
-            self.I_left_sqr_avg += charge**2/dt
         else:
             self.n[fromDot[0]*self.columns + fromDot[1],0] -= charge
         if toDot[1] == self.columns:
             self.totalChargePassedRight += charge
-            self.I_right_sqr_avg += charge**2/dt
         elif toDot[1] == -1:
             self.totalChargePassedLeft += charge
-            self.I_left_sqr_avg += charge**2/dt
         else:
             self.n[toDot[0]*self.columns + toDot[1],0] += charge
         return True
@@ -701,7 +717,7 @@ class DotArray:
             res += "\n" + param
         return res
 
-    def executeMultipleActions(self, actionVec, dt, charge=1):
+    def executeMultipleActions(self, actionVec, charge=1):
         horzSize = self.rows * (self.columns + 1)
         vertSize = (self.rows - 1) * self.columns
         self.right[:,:] = actionVec[:horzSize].reshape(self.right.shape)*charge
@@ -712,8 +728,6 @@ class DotArray:
         total_passed_left = np.sum(self.left[:,0] - self.right[:,0])
         self.totalChargePassedRight += total_passed_right
         self.totalChargePassedLeft += total_passed_left
-        self.I_right_sqr_avg += total_passed_right**2/dt
-        self.I_left_sqr_avg += total_passed_left**2/dt
         self.totalAction[:,:] = 0
         self.totalAction += self.left[:,1:] - self.left[:,:-1] + self.right[:,:-1] - self.right[:,1:]
         self.totalAction[1:,:] += self.down - self.up
@@ -723,7 +737,7 @@ class DotArray:
             self.Ih += self.right - self.left
             self.Iv += self.down - self.up
 
-    def executeAction(self, ind, dt, charge=1):
+    def executeAction(self, ind, charge=1):
         horzSize = self.rows*(self.columns+1)
         vertSize = (self.rows - 1)*self.columns
         if ind < horzSize: # tunnel right:
@@ -749,7 +763,7 @@ class DotArray:
             toDot = (fromDot[0] - 1, fromDot[1])
             if self.saveCurrentMap:
                 self.Iv[toDot] -= charge
-        self.tunnel(fromDot, toDot, dt, charge=charge)
+        self.tunnel(fromDot, toDot, charge=charge)
         if self.constQ:
             self.updateWorkForConstQ(fromDot, toDot)
         return fromDot, toDot
@@ -817,14 +831,14 @@ class JJArray(DotArray):
             self.rates[mid:] = self.cp_rate_calculator.get_tunnling_rates(-cp_work) / (self.R**2)
         return self.rates
 
-    def executeAction(self, ind, dt, charge=1):
+    def executeAction(self, ind, charge=1):
         horzSize = self.rows*(self.columns+1)
         vertSize = (self.rows - 1)*self.columns
         if ind < 2*(horzSize + vertSize):
-            fromDot, toDot = super().executeAction(ind, dt,charge=1)
+            fromDot, toDot = super().executeAction(ind,charge=1)
         else:
             ind = ind - 2*(horzSize + vertSize)
-            fromDot, toDot = super().executeAction(ind, dt, charge=2)
+            fromDot, toDot = super().executeAction(ind, charge=2)
         return fromDot, toDot
 
 class Simulator:
@@ -873,11 +887,11 @@ class Simulator:
         r = np.random.rand(2)
         # for debug
         # r = next(self.randomGen)
-        dt = self.dotArray.getTimeInterval(r[0])
+        dt, intervals = self.dotArray.getTimeInterval(r[0])
         self.dotArray.nextStep(dt,r[1])
         if printState:
             self.printState()
-        return dt
+        return dt + intervals*self.dotArray.default_dt
 
     def calcCurrent(self,print_stats=False, fullOutput=False, currentMap=False):
         if currentMap:
@@ -888,6 +902,7 @@ class Simulator:
             self.dotArray.setGroundCharge(self.Q)
             self.dotArray.getWork()
         self.dotArray.resetCharge()
+        final_t = self.dotArray.timeStep
         curr_t = 0
         steps = 0
         I_avg = 0
@@ -899,10 +914,9 @@ class Simulator:
             Q_var = np.zeros(Q_avg.shape)
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
-        curr_I = 0
-        err = 2*ALLOWED_ERR
-        errors = []
-        while err > ALLOWED_ERR:
+        # err = 2*ALLOWED_ERR
+        # errors = []
+        while curr_t < final_t:
             if self.tauLeaping:
                 dt = self.executeLeapingStep(printState=print_stats)
             else:
@@ -917,17 +931,17 @@ class Simulator:
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
             curr_t += dt
-            if steps%MIN_STEPS == 0:
+            # if steps%MIN_STEPS == 0:
                 # rightCurrent, leftCurrent = self.dotArray.getCharge()
                 # rightCurrentSqr, leftCurrentSqr = self.dotArray.getIsqr()
                 # rightCurrentErr = np.sqrt((1/(steps-1)) * (rightCurrentSqr/curr_t - rightCurrent**2/curr_t**2))
                 # leftCurrentErr = np.sqrt((1/(steps-1)) * (leftCurrentSqr/curr_t - leftCurrent**2/curr_t**2))
                 # err = max(rightCurrentErr, leftCurrentErr)
-                err = self.get_err(I_var, steps, curr_t)
-                errors.append(err)
-                if err < I_avg*0.01:
-                    break
-        # res = ((rightCurrent - leftCurrent)/2, err)
+                # err = self.get_err(I_var, steps, curr_t)
+                # errors.append(err)
+                # if err < I_avg*0.01:
+                #     break
+        err = self.get_err(I_var, steps, curr_t)
         res = (I_avg, err)
         if fullOutput:
             res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
@@ -1001,31 +1015,40 @@ class Simulator:
                      Qmagnitude, vgs[:,dot], 'r')
         plt.show()
 
-    def getToSteadyState(self, t):
-        Qerr = 2*STEADY_STATE_VAR
-        var = STEADY_STATE_VAR
-        t = t/(STEADY_STATE_REP**2)
-        curr_Q = self.dotArray.getGroundCharge()
-        not_decreasing_count = 0
-        while Qerr > var and not_decreasing_count < 100:
-            Qs = []
-            for run in range(STEADY_STATE_REP):
-                curr_Qs = []
+    def getToSteadyState(self):
+        curr_t = 0
+        steps = 0
+        n_avg = np.zeros(
+            (self.dotArray.getRows(), self.dotArray.getColumns()))
+        n_var = np.zeros(n_avg.shape)
+        curr_n = self.dotArray.getOccupation()
+        err = ALLOWED_ERR*2
+        not_reducing_counter = 0
+        errors = []
+        while err > ALLOWED_ERR and not_reducing_counter < 100:
+            if self.tauLeaping:
+                dt = self.executeLeapingStep()
+            else:
+                dt = self.executeStep()
+            steps += 1
+            n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var,
+                                                  curr_t, dt)
+            curr_n = self.dotArray.getOccupation()
+            curr_t += dt
+            if steps % MIN_STEPS == 0:
+                new_err = np.max(self.dotArray.get_dist_from_steady(n_avg))
+                if new_err > err:
+                    not_reducing_counter += 1
+                err = new_err
+                n_avg = np.zeros(
+                    (self.dotArray.getRows(), self.dotArray.getColumns()))
+                n_var = np.zeros(n_avg.shape)
                 curr_t = 0
-                while curr_t < t:
-                    if self.tauLeaping:
-                        dt = self.executeLeapingStep()
-                    else:
-                        dt = self.executeStep()
-                    curr_t += dt
-                    curr_Qs.append(curr_Q*dt)
-                    curr_Q = self.dotArray.getGroundCharge()
-                Qs.append(np.sum(curr_Qs, axis=0)/curr_t)
-            new_Qerr = np.max(np.var(Qs, axis=0))
-            if new_Qerr > Qerr:
-                not_decreasing_count += 1
-            Qerr = new_Qerr
-
+                errors.append(err)
+        if err > ALLOWED_ERR:
+            print("Warning error is not decreasing")
+            plt.plot(errors)
+            plt.show()
         return True
 
     def checkSteadyState(self, rep):
@@ -1144,9 +1167,12 @@ class Simulator:
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
             if not self.constQ:
-                self.getToSteadyState(tStep)
+                self.getToSteadyState()
+                # self.dotArray.constQ = True
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            # if not self.constQ:
+                # self.dotArray.constQ = False
             current = stepRes[0]
             currentErr = stepRes[1]
             if fullOutput:
@@ -1669,7 +1695,10 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         # dbg
     print("Saving results")
     avgI = np.mean(np.array(Is), axis=0)
-    avgIErr = np.sqrt(np.sum(np.array(IsErr)**2, axis=0))/len(IsErr)
+    if repeats < 10:
+        avgIErr = np.sqrt(np.sum(np.array(IsErr)**2, axis=0))/len(IsErr)
+    else:
+        avgIErr = np.sqrt(np.var(np.array(Is), axis=0) / len(Is))
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)

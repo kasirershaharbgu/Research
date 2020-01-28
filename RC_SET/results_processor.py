@@ -145,18 +145,19 @@ class SingleResultsProcessor:
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
         plt.figure()
-        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b',
-                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r')
-                 # self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
-                 # self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
-                 # self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
-                 # self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
+                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
+                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
+                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
         plt.xlabel('Voltage')
         plt.ylabel('Current')
         if self.full:
             plt.figure()
             n = self.n.reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
             Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
+            q = n+Q
             nErr = self.nErr.reshape((self.nErr.shape[0], self.nErr.shape[1] *self. nErr.shape[2]))
             QErr = self.QErr.reshape((self.QErr.shape[0], self.QErr.shape[1] * self.QErr.shape[2]))
             nplusErr = n + nErr
@@ -173,7 +174,7 @@ class SingleResultsProcessor:
                 plt.xlabel('Voltage')
                 plt.ylabel('Occupation')
             plt.figure()
-            plt.imshow(n.T)
+            plt.imshow(q.T)
             plt.colorbar()
             plt.figure()
             for i in range(len(Q[0])):
@@ -185,9 +186,15 @@ class SingleResultsProcessor:
                          self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
+            # plt.figure()
+            # plt.imshow(Q.T)
+            # plt.colorbar()
             plt.figure()
-            plt.imshow(Q.T)
-            plt.colorbar()
+            for i in range(len(Q[0])):
+                plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
+                plt.xlabel('Voltage')
+                plt.ylabel('Chagre on tunneling junctions')
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
@@ -394,7 +401,7 @@ if __name__ == "__main__":
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    s = SingleResultsProcessor("dbg_1d","array_1_10_r_disorder_cg_disorder_run_1",fullOutput=True)
+    s = SingleResultsProcessor("1d_array_bgu","array_1_10_dbg",fullOutput=True)
     s.plot_results()
     plt.show()
 
