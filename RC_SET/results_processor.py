@@ -34,7 +34,7 @@ class SingleResultsProcessor:
         IErr_file = os.path.join(self.basePath + '_IErr.npy')
         self.I = np.load(I_file)
         self.IErr = np.load(IErr_file)
-        # self.IErr = np.zeros(self.I.shape)
+        self.IErr = np.zeros(self.I.shape)
         self.V = np.load(V_file)
         self.mid_idx = self.V.size // 2
         if fullOutput:
@@ -46,8 +46,8 @@ class SingleResultsProcessor:
             self.Q = np.load(Q_file)
             self.nErr = np.load(nErr_file)
             self.QErr = np.load(QErr_file)
-            # self.nErr = np.zeros(self.n.shape)
-            # self.QErr = np.zeros(self.Q.shape)
+            self.nErr = np.zeros(self.n.shape)
+            self.QErr = np.zeros(self.Q.shape)
         return True
 
     def load_params(self):
@@ -401,7 +401,7 @@ if __name__ == "__main__":
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    s = SingleResultsProcessor("1d_array_bgu","array_1_10_dbg",fullOutput=True)
+    s = SingleResultsProcessor("C:\\Users\\shahar\\Research\\old_results\\Single_dot_slow_relaxation","no_disorder_small_cg",fullOutput=True)
     s.plot_results()
     plt.show()
 

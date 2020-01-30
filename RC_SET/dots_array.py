@@ -532,7 +532,7 @@ class DotArray:
         """
         if not self.constQ:
             self.getWork()
-        work = self.variableWork
+        work = np.copy(self.variableWork)
         if self.temperature == 0:
             work[work > 0] = 0
         else:
@@ -693,6 +693,8 @@ class DotArray:
             self.totalChargePassedLeft += charge
         else:
             self.n[toDot[0]*self.columns + toDot[1],0] += charge
+        if self.constQ:
+            self.updateWorkForConstQ(fromDot, toDot)
         return True
 
     def printState(self):
@@ -1024,7 +1026,7 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         err = ALLOWED_ERR*2
         not_reducing_counter = 0
-        errors = []
+        # errors = []
         while err > ALLOWED_ERR and not_reducing_counter < 100:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
@@ -1037,18 +1039,18 @@ class Simulator:
             curr_t += dt
             if steps % MIN_STEPS == 0:
                 new_err = np.max(self.dotArray.get_dist_from_steady(n_avg))
-                if new_err > err:
-                    not_reducing_counter += 1
+                # if new_err > err:
+                #     not_reducing_counter += 1
                 err = new_err
                 n_avg = np.zeros(
                     (self.dotArray.getRows(), self.dotArray.getColumns()))
                 n_var = np.zeros(n_avg.shape)
                 curr_t = 0
-                errors.append(err)
-        if err > ALLOWED_ERR:
-            print("Warning error is not decreasing")
-            plt.plot(errors)
-            plt.show()
+                # errors.append(err)
+        # if err > ALLOWED_ERR:
+        #     print("Warning error is not decreasing")
+        #     plt.plot(errors)
+        #     plt.show()
         return True
 
     def checkSteadyState(self, rep):
@@ -1168,11 +1170,8 @@ class Simulator:
             # running once to get to steady state
             if not self.constQ:
                 self.getToSteadyState()
-                # self.dotArray.constQ = True
             # now we are in steady state calculate current
             stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
-            # if not self.constQ:
-                # self.dotArray.constQ = False
             current = stepRes[0]
             currentErr = stepRes[1]
             if fullOutput:
@@ -1698,7 +1697,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if repeats < 10:
         avgIErr = np.sqrt(np.sum(np.array(IsErr)**2, axis=0))/len(IsErr)
     else:
-        avgIErr = np.sqrt(np.var(np.array(Is), axis=0) / len(Is))
+        avgIErr = np.std(np.array(Is), axis=0)
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)
