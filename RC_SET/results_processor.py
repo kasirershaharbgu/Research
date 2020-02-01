@@ -401,7 +401,7 @@ if __name__ == "__main__":
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    s = SingleResultsProcessor("C:\\Users\\shahar\\Research\\old_results\\Single_dot_slow_relaxation","no_disorder_small_cg",fullOutput=True)
+    s = SingleResultsProcessor("2d_array_bgu","array_10_10_dbg_1",fullOutput=True)
     s.plot_results()
     plt.show()
 

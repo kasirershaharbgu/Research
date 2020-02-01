@@ -2,38 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_IV.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_V.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_nErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1d_array_bgu/runningParameters_array_1_10_dbg_1.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_Qs.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_QsErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_ns.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_0_nsErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_CG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_Ch.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_Cv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_Q0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_RG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_Rh.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_Rv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_VG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/1d_array_bgu/array_1_10_dbg_1_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_Qs.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_QsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_ns.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_0_nsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_10_10_dbg_1_temp_n0.npy" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -295,16 +282,6 @@
           <url>file://$PROJECT_DIR$/dots_array.py</url>
           <line>554</line>
           <option name="timeStamp" value="228" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>495</line>
-          <option name="timeStamp" value="229" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>521</line>
-          <option name="timeStamp" value="230" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

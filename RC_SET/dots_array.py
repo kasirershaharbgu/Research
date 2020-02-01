@@ -1038,7 +1038,7 @@ class Simulator:
             curr_n = self.dotArray.getOccupation()
             curr_t += dt
             if steps % MIN_STEPS == 0:
-                new_err = np.max(self.dotArray.get_dist_from_steady(n_avg))
+                new_err = np.mean(self.dotArray.get_dist_from_steady(n_avg))
                 # if new_err > err:
                 #     not_reducing_counter += 1
                 err = new_err
