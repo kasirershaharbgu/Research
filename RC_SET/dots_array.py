@@ -993,7 +993,7 @@ class Simulator:
         rep = 0
         lr = INI_LR
         while (not flag) and rep < GRAD_REP:
-            res, flag = simple_gadient_descent(self.calc_lyaponuv_grad, self.Q, lr=lr, plot_lc=True)
+            res, flag = simple_gadient_descent(self.calc_lyaponuv_grad, self.Q, lr=lr, plot_lc=False)
             rep += 1
             lr = lr/10
         if flag: #if gradient descent did not converge skipping the point
