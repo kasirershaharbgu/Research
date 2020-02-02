@@ -38,17 +38,16 @@ if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
 rows=1
-columns=10
 
 for run in 1 2 3
 do
 
-	for length in 1 2 3 4 5
+	for columns in 1 2 3 4 5
 	do
 	
 		efermi=""
 		cg_std=0
-		name="array_1_${length}_r_disorder_run_${run}"
+		name="array_1_${columns}_r_disorder_run_${run}"
 		qsub -V -S /bin/bash -cwd -N "$name" -q jdubi.q -o "$f/$name.out" -v M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",file_name="$name",out="$f",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi" -v custom_rh="$custom_rh" -v custom_rv="$custom_rv" -v custom_ch="$custom_ch" -v custom_cv="$custom_cv" run_RC_SET.sh
 	
 		sleep 1
