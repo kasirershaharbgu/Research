@@ -1,0 +1,15 @@
+
+python3 dots_array.py -M 1 -N 10 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 100 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_1_4_r_disorder_run_1 -o 1d_array_bgu --full --current-map   --symmetric-v  
+
+
+python3 dots_array.py -M 1 -N 4 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 100 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_1_4_r_disorder_run_1 -o 1d_array_bgu --full --current-map   --symmetric-v  
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+
+python3 dots_array.py -M 1 -N 4 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_1_4_r_disorder_run_1 -o 1d_array_bgu --full --current-map   --symmetric-v  
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
