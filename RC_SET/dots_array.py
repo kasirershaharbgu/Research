@@ -23,7 +23,7 @@ EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 1000
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-2
+ALLOWED_ERR = 1e-4
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
@@ -234,7 +234,7 @@ class DotArray:
         self.Ch = Ch
         self.Cv = np.vstack((np.zeros((1,columns)),Cv)) if Cv.size else np.zeros((1,1))
         self.Rh = Rh
-        self.Rv = Rv
+        self.Rv = Rv if Rv.size else np.zeros((0,0))
         self.R = np.hstack((Rh.flatten(), Rh.flatten(), Rv.flatten(), Rv.flatten()))
         self.temperature = temperature
         self.variableRightWorkLen = (self.columns + 1) * self.rows
@@ -466,8 +466,8 @@ class DotArray:
     def get_steady_Q_for_given_n(self, n):
         return self._constQnPart + self._matrixQnPart.dot(self.getNprimeForGivenN(n))
 
-    def get_dist_from_steady(self, n):
-        return (self.Q - self.get_steady_Q_for_given_n(n))**2
+    def get_dist_from_steady(self, n, Q):
+        return (flattenToColumn(Q) - self.get_steady_Q_for_given_n(n))**2
 
     def setConstWork(self):
         invCDiagMat = np.diag(np.copy(self.invC)).reshape((self.rows,self.columns))
@@ -534,7 +534,7 @@ class DotArray:
             self.getWork()
         work = np.copy(self.variableWork)
         if self.temperature == 0:
-            work[work > 0] = 0
+            work[work > -EPS] = 0
         else:
             exp_arg = work/self.temperature
             work[exp_arg > 20] = 0
@@ -620,7 +620,7 @@ class DotArray:
             dt = (dt - self.default_dt)*(new_sum_rates/sum_rates)
             sum_rates = new_sum_rates
             out_of_interval = dt > self.default_dt
-            if np.max(self.get_dist_from_steady(self.n)) < ALLOWED_ERR:
+            if np.max(self.get_dist_from_steady(self.n, self.Q)) < ALLOWED_ERR:
                 break
         return dt, intervals
 
@@ -918,7 +918,7 @@ class Simulator:
         curr_Q = self.dotArray.getGroundCharge()
         # err = 2*ALLOWED_ERR
         # errors = []
-        while curr_t < final_t:
+        while curr_t < final_t or steps < MIN_STEPS:
             if self.tauLeaping:
                 dt = self.executeLeapingStep(printState=print_stats)
             else:
@@ -961,8 +961,8 @@ class Simulator:
         self.dotArray.setOccupation(n0)
         self.dotArray.getWork()
         curr_n = n0
-        err = 2*0.01
-        while err > 0.01:
+        err = 2*ALLOWED_ERR
+        while err > ALLOWED_ERR:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
             else:
@@ -1023,11 +1023,18 @@ class Simulator:
         n_avg = np.zeros(
             (self.dotArray.getRows(), self.dotArray.getColumns()))
         n_var = np.zeros(n_avg.shape)
+        Q_avg = np.zeros(n_avg.shape)
+        Q_var =  np.zeros(n_avg.shape)
         curr_n = self.dotArray.getOccupation()
+        curr_Q = self.dotArray.getGroundCharge()
         err = ALLOWED_ERR*2
-        not_reducing_counter = 0
-        # errors = []
-        while err > ALLOWED_ERR and not_reducing_counter < 100:
+        # plot = self.dotArray.VL - self.dotArray.VR > 4
+        # if plot:
+        #     Qs = []
+        #     Qn = []
+        #     ts = []
+        #     t=0
+        while err > ALLOWED_ERR:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
             else:
@@ -1035,22 +1042,37 @@ class Simulator:
             steps += 1
             n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var,
                                                   curr_t, dt)
+            Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var,
+                                                  curr_t, dt)
             curr_n = self.dotArray.getOccupation()
+            curr_Q = self.dotArray.getGroundCharge()
             curr_t += dt
+            # if plot:
+            #     t+=dt
+            #     Qs.append(Q_avg)
+            #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
+            #     ts.append(t)
             if steps % MIN_STEPS == 0:
-                new_err = np.mean(self.dotArray.get_dist_from_steady(n_avg))
-                # if new_err > err:
-                #     not_reducing_counter += 1
+                new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
                 err = new_err
                 n_avg = np.zeros(
                     (self.dotArray.getRows(), self.dotArray.getColumns()))
                 n_var = np.zeros(n_avg.shape)
+                Q_avg = np.zeros(n_avg.shape)
+                Q_var = np.zeros(n_avg.shape)
                 curr_t = 0
-                # errors.append(err)
-        # if err > ALLOWED_ERR:
-        #     print("Warning error is not decreasing")
-        #     plt.plot(errors)
-        #     plt.show()
+                # if plot and steps % (100 * MIN_STEPS):
+                #     Qs = np.array(Qs)
+                #     Qn = np.array(Qn)
+                #     for i in range(Qs.shape[2]):
+                #         plt.plot(ts, Qs[:,:,i],'.')
+                #         plt.plot(ts, Qn[:, :, i], '*')
+                #     print(err)
+                #     plt.show()
+                #     Qs = []
+                #     Qn = []
+                #     ts = []
+
         return True
 
     def checkSteadyState(self, rep):

@@ -401,7 +401,7 @@ if __name__ == "__main__":
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    s = SingleResultsProcessor("2d_array_bgu","array_10_10_dbg_1",fullOutput=True)
+    s = SingleResultsProcessor("1d_array_bgu","array_1_10_r_disorder_run_3_dbg",fullOutput=False)
     s.plot_results()
     plt.show()
 
