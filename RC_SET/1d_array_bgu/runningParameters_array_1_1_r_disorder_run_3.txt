@@ -35,7 +35,7 @@ custom_rh = ""
 custom_rv = ""
 custom_ch = ""
 custom_cv = ""
-RG_avg = 100.0
+RG_avg = 1000.0
 RG_std = 0.0
 n0_avg = 0.0
 n0_std = 0.0
@@ -46,8 +46,8 @@ Rows: 1
 Columns: 1
 VG: [[0.]]
 CG: [[10.]]
-RG: [[100.]]
+RG: [[1000.]]
 Ch: [[1. 1.]]
 Cv: [[0.]]
-Rh: [[15.61373826  2.50614645]]
+Rh: [[2.07422879 2.76067706]]
 Rv: []
