@@ -851,6 +851,7 @@ class Simulator:
     """
     def __init__(self, index, VL0, VR0, Q0, n0, dotArray, constQ=False):
         self.dotArray = copy(dotArray)
+        self.randomGenerator = np.random.RandomState()
         self.dotArray.setGroundCharge(Q0)
         self.dotArray.setOccupation(n0)
         self.VL = VL0
@@ -886,7 +887,7 @@ class Simulator:
         return dt
 
     def executeStep(self, printState=False):
-        r = np.random.rand(2)
+        r = self.randomGenerator.rand(2)
         # for debug
         # r = next(self.randomGen)
         dt, intervals = self.dotArray.getTimeInterval(r[0])

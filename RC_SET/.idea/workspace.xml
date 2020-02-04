@@ -6,45 +6,26 @@
       <change beforePath="$PROJECT_DIR$/dbg/dbg_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_I.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IV.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_Imap.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_QErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/dbg_V.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_V.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_Qs.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_QsErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_ns.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_0_nsErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_CG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_Ch.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_Cv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_Q0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_RG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_Rh.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_Rv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_VG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_constQ_temp_n0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_Qs.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_Qs.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_QsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_QsErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_ns.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_ns.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_nsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_temp_0_nsErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_CG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Ch.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Cv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Q0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_RG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rh.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_Rv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_VG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_full_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_full_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_nErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_Qs.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_QsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_ns.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_nsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_n.npy" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_1d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_1d_array.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -139,7 +120,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 10 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 3 --r-avg 10 --r-std 9 --rg-avg 100000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_1_10_r_disorder_run_3_dbg -o 1d_array_bgu --dbg --symmetric-v -i 1d_array_bgu/runningParameters_array_1_10_r_disorder_run_3.txt --resume" />
+      <option name="PARAMETERS" value="-M 1 -N 2 --vmin 0 --vmax 1 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 100 --rg-std 0 --repeats 3 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg --full --current-map --symmetric-v -i 1d_array_bgu/runningParameters_array_1_2_r_disorder_run_1.txt" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -284,23 +265,28 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>374</line>
+          <line>379</line>
           <option name="timeStamp" value="131" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1513</line>
+          <line>1514</line>
           <option name="timeStamp" value="202" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1071</line>
-          <option name="timeStamp" value="242" />
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>197</line>
+          <option name="timeStamp" value="305" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1055</line>
-          <option name="timeStamp" value="244" />
+          <line>1718</line>
+          <option name="timeStamp" value="308" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>49</line>
+          <option name="timeStamp" value="310" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

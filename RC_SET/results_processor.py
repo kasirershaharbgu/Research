@@ -34,7 +34,6 @@ class SingleResultsProcessor:
         IErr_file = os.path.join(self.basePath + '_IErr.npy')
         self.I = np.load(I_file)
         self.IErr = np.load(IErr_file)
-        self.IErr = np.zeros(self.I.shape)
         self.V = np.load(V_file)
         self.mid_idx = self.V.size // 2
         if fullOutput:
@@ -42,12 +41,12 @@ class SingleResultsProcessor:
             Q_file = os.path.join(self.basePath + '_Q.npy')
             nErr_file = os.path.join(self.basePath + '_nErr.npy')
             QErr_file = os.path.join(self.basePath + '_QErr.npy')
+            full_I_file = os.path.join(self.basePath + '_full_I.npy')
             self.n = np.load(n_file)
             self.Q = np.load(Q_file)
             self.nErr = np.load(nErr_file)
             self.QErr = np.load(QErr_file)
-            self.nErr = np.zeros(self.n.shape)
-            self.QErr = np.zeros(self.Q.shape)
+            self.full_I = np.load(full_I_file)
         return True
 
     def load_params(self):
@@ -195,6 +194,12 @@ class SingleResultsProcessor:
                          self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre on tunneling junctions')
+            plt.figure()
+            for i in range(len(self.full_I)):
+                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], 'b',
+                         self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], 'r')
+                plt.xlabel('Voltage')
+                plt.ylabel('Chagre')
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
@@ -401,7 +406,8 @@ if __name__ == "__main__":
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
 
-    s = SingleResultsProcessor("1d_array_bgu","array_1_10_r_disorder_run_3_dbg",fullOutput=False)
+    s = SingleResultsProcessor("dbg",
+                               "dbg",fullOutput=True)
     s.plot_results()
     plt.show()
 
