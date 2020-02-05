@@ -582,8 +582,9 @@ class DotArray:
         vertSize = self.Rv.size
         self.R[:horzSize] = (self.Rh*self._rightnExponent).flatten()
         self.R[horzSize:2*horzSize] = (self.Rh * self._leftnExponent).flatten()
-        self.R[2*horzSize:2*horzSize+vertSize] = (self.Rv*nExponent[:-1,:]).flatten()
-        self.R[2 * horzSize + vertSize:] = (self.Rv * nExponent[1:, :]).flatten()
+        if vertSize > 0:
+            self.R[2*horzSize:2*horzSize+vertSize] = (self.Rv*nExponent[:-1,:]).flatten()
+            self.R[2 * horzSize + vertSize:] = (self.Rv * nExponent[1:, :]).flatten()
 
     def getVoltages(self):
         return self.invC.dot(self.getNprime() + self.Q).reshape(self.rows, self.columns)
