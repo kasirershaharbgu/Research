@@ -1718,9 +1718,9 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     print("Saving results")
     avgI = np.mean(np.array(Is), axis=0)
     if repeats < 10:
-        avgIErr = np.sqrt(np.sum(np.array(IsErr)**2, axis=0))/len(IsErr)
+        avgIErr = np.sqrt(np.sum(np.array(IsErr)**2, axis=0)/len(IsErr))
     else:
-        avgIErr = np.std(np.array(Is), axis=0)
+        avgIErr = np.std(np.array(Is), axis=0)/np.sqrt(len(Is))
     if fullOutput:
         avgN = np.mean(np.array(ns), axis=0)
         avgQ = np.mean(np.array(Qs), axis=0)

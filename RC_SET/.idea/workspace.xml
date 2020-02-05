@@ -3,29 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_IV.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_Imap.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_QErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_V.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_V.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_full_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_full_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/dbg_nErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_Qs.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_QsErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_current_map.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_ns.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_0_nsErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/dbg_temp_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/runningParameters_dbg.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_1d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_1d_array.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
