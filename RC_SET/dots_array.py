@@ -860,6 +860,7 @@ class Simulator:
         self.index = index
         self.tauLeaping = dotArray.tauLeaping
         self.constQ = constQ
+        self.minSteps = MIN_STEPS*self.dotArray.columns*self.dotArray.rows
         if self.constQ:
             self.n = n0
             self.Q = Q0
@@ -1030,7 +1031,7 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         err = ALLOWED_ERR*2
-        # plot = self.dotArray.VL - self.dotArray.VR > 4
+        # plot = True
         # if plot:
         #     Qs = []
         #     Qn = []
@@ -1051,10 +1052,10 @@ class Simulator:
             curr_t += dt
             # if plot:
             #     t+=dt
-            #     Qs.append(Q_avg)
+            #     Qs.append(curr_Q)
             #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
             #     ts.append(t)
-            if steps % MIN_STEPS == 0:
+            if steps % self.minSteps == 0:
                 new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
                 err = new_err
                 n_avg = np.zeros(

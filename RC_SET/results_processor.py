@@ -5,6 +5,7 @@ from scipy import integrate
 from ast import literal_eval
 import os
 import re
+from sklearn.mixture import GaussianMixture
 from mpl_toolkits.mplot3d import Axes3D
 
 EPS = 1e-6
@@ -28,6 +29,29 @@ class SingleResultsProcessor:
         self.load_results(fullOutput=fullOutput)
         self.load_params()
 
+    def reAnalyzeI(self):
+        full_I = self.full_I.T
+        for i,point in enumerate(full_I):
+            bins = bistabilityAnalysis(point)
+            if i > 0 and len(bins) > 1 and len(bins[0]) > 0 and len(bins[1]) > 0:
+                avg1 = np.average(bins[0])
+                avg2 = np.average(bins[1])
+                if np.abs(avg1 - self.I[i-1]) < np.abs(avg2 - self.I[i-1]):
+                    self.I[i] = avg1
+                    self.IErr[i] = np.sqrt(np.var(bins[0])/len(bins[0]))
+                else:
+                    self.I[i] = avg2
+                    self.IErr[i] = np.sqrt(np.var(bins[1]) / len(bins[1]))
+            else:
+                if len(bins) > 1:
+                    bin = bins[0] if len(bins[0]) > len(bins[1]) else bins[1]
+                else:
+                    bin = bins[0]
+                self.I[i] = np.average(bin)
+                self.IErr[i] = np.sqrt(np.var(bin) / len(bin))
+        return True
+
+
     def load_results(self, fullOutput=False):
         I_file = os.path.join(self.basePath + '_I.npy')
         V_file = os.path.join(self.basePath + '_V.npy')
@@ -47,7 +71,25 @@ class SingleResultsProcessor:
             self.nErr = np.load(nErr_file)
             self.QErr = np.load(QErr_file)
             self.full_I = np.load(full_I_file)
+            self.reAnalyzeI()
         return True
+
+    def save_re_analysis(self):
+        np.save(self.basePath + '_I_clean', self.I)
+        np.save(self.basePath + '_I_Err_clean', self.IErr)
+        IplusErr = self.I + self.IErr
+        IminusErr = self.I - self.IErr
+        fig = plt.figure()
+        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
+                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
+                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IplusErr[self.mid_idx:], 'r--',
+                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+        plt.xlabel('Voltage')
+        plt.ylabel('Current')
+        plt.savefig(self.basePath + '_IV_clean')
+        plt.close(fig)
 
     def load_params(self):
         params_file = os.path.join(self.directory,"runningParameters_" + self.fileName + ".txt")
@@ -196,8 +238,8 @@ class SingleResultsProcessor:
                 plt.ylabel('Chagre on tunneling junctions')
             plt.figure()
             for i in range(len(self.full_I)):
-                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], 'b',
-                         self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], 'r')
+                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], 'b.',
+                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], 'r.')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
 
@@ -379,6 +421,19 @@ class MultiResultAnalyzer:
                 new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)/relevant_low_err.size))
         return new_x, new_y, new_y_high_err, new_y_low_err
 
+def bistabilityAnalysis(x):
+    avg = np.average(x)
+    var = np.var(x)
+    dist_from_mean = (x - avg)**2
+    bins = [x]
+    if np.max(dist_from_mean) > var:
+        model = GaussianMixture(n_components=2)
+        labels = model.fit_predict(x.reshape(-1,1))
+        bins = [x[labels==0], x[labels==1]]
+    return bins
+
+
+
 
 if __name__ == "__main__":
     # for c_std in [0.1, 0.2, 0.3, 0.4, 0.5]:
@@ -405,11 +460,11 @@ if __name__ == "__main__":
     # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
-
-    s = SingleResultsProcessor("bgu_dbg",
-                               "array_1_2_r_disorder_run_1",fullOutput=True)
-    s.plot_results()
-    plt.show()
+    directory = "2d_array_bgu"
+    for name in ['array_1_10_r_disorder_variable_ef_run_']:
+        for run in [1,2,3]:
+            s = SingleResultsProcessor(directory, name + str(run) ,fullOutput=True)
+            s.save_re_analysis()
 
 
 
