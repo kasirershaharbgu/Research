@@ -238,8 +238,8 @@ class SingleResultsProcessor:
                 plt.ylabel('Chagre on tunneling junctions')
             plt.figure()
             for i in range(len(self.full_I)):
-                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], 'b.',
-                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], 'r.')
+                plt.plot(self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '.')
+                        # self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '.')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
 
@@ -460,11 +460,22 @@ if __name__ == "__main__":
     # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
-    directory = "2d_array_bgu"
-    for name in ['array_1_10_r_disorder_variable_ef_run_']:
-        for run in [1,2,3]:
-            s = SingleResultsProcessor(directory, name + str(run) ,fullOutput=True)
-            s.save_re_analysis()
+    # directory = "1d_array_bgu"
+    # for name in ['array_1_1_r_disorder_run_',
+    #              'array_1_2_r_disorder_run_',
+    #              'array_1_3_r_disorder_run_',
+    #              'array_1_4_r_disorder_run_',
+    #              'array_1_5_r_disorder_run_',
+    #              'array_1_10_r_disorder_cg_disorder_run_',
+    #              'array_1_10_r_disorder_cg_disorder_variable_ef_run_',
+    #              'array_1_10_r_disorder_run_',
+    #              'array_1_10_r_disorder_variable_ef_run_']:
+    #     for run in [1,2,3]:
+    directory = "1d_array_bgu"
+    name = "array_1_1_r_disorder_run_3"
+    s = SingleResultsProcessor(directory, name,fullOutput=True)
+    s.plot_results()
+    plt.show()
 
 
 

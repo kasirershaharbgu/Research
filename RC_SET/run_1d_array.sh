@@ -14,13 +14,13 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.01
+vstep=0.001
 rg_avg=1000
 cg_avg=10
 dist="exp"
 r_std=9
 graph=""
-currentmap="--current-map"
+currentmap=""
 full="--full"
 resume=""
 vSym="--symmetric-v"
@@ -31,8 +31,8 @@ custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 T=0
-vmax=4
-f="1d_array_bgu"
+vmax=2
+f="1d_array_small_step_bgu"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
