@@ -36,19 +36,20 @@ class SingleResultsProcessor:
             if i > 0 and len(bins) > 1 and len(bins[0]) > 0 and len(bins[1]) > 0:
                 avg1 = np.average(bins[0])
                 avg2 = np.average(bins[1])
-                if np.abs(avg1 - self.I[i-1]) < np.abs(avg2 - self.I[i-1]):
+                # if np.abs(avg1 - self.I[i-1]) < np.abs(avg2 - self.I[i-1]):
+                if len(bins[0]) > len(bins[1]):
                     self.I[i] = avg1
-                    self.IErr[i] = np.sqrt(np.var(bins[0])/len(bins[0]))
+                    self.IErr[i] = np.std(bins[0])
                 else:
                     self.I[i] = avg2
-                    self.IErr[i] = np.sqrt(np.var(bins[1]) / len(bins[1]))
+                    self.IErr[i] = np.std(bins[1])
             else:
                 if len(bins) > 1:
                     bin = bins[0] if len(bins[0]) > len(bins[1]) else bins[1]
                 else:
                     bin = bins[0]
                 self.I[i] = np.average(bin)
-                self.IErr[i] = np.sqrt(np.var(bin) / len(bin))
+                self.IErr[i] = np.std(bin)
         return True
 
 
@@ -238,8 +239,8 @@ class SingleResultsProcessor:
                 plt.ylabel('Chagre on tunneling junctions')
             plt.figure()
             for i in range(len(self.full_I)):
-                plt.plot(self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '.')
-                        # self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '.')
+                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], '.',
+                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '.')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
 
@@ -471,8 +472,8 @@ if __name__ == "__main__":
     #              'array_1_10_r_disorder_run_',
     #              'array_1_10_r_disorder_variable_ef_run_']:
     #     for run in [1,2,3]:
-    directory = "1d_array_bgu"
-    name = "array_1_1_r_disorder_run_3"
+    directory = "1d_array_small_step_bgu"
+    name = "array_1_2_r_disorder_run_1"
     s = SingleResultsProcessor(directory, name,fullOutput=True)
     s.plot_results()
     plt.show()
