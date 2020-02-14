@@ -461,22 +461,18 @@ if __name__ == "__main__":
     # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
-    # directory = "1d_array_bgu"
-    # for name in ['array_1_1_r_disorder_run_',
-    #              'array_1_2_r_disorder_run_',
-    #              'array_1_3_r_disorder_run_',
-    #              'array_1_4_r_disorder_run_',
-    #              'array_1_5_r_disorder_run_',
-    #              'array_1_10_r_disorder_cg_disorder_run_',
-    #              'array_1_10_r_disorder_cg_disorder_variable_ef_run_',
-    #              'array_1_10_r_disorder_run_',
-    #              'array_1_10_r_disorder_variable_ef_run_']:
-    #     for run in [1,2,3]:
-    directory = "1d_array_small_step_bgu"
-    name = "array_1_2_r_disorder_run_1"
-    s = SingleResultsProcessor(directory, name,fullOutput=True)
-    s.plot_results()
-    plt.show()
+    directory = "2d_array_bgu"
+    for name in ['array_5_10_r_disorder_cg_disorder_run_2',
+                 'array_5_10_r_disorder_run_2',
+                 'array_5_10_r_disorder_run_3']:
+        s = SingleResultsProcessor(directory, name,
+                                   fullOutput=True)
+        s.save_re_analysis()
+    # directory = "2d_array_bgu"
+    # name = "array_5_10_r_disorder_run_3"
+    # s = SingleResultsProcessor(directory, name,fullOutput=True)
+    # s.plot_results()
+    # plt.show()
 
 
 

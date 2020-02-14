@@ -3,25 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_Qs.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_Qs.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_QsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_QsErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_current_map.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_current_map.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_ns.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_ns.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_nsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_1_temp_0_nsErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_Qs.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_Qs.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_QsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_QsErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_current_map.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_current_map.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_ns.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_ns.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_nsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_array_bgu/array_5_10_r_disorder_cg_disorder_run_2_temp_0_nsErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -84,7 +65,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.dots_array">
+  <component name="RunManager" selected="Python.results_processor">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -218,8 +199,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
+        <item itemvalue="Python.dots_array" />
       </list>
     </recent_temporary>
   </component>
