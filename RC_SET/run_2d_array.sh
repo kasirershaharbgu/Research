@@ -15,7 +15,7 @@ n_std=0
 q_avg=0
 q_std=0
 vstep=0.01
-rg_avg=100
+rg_avg=1000
 cg_avg=10
 dist="exp"
 r_std=9
@@ -24,7 +24,7 @@ currentmap="--current-map"
 full="--full"
 resume=""
 vSym="--symmetric-v"
-resume="--resume"
+resume=""
 leaping=""
 efermi=""
 custom_rh="\"\""
@@ -32,13 +32,13 @@ custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 T=0
-vmax=4
+vmax=3
 f="2d_array_bgu"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
 columns=10
-rows=5
+rows=10
 
 for run in 1 2 3
 do

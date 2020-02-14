@@ -36,8 +36,8 @@ class SingleResultsProcessor:
             if i > 0 and len(bins) > 1 and len(bins[0]) > 0 and len(bins[1]) > 0:
                 avg1 = np.average(bins[0])
                 avg2 = np.average(bins[1])
-                # if np.abs(avg1 - self.I[i-1]) < np.abs(avg2 - self.I[i-1]):
-                if len(bins[0]) > len(bins[1]):
+                if np.abs(avg1 - self.I[i-1]) < np.abs(avg2 - self.I[i-1]):
+                # if len(bins[0]) > len(bins[1]):
                     self.I[i] = avg1
                     self.IErr[i] = np.std(bins[0])
                 else:
@@ -461,15 +461,18 @@ if __name__ == "__main__":
     # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
-    directory = "2d_array_bgu"
-    for name in ['array_5_10_r_disorder_cg_disorder_run_2',
-                 'array_5_10_r_disorder_run_2',
-                 'array_5_10_r_disorder_run_3']:
-        s = SingleResultsProcessor(directory, name,
-                                   fullOutput=True)
-        s.save_re_analysis()
+    directory = "1d_array_small_step_bgu"
+    for name in ['array_1_1_r_disorder_run_',
+                 'array_1_2_r_disorder_run_',
+                 'array_1_3_r_disorder_run_',
+                 'array_1_4_r_disorder_run_',
+                 'array_1_5_r_disorder_run_']:
+        for run in [1,2,3]:
+            s = SingleResultsProcessor(directory, name + str(run),
+                                       fullOutput=True)
+            s.save_re_analysis()
     # directory = "2d_array_bgu"
-    # name = "array_5_10_r_disorder_run_3"
+    # name = "array_5_10_r_disorder_cg_disorder_run_1"
     # s = SingleResultsProcessor(directory, name,fullOutput=True)
     # s.plot_results()
     # plt.show()
