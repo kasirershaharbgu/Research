@@ -216,8 +216,10 @@ class SingleResultsProcessor:
                 plt.xlabel('Voltage')
                 plt.ylabel('Occupation')
             plt.figure()
-            plt.imshow(q.T)
-            plt.colorbar()
+            plt.plot(self.V[:self.mid_idx], np.sum(n[:self.mid_idx, :],axis=1), 'b',
+                     self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1), 'r')
+            plt.xlabel('Voltage')
+            plt.ylabel('Total Occupation')
             plt.figure()
             for i in range(len(Q[0])):
                 plt.plot(self.V[:self.mid_idx], Q[:self.mid_idx, i], 'b',
@@ -228,9 +230,6 @@ class SingleResultsProcessor:
                          self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
-            # plt.figure()
-            # plt.imshow(Q.T)
-            # plt.colorbar()
             plt.figure()
             for i in range(len(Q[0])):
                 plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i], 'b',
@@ -461,21 +460,25 @@ if __name__ == "__main__":
     # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
-    directory = "1d_array_small_step_bgu"
-    for name in ['array_1_1_r_disorder_run_',
-                 'array_1_2_r_disorder_run_',
-                 'array_1_3_r_disorder_run_',
-                 'array_1_4_r_disorder_run_',
-                 'array_1_5_r_disorder_run_']:
-        for run in [1,2,3]:
-            s = SingleResultsProcessor(directory, name + str(run),
-                                       fullOutput=True)
-            s.save_re_analysis()
-    # directory = "2d_array_bgu"
-    # name = "array_5_10_r_disorder_cg_disorder_run_1"
-    # s = SingleResultsProcessor(directory, name,fullOutput=True)
-    # s.plot_results()
-    # plt.show()
+    # directory = "1d_array_small_step_bgu"
+    # for name in ['array_1_1_r_disorder_run_',
+    #              'array_1_2_r_disorder_run_',
+    #              'array_1_3_r_disorder_run_',
+    #              'array_1_4_r_disorder_run_',
+    #              'array_1_5_r_disorder_run_']:
+    #     for run in [1,2,3]:
+    #         s = SingleResultsProcessor(directory, name + str(run),
+    #                                    fullOutput=True)
+    #         s.save_re_analysis()
+
+    # s = SingleResultsProcessor("2d_array_bgu", "array_5_10_r_disorder_run_1",
+    #                            fullOutput=True)
+    # s.save_re_analysis()
+    directory = "2d_array_bgu"
+    name = "array_5_10_r_disorder_run_1"
+    s = SingleResultsProcessor(directory, name,fullOutput=True)
+    s.plot_results()
+    plt.show()
 
 
 
