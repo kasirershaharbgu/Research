@@ -83,7 +83,11 @@ def high_impadance_p(x,Ec,T,kappa):
     return norm.pdf(x, loc=mu, scale=np.sqrt(sigma))
 
 def fermi_dirac_dist(x,T):
-    return 1/(1 + np.exp(x/T))
+    exp_arg = x/T
+    if exp_arg > 20:
+        return 0
+    else:
+        return 1/(1 + np.exp(x/T))
 
 def qp_density_of_states(x,energy_gap):
     return np.abs(x) / np.sqrt(x**2-energy_gap**2)
@@ -814,6 +818,7 @@ class JJArray(DotArray):
 
         self.constWorkCp = np.hstack((rightConstWorkCp, leftConstWorkCp, vertConstWorkCp, vertConstWorkCp))
         self.rates = np.zeros(2*self.variableWork.shape)
+        self.cumRates = np.zeros(2*self.variableWork.shape)
 
     def getWork(self):
         qp_work = super().getWork()
@@ -1031,12 +1036,12 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         err = ALLOWED_ERR*2
-        plot = True
-        if plot:
-            Qs = []
-            Qn = []
-            ts = []
-            t=0
+        # plot = True
+        # if plot:
+        #     Qs = []
+        #     Qn = []
+        #     ts = []
+        #     t=0
         while err > ALLOWED_ERR:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
@@ -1050,11 +1055,11 @@ class Simulator:
             curr_n = self.dotArray.getOccupation()
             curr_Q = self.dotArray.getGroundCharge()
             curr_t += dt
-            if plot:
-                t+=dt
-                Qs.append(curr_Q)
-                Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
-                ts.append(t)
+            # if plot:
+            #     t+=dt
+            #     Qs.append(curr_Q)
+            #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
+            #     ts.append(t)
             if steps % self.minSteps == 0:
                 new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
                 err = new_err
@@ -1064,17 +1069,17 @@ class Simulator:
                 Q_avg = np.zeros(n_avg.shape)
                 Q_var = np.zeros(n_avg.shape)
                 curr_t = 0
-                if plot and steps % (100 * MIN_STEPS):
-                    Qs = np.array(Qs)
-                    Qn = np.array(Qn)
-                    for i in range(Qs.shape[2]):
-                        plt.plot(ts, Qs[:,:,i],'.')
-                        plt.plot(ts, Qn[:, :, i], '*')
-                    print(err)
-                    plt.show()
-                    Qs = []
-                    Qn = []
-                    ts = []
+                # if plot and steps % (100 * MIN_STEPS):
+                #     Qs = np.array(Qs)
+                #     Qn = np.array(Qn)
+                #     for i in range(Qs.shape[2]):
+                #         plt.plot(ts, Qs[:,:,i],'.')
+                #         plt.plot(ts, Qn[:, :, i], '*')
+                #     print(err)
+                #     plt.show()
+                #     Qs = []
+                #     Qn = []
+                #     ts = []
 
         return True
 

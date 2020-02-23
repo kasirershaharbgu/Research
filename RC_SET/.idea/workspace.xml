@@ -3,7 +3,113 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_1.e615790" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_1.e676723" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_1.e678694" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_1.pe678694" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_2.e615795" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_2.e676727" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_3.e615799" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_run_3.e676731" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_variable_ef_run_1.e615792" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_variable_ef_run_1.e676725" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_variable_ef_run_2.e615797" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_variable_ef_run_2.e676729" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_variable_ef_run_3.e615801" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_cg_disorder_variable_ef_run_3.e676733" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_1.e615791" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_1.e676724" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_1.e678695" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_2.e615796" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_2.e676728" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_3.e615800" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_3.e676732" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_1.e615789" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_1.e676722" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_1.e678693" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_1.pe678693" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_2.e615794" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_2.e676726" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_2.e678706" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_2.pe678706" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_3.e615798" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_variable_ef_run_3.e676730" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_run_1.e511218" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_run_2.e511223" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_run_3.e511227" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_variable_ef_run_1.e511220" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_variable_ef_run_1.e511269" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_variable_ef_run_2.e511224" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_variable_ef_run_2.e511271" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_variable_ef_run_3.e511228" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_cg_disorder_variable_ef_run_3.e511273" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_run_1.e511216" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_run_2.e511221" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_run_3.e511225" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_variable_ef_run_1.e511217" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_variable_ef_run_1.e511268" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_variable_ef_run_2.e511222" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_variable_ef_run_2.e511270" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_variable_ef_run_3.e511226" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_10_r_disorder_variable_ef_run_3.e511272" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_1_r_disorder_run_1.e503770" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_1_r_disorder_run_1.e590174" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_1_r_disorder_run_2.e503775" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_1_r_disorder_run_2.e590179" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_1_r_disorder_run_3.e503781" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_1_r_disorder_run_3.e590185" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_1.e503648" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_1.e503771" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_1.e590175" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_2.e503649" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_2.e503776" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_2.e590181" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_3.e503650" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_3.e503782" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_2_r_disorder_run_3.e590186" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_3_r_disorder_run_1.e503772" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_3_r_disorder_run_1.e590176" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_3_r_disorder_run_2.e503777" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_3_r_disorder_run_2.e590182" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_3_r_disorder_run_3.e503783" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_3_r_disorder_run_3.e590187" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_4_r_disorder_run_1.e503773" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_4_r_disorder_run_1.e590177" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_4_r_disorder_run_2.e503778" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_4_r_disorder_run_2.e590183" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_4_r_disorder_run_3.e503784" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_4_r_disorder_run_3.e590188" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_5_r_disorder_run_1.e503774" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_5_r_disorder_run_1.e590178" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_5_r_disorder_run_2.e503780" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_5_r_disorder_run_2.e590184" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_5_r_disorder_run_3.e503785" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_1_5_r_disorder_run_3.e590189" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_run_1.e511232" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_run_1.e555390" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_run_2.e511236" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_run_2.e555394" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_run_3.e511240" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_run_3.e555398" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_variable_ef_run_1.e511233" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_variable_ef_run_1.e555392" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_variable_ef_run_2.e511237" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_variable_ef_run_2.e555396" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_variable_ef_run_3.e511241" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_cg_disorder_variable_ef_run_3.e555400" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_run_1.e511229" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_run_1.e555391" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_run_2.e511234" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_run_2.e555395" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_run_3.e511238" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_run_3.e555399" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_variable_ef_run_1.e511231" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_variable_ef_run_1.e555389" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_variable_ef_run_2.e511235" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_variable_ef_run_2.e555393" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_variable_ef_run_3.e511239" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_5_10_r_disorder_variable_ef_run_3.e555397" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +171,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.dots_array">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -98,7 +204,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 5 -N 10 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 100 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_5_10_r_disorder_run_1 -o 2d_array_bgu --full --plot-current-map   --symmetric-v" />
+      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg_jj_array -o dbg_sc --full --dbg --symmetric-v --superconducting --gap 0.01 -T 0.1" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -199,8 +305,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array" />
+        <item itemvalue="Python.results_processor" />
       </list>
     </recent_temporary>
   </component>
@@ -243,12 +349,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1516</line>
+          <line>1521</line>
           <option name="timeStamp" value="202" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1720</line>
+          <line>1725</line>
           <option name="timeStamp" value="308" />
         </line-breakpoint>
       </breakpoints>
