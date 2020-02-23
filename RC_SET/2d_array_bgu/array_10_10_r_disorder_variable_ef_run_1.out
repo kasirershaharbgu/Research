@@ -28,3 +28,21 @@ python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg
 Saving array parameters
 Normal prototype array was created
 Starting parallel run
+
+python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_r_disorder_variable_ef_run_1 -o 2d_array_bgu --full --current-map  --resume --symmetric-v  --variable-ef
+
+Loading array parameters
+Normal prototype array was created
+Starting parallel run
+
+python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_r_disorder_variable_ef_run_1 -o 2d_array_bgu --full --current-map  --resume --symmetric-v  --variable-ef
+
+Loading array parameters
+Normal prototype array was created
+Starting parallel run
+
+python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_r_disorder_variable_ef_run_1 -o 2d_array_bgu --full --current-map  --resume --symmetric-v  --variable-ef
+
+Loading array parameters
+Normal prototype array was created
+Starting parallel run
