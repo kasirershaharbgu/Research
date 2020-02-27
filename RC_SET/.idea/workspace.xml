@@ -3,6 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/deltaEmax.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/deltaEmin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/deltaEstep.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/vals.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_sc/dbg_jj_array_temp_Rh.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg_sc/dbg_jj_array_temp_Rh.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/deltaEmax.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/deltaEmin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/deltaEstep.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/vals.npy" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +107,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg_jj_array -o dbg_sc --full --dbg --symmetric-v --superconducting --gap 0.01 -T 0.1" />
+      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg_jj_array -o dbg_sc --full --dbg --symmetric-v --superconducting --gap 0.2 -T 0.02" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -242,12 +252,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1521</line>
+          <line>1530</line>
           <option name="timeStamp" value="202" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1725</line>
+          <line>1734</line>
           <option name="timeStamp" value="308" />
         </line-breakpoint>
       </breakpoints>

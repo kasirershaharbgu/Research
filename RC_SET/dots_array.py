@@ -1,5 +1,7 @@
 __author__ = 'shahar'
 
+import os
+os.environ["OPENBLAS_NUM_THREADS"] = "4"
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
@@ -8,7 +10,6 @@ import matplotlib.animation as animation
 # from mayavi import mlab
 from optparse import OptionParser
 import re
-import os
 from multiprocessing import Pool
 from scipy.linalg import null_space
 from scipy.integrate import cumtrapz, dblquad
@@ -90,7 +91,10 @@ def fermi_dirac_dist(x,T):
         return 1/(1 + np.exp(x/T))
 
 def qp_density_of_states(x,energy_gap):
-    return np.abs(x) / np.sqrt(x**2-energy_gap**2)
+    arg = x**2-energy_gap**2
+    if arg < EPS:
+        arg = EPS
+    return np.abs(x) / np.sqrt(arg)
 
 def cp_tunneling(x, Ec, Ej, T):
     return (np.pi*Ej)**2 * high_impadance_p(x, Ec, T, 2)
@@ -99,21 +103,24 @@ def qp_integrand(x2, x1, deltaE, Ec, gap, T):
     return qp_density_of_states(x1, gap)*qp_density_of_states(x2, gap)*fermi_dirac_dist(-x1, T)\
            *fermi_dirac_dist(x2, T)*high_impadance_p(x2-x1 - deltaE, Ec, T, 1)
 
+
+
 def qp_tunneling_single(deltaE, Ec, gap, T):
-    part1 = dblquad(qp_integrand, -np.infty, -gap, lambda x: -np.infty,
-                    lambda x: -gap, args=(deltaE,Ec, gap, T))[0]
-    part2 = dblquad(qp_integrand, -np.infty, -gap, lambda x: gap,
+    part1 = dblquad(qp_integrand, -np.infty, -gap-EPS, lambda x: -np.infty,
+                    lambda x: -gap-EPS, args=(deltaE,Ec, gap, T))[0]
+    part2 = dblquad(qp_integrand, -np.infty, -gap-EPS, lambda x: gap,
                     lambda x: np.infty, args=(deltaE,Ec, gap, T))[0]
-    part3 = dblquad(qp_integrand, gap, np.infty, lambda x: -np.infty,
-                    lambda x: -gap, args=(deltaE,Ec, gap, T))[0]
-    part4 = dblquad(qp_integrand, gap, np.infty, lambda x: gap,
-                    lambda x: np.infty, args=(deltaE,Ec, gap, T))[0]
+    part3 = dblquad(qp_integrand, gap+EPS, np.infty, lambda x: -np.infty,
+                    lambda x: -gap-EPS, args=(deltaE,Ec, gap, T))[0]
+    part4 = dblquad(qp_integrand, gap+EPS, np.infty, lambda x: gap,
+                    lambda x: np.infty+EPS, args=(deltaE,Ec, gap, T))[0]
     return part1 + part2 + part3 + part4
 
 def qp_tunneling(deltaE, Ec, gap, T):
         res = np.zeros(deltaE.shape)
         for ind,val in enumerate(deltaE):
             res[ind] = np.exp(val/T)*qp_tunneling_single(val, Ec, gap, T)
+            # res[ind] =  qp_tunneling_single(val, Ec, gap, T)
         return res
 
 class TunnelingRateCalculator:
@@ -165,6 +172,7 @@ class TunnelingRateCalculator:
         self.approx = interp1d(self.deltaEvals, self.vals, assume_sorted=True)
 
     def increase_high_limit(self):
+        print("Increasing high limit")
         new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
         new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
         new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
@@ -176,6 +184,7 @@ class TunnelingRateCalculator:
         print("High limit increased, Emax= " + str(self.deltaEmax))
 
     def decrease_low_limit(self):
+        print("Decreasing low limit")
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
         new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
         new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
@@ -187,9 +196,9 @@ class TunnelingRateCalculator:
         print("Low limit dencreased, Emin= " + str(self.deltaEmin))
 
     def get_tunnling_rates(self, deltaE):
-        while self.deltaEmin - np.min(deltaE) >= -EPS:
+        while self.deltaEmin - np.min(deltaE) >= self.deltaEstep:
             self.decrease_low_limit()
-        while self.deltaEmax - np.max(deltaE) <= EPS:
+        while self.deltaEmax - np.max(deltaE) <= -self.deltaEstep:
             self.increase_high_limit()
         return self.approx(deltaE)
 
@@ -817,8 +826,8 @@ class JJArray(DotArray):
         vertConstWorkCp = (2*self.commonVert).flatten()
 
         self.constWorkCp = np.hstack((rightConstWorkCp, leftConstWorkCp, vertConstWorkCp, vertConstWorkCp))
-        self.rates = np.zeros(2*self.variableWork.shape)
-        self.cumRates = np.zeros(2*self.variableWork.shape)
+        self.rates = np.zeros((2*self.variableWork.size,))
+        self.cumRates = np.zeros((2*self.variableWork.size,))
 
     def getWork(self):
         qp_work = super().getWork()
