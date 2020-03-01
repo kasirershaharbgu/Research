@@ -3,16 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/deltaEmax.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/deltaEmin.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/deltaEstep.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.01_0.012498865053282439/vals.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dbg_sc/dbg_jj_array_temp_Rh.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg_sc/dbg_jj_array_temp_Rh.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/deltaEmax.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/deltaEmin.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/deltaEstep.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.01_0.1/vals.npy" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
