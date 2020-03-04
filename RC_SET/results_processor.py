@@ -239,7 +239,7 @@ class SingleResultsProcessor:
             plt.figure()
             for i in range(len(self.full_I)):
                 plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], '.',
-                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '.')
+                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '*')
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
 
@@ -460,22 +460,20 @@ if __name__ == "__main__":
     # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
     # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
 
-    # directory = "1d_array_small_step_bgu"
-    # for name in ['array_1_1_r_disorder_run_',
-    #              'array_1_2_r_disorder_run_',
-    #              'array_1_3_r_disorder_run_',
-    #              'array_1_4_r_disorder_run_',
-    #              'array_1_5_r_disorder_run_']:
-    #     for run in [1,2,3]:
-    #         s = SingleResultsProcessor(directory, name + str(run),
+    # directory = "2d_array_bgu"
+    # for name in ['array_10_10_r_disorder_cg_disorder_run_1',
+    #              'array_10_10_r_disorder_cg_disorder_run_2',
+    #              'array_10_10_r_disorder_cg_disorder_variable_ef_run_1',
+    #              'array_10_10_r_disorder_run_2',
+    #              'array_10_10_r_disorder_variable_ef_run_1',
+    #              'array_10_10_r_disorder_variable_ef_run_2',
+    #              'array_10_10_r_disorder_variable_ef_run_3']:
+    #     s = SingleResultsProcessor(directory, name,
     #                                    fullOutput=True)
-    #         s.save_re_analysis()
+    #     s.save_re_analysis()
 
-    # s = SingleResultsProcessor("2d_array_bgu", "array_5_10_r_disorder_run_1",
-    #                            fullOutput=True)
-    # s.save_re_analysis()
     directory = "2d_array_bgu"
-    name = "array_5_10_r_disorder_run_1"
+    name = "array_10_10_r_disorder_variable_ef_run_2"
     s = SingleResultsProcessor(directory, name,fullOutput=True)
     s.plot_results()
     plt.show()
