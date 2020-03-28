@@ -1,0 +1,7 @@
+
+python3 dots_array.py -M 20 -N 20 --vmin 0 --vmax 5 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 1 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.01 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name 20_20_run_1 -o big_array_finite_T_slurm     --symmetric-v
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+slurmstepd: error: *** JOB 1255434 ON node010 CANCELLED AT 2019-12-17T05:46:14 DUE TO TIME LIMIT ***

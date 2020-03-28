@@ -1,0 +1,37 @@
+-------Running parameters--------
+M = 1
+N = 10
+VR = 0.0
+Vmin = 0.0
+Vmax = 20.0
+vStep = 0.01
+repeats = 20
+fileName = uniform_r_disorder_1_10
+dist = uniform
+fullOutput = False
+output_folder = 2D_Array/slurm_run_different_disorder
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 10
+VG: [[0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]]
+CG: [[10. 10. 10. 10. 10. 10. 10. 10. 10. 10.]]
+RG: [[1000. 1000. 1000. 1000. 1000. 1000. 1000. 1000. 1000. 1000.]]
+Ch: [[1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]]
+Cv: [[0.]]
+Rh: [[11.90742054 16.68509517  9.87995995  6.35188317 10.68712195  6.1163262
+  12.39491224  9.53403016 14.04014923  9.24482716  1.59627685]]
+Rv: []

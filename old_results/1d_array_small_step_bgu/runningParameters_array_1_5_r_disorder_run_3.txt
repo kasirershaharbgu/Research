@@ -1,0 +1,65 @@
+-------Running parameters--------
+T = 0.0
+gap = 0
+M = 1
+N = 5
+VR = 0.0
+Vmin = 0.0
+Vmax = 2.0
+vStep = 0.001
+vSym = True
+repeats = 20
+fileName = array_1_5_r_disorder_run_3
+dist = exp
+fullOutput = True
+use_graph = False
+current_map = False
+plot_current_map = False
+dbg = False
+resume = False
+sc = False
+leaping = False
+constQ = False
+modifyR = False
+output_folder = 1d_array_small_step_bgu
+params_path = 
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+custom_rh = ""
+custom_rv = ""
+custom_ch = ""
+custom_cv = ""
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 5
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]]
+RG: [[1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]]
+Ch: [[1. 1. 1. 1. 1. 1.]]
+Cv: [[0.]]
+Rh: [[11.01915907  1.24227371  4.1376961  14.40551822 10.85755428 18.02014598]]
+Rv: []

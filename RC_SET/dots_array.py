@@ -1045,13 +1045,14 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         err = ALLOWED_ERR*2
+        not_decreasing = 0
         # plot = True
         # if plot:
         #     Qs = []
         #     Qn = []
         #     ts = []
         #     t=0
-        while err > ALLOWED_ERR:
+        while err > ALLOWED_ERR and not_decreasing < STEADY_STATE_REP:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
             else:
@@ -1071,6 +1072,8 @@ class Simulator:
             #     ts.append(t)
             if steps % self.minSteps == 0:
                 new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
+                if err < new_err:
+                    not_decreasing += 1
                 err = new_err
                 n_avg = np.zeros(
                     (self.dotArray.getRows(), self.dotArray.getColumns()))
@@ -1629,7 +1632,10 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
         V = np.load(basePath + "_V.npy")
-        saveCurrentMaps(avgImaps, V, basePath + "_Imap")
+        if fullOutput:
+            n = np.load(basePath + "_n.npy")
+        saveCurrentMaps(avgImaps, V, basePath + "_Imap",full=fullOutput,
+                        n=n)
         exit(0)
     if not resume:
         print("Saving array parameters")
@@ -1785,46 +1791,80 @@ def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=Fa
         os.remove(baseName + "_current_map.npy")
     return True
 
-def saveCurrentMaps(Imaps, V, path):
+def saveCurrentMaps(Imaps, V, path, full=False, n=None):
     Writer = animation.writers['ffmpeg']
     writer = Writer(fps=24, bitrate=1800)
-    fig = plt.figure()
+    fig, ax = plt.subplots()
     Imax = np.max(Imaps)
     M,N = Imaps[0].shape
-    im = plt.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=-Imax / 2,
-                    vmax=Imax / 2, animated=True, cmap='plasma', aspect='equal')
-    text = plt.text(1, 1, 'Vext = 0')
-    plt.colorbar()
-    frames = [(Imaps[i], V[i]) for i in range(len(V))]
-    im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N),
-                                     frames=frames, interval=100,
-                                     repeat_delay=1000,
-                                     blit=True)
+    im = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=-Imax / 2,
+                    vmax=Imax / 2, animated=True, cmap='PuOr', aspect='equal')
+    text = ax.text(1, 1, 'Vext = 0')
+    cb1 = plt.colorbar(im, shrink=0.25)
+    cb1.set_label('Current')
+    if full:
+        nmax = np.max(n)
+        nmin = np.min(n)
+        im2 = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)),
+                        vmin=nmin, vmax=nmax, animated=True, cmap='RdBu',
+                        aspect='equal')
+        cb2 = plt.colorbar(im2, shrink=0.25)
+        cb2.set_label('Occupation')
+        frames = [(Imaps[i], V[i], n[i]) for i in range(len(V))]
+        im_ani = animation.FuncAnimation(fig,
+                                         plotCurrentMaps(im, text, M, N, full=True, im2=im2),
+                                         frames=frames, interval=100,
+                                         repeat_delay=1000,
+                                         blit=True)
+    else:
+        frames = [(Imaps[i], V[i]) for i in range(len(V))]
+        im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N),
+                                        frames=frames, interval=100,
+                                         repeat_delay=1000,
+                                        blit=True)
     im_ani.save(path + '.mp4', writer=writer)
     plt.close(fig)
 
-def plotCurrentMaps(im, text, M, N):
+def plotCurrentMaps(im, text, M, N, full=False, im2=None):
     '''
     updating the plot to current currents map
     :return: image for animation
     '''
     J = np.zeros(((M//2)*3+1,N*3))
-    vertRows = np.arange(0,(M//2)*3+1,3)
-    vertCols = np.repeat(np.arange(0,3*N,3),2)
-    vertCols[1::2] += 1
-    horzRows = np.repeat(np.arange(1, (M//2)*3+1, 3),2)
-    horzRows[1::2] += 1
-    horzCols = np.arange(2,3*N,3)
-
+    horzRows = np.arange(0,(M//2)*3+1,3)
+    horzCols = np.repeat(np.arange(0,3*N,3),2)
+    horzCols[1::2] += 1
+    vertRows = np.repeat(np.arange(1, (M//2)*3+1, 3),2)
+    vertRows[1::2] += 1
+    vertCols = np.arange(2,3*N,3)
+    Jmask = np.ones(J.shape)
+    Jmask[np.ix_(horzRows, horzCols)] = 0
+    Jmask[np.ix_(vertRows, vertCols)] = 0
+    if full:
+        dot_rows = horzRows
+        dot_cols = vertCols[:-1]
+        dots_im = J.copy()
+        dots_im_mask = np.ones(J.shape)
+        dots_im_mask[np.ix_(dot_rows, dot_cols)] = 0
     def updateCurrent(result):
-        I, Vext = result
+        if full:
+            I, Vext, n = result
+        else:
+            I, Vext = result
         if I is None:
             return im
-        J[np.ix_(vertRows, vertCols)] = np.repeat(I[0:M:2,:],2,axis=1)
-        J[np.ix_(horzRows, horzCols)] = np.repeat(I[1:M:2,:],2,axis=0)
-        im.set_array(J)
+        J[np.ix_(horzRows, horzCols)] = np.repeat(I[0:M:2,:],2,axis=1)
+        J[np.ix_(vertRows, vertCols)] = np.repeat(I[1:M:2,:],2,axis=0)
+        J_masked = np.ma.masked_array(J,Jmask)
+        im.set_array(J_masked)
         text.set_text('Vext = ' + str(Vext))
-        return im,text
+        if full:
+            dots_im[np.ix_(dot_rows, dot_cols)] = n
+            dots_im_masked = np.ma.masked_array(dots_im, dots_im_mask)
+            im2.set_array(dots_im_masked)
+            return im, text, im2
+        else:
+            return im,text
     return updateCurrent
 
 def getOptions():

@@ -1,0 +1,81 @@
+-------Running parameters--------
+T = 0.0
+gap = 0
+M = 1
+N = 10
+VR = 0.0
+Vmin = 0.0
+Vmax = 4.0
+vStep = 0.1
+vSym = True
+repeats = 1
+fileName = array_1_10_dbg_1
+dist = exp
+fullOutput = True
+use_graph = False
+current_map = False
+plot_current_map = False
+dbg = True
+resume = False
+sc = False
+leaping = False
+constQ = False
+modifyR = False
+output_folder = 1d_array_bgu
+params_path = 1d_array_bgu\\runningParameters_array_1_10_r_disorder_cg_disorder_run_2.txt
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+custom_rh = 
+custom_rv = 
+custom_ch = 
+custom_cv = 
+RG_avg = 100.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 10
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[ 8.84023413]
+ [10.22365957]
+ [ 7.06356274]
+ [ 9.34195781]
+ [ 8.79764241]
+ [10.7938586 ]
+ [ 7.11969997]
+ [12.75148947]
+ [11.03430191]
+ [12.73439974]]
+RG: [[100.]
+ [100.]
+ [100.]
+ [100.]
+ [100.]
+ [100.]
+ [100.]
+ [100.]
+ [100.]
+ [100.]]
+Ch: [[1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]]
+Cv: [[0.]]
+Rh: [[ 2.16796916  2.66849515  3.49309694  1.87821479  1.12520707  3.04771352
+   1.11732514 10.07229889  2.85977006 10.10015187  1.073765  ]]
+Rv: []

@@ -1,0 +1,3 @@
+
+python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.2 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 60 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution uniform --custom-rh  --custom-rv  --custom-ch  --custom-cv  --file-name uniform_r_c_disorder_5_5 -o 2D_square_arrays_with_current_map_symmetric_v  --current-map  , --symmetric-v
+

@@ -1,0 +1,52 @@
+-------Running parameters--------
+T = 0
+M = 2
+N = 1
+VR = 0.0
+Vmin = 0.0
+Vmax = 30.0
+vStep = 5.0
+repeats = 1
+fileName = increasing_r_increasing_c_2_1
+dist = uniform
+fullOutput = True
+use_graph = False
+current_map = True
+plot_current_map = False
+dbg = True
+resume = False
+output_folder = dbg
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 1.0
+R_std = 0.0
+custom_rh = [[1,10],[1,10]]
+custom_rv = [[1]]
+custom_ch = [[1,10],[1,10]]
+custom_cv = [[1]]
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 2
+Columns: 1
+VG: [[0.]
+ [0.]]
+CG: [[10.]
+ [10.]]
+RG: [[1000.]
+ [1000.]]
+Ch: [[ 1 10]
+ [ 1 10]]
+Cv: [[0.]
+ [1.]]
+Rh: [[ 1 10]
+ [ 1 10]]
+Rv: [[1]]

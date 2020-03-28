@@ -1,0 +1,7 @@
+
+python3 dots_array.py -M 20 -N 20 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.2 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh  --custom-rv  --custom-ch  --custom-cv  --file-name exp_r_c_disorder_20_20 -o 2D_square_arrays_with_current_map_symmetric_v  --current-map   --symmetric-v
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+slurmstepd: error: *** JOB 1208256 ON node012 CANCELLED AT 2019-11-15T12:40:45 DUE TO TIME LIMIT ***

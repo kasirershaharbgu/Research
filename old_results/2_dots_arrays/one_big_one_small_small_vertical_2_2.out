@@ -1,0 +1,4 @@
+
+python3 dots_array.py -M 2 -N 2 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh "[[10,10,10],[1,1,1]]" --custom-rv "[[1,1]]" --file-name one_big_one_small_small_vertical_2_2 -o 2_dots_arrays  --current-map
+
+slurmstepd: error: *** JOB 1133971 ON node010 CANCELLED AT 2019-10-09T18:06:38 ***
