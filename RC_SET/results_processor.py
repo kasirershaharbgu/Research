@@ -1,9 +1,5 @@
 import numpy as np
-import matplotlib
 from matplotlib import pyplot as plt
-font = {'family' : 'normal',
-        'weight' : 'bold',
-        'size'   : 22}
 from matplotlib import colors
 from scipy import integrate
 from ast import literal_eval
@@ -222,63 +218,21 @@ class SingleResultsProcessor:
         plt.figure()
         plt.plot(self.V[1:self.mid_idx], diff1, self.V[self.mid_idx:-1], diff2)
         plt.figure()
-        plt.plot(freq1, fou1, label="increasing voltage")
-        plt.plot(freq2, fou2, label="decreasing voltage")
-        plt.xlabel("Frequency [1/V]")
-        plt.ylabel("Fourier amplitude")
-        plt.legend()
+        plt.plot(freq1, fou1, freq2, fou2)
 
-
-    def plot_array_params(self, parameter):
-        M = self.runningParams["M"]*2 - 1
-        N = self.runningParams["N"] + 1
-        im = np.zeros(((M//2)*3+1,N*3))
-        if parameter in ["R", "C"]:
-            horzRows = np.arange(0, (M // 2) * 3 + 1, 3)
-            horzCols = np.repeat(np.arange(0, 3 * N, 3), 2)
-            horzCols[1::2] += 1
-            vertRows = np.repeat(np.arange(1, (M // 2) * 3 + 1, 3), 2)
-            vertRows[1::2] += 1
-            vertCols = np.arange(2, 3 * N, 3)
-            vertCols = vertCols[:-1]
-            data_horz = self.arrayParams["Ch"] if parameter == "C" else self.arrayParams["Rh"]
-            data_vert = self.arrayParams["Cv"] if parameter == "C" else self.arrayParams["Rv"]
-            if parameter == "C":
-                data_vert = data_vert[1:,:]
-            im[np.ix_(horzRows, horzCols)] = np.repeat(data_horz,2,axis=1)
-            im[np.ix_(vertRows, vertCols)] = np.repeat(data_vert,2,axis=0)
-            data_max = max(np.max(data_horz), np.max(data_vert))
-            data_min = min(np.min(data_horz), np.min(data_vert))
-            cmap='Reds'
-        else:
-            rows = np.arange(0, (M // 2) * 3 + 1, 3)
-            cols = np.arange(2, 3 * N, 3)
-            cols = cols[:-1]
-            data = self.arrayParams["CG"] if parameter == "CG" else\
-                self.arrayParams["RG"] if parameter == "RG" else self.arrayParams["VG"]
-            data = np.reshape(data, (self.runningParams["M"], self.runningParams["N"]))
-            cmap='RdBu' if parameter=="VG" else 'Greens'
-            im[np.ix_(rows, cols)] = data
-            data_max = np.max(data)
-            data_min = np.min(data)
-        plt.figure()
-        plt.imshow(im, vmin=data_min, vmax=data_max, cmap=cmap,
-                   aspect='equal')
-        cb = plt.colorbar()
-        cb.set_label(parameter)
 
     def plot_results(self):
-        IplusErr = self.I + self.IErr
-        IminusErr = self.I - self.IErr
-        plt.figure()
-        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
-                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
-                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
-                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
-        plt.xlabel('Voltage')
-        plt.ylabel('Current')
+        # IplusErr = self.I + self.IErr
+        # IminusErr = self.I - self.IErr
+        # plt.figure()
+        # plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
+        #          self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
+        #          self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
+        #          self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
+        #          self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
+        #          self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+        # plt.xlabel('Voltage')
+        # plt.ylabel('Current')
         if self.full:
             # plt.figure()
             n = self.n.reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
@@ -290,8 +244,8 @@ class SingleResultsProcessor:
             nminusErr = n - nErr
             QplusErr = Q + QErr
             QminusErr = Q - QErr
-            plt.figure()
-            for i in range(0,10):
+            for i in range(6,100,10):
+                plt.figure()
                 plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
                          self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
                          self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
@@ -556,13 +510,11 @@ if __name__ == "__main__":
     #     s.save_re_analysis()
 
     directory = "2d_array_bgu"
-    name = "array_10_10_r_disorder_cg_disorder_run_"
-    for run in ["2"]:
+    name = "array_10_10_r_disorder_run_"
+    for run in ["1"]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True)
         # s.calc_jumps_freq()
         # s.clac_fourier()
-        # s.plot_array_params("R")
-        # s.plot_array_params("CG")
         s.plot_results()
     plt.show()
 
