@@ -1045,13 +1045,14 @@ class Simulator:
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         err = ALLOWED_ERR*2
+        not_decreasing = 0
         # plot = True
         # if plot:
         #     Qs = []
         #     Qn = []
         #     ts = []
         #     t=0
-        while err > ALLOWED_ERR:
+        while err > ALLOWED_ERR and not_decreasing < STEADY_STATE_REP:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
             else:
@@ -1071,6 +1072,8 @@ class Simulator:
             #     ts.append(t)
             if steps % self.minSteps == 0:
                 new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
+                if err < new_err:
+                    not_decreasing += 1
                 err = new_err
                 n_avg = np.zeros(
                     (self.dotArray.getRows(), self.dotArray.getColumns()))
