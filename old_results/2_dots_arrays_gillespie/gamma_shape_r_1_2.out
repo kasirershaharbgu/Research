@@ -1,3 +1,0 @@
-
-python3 dots_array.py -M 1 -N 2 --vmin -2 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh "[[1,10,1]]" --custom-rv "[[]]" --file-name gamma_shape_r_1_2 -o 2_dots_arrays_gillespie --full "" 
-
