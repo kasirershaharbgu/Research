@@ -1,0 +1,81 @@
+-------Running parameters--------
+T = 0.01
+gap = 0
+M = 1
+N = 10
+VR = 0.0
+Vmin = 0.0
+Vmax = 5.0
+vStep = 0.05
+vSym = True
+repeats = 20
+fileName = 1_10_shorter_var_ef_cr_disorder_run_3
+dist = exp
+fullOutput = True
+use_graph = False
+current_map = True
+plot_current_map = False
+dbg = False
+resume = False
+sc = False
+leaping = False
+modifyR = True
+output_folder = 1d_array
+params_path = 
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 1.0
+CG_avg = 10.0
+CG_std = 1.0
+R_avg = 10.0
+R_std = 5.0
+custom_rh = ""
+custom_rv = ""
+custom_ch = ""
+custom_cv = ""
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 10
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[ 9.06580541]
+ [10.02363885]
+ [ 9.09558545]
+ [10.68524747]
+ [ 9.45369501]
+ [10.26945202]
+ [10.20716049]
+ [ 9.95654198]
+ [10.65201575]
+ [10.92913286]]
+RG: [[1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]]
+Ch: [[0.06332043 0.48632687 1.30401621 0.06838234 0.09596306 0.02911319
+  0.59341246 1.09849028 0.0218648  0.38583399 0.32294243]]
+Cv: [[0.]]
+Rh: [[ 8.28556321  6.45788115  8.26550718  6.33422588  7.46185291  7.65001698
+   7.16176279 14.75986454  7.02668372 13.81172076  7.53814494]]
+Rv: []

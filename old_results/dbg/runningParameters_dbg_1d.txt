@@ -1,0 +1,79 @@
+-------Running parameters--------
+T = 0.01
+gap = 0
+M = 1
+N = 10
+VR = 0.0
+Vmin = 2.0
+Vmax = 4.0
+vStep = 0.01
+vSym = True
+repeats = 1
+fileName = dbg_1d
+dist = uniform
+fullOutput = True
+use_graph = False
+current_map = False
+plot_current_map = False
+dbg = True
+resume = False
+sc = False
+leaping = False
+modifyR = False
+output_folder = dbg
+params_path = 1d_array\\runningParameters_1_10_run_3.txt
+VG_avg = 1
+VG_std = 0
+C_avg = 1
+C_std = 0
+CG_avg = 1
+CG_std = 0
+R_avg = 1
+R_std = 0
+custom_rh = 
+custom_rv = 
+custom_ch = 
+custom_cv = 
+RG_avg = 1
+RG_std = 0
+n0_avg = 0
+n0_std = 0
+Q0_avg = 0
+Q0_std = 0
+----Array Parameters-----
+Rows: 1
+Columns: 10
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[ 9.18863367]
+ [ 9.94202205]
+ [ 9.77669872]
+ [ 9.79240754]
+ [ 9.83965705]
+ [ 9.62227483]
+ [10.01793913]
+ [ 9.64744998]
+ [ 9.31160915]
+ [ 9.8724781 ]]
+RG: [[1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]]
+Ch: [[1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]]
+Cv: [[0.]]
+Rh: [[10. 10. 10. 10. 10. 10. 10. 10. 10. 10. 10.]]
+Rv: []

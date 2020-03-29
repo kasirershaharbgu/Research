@@ -1,0 +1,4 @@
+
+python3 dots_array.py -M 2 -N 2 --vmin 0 --vmax 20 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.5 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution uniform --custom-rh "[[10,10,10],[1,1,1]]" --custom-rv "[[10,10]]" --file-name one_big_one_small_2_2 -o 2D_square_arrays_with_current_map_big_voltage_c_disorder  --current-map 
+
+slurmstepd: error: *** JOB 1158604 ON node013 CANCELLED AT 2019-10-30T18:43:29 ***

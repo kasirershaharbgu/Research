@@ -1,0 +1,56 @@
+-------Running parameters--------
+T = 0
+M = 3
+N = 3
+VR = 0.0
+Vmin = 0.0
+Vmax = 2.0
+vStep = 0.01
+repeats = 20
+fileName = cg_disorder_3_3
+dist = exp
+fullOutput = False
+use_graph = False
+current_map = True
+plot_current_map = False
+dbg = False
+output_folder = different_disorder_square_array
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 9.0
+R_avg = 10.0
+R_std = 0.0
+custom_rh = ""
+custom_rv = ""
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 3
+Columns: 3
+VG: [[0. 0. 0.]
+ [0. 0. 0.]
+ [0. 0. 0.]]
+CG: [[ 1.36864819  2.59519632  5.66048141]
+ [ 5.45010902 13.89674721 14.37260423]
+ [ 1.03535443  1.2740521  12.65453827]]
+RG: [[1000. 1000. 1000.]
+ [1000. 1000. 1000.]
+ [1000. 1000. 1000.]]
+Ch: [[1. 1. 1. 1.]
+ [1. 1. 1. 1.]
+ [1. 1. 1. 1.]]
+Cv: [[0. 0. 0.]
+ [1. 1. 1.]
+ [1. 1. 1.]]
+Rh: [[10. 10. 10. 10.]
+ [10. 10. 10. 10.]
+ [10. 10. 10. 10.]]
+Rv: [[10. 10. 10.]
+ [10. 10. 10.]]

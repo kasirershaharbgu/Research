@@ -1,0 +1,42 @@
+-------Running parameters--------
+M = 1
+N = 2
+VR = 0.0
+Vmin = -2.0
+Vmax = 5.0
+vStep = 0.01
+repeats = 20
+fileName = increasing_r_1_2
+dist = uniform
+fullOutput = True
+use_graph = False
+current_map = False
+plot_current_map = False
+dbg = False
+output_folder = 2_dots_arrays_c_disorder
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.5
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 0.0
+custom_rh = "[[1,10,20]]"
+custom_rv = "[[]]"
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 2
+VG: [[0. 0.]]
+CG: [[10. 10.]]
+RG: [[1000. 1000.]]
+Ch: [[1.01410567 0.75648274 0.7279305 ]]
+Cv: [[0.]]
+Rh: [[ 1 10 20]]
+Rv: []

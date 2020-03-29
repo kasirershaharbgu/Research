@@ -1,0 +1,19 @@
+
+python3 dots_array.py -M 2 -N 2 --vmin 0 --vmax 1 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 --distribution two_points --custom-rh "" --custom-rv "" --file-name current_mp_dbg -o dbg  --current-map
+
+Traceback (most recent call last):
+  File "dots_array.py", line 951, in <module>
+    printState=False, useGraph=use_graph, fastRelaxation=fast_relaxation, currentMap=current_map)
+  File "dots_array.py", line 722, in runFullSimulation
+    saveCurrentMaps(avgImaps,V, basePath + "_Imap")
+  File "dots_array.py", line 739, in saveCurrentMaps
+    im_ani.save(path + '.mp4', writer=writer)
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/matplotlib/animation.py", line 1174, in save
+    writer.grab_frame(**savefig_kwargs)
+  File "/usr/local/anaconda3/lib/python3.7/contextlib.py", line 119, in __exit__
+    next(self.gen)
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/matplotlib/animation.py", line 232, in saving
+    self.finish()
+  File "/usr/local/anaconda3/lib/python3.7/site-packages/matplotlib/animation.py", line 534, in finish
+    .format(self._proc.returncode))
+RuntimeError: Error creating movie, return code: 127

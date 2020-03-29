@@ -1,0 +1,53 @@
+-------Running parameters--------
+T = 0
+M = 2
+N = 2
+VR = 0.0
+Vmin = 0.0
+Vmax = 2.0
+vStep = 0.01
+vSym = True
+repeats = 20
+fileName = ushape_r_const_c_big_connect_c_small_connect_r_2_2
+dist = uniform
+fullOutput = True
+use_graph = False
+current_map = True
+plot_current_map = False
+dbg = False
+resume = False
+output_folder = 2X2_dots_arrays_symmetric_v
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 1.0
+R_std = 0.0
+custom_rh = "[[1,10,1],[1,10,1]]"
+custom_rv = "[[1,1]]"
+custom_ch = "[[0.5,0.5,0.5],[0.5,0.5,0.5]]"
+custom_cv = "[[1,1]]"
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 2
+Columns: 2
+VG: [[0. 0.]
+ [0. 0.]]
+CG: [[10. 10.]
+ [10. 10.]]
+RG: [[1000. 1000.]
+ [1000. 1000.]]
+Ch: [[0.5 0.5 0.5]
+ [0.5 0.5 0.5]]
+Cv: [[0. 0.]
+ [1. 1.]]
+Rh: [[ 1 10  1]
+ [ 1 10  1]]
+Rv: [[1 1]]
