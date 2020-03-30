@@ -560,10 +560,10 @@ if __name__ == "__main__":
     for run in ["2"]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True)
         # s.calc_jumps_freq()
-        # s.clac_fourier()
+        s.clac_fourier()
         # s.plot_array_params("R")
         # s.plot_array_params("CG")
-        s.plot_results()
+        #s.plot_results()
     plt.show()
 
 

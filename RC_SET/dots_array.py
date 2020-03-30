@@ -1621,21 +1621,21 @@ def removeRandomParams(basePath):
 def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
-                      currentMap=False, dbg=False, plotCurrentMaps=False, resume=False, superconducting=False,
+                      currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False, superconducting=False,
                       gap=0, leaping=False, modifyR=False, plotVoltages=False,
                       constQ=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         fastRelaxation = True
         repeats = 1
-    if plotCurrentMaps:
+    if plotCurrentMaps or plotBinaryCurrentMaps:
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
         V = np.load(basePath + "_V.npy")
         if fullOutput:
             n = np.load(basePath + "_n.npy")
         saveCurrentMaps(avgImaps, V, basePath + "_Imap",full=fullOutput,
-                        n=n)
+                        n=n, binary=plotBinaryCurrentMaps)
         exit(0)
     if not resume:
         print("Saving array parameters")
@@ -1791,7 +1791,11 @@ def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=Fa
         os.remove(baseName + "_current_map.npy")
     return True
 
-def saveCurrentMaps(Imaps, V, path, full=False, n=None):
+def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False):
+    if binary:
+        Imaps[Imaps>0] = 1
+        Imaps[Imaps<0] = -1
+        path += "_binary"
     Writer = animation.writers['ffmpeg']
     writer = Writer(fps=24, bitrate=1800)
     fig, ax = plt.subplots()
@@ -1915,6 +1919,13 @@ def getOptions():
                                                                           " a former run with same file name and"
                                                                           " location and the flag --current-map"
                                                                           " [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--plot-binary-current-map", dest="plot_binary_current_map",
+                      help="if true a binary clip of current distribution will"
+                           " be plotted using former saved frames (from"
+                           " a former run with same file name and"
+                           " location and the flag --current-map"
+                           " [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("--dbg", dest="dbg", help="Avoids parallel running for debugging [Default:%default]",
                       default=False, action='store_true')
@@ -2113,6 +2124,7 @@ if __name__ == "__main__":
     dbg = options.dbg
     resume = options.resume
     plot_current_map = options.plot_current_map
+    plot_binary_current_map = options.plot_binary_current_map
     modifyR = options.modifyR
     constQ = options.constQ
     if params_file:
@@ -2162,7 +2174,7 @@ if __name__ == "__main__":
                                      Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
-                                     dbg=dbg, plotCurrentMaps=plot_current_map, resume=resume,
+                                     dbg=dbg, plotCurrentMaps=plot_current_map, plotBinaryCurrentMaps=plot_binary_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping,
                                      modifyR=modifyR, constQ=constQ)
     saveParameters(savePath, fileName, options, array_params)
