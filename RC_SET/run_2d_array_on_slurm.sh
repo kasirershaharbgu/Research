@@ -14,41 +14,37 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.1
+vstep=0.01
 rg_avg=1000
 cg_avg=10
 t="5-10:00:00"
 dist="exp"
 r_std=0
 graph=""
-currentmap=""
+currentmap="--current-map"
 full=""
 resume=""
 vSym="--symmetric-v"
-resume="--resume"
+resume=""
 leaping=""
-efermi="--variable-ef"
+efermi=""
 custom_rh="\"\""
 custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
-T=0.01
+T=0
 vmax=5
-f="big_array_finite_T_slurm"
+input="2d_array_bgu/runningParameters_array_10_10_r_disorder_cg_disorder_run_2.txt"
+f="2d_array_different_temperature_slurm"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
-rows=20
-columns=20
-for run in 1 2 3
+rows=10
+columns=10
+for T in  0.01 0.1 0.5 1 5
 do
-	name="20_20_run_${run}"
-	sbatch -J="$name" --nodes=1 --ntasks-per-node="$repeats" --mem=10GB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out"  --export=M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",file_name="$name",out="$f",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",custom_rh="$custom_rh",custom_rv="$custom_rv",custom_ch="$custom_ch",custom_cv="$custom_cv",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi" run_RC_SET_on_slurm.sh
-done	
-f="big_array_finite_T_slurm_tau_leaping"
-leaping="--tau-leaping"
-for run in 1 2 3
-do
-	name="20_20_run_${run}"
-	sbatch -J="$name" --nodes=1 --ntasks-per-node="$repeats" --mem=10GB --time="$t" --partition=dept --mail-user=skasirer@princeton.edu --mail-type=end --output="$f/$name.out"  --export=M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",file_name="$name",out="$f",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",custom_rh="$custom_rh",custom_rv="$custom_rv",custom_ch="$custom_ch",custom_cv="$custom_cv",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi" run_RC_SET_on_slurm.sh
+
+	name="array_10_10_r_cg_disorder_temp_${T}"
+	sbatch -J="$name" --nodes=1 --ntasks-per-node="$repeats" --mem=10GB --time="$t" --partition=dept --mail-user=kasirer@post.bgu.ac.il --mail-type=end --output="$f/$name.out"  --export=M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",file_name="$name",out="$f",inpu"$input",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",custom_rh="$custom_rh",custom_rv="$custom_rv",custom_ch="$custom_ch",custom_cv="$custom_cv",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi" run_RC_SET_on_slurm.sh
+
 done	
