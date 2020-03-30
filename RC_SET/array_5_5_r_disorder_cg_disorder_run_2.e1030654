@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "dots_array.py", line 2130, in <module>
-    CG = create_random_array(rows, columns, options.CG_avg, options.CG_std, dist, True)
-  File "dots_array.py", line 1771, in runFullSimulation
-    np.save(basePath + "_Imap", avgImaps)
-  File "dots_array.py", line 1610, in removeRandomParams
-    os.remove(baseName + "VG.npy")
-FileNotFoundError: [Errno 2] No such file or directory: '2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_2_temp_VG.npy'
