@@ -1,6 +1,6 @@
 #!/bin/bash
 
-vmin=-2
+vmin=0
 vr=0
 vg_avg=0
 vg_std=0
@@ -15,10 +15,10 @@ n_std=0
 q_avg=0
 q_std=0
 vstep=0.01
-rg_avg=1000
+rg_avg=500
 cg_avg=10
-t="0:30:00"
-dist="uniform"
+t="5-12:00:00"
+dist="exp"
 r_std=0
 graph=""
 currentmap="--current-map"
@@ -26,15 +26,14 @@ resume=""
 full="--full"
 vSym="--symmetric-v"
 resume=""
-T=0.01
-vmax=2
-f="2X2_dots_arrays_symmetric_v_finite_T_0.01"
+vmax=4
+f="2d_array_different_temperatures"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
 
-rows=2
-columns=2
+rows=10
+columns=10
 
 custom_rh="\"[[1,1,10],[1,1,10]]\""
 name="increasing_r_one_big_one_small_c_big_connect_c_small_connect_r_2_2"
