@@ -228,6 +228,17 @@ class SingleResultsProcessor:
         plt.ylabel("Fourier amplitude")
         plt.legend()
 
+    def plot_conductance(self):
+        dI1 = np.diff(self.I[:self.mid_idx])
+        dI2 = np.diff(self.I[self.mid_idx:])
+        dV1 = np.diff(self.V[:self.mid_idx])
+        dV2 = np.diff(self.V[self.mid_idx:])
+        plt.figure()
+        plt.plot(self.V[:self.mid_idx-1], dI1/dV1, label="increasing voltage")
+        plt.plot(self.V[self.mid_idx:-1], dI2/dV2, label="decreasing voltage")
+        plt.xlabel("Voltage")
+        plt.ylabel("Conductivity")
+        plt.legend()
 
     def plot_array_params(self, parameter):
         M = self.runningParams["M"]*2 - 1
@@ -241,8 +252,8 @@ class SingleResultsProcessor:
             vertRows[1::2] += 1
             vertCols = np.arange(2, 3 * N, 3)
             vertCols = vertCols[:-1]
-            data_horz = self.arrayParams["Ch"] if parameter == "C" else self.arrayParams["Rh"]
-            data_vert = self.arrayParams["Cv"] if parameter == "C" else self.arrayParams["Rv"]
+            data_horz = np.array(self.arrayParams["Ch"]) if parameter == "C" else np.array(self.arrayParams["Rh"])
+            data_vert = np.array(self.arrayParams["Cv"]) if parameter == "C" else np.array(self.arrayParams["Rv"])
             if parameter == "C":
                 data_vert = data_vert[1:,:]
             im[np.ix_(horzRows, horzCols)] = np.repeat(data_horz,2,axis=1)
@@ -271,7 +282,7 @@ class SingleResultsProcessor:
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
         plt.figure()
-        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
+        plt.semilogy(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
                  self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
                  self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
                  self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
@@ -555,15 +566,16 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
 
-    directory = "2d_array_bgu"
-    name = "array_10_10_r_disorder_cg_disorder_run_"
+    directory = "2d_array_bgu_different_disorder"
+    name = "array_10_10_c_disorder_run_"
     for run in ["2"]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True)
+        s.plot_conductance()
         # s.calc_jumps_freq()
         s.clac_fourier()
-        # s.plot_array_params("R")
-        # s.plot_array_params("CG")
-        #s.plot_results()
+        s.plot_array_params("C")
+        s.plot_results()
+        s.save_re_analysis()
     plt.show()
 
 

@@ -1,7 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="" />
+    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/ThermalArray.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_cg_disorder_run_3_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu/array_5_5_r_disorder_run_3_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_c_disorder_run_1_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_different_disorder/array_10_10_cg_disorder_run_1_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_Qs.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_QsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_ns.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_0_nsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/array_10_10_dbg1_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg/dbg_jj_array_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +117,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="FullScreen" value="false" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../toyModel" />
+    <property name="last_opened_file_path" value="$USER_HOME$/OneDrive/University/Research/toyModel/toyModel.py" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -62,7 +149,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.dots_array">
+  <component name="RunManager" selected="Python.ThermalArray">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -82,6 +169,27 @@
       <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
+    <configuration name="ThermalArray" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="RC_SET" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ThermalArray.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="dots_array" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="RC_SET" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -95,7 +203,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 5 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 3 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 5 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o 2d_array_different_temperature_slurm --full --current-map --symmetric-v -i 2d_array_bgu/runningParameters_array_10_10_r_disorder_cg_disorder_run_2.txt --dbg" />
+      <option name="PARAMETERS" value="-M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vu 0.1 --vd -0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 2 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg_vertical_current --dbg --current-map" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="dots_array_new" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="RC_SET" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_new.py" />
+      <option name="PARAMETERS" value="-M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vu 0.1 --vd -0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg_vertical_current --dbg --plot-current-map" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -193,9 +322,13 @@
       <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.ThermalArray" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.ThermalArray" />
+        <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
       </list>
@@ -239,19 +372,40 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1533</line>
-          <option name="timeStamp" value="202" />
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>257</line>
+          <option name="timeStamp" value="312" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1737</line>
-          <option name="timeStamp" value="308" />
+          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
+          <line>1834</line>
+          <option name="timeStamp" value="313" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1150</line>
-          <option name="timeStamp" value="310" />
+          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
+          <line>519</line>
+          <option name="timeStamp" value="314" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
+          <line>525</line>
+          <option name="timeStamp" value="315" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
+          <line>1874</line>
+          <option name="timeStamp" value="316" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
+          <line>1932</line>
+          <option name="timeStamp" value="317" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="np.max(diffusion) &gt; 0.1" language="Python" />
+          <url>file://$PROJECT_DIR$/ThermalArray.py</url>
+          <line>86</line>
+          <option name="timeStamp" value="338" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

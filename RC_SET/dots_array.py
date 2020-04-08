@@ -22,7 +22,7 @@ from copy import copy
 
 EPS = 0.0001
 # Gillespie Constants
-MIN_STEPS = 1000
+MIN_STEPS = 100
 STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-4
 STEADY_STATE_REP = 10
@@ -457,7 +457,7 @@ class DotArray:
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         # print(-1/self._JeigenValues)
-        self.timeStep = -10/np.max(self._JeigenValues)
+        self.timeStep = -1/np.max(self._JeigenValues)
         self.default_dt = -0.1/np.min(self._JeigenValues)
         invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
         self._constQnPart = invMat.dot(self.VG)
@@ -874,7 +874,7 @@ class Simulator:
         self.index = index
         self.tauLeaping = dotArray.tauLeaping
         self.constQ = constQ
-        self.minSteps = MIN_STEPS*self.dotArray.columns*self.dotArray.rows
+        self.minSteps = MIN_STEPS*self.dotArray.columns
         if self.constQ:
             self.n = n0
             self.Q = Q0
@@ -1070,7 +1070,7 @@ class Simulator:
             #     Qs.append(curr_Q)
             #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
             #     ts.append(t)
-            if steps % self.minSteps == 0:
+            if steps % MIN_STEPS == 0:
                 new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
                 if err < new_err:
                     not_decreasing += 1
@@ -1632,6 +1632,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
         V = np.load(basePath + "_V.npy")
+        n=None
         if fullOutput:
             n = np.load(basePath + "_n.npy")
         saveCurrentMaps(avgImaps, V, basePath + "_Imap",full=fullOutput,
