@@ -282,7 +282,7 @@ class SingleResultsProcessor:
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
         plt.figure()
-        plt.semilogy(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
+        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
                  self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
                  self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
                  self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
@@ -566,14 +566,14 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
 
-    directory = "2d_array_bgu_different_disorder"
-    name = "array_10_10_c_disorder_run_"
-    for run in ["2"]:
+    directory = "2d_array_bgu_with_perp_curr"
+    name = "array_10_10_cg_disorder_run_"
+    for run in ["1","2"]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True)
-        s.plot_conductance()
+        # s.plot_conductance()
         # s.calc_jumps_freq()
-        s.clac_fourier()
-        s.plot_array_params("C")
+        # s.clac_fourier()
+        # s.plot_array_params("C")
         s.plot_results()
         s.save_re_analysis()
     plt.show()

@@ -5,6 +5,8 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
+import matplotlib
+matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 # from mayavi import mlab
@@ -25,7 +27,7 @@ EPS = 0.0001
 MIN_STEPS = 100
 STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-4
-STEADY_STATE_REP = 10
+STEADY_STATE_REP = 100
 INV_DOS = 0.01
 
 # Tau Leaping Constants
@@ -260,9 +262,6 @@ class DotArray:
         self.setConstWork()
         self.setConstMatrix()
         self.setConstNprimePart()
-        self.saveCurrentMap = False
-        self.Ih = np.zeros(self.Rh.shape)
-        self.Iv = np.zeros(self.Rv.shape)
         self.use_modifyR=modifyR
 
         # for variable R calculation
@@ -324,9 +323,6 @@ class DotArray:
         copy_array._right_part_n_prime = self._right_part_n_prime
         copy_array._up_part_n_prime = self._up_part_n_prime
         copy_array._down_part_n_prime = self._down_part_n_prime
-        copy_array.saveCurrentMap = self.saveCurrentMap
-        copy_array.Ih = np.copy(self.Ih)
-        copy_array.Iv = np.copy(self.Iv)
         # copy_array.I_left_sqr_avg = self.I_left_sqr_avg
         # copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         copy_array.tauLeaping = self.tauLeaping
@@ -353,15 +349,6 @@ class DotArray:
     def getColumns(self):
         return self.columns
 
-    def resetCharge(self):
-        """
-        Reset the counter for total charge passed
-        """
-        if self.saveCurrentMap:
-            self.Ih[:,:]= 0
-            self.Iv[:,:] = 0
-        return True
-
     def changeVext(self, newVL, newVR, newVU, newVD):
         self.VL = newVL
         self.VR = newVR
@@ -386,16 +373,11 @@ class DotArray:
         return self.timeStep
 
     def getCurrentMap(self):
-        if self.saveCurrentMap:
-            return self.Ih, self.Iv
-        else:
-            raise NotImplementedError
-
-    def currentMapOn(self):
-        self.saveCurrentMap = True
-
-    def currentMapOff(self):
-        self.saveCurrentMap = False
+        Ih = self.rates[:self.variableRightWorkLen] - \
+                       self.rates[self.variableRightWorkLen:2 * self.variableRightWorkLen]
+        Iv = self.rates[2 * self.variableRightWorkLen:(2 * self.variableRightWorkLen + self.variableDownWorkLen)] - \
+                      self.rates[(2 * self.variableRightWorkLen + self.variableDownWorkLen):]
+        return Ih.reshape((self.rows, self.columns + 1)), Iv.reshape((self.rows + 1, self.columns))
 
     def createCapacitanceMatrix(self):
         """
@@ -750,9 +732,6 @@ class DotArray:
         self.totalAction[1:,:] += self.down - self.up
         self.totalAction[:-1,:] += self.up - self.down
         self.n += flattenToColumn(self.totalAction)
-        if self.saveCurrentMap:
-            self.Ih += self.right - self.left
-            self.Iv += self.down - self.up
 
     def executeAction(self, ind, charge=1):
         horzSize = self.rows*(self.columns+1)
@@ -760,26 +739,18 @@ class DotArray:
         if ind < horzSize: # tunnel right:
             fromDot = (ind//(self.columns+1), (ind%(self.columns+1))-1)
             toDot = (fromDot[0], fromDot[1] + 1)
-            if self.saveCurrentMap:
-                self.Ih[toDot] += charge
         elif ind < horzSize*2: # tunnel left
             ind -= horzSize
             fromDot = (ind//(self.columns+1), ind%(self.columns+1))
             toDot = (fromDot[0], fromDot[1] - 1)
-            if self.saveCurrentMap:
-                self.Ih[fromDot] -= charge
         elif ind < horzSize*2 + vertSize: # tunnel down
             ind -= horzSize*2
             fromDot = (ind//self.columns-1, ind%self.columns)
             toDot = (fromDot[0] + 1, fromDot[1])
-            if self.saveCurrentMap:
-                self.Iv[fromDot] += charge
         else: # tunnel up
             ind -= (horzSize*2 + vertSize)
             fromDot = ((ind//self.columns), ind%self.columns)
             toDot = (fromDot[0] - 1, fromDot[1])
-            if self.saveCurrentMap:
-                self.Iv[toDot] -= charge
         self.tunnel(fromDot, toDot, charge=charge)
         if self.constQ:
             self.updateWorkForConstQ(fromDot, toDot)
@@ -918,14 +889,11 @@ class Simulator:
         return dt + intervals*self.dotArray.default_dt
 
     def calcCurrent(self,print_stats=False, fullOutput=False, currentMap=False):
-        if currentMap:
-            self.dotArray.currentMapOn()
         if self.constQ:
             self.find_next_QG_using_gradient_descent()
             self.dotArray.setOccupation(self.n)
             self.dotArray.setGroundCharge(self.Q)
             self.dotArray.getWork()
-        self.dotArray.resetCharge()
         final_t = self.dotArray.timeStep
         curr_t = 0
         steps = 0
@@ -938,6 +906,9 @@ class Simulator:
             n_var = np.zeros(n_avg.shape)
             Q_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
             Q_var = np.zeros(Q_avg.shape)
+        if currentMap:
+            Ih_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns() + 1))
+            Iv_avg = np.zeros((self.dotArray.getRows() + 1, self.dotArray.getColumns()))
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         # err = 2*ALLOWED_ERR
@@ -958,6 +929,10 @@ class Simulator:
                 Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var, curr_t, dt)
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
+            if currentMap:
+                Ih, Iv = self.dotArray.getCurrentMap()
+                Ih_avg += Ih*dt
+                Iv_avg += Iv*dt
             curr_t += dt
             # if steps%MIN_STEPS == 0:
                 # rightCurrent, leftCurrent = self.dotArray.getCharge()
@@ -975,9 +950,7 @@ class Simulator:
         if fullOutput:
             res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
         if currentMap:
-            Ih,Iv = self.dotArray.getCurrentMap()
             res = res + (Ih/curr_t, Iv/curr_t)
-            self.dotArray.currentMapOff()
         return res
 
     def calcAverageNForGivenQ(self, Q, n0, calcVoltages=False):
@@ -1747,9 +1720,11 @@ def runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh,
                 QsErr.append(QErr)
             if currentMap:
                 Ih.append(result[-3])
-                Ih.append(result[-2])
+                Iv.append(result[-2])
             Is.append(I)
             IsErr.append(IErr)
+            vertIs.append(vertI)
+            vertIsErr.append(vertIErr)
         V = result[4]
         params = result[-1]
 
@@ -2248,7 +2223,6 @@ if __name__ == "__main__":
         exit(0)
     if dbg:
         import cProfile, pstats, io
-        from pstats import SortKey
         pr = cProfile.Profile()
         pr.enable()
 
@@ -2264,7 +2238,7 @@ if __name__ == "__main__":
     if dbg:
         pr.disable()
         s = io.StringIO()
-        sortby = SortKey.CUMULATIVE
+        sortby = 'cumulative'
         ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
         ps.print_stats()
         print(s.getvalue())
