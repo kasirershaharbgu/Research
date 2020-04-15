@@ -19,7 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="" />
+    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -68,7 +72,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.dots_array">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -122,7 +126,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vu 0.1 --vd -0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 2 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg_vertical_current --dbg --current-map" />
+      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 2 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;\&quot;[[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[1,1,1,1,1,1,1,1,1,1,1],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10]]\&quot;&quot; --custom-rv &quot;\&quot;[[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10]]\&quot;&quot; --custom-ch &quot;\&quot;[[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]]\&quot;&quot; --custom-cv &quot;\&quot;[[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]]\&quot;&quot; --file-name dbg -o dbg --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -236,20 +240,20 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.ThermalArray" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
-      <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.ThermalArray" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.ThermalArray" />
-        <item itemvalue="Python.dots_array" />
       </list>
     </recent_temporary>
   </component>
@@ -287,46 +291,46 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586802138671">
+    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586961352261">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586802138671" />
+    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl" timestamp="1586778310723">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl/0.0.1366.741@0.0.1366.741" timestamp="1586778310723" />
-    <state width="1345" height="165" key="GridCell.Tab.0.bottom" timestamp="1586875728293">
+    <state width="1345" height="222" key="GridCell.Tab.0.bottom" timestamp="1586961322722">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1586875728293" />
-    <state width="1345" height="165" key="GridCell.Tab.0.center" timestamp="1586875728291">
+    <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1586961322722" />
+    <state width="1345" height="222" key="GridCell.Tab.0.center" timestamp="1586961322719">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1586875728291" />
-    <state width="1345" height="165" key="GridCell.Tab.0.left" timestamp="1586875728289">
+    <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1586961322719" />
+    <state width="1345" height="222" key="GridCell.Tab.0.left" timestamp="1586961322718">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1586875728289" />
-    <state width="1345" height="165" key="GridCell.Tab.0.right" timestamp="1586875728292">
+    <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1586961322718" />
+    <state width="1345" height="222" key="GridCell.Tab.0.right" timestamp="1586961322720">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1586875728292" />
-    <state width="1345" height="222" key="GridCell.Tab.1.bottom" timestamp="1586783796354">
+    <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1586961322720" />
+    <state width="1345" height="222" key="GridCell.Tab.1.bottom" timestamp="1586961322304">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1586783796354" />
-    <state width="1345" height="222" key="GridCell.Tab.1.center" timestamp="1586783796351">
+    <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1586961322304" />
+    <state width="1345" height="222" key="GridCell.Tab.1.center" timestamp="1586961322303">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1586783796351" />
-    <state width="1345" height="222" key="GridCell.Tab.1.left" timestamp="1586783796348">
+    <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1586961322303" />
+    <state width="1345" height="222" key="GridCell.Tab.1.left" timestamp="1586961322303">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1586783796348" />
-    <state width="1345" height="222" key="GridCell.Tab.1.right" timestamp="1586783796352">
+    <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1586961322303" />
+    <state width="1345" height="222" key="GridCell.Tab.1.right" timestamp="1586961322304">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1586783796352" />
+    <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1586961322304" />
     <state x="187" y="4" key="SettingsEditor" timestamp="1586778321810">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
@@ -337,7 +341,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>328</line>
+          <line>325</line>
           <option name="timeStamp" value="312" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -355,6 +359,21 @@
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
           <line>375</line>
           <option name="timeStamp" value="340" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>529</line>
+          <option name="timeStamp" value="342" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>460</line>
+          <option name="timeStamp" value="343" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>2162</line>
+          <option name="timeStamp" value="344" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

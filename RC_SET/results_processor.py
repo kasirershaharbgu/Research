@@ -161,13 +161,10 @@ class SingleResultsProcessor:
 
     def calc_blockade(self):
         I = self.I[:self.mid_idx]
-        IminusErr = self.I[:self.mid_idx] - self.IErr[:self.mid_idx]
-        IplusErr = self.I[:self.mid_idx] + self.IErr[:self.mid_idx]
+        IErr = self.IErr[:self.mid_idx]
         matchingV = self.V[:self.mid_idx]
-        score = np.min(np.abs(matchingV[I > EPS]))
-        high_err = np.min(np.abs(matchingV[IminusErr > EPS]))
-        low_err = np.min(np.abs(matchingV[IplusErr > EPS]))
-        return score, high_err-score, score-low_err
+        score = np.min(np.abs(matchingV[I > 2*IErr]))
+        return score, score, score
 
     def calc_jumps_score(self, window_size, up=True):
         score = 0
@@ -201,11 +198,11 @@ class SingleResultsProcessor:
         Idown = self.I[self.mid_idx:]
         IErrdown = self.IErr[self.mid_idx:]
         diffUp = np.diff(Iup) / np.diff(Vup)
-        diffErrorUp = np.add.reduceat(IErrup, range(0, len(IErrup), 2))
+        diffErrorUp = IErrup[:-1] + np.roll(IErrup,-1)[:-1]
         diffDown = np.diff(Idown) / np.diff(Vdown)
-        diffErrorDown = np.add.reduceat(IErrdown, range(0, len(IErrdown), 2))
-        upJumps = np.sum(diffUp > 2* diffErrorUp, astype=np.int)
-        downJumps = np.sum(diffDown < -2 * diffErrorDown, astype=np.int)
+        diffErrorDown = IErrdown[:-1] + np.roll(IErrdown,-1)[:-1]
+        upJumps = np.sum(diffUp > 2* diffErrorUp, dtype=np.int)
+        downJumps = np.sum(diffDown > 2 * diffErrorDown, dtype=np.int)
         return upJumps + downJumps
 
     def plot_power(self):
@@ -412,7 +409,8 @@ class SingleResultsProcessor:
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
-    def __init__(self, directories_list, files_list, relevant_running_params, relevant_array_params, out_directory):
+    def __init__(self, directories_list, files_list, relevant_running_params=None, relevant_array_params=None, out_directory = None,
+                 groups=None, group_names=None):
         """
         Initializing analyzer
         :param directories_list: list of directories for result files
@@ -433,8 +431,17 @@ class MultiResultAnalyzer:
         self.blockadeScores = []
         self.blockadeScoresHighErr = []
         self.blockadeScoresLowErr = []
-        self.arrayParams = {p: [] for p in relevant_array_params}
-        self.runningParams = {p: [] for p in relevant_running_params}
+        self.jumpsNum = []
+        if relevant_array_params:
+            self.arrayParams = {p: [] for p in relevant_array_params}
+        else:
+            self.arrayParams = dict()
+        if relevant_running_params:
+            self.runningParams = {p: [] for p in relevant_running_params}
+        else:
+            self.runningParams = dict()
+        self.groups = np.array(groups)
+        self.groupNames = group_names
         self.load_data()
 
     def load_data(self):
@@ -447,6 +454,8 @@ class MultiResultAnalyzer:
             hyst, hystHigh, hystLow = processor.calc_hysteresis_score()
             block, blockHigh, blockLow = processor.calc_blockade()
             jump, jumpHigh, jumpLow = processor.calc_jumps_score(0.1)
+            num_jumps = processor.calc_number_of_jumps()
+            self.jumpsNum.append(num_jumps)
             self.hysteresisScores.append(hyst)
             self.hysteresisScoresHighErr.append(hystHigh)
             self.hysteresisScoresLowErr.append(hystLow)
@@ -475,6 +484,10 @@ class MultiResultAnalyzer:
             scores = np.array(self.blockadeScores)
             scoresHighErr = np.array(self.blockadeScoresHighErr)
             scoresLowErr = np.array(self.blockadeScoresLowErr)
+        elif scoreName == 'jumpsNum':
+            scores = np.array(self.jumpsNum)
+            scoresHighErr = scores
+            scoresLowErr = scores
         else:
             raise NotImplementedError
         return scores, scoresHighErr, scoresLowErr
@@ -512,6 +525,18 @@ class MultiResultAnalyzer:
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
         np.save(os.path.join(self.outDir,title), np.array(scores))
+
+    def plot_score_by_groups(self, score1_name, score2_name):
+        score1, _, _ = self.get_relevant_scores(score1_name)
+        score2, _, _ = self.get_relevant_scores(score2_name)
+        plt.figure()
+        for i in range(np.max(self.groups)+1):
+            plt.scatter(score1[self.groups == i],score2[self.groups == i], label=self.groupNames[i])
+        plt.legend()
+        plt.xlabel(score1_name)
+        plt.ylabel(score2_name)
+
+
 
     def get_y_label(self, score_name):
         if score_name == "hysteresis":
@@ -636,21 +661,34 @@ if __name__ == "__main__":
     #     s = SingleResultsProcessor(directory, name,
     #                                    fullOutput=True)
     #     s.save_re_analysis()
-
-    directory = "2d_array_bgu_with_perp"
-    name = "array_10_10_r_vg_disorder_run_"
-    for run in ["1","2"]:
-        s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=True)
-        s.plot_conductance()
+    #
+    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
+    name = "array_10_10_c_disorder_run_"
+    for run in ["1"]:
+        s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
+        # s.plot_conductance()
         # s.calc_jumps_freq()
         # s.clac_fourier()
-        # s.plot_array_params("C")
+        s.plot_array_params("C")
+        # s.plot_array_params("R")
         # s.plot_results()
         # s.plot_power()
-        s.save_re_analysis()
+    #     s.save_re_analysis()
     plt.show()
-
-
+    # files_list = []
+    # groups = []
+    # group_names = ["c", "cg_c", "cg", "r", "r_c", "r_cg_c", "r_cg", "r_vg"]
+    # for idx,disorder in enumerate(group_names):
+    #     for run in [1, 2, 3, 4, 5, 6, 7]:
+    #         files_list.append("array_10_10_" + disorder + "_disorder_run_" + str(run))
+    #         groups.append(idx)
+    # dir = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
+    # directory_list = [dir] * len(files_list)
+    # m = MultiResultAnalyzer(directory_list, files_list, groups=groups, group_names=group_names)
+    # m.plot_score_by_groups("blockade", "jump")
+    # m.plot_score_by_groups("blockade", "hysteresis")
+    # m.plot_score_by_groups("blockade", "jumpsNum")
+    # plt.show()
 
 
 
