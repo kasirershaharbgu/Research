@@ -15,11 +15,12 @@ from mpl_toolkits.mplot3d import Axes3D
 EPS = 1e-6
 class SingleResultsProcessor:
     """ Used for proccessing result from one dot array simulation"""
-    def __init__(self, directory, file_name, fullOutput=False):
+    def __init__(self, directory, file_name, fullOutput=False, vertCurrent=False):
         self.basePath = os.path.join(directory, file_name)
         self.fileName = file_name
         self.directory = directory
         self.full = fullOutput
+        self.vert = vertCurrent
         self.I = None
         self.V = None
         self.IErr = None
@@ -30,7 +31,7 @@ class SingleResultsProcessor:
         self.mid_idx = 0
         self.runningParams = dict()
         self.arrayParams = dict()
-        self.load_results(fullOutput=fullOutput)
+        self.load_results()
         self.load_params()
 
     def reAnalyzeI(self):
@@ -57,7 +58,7 @@ class SingleResultsProcessor:
         return True
 
 
-    def load_results(self, fullOutput=False):
+    def load_results(self):
         I_file = os.path.join(self.basePath + '_I.npy')
         V_file = os.path.join(self.basePath + '_V.npy')
         IErr_file = os.path.join(self.basePath + '_IErr.npy')
@@ -65,7 +66,7 @@ class SingleResultsProcessor:
         self.IErr = np.load(IErr_file)
         self.V = np.load(V_file)
         self.mid_idx = self.V.size // 2
-        if fullOutput:
+        if self.full:
             n_file = os.path.join(self.basePath + '_n.npy')
             Q_file = os.path.join(self.basePath + '_Q.npy')
             nErr_file = os.path.join(self.basePath + '_nErr.npy')
@@ -77,6 +78,11 @@ class SingleResultsProcessor:
             self.QErr = np.load(QErr_file)
             self.full_I = np.load(full_I_file)
             self.reAnalyzeI()
+        if self.vert:
+            vertI_file = os.path.join(self.basePath + '_vertI.npy')
+            vertIErr_file = os.path.join(self.basePath + '_vertIErr.npy')
+            self.vertI = np.load(vertI_file)
+            self.vertIErr = np.load(vertIErr_file)
         return True
 
     def save_re_analysis(self):
@@ -187,6 +193,52 @@ class SingleResultsProcessor:
                     low_err = np.max(IminusErr[in_window]) - np.min(IplusErr[in_window])
         return score, high_err-score, score-low_err
 
+    def calc_number_of_jumps(self):
+        Vup = self.V[:self.mid_idx]
+        Iup = self.I[:self.mid_idx]
+        IErrup = self.IErr[:self.mid_idx]
+        Vdown = self.V[self.mid_idx:]
+        Idown = self.I[self.mid_idx:]
+        IErrdown = self.IErr[self.mid_idx:]
+        diffUp = np.diff(Iup) / np.diff(Vup)
+        diffErrorUp = np.add.reduceat(IErrup, range(0, len(IErrup), 2))
+        diffDown = np.diff(Idown) / np.diff(Vdown)
+        diffErrorDown = np.add.reduceat(IErrdown, range(0, len(IErrdown), 2))
+        upJumps = np.sum(diffUp > 2* diffErrorUp, astype=np.int)
+        downJumps = np.sum(diffDown < -2 * diffErrorDown, astype=np.int)
+        return upJumps + downJumps
+
+    def plot_power(self):
+        power = self.I*self.V
+        powerPlusErr = (self.I + self.IErr)*self.V
+        powerMinusErr = (self.I - self.IErr)*self.V
+        plt.figure()
+        plt.plot(self.V[:self.mid_idx], power[:self.mid_idx], 'b.',
+                 self.V[self.mid_idx:], power[self.mid_idx:], 'r.',
+                 self.V[:self.mid_idx], powerPlusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], powerPlusErr[self.mid_idx:], 'r--',
+                 self.V[:self.mid_idx], powerMinusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], powerMinusErr[self.mid_idx:], 'r--',
+                 label="horizontal")
+
+        if self.vert:
+            vertV = self.runningParams["VU"] - self.runningParams["VD"]
+            vert_power = self.vertI * vertV
+            vert_powerPlusErr = (self.vertI + self.vertIErr) * vertV
+            vert_powerMinusErr = (self.vertI - self.vertIErr) * vertV
+            plt.plot(self.V[:self.mid_idx], vert_power[:self.mid_idx], 'b.',
+                     self.V[self.mid_idx:], vert_power[self.mid_idx:], 'r.',
+                     self.V[:self.mid_idx], vert_powerPlusErr[:self.mid_idx], 'b--',
+                     self.V[self.mid_idx:], vert_powerPlusErr[self.mid_idx:], 'r--',
+                     self.V[:self.mid_idx], vert_powerMinusErr[:self.mid_idx], 'b--',
+                     self.V[self.mid_idx:], vert_powerMinusErr[self.mid_idx:], 'r--',
+                     label="vertical")
+            plt.legend()
+        plt.xlabel('Voltage')
+        plt.ylabel('Power')
+
+
+
     def calc_jumps_freq(self):
         diff1 = np.diff(self.I[:self.mid_idx])
         diff2 = np.diff(self.I[self.mid_idx:])
@@ -228,7 +280,7 @@ class SingleResultsProcessor:
         plt.ylabel("Fourier amplitude")
         plt.legend()
 
-    def plot_conductance(self):
+    def plot_diff_conductance(self):
         dI1 = np.diff(self.I[:self.mid_idx])
         dI2 = np.diff(self.I[self.mid_idx:])
         dV1 = np.diff(self.V[:self.mid_idx])
@@ -239,6 +291,25 @@ class SingleResultsProcessor:
         plt.xlabel("Voltage")
         plt.ylabel("Conductivity")
         plt.legend()
+
+    def plot_conductance(self):
+        condUp = self.I[1:self.mid_idx]/self.V[1:self.mid_idx]
+        condDown = self.I[self.mid_idx:-1]/self.V[self.mid_idx:-1]
+        plt.figure()
+        plt.plot(self.V[1:self.mid_idx], condUp, label="increasing voltage")
+        plt.plot(self.V[self.mid_idx:-1], condDown, label="decreasing voltage")
+        if self.vert:
+            vertV = self.runningParams["VU"] - self.runningParams["VD"]
+            vertcondUp = np.abs(self.vertI[:self.mid_idx]) / vertV
+            vertcondDown = np.abs(self.vertI[self.mid_idx:]) / vertV
+            plt.plot(self.V[:self.mid_idx], vertcondUp, label="vertical, increasing voltage")
+            plt.plot(self.V[self.mid_idx:], vertcondDown, label="vertical, decreasing voltage")
+
+        plt.xlabel("Voltage")
+        plt.ylabel("Conductivity")
+        plt.legend()
+
+
 
     def plot_array_params(self, parameter):
         M = self.runningParams["M"]*2 - 1
@@ -566,15 +637,16 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
 
-    directory = "2d_array_bgu_with_perp_curr"
-    name = "array_10_10_cg_disorder_run_"
+    directory = "2d_array_bgu_with_perp"
+    name = "array_10_10_r_vg_disorder_run_"
     for run in ["1","2"]:
-        s = SingleResultsProcessor(directory, name+run,fullOutput=True)
-        # s.plot_conductance()
+        s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=True)
+        s.plot_conductance()
         # s.calc_jumps_freq()
         # s.clac_fourier()
         # s.plot_array_params("C")
-        s.plot_results()
+        # s.plot_results()
+        # s.plot_power()
         s.save_re_analysis()
     plt.show()
 
