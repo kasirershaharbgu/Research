@@ -1,0 +1,16 @@
+/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/numpy/core/fromnumeric.py:3118: RuntimeWarning: Mean of empty slice.
+  out=out, **kwargs)
+/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/numpy/core/_methods.py:85: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/numpy/core/_methods.py:140: RuntimeWarning: Degrees of freedom <= 0 for slice
+  keepdims=keepdims)
+/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/numpy/core/_methods.py:110: RuntimeWarning: invalid value encountered in true_divide
+  arrmean, rcount, out=arrmean, casting='unsafe', subok=False)
+/gpfs0/jdubi/users/kasirer/home/.local/lib/python3.7/site-packages/numpy/core/_methods.py:132: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+Traceback (most recent call last):
+  File "dots_array_new.py", line 2261, in <module>
+    modifyR=modifyR, constQ=constQ)
+  File "dots_array_new.py", line 1818, in runFullSimulation
+    plt.plot(V[:V.size // 2], avgVertI[:V.size // 2], 'b-', V[:V.size // 2],
+IndexError: invalid index to scalar variable.
