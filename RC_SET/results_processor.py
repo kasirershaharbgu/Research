@@ -370,7 +370,7 @@ class SingleResultsProcessor:
             QplusErr = Q + QErr
             QminusErr = Q - QErr
             plt.figure()
-            for i in range(0,10):
+            for i in range(20,30):
                 plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
                          self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
                          self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
@@ -384,28 +384,29 @@ class SingleResultsProcessor:
             #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1), 'r')
             # plt.xlabel('Voltage')
             # plt.ylabel('Total Occupation')
-            # plt.figure()
-            # for i in range(len(Q[0])):
-            #     plt.plot(self.V[:self.mid_idx], Q[:self.mid_idx, i], 'b',
-            #              self.V[self.mid_idx:], Q[self.mid_idx:, i], 'r',
-            #              self.V[:self.mid_idx], QplusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], QplusErr[self.mid_idx:, i], 'r--',
-            #              self.V[:self.mid_idx], QminusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Chagre')
-            # plt.figure()
-            # for i in range(len(Q[0])):
-            #     plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i], 'b',
-            #              self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Chagre on tunneling junctions')
-            # plt.figure()
-            # for i in range(len(self.full_I)):
-            #     plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], '.',
-            #             self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '*')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Chagre')
+            plt.figure()
+            for i in range(20,30):
+                plt.plot(self.V[:self.mid_idx], Q[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], Q[self.mid_idx:, i], 'r',
+                         self.V[:self.mid_idx], QplusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], QplusErr[self.mid_idx:, i], 'r--',
+                         self.V[:self.mid_idx], QminusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
+                plt.xlabel('Voltage')
+                plt.ylabel('Chagre')
+            plt.figure()
+            for i in range(50,60):
+                plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i])
+                # plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i], 'b',
+                #          self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
+                plt.xlabel('Voltage')
+                plt.ylabel('Chagre on tunneling junctions')
+            plt.figure()
+            for i in range(5):
+                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], '.',
+                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '*')
+                plt.xlabel('Voltage')
+                plt.ylabel('Tunnel Chagre')
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
@@ -662,18 +663,19 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    name = "array_10_10_c_disorder_run_"
-    for run in ["1"]:
+    # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
+    directory = "2d_array_bgu_custom_paths"
+    name = "array_10_10_r_path"
+    for run in [""]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
         # s.calc_jumps_freq()
         # s.clac_fourier()
-        s.plot_array_params("C")
+        # s.plot_array_params("C")
         # s.plot_array_params("R")
-        # s.plot_results()
+        s.plot_results()
         # s.plot_power()
-    #     s.save_re_analysis()
+        # s.save_re_analysis()
     plt.show()
     # files_list = []
     # groups = []

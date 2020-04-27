@@ -20,7 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post_process.sh" beforeDir="false" afterPath="$PROJECT_DIR$/post_process.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +55,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/dots_array_reduced.py" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -72,7 +75,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.dots_array">
+  <component name="RunManager" selected="Python.dots_array_reduced">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -126,7 +129,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 2 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;\&quot;[[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[1,1,1,1,1,1,1,1,1,1,1],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10,10]]\&quot;&quot; --custom-rv &quot;\&quot;[[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10],[10,10,10,10,10,10,10,10,10,10]]\&quot;&quot; --custom-ch &quot;\&quot;[[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]]\&quot;&quot; --custom-cv &quot;\&quot;[[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5],[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]]\&quot;&quot; --file-name dbg -o dbg --dbg" />
+      <option name="PARAMETERS" value="-M 1 -N 10 --vmin 0 --vmax 5 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 5000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;\&quot;[[1,1,1,1,1,1,1,1,1,1,1]]\&quot;&quot; --custom-rv &quot;\&quot;[[]]\&quot;&quot; --file-name array_10_1_larger_RG -o 1d_array dbg --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -148,6 +151,27 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_new.py" />
       <option name="PARAMETERS" value="-M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vu 0.1 --vd -0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg_vertical_current --dbg --plot-current-map" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="dots_array_reduced" type="PythonConfigurationType" factoryName="Python">
+      <module name="Numerics" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.6" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_reduced.py" />
+      <option name="PARAMETERS" value="-M 100 -N 100 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --file-name dbg_reduced -o dbg dbg --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -243,6 +267,7 @@
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.toy model" />
       <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.dots_array_reduced" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.dots_array_new" />
@@ -250,8 +275,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
+        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.ThermalArray" />
       </list>
@@ -291,46 +316,56 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586961352261">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587476296749">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
-    <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl" timestamp="1586778310723">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
+    <state x="583" y="173" width="424" height="479" key="FileChooserDialogImpl" timestamp="1587468240047">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl/0.0.1366.741@0.0.1366.741" timestamp="1586778310723" />
-    <state width="1345" height="222" key="GridCell.Tab.0.bottom" timestamp="1587022833851">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
+    <state width="1510" height="268" key="GridCell.Tab.0.bottom" timestamp="1587486679635">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
-    <state width="1345" height="222" key="GridCell.Tab.0.center" timestamp="1587022833849">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1510" height="268" key="GridCell.Tab.0.center" timestamp="1587486679635">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
-    <state width="1345" height="222" key="GridCell.Tab.0.left" timestamp="1587022833849">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1510" height="268" key="GridCell.Tab.0.left" timestamp="1587486679635">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
-    <state width="1345" height="222" key="GridCell.Tab.0.right" timestamp="1587022833849">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1510" height="268" key="GridCell.Tab.0.right" timestamp="1587486679635">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
-    <state width="1345" height="222" key="GridCell.Tab.1.bottom" timestamp="1587022833856">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1510" height="268" key="GridCell.Tab.1.bottom" timestamp="1587486679636">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833856" />
-    <state width="1345" height="222" key="GridCell.Tab.1.center" timestamp="1587022833852">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1510" height="268" key="GridCell.Tab.1.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
+    <state width="1510" height="268" key="GridCell.Tab.1.center" timestamp="1587486679636">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
-    <state width="1345" height="222" key="GridCell.Tab.1.left" timestamp="1587022833851">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1510" height="268" key="GridCell.Tab.1.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
+    <state width="1510" height="268" key="GridCell.Tab.1.left" timestamp="1587486679635">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
-    <state width="1345" height="222" key="GridCell.Tab.1.right" timestamp="1587022833852">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1510" height="268" key="GridCell.Tab.1.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1510" height="268" key="GridCell.Tab.1.right" timestamp="1587486679636">
+      <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
+    <state width="1510" height="268" key="GridCell.Tab.1.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state x="321" y="33" key="SettingsEditor" timestamp="1587029845917">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -340,6 +375,10 @@
       <screen x="0" y="0" width="1366" height="741" />
     </state>
     <state width="683" height="370" key="XDebugger.FullValuePopup/0.0.1366.741@0.0.1366.741" timestamp="1586961381453" />
+    <state x="496" y="214" width="672" height="678" key="search.everywhere.popup" timestamp="1587464491208">
+      <screen x="67" y="27" width="1533" height="873" />
+    </state>
+    <state x="496" y="214" width="672" height="678" key="search.everywhere.popup/67.27.1533.873@67.27.1533.873" timestamp="1587464491208" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -367,18 +406,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>529</line>
+          <line>530</line>
           <option name="timeStamp" value="342" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>460</line>
+          <line>461</line>
           <option name="timeStamp" value="343" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2162</line>
+          <line>2164</line>
           <option name="timeStamp" value="344" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_reduced.py</url>
+          <line>915</line>
+          <option name="timeStamp" value="355" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_reduced.py</url>
+          <line>589</line>
+          <option name="timeStamp" value="356" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
