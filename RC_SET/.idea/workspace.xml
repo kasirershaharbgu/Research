@@ -236,13 +236,13 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.single dot run" />
+      <item itemvalue="Python.toy model" />
       <item itemvalue="Python.ThermalArray" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.dots_array_new" />
-      <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.results_processor" />
-      <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.toy model" />
     </list>
     <recent_temporary>
       <list>
