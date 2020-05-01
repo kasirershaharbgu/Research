@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'normal',
         'weight' : 'bold',
@@ -13,6 +14,14 @@ from sklearn.mixture import GaussianMixture
 from mpl_toolkits.mplot3d import Axes3D
 
 EPS = 1e-6
+
+
+def flattenToColumn(a):
+    return a.reshape((a.size, 1))
+
+def flattenToRow(a):
+    return a.reshape((1, a.size))
+
 class SingleResultsProcessor:
     """ Used for proccessing result from one dot array simulation"""
     def __init__(self, directory, file_name, fullOutput=False, vertCurrent=False):
@@ -33,6 +42,8 @@ class SingleResultsProcessor:
         self.arrayParams = dict()
         self.load_results()
         self.load_params()
+        self.rows = self.runningParams["M"]
+        self.columns = self.runningParams["N"]
 
     def reAnalyzeI(self):
         full_I = self.full_I.T
@@ -148,6 +159,17 @@ class SingleResultsProcessor:
 
     def get_running_param(self, key):
         return self.runningParams[key]
+
+    def getNprime(self, VL, VR):
+        Ch = np.array(self.get_array_param("Ch"))
+        left_part_n_prime = np.copy(Ch[:, :-1])
+        left_part_n_prime[:, 1:] = 0
+        left_part_n_prime = flattenToRow(left_part_n_prime)
+        right_part_n_prime = np.copy(Ch[:, 1:])
+        right_part_n_prime[:, :-1] = 0
+        right_part_n_prime = flattenToRow(right_part_n_prime)
+
+        return self.n + (flattenToColumn(VL).dot(left_part_n_prime) + flattenToColumn(VR).dot(right_part_n_prime)).reshape(self.n.shape)
 
     def calc_hysteresis_score(self):
         IplusErr = self.I + self.IErr
@@ -346,21 +368,81 @@ class SingleResultsProcessor:
         cb = plt.colorbar()
         cb.set_label(parameter)
 
+    def createCapacitanceMatrix(self):
+        """
+        Creates the inverse capacitance matrix
+        """
+        Ch = np.array(self.get_array_param("Ch"))
+        Cv = np.array(self.get_array_param("Cv"))
+        diagonal = Ch[:,:-1] + Ch[:,1:] + Cv + np.roll(Cv, -1, axis=0)
+        second_diagonal = np.copy(Ch[:,1:])
+        second_diagonal[:,-1] = 0
+        second_diagonal = second_diagonal.flatten()
+        second_diagonal = second_diagonal[:-1]
+        n_diagonal = np.copy(Cv[1:,:])
+        C_mat = np.diagflat(diagonal) - np.diagflat(second_diagonal,k=1) - np.diagflat(second_diagonal,k=-1)\
+                -np.diagflat(n_diagonal, k=self.columns) - np.diagflat(n_diagonal, k=-self.columns)
+        self.invC = np.linalg.inv(C_mat)
+
+        return True
+    def plot_voltage(self):
+        self.createCapacitanceMatrix()
+        print(np.diagonal(self.invC))
+        n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
+        Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
+        self.q = n + Q
+        self.max = len(self.q)-1
+        self.i=0
+        self.fig = plt.figure()
+        self.X = np.arange(self.columns)
+        self.Y = np.arange(self.rows)
+        self.X, self.Y = np.meshgrid(self.X, self.Y)
+        self.fig.canvas.mpl_connect("key_press_event", self.click)
+        self.plotV(0)
+        plt.show()
+        plt.draw()
+    def plotV(self,idx):
+        v = self.invC.dot(self.q[idx])
+        Z = v.reshape(self.rows, self.columns)
+        plt.clf()
+        ax = self.fig.gca(projection='3d')
+        ax.plot_surface(self.X, self.Y, Z)
+        ax.set_title("V=" + str(self.V[idx]))
+    def click(self,event):
+        if event.key == "right" and self.i < self.max:
+            self.i +=1
+            self.plotV(self.i)
+            plt.draw()
+        if event.key == "left" and self.i > 0:
+            self.i -= 1
+            self.plotV(self.i)
+            plt.draw()
+        if event.key == "." and self.i < self.max - 10:
+            self.i +=10
+            self.plotV(self.i)
+            plt.draw()
+        if event.key == "," and self.i > 10:
+            self.i -= 10
+            self.plotV(self.i)
+            plt.draw()
+
+
+
     def plot_results(self):
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
-        plt.figure()
-        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
-                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
-                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
-                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
-        plt.xlabel('Voltage')
-        plt.ylabel('Current')
+        # plt.figure()
+        # plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
+        #          self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
+        #          self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
+        #          self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
+        #          self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
+        #          self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+        # plt.xlabel('Voltage')
+        # plt.ylabel('Current')
         if self.full:
             # plt.figure()
-            n = self.n.reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
+            n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
             Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
             q = n+Q
             nErr = self.nErr.reshape((self.nErr.shape[0], self.nErr.shape[1] *self. nErr.shape[2]))
@@ -370,41 +452,45 @@ class SingleResultsProcessor:
             QplusErr = Q + QErr
             QminusErr = Q - QErr
             plt.figure()
-            for i in range(20,30):
-                plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
-                         self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
-                         self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
-                         self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
-                         self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
-                         self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
-                plt.xlabel('Voltage')
-                plt.ylabel('Occupation')
-            # plt.figure()
-            # plt.plot(self.V[:self.mid_idx], np.sum(n[:self.mid_idx, :],axis=1), 'b',
-            #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1), 'r')
+            # for i in range(20,30):
+            #     plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
+            #              self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
+            #              self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
+            #              self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
+            #              self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
+            #              self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
+            #     plt.xlabel('Voltage')
+            #     plt.ylabel('Occupation')
+            plt.plot(self.V[:self.mid_idx], np.sum(q[:self.mid_idx, :],axis=1), 'g',
+                     self.V[self.mid_idx:], np.sum(q[self.mid_idx:, :],axis=1), 'orange')
+            # plt.xlabel('Voltage')
+            # plt.ylabel('Occupation')
+            # # plt.figure()
+            # plt.plot(self.V[:self.mid_idx], np.sum(n[:self.mid_idx, :],axis=1)/100, 'b',
+            #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1)/100, 'r')
             # plt.xlabel('Voltage')
             # plt.ylabel('Total Occupation')
-            plt.figure()
-            for i in range(20,30):
-                plt.plot(self.V[:self.mid_idx], Q[:self.mid_idx, i], 'b',
-                         self.V[self.mid_idx:], Q[self.mid_idx:, i], 'r',
-                         self.V[:self.mid_idx], QplusErr[:self.mid_idx, i], 'b--',
-                         self.V[self.mid_idx:], QplusErr[self.mid_idx:, i], 'r--',
-                         self.V[:self.mid_idx], QminusErr[:self.mid_idx, i], 'b--',
-                         self.V[self.mid_idx:], QminusErr[self.mid_idx:, i], 'r--')
-                plt.xlabel('Voltage')
-                plt.ylabel('Chagre')
-            plt.figure()
-            for i in range(50,60):
-                plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i])
-                # plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i], 'b',
-                #          self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
-                plt.xlabel('Voltage')
-                plt.ylabel('Chagre on tunneling junctions')
-            plt.figure()
-            for i in range(5):
-                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], '.',
-                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '*')
+            # plt.figure()
+            # for i in range(10,20):
+            #     plt.plot(self.V[:self.mid_idx], -Q[:self.mid_idx, i], 'g',
+            #              self.V[self.mid_idx:], -Q[self.mid_idx:, i], 'c',
+            #              self.V[:self.mid_idx], -QplusErr[:self.mid_idx, i], 'g--',
+            #              self.V[self.mid_idx:], -QplusErr[self.mid_idx:, i], 'c--',
+            #              self.V[:self.mid_idx], -QminusErr[:self.mid_idx, i], 'g--',
+            #              self.V[self.mid_idx:], -QminusErr[self.mid_idx:, i], 'c--')
+            #     plt.xlabel('Voltage')
+            #     plt.ylabel('Chagre')
+            # plt.figure()
+            # for i in range(21,30):
+            #     plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i])
+            #     # plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i], 'b',
+            #     #          self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
+            #     plt.xlabel('Voltage')
+            #     plt.ylabel('Chagre on tunneling junctions')
+            # plt.figure()
+            for i in range(len(self.full_I)):
+                plt.plot(self.V[:self.mid_idx], 3*self.full_I[i,:self.mid_idx], 'o',
+                        self.V[self.mid_idx:], 3*self.full_I[i,self.mid_idx:], '*')
                 plt.xlabel('Voltage')
                 plt.ylabel('Tunnel Chagre')
 
@@ -441,6 +527,7 @@ class MultiResultAnalyzer:
             self.runningParams = {p: [] for p in relevant_running_params}
         else:
             self.runningParams = dict()
+        self.disorders = {p: [] for p in ["C","R","CG","VG"]}
         self.groups = np.array(groups)
         self.groupNames = group_names
         self.load_data()
@@ -471,6 +558,16 @@ class MultiResultAnalyzer:
                 self.arrayParams[p].append(processor.get_array_param(p))
             for p in self.runningParams:
                 self.runningParams[p].append(processor.get_running_param(p))
+            for p in self.disorders:
+                self.disorders[p].append(self.calc_disorder(p, processor))
+
+    def calc_disorder(self, name, processor):
+        if name in ["C","R"]:
+            var = np.var(processor.get_array_param(name + "h")) + np.var(processor.get_array_param(name + "v"))
+            std = np.sqrt(var)
+        else:
+            std = np.std(processor.get_array_param(name))
+        return std
 
     def get_relevant_scores(self, scoreName):
         if scoreName == 'hysteresis':
@@ -536,6 +633,7 @@ class MultiResultAnalyzer:
         plt.legend()
         plt.xlabel(score1_name)
         plt.ylabel(score2_name)
+        plt.savefig(os.path.join(self.outDir, score1_name + "_vs_" + score2_name + '.png'))
 
 
 
@@ -596,6 +694,17 @@ class MultiResultAnalyzer:
             plt.close(fig)
         else:
             raise NotImplementedError
+
+    def plot_results_by_disorder(self, parameters, scores):
+        for param in parameters:
+            for score in scores:
+                x = self.disorders[param]
+                y, y_high_err, y_low_err = self.get_relevant_scores(score)
+                plt.figure()
+                plt.scatter(x,y)
+                plt.xlabel(param + " disorder")
+                plt.ylabel(score)
+                plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'disorder.png'))
 
     def average_similar_results(self, xs, ys, ys_high_err, ys_low_err):
         new_x = []
@@ -663,9 +772,10 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    directory = "2d_array_bgu_custom_paths"
-    name = "array_10_10_r_path"
+    # directory = "2d_array_bgu_custom_paths"
+    # name = "dbg"
+    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
+    name = "array_10_10_r_c_disorder_run_2"
     for run in [""]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
@@ -673,10 +783,11 @@ if __name__ == "__main__":
         # s.clac_fourier()
         # s.plot_array_params("C")
         # s.plot_array_params("R")
-        s.plot_results()
+        # s.plot_results()
+        s.plot_voltage()
         # s.plot_power()
         # s.save_re_analysis()
-    plt.show()
+    # plt.show()
     # files_list = []
     # groups = []
     # group_names = ["c", "cg_c", "cg", "r", "r_c", "r_cg_c", "r_cg", "r_vg"]
@@ -686,10 +797,12 @@ if __name__ == "__main__":
     #         groups.append(idx)
     # dir = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
     # directory_list = [dir] * len(files_list)
-    # m = MultiResultAnalyzer(directory_list, files_list, groups=groups, group_names=group_names)
+    # m = MultiResultAnalyzer(directory_list, files_list, groups=groups, group_names=group_names,
+    #                         out_directory="/home/kasirershahar/University/Research/")
     # m.plot_score_by_groups("blockade", "jump")
     # m.plot_score_by_groups("blockade", "hysteresis")
     # m.plot_score_by_groups("blockade", "jumpsNum")
+    # m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
     # plt.show()
 
 

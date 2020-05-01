@@ -20,10 +20,415 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/RC_SET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RC_SET.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_larger_RG_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_larger_RG_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_larger_RG_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/array_10_1_larger_RG_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/runningParameters_array_10_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1d_array/runningParameters_array_10_1_larger_RG.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_Imap.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_Imap_binary.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_2path_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_IV_clean.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_I_Err_clean.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_I_clean.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_Imap.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_Imap_binary.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_c_path_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_2path_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_IV_clean.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_I_Err_clean.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_I_clean.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_Imap.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_Imap_binary.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_c_path_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_IV_clean.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_I_Err_clean.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_I_clean.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_Imap.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_Imap_binary.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/array_10_10_r_path_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/runningParameters_array_10_10_c_2path.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/runningParameters_array_10_10_c_path.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/runningParameters_array_10_10_r_c_path.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_bgu_custom_paths/runningParameters_array_10_10_r_path.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.01.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.01_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.01_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.01_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.01_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.01_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.1.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.1_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.1_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.1_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.5.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.5_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.5_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.5_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.5_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_0.5_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_0_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_0_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_0_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_0_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_0_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_10_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_10_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_10_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_10_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_10_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_11_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_11_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_11_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_11_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_11_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_12_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_12_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_12_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_12_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_12_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_13_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_13_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_13_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_13_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_13_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_14_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_14_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_14_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_14_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_14_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_15_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_15_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_15_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_15_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_15_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_16_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_16_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_16_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_16_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_16_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_17_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_17_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_17_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_17_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_17_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_18_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_18_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_18_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_18_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_18_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_19_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_19_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_19_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_19_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_19_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_1_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_1_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_1_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_2_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_2_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_2_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_2_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_2_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_3_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_3_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_3_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_4_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_4_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_4_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_4_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_4_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_5_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_5_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_5_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_5_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_5_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_6_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_6_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_6_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_6_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_6_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_7_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_7_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_7_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_7_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_7_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_8_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_8_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_8_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_8_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_8_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_9_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_9_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_9_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_9_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_9_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_1_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_0_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_0_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_0_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_0_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_0_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_10_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_10_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_10_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_10_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_10_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_11_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_11_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_11_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_11_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_11_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_12_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_12_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_12_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_12_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_12_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_13_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_13_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_13_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_13_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_13_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_14_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_14_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_14_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_14_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_14_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_15_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_15_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_15_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_15_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_15_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_16_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_16_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_16_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_16_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_16_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_17_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_17_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_17_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_17_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_17_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_18_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_18_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_18_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_18_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_18_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_19_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_19_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_19_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_19_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_19_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_1_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_1_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_1_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_1_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_1_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_2_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_2_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_2_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_2_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_2_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_3_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_3_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_3_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_3_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_3_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_4_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_4_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_4_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_4_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_4_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_5_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_5_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_5_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_5_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_5_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_6_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_6_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_6_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_6_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_6_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_7_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_7_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_7_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_7_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_7_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_8_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_8_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_8_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_8_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_8_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_9_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_9_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_9_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_9_current_map.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_9_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/array_10_10_r_cg_disorder_temp_5_temp_n0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/runningParameters_array_10_10_r_cg_disorder_temp_0.01.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/runningParameters_array_10_10_r_cg_disorder_temp_0.1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_array_different_temperature_slurm/runningParameters_array_10_10_r_cg_disorder_temp_0.5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_2path.e177915" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_2path.pe177915" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_disorder_run_1.e170114" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_disorder_run_1.e174232" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_disorder_run_1.pe170114" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_disorder_run_1.pe174232" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_disorder_run_2.e174240" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_disorder_run_2.pe174240" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_path.e177913" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_c_path.pe177913" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_c_disorder_run_1.e170126" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_c_disorder_run_1.e174236" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_c_disorder_run_1.pe170126" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_c_disorder_run_1.pe174236" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_c_disorder_run_2.e174244" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_c_disorder_run_2.pe174244" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_disorder_run_1.e170115" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_disorder_run_1.e174233" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_disorder_run_1.pe170115" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_disorder_run_1.pe174233" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_disorder_run_2.e174241" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_cg_disorder_run_2.pe174241" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_2path.e177917" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_2path.pe177917" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_disorder_run_1.e170120" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_disorder_run_1.e174235" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_disorder_run_1.pe170120" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_disorder_run_1.pe174235" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_disorder_run_2.e174243" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_disorder_run_2.pe174243" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_path.e177919" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_c_path.pe177919" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_c_disorder_run_1.e174237" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_c_disorder_run_1.pe174237" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_c_disorder_run_2.e174245" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_c_disorder_run_2.pe174245" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_disorder_run_1.e170116" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_disorder_run_1.e174234" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_disorder_run_1.pe170116" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_disorder_run_1.pe174234" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_disorder_run_2.e174242" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_cg_disorder_run_2.pe174242" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_1.e170113" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_1.e174231" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_1.pe170113" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_1.pe174231" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_2.e174239" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_disorder_run_2.pe174239" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_path.e177916" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_path.pe177916" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_vg_disorder_run_1.e174238" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_vg_disorder_run_1.pe174238" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_vg_disorder_run_2.e174246" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/array_10_10_r_vg_disorder_run_2.pe174246" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.02_0.024997730106564878/deltaEmax.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.02_0.024997730106564878/deltaEmin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.02_0.024997730106564878/deltaEstep.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.02_0.024997730106564878/vals.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.1_6.244796869734996e-05/deltaEmax.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.1_6.244796869734996e-05/deltaEmin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.1_6.244796869734996e-05/deltaEstep.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.1_6.244796869734996e-05/vals.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_Imap.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_vertI.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_vertIErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/dbg_vert_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbg_vertical_current/runningParameters_dbg.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post_process.sh" beforeDir="false" afterPath="$PROJECT_DIR$/post_process.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +460,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/dots_array_reduced.py" />
+    <property name="last_opened_file_path" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -75,7 +480,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.dots_array_reduced">
+  <component name="RunManager" selected="Python.dots_array">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -116,6 +521,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="deposition_models" type="PythonConfigurationType" factoryName="Python">
+      <module name="Numerics" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.6" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="dots_array" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="RC_SET" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -129,7 +555,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 1 -N 10 --vmin 0 --vmax 5 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 5000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;\&quot;[[1,1,1,1,1,1,1,1,1,1,1]]\&quot;&quot; --custom-rv &quot;\&quot;[[]]\&quot;&quot; --file-name array_10_1_larger_RG -o 1d_array dbg --dbg" />
+      <option name="PARAMETERS" value="-M 5 -N 5 --vmin 0 --vmax 3 --vstep 0.1 --vr 0 --vg-avg -2 --vg-std 0 --c-avg 10 --c-std 9.5 --cg-avg 20 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --file-name dbg -o dbg --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -267,16 +693,17 @@
       <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.deposition_models" />
       <item itemvalue="Python.ThermalArray" />
       <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.results_processor" />
-      <item itemvalue="Python.dots_array_reduced" />
       <item itemvalue="Python.dots_array" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array" />
+        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.ThermalArray" />
       </list>
@@ -316,56 +743,70 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587476296749">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588333342212">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
     <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
-    <state x="583" y="173" width="424" height="479" key="FileChooserDialogImpl" timestamp="1587468240047">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1588333342212" />
+    <state x="655" y="125" width="666" height="854" key="#deposition_models" timestamp="1588087801096">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="655" y="125" width="666" height="854" key="#deposition_models/67.27.1853.1053@67.27.1853.1053" timestamp="1588087801096" />
+    <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl" timestamp="1588087779617">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl/0.0.1366.741@0.0.1366.741" timestamp="1586778310723" />
     <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
-    <state width="1510" height="268" key="GridCell.Tab.0.bottom" timestamp="1587486679635">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
+    <state width="1830" height="278" key="GridCell.Tab.0.bottom" timestamp="1588331049214">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1510" height="268" key="GridCell.Tab.0.center" timestamp="1587486679635">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
+    <state width="1830" height="278" key="GridCell.Tab.0.center" timestamp="1588331049213">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1510" height="268" key="GridCell.Tab.0.left" timestamp="1587486679635">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
+    <state width="1830" height="278" key="GridCell.Tab.0.left" timestamp="1588331049213">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1510" height="268" key="GridCell.Tab.0.right" timestamp="1587486679635">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
+    <state width="1830" height="278" key="GridCell.Tab.0.right" timestamp="1588331049213">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1510" height="268" key="GridCell.Tab.1.bottom" timestamp="1587486679636">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
+    <state width="1830" height="344" key="GridCell.Tab.1.bottom" timestamp="1588171450424">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833856" />
     <state width="1510" height="268" key="GridCell.Tab.1.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
-    <state width="1510" height="268" key="GridCell.Tab.1.center" timestamp="1587486679636">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state width="1830" height="344" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
+    <state width="1830" height="344" key="GridCell.Tab.1.center" timestamp="1588171450424">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
-    <state width="1510" height="268" key="GridCell.Tab.1.left" timestamp="1587486679635">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state width="1830" height="344" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
+    <state width="1830" height="344" key="GridCell.Tab.1.left" timestamp="1588171450423">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.1.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1510" height="268" key="GridCell.Tab.1.right" timestamp="1587486679636">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state width="1830" height="344" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450423" />
+    <state width="1830" height="344" key="GridCell.Tab.1.right" timestamp="1588171450424">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
+    <state width="1830" height="344" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
     <state x="321" y="33" key="SettingsEditor" timestamp="1587029845917">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -375,17 +816,18 @@
       <screen x="0" y="0" width="1366" height="741" />
     </state>
     <state width="683" height="370" key="XDebugger.FullValuePopup/0.0.1366.741@0.0.1366.741" timestamp="1586961381453" />
-    <state x="496" y="214" width="672" height="678" key="search.everywhere.popup" timestamp="1587464491208">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state x="586" y="253" width="813" height="818" key="search.everywhere.popup" timestamp="1588085015006">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="496" y="214" width="672" height="678" key="search.everywhere.popup/67.27.1533.873@67.27.1533.873" timestamp="1587464491208" />
+    <state x="586" y="253" width="813" height="818" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588085015006" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>325</line>
+          <line>347</line>
           <option name="timeStamp" value="312" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -405,21 +847,6 @@
           <option name="timeStamp" value="340" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>530</line>
-          <option name="timeStamp" value="342" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>461</line>
-          <option name="timeStamp" value="343" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2164</line>
-          <option name="timeStamp" value="344" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_reduced.py</url>
           <line>915</line>
           <option name="timeStamp" value="355" />
@@ -428,6 +855,21 @@
           <url>file://$PROJECT_DIR$/dots_array_reduced.py</url>
           <line>589</line>
           <option name="timeStamp" value="356" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="362" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>100</line>
+          <option name="timeStamp" value="364" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>104</line>
+          <option name="timeStamp" value="367" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

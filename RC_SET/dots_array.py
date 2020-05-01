@@ -8,6 +8,7 @@ import scipy.ndimage.morphology as morphology
 import matplotlib
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
 # from mayavi import mlab
 from optparse import OptionParser
@@ -17,16 +18,15 @@ from scipy.linalg import null_space
 from scipy.integrate import cumtrapz, dblquad
 from scipy.interpolate import interp1d
 from scipy.stats import norm
-from mpl_toolkits.mplot3d import Axes3D
 from ast import literal_eval
 from copy import copy
 
 
 EPS = 0.0001
 # Gillespie Constants
-MIN_STEPS = 100
+MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-4
+ALLOWED_ERR = 1e-3
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
@@ -307,6 +307,7 @@ class DotArray:
         copy_array.totalChargePassedLeft = self.totalChargePassedRight
         copy_array.no_tunneling_next_time = self.no_tunneling_next_time
         copy_array.invC = self.invC
+        copy_array.invCeq = self.invCeq
         copy_array._JeigenVectors = self._JeigenVectors
         copy_array._JeigenValues = self._JeigenValues
         copy_array._JeigenVectorsInv = self._JeigenVectorsInv
@@ -384,6 +385,7 @@ class DotArray:
 
     def setGroundCharge(self, Q):
         self.Q = flattenToColumn(Q)
+        self._Q_eigenbasis = self._JeigenVectorsInv.dot(self.Q)
 
     def getCharge(self):
         return self.totalChargePassedRight, self.totalChargePassedLeft
@@ -423,6 +425,8 @@ class DotArray:
         C_mat = np.diagflat(diagonal) - np.diagflat(second_diagonal,k=1) - np.diagflat(second_diagonal,k=-1)\
                 -np.diagflat(n_diagonal, k=self.columns) - np.diagflat(n_diagonal, k=-self.columns)
         self.invC = np.linalg.inv(C_mat)
+        self.invCeq = np.linalg.inv(C_mat + np.diagflat(self.CG))
+
         return True
 
     def setConstNprimePart(self):
@@ -482,7 +486,8 @@ class DotArray:
         return self._constQnPart + self._matrixQnPart.dot(self.getNprimeForGivenN(n))
 
     def get_dist_from_steady(self, n, Q):
-        return (flattenToColumn(Q) - self.get_steady_Q_for_given_n(n))**2
+        return np.abs(np.average(flattenToColumn(Q) - self.get_steady_Q_for_given_n(n)))
+
 
     def setConstWork(self):
         invCDiagMat = np.diag(np.copy(self.invC)).reshape((self.rows,self.columns))
@@ -876,7 +881,7 @@ class Simulator:
         self.index = index
         self.tauLeaping = dotArray.tauLeaping
         self.constQ = constQ
-        self.minSteps = MIN_STEPS*self.dotArray.columns
+        self.min_steps = MIN_STEPS*self.dotArray.columns*self.dotArray.rows
         if self.constQ:
             self.n = n0
             self.Q = Q0
@@ -952,16 +957,6 @@ class Simulator:
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
             curr_t += dt
-            # if steps%MIN_STEPS == 0:
-                # rightCurrent, leftCurrent = self.dotArray.getCharge()
-                # rightCurrentSqr, leftCurrentSqr = self.dotArray.getIsqr()
-                # rightCurrentErr = np.sqrt((1/(steps-1)) * (rightCurrentSqr/curr_t - rightCurrent**2/curr_t**2))
-                # leftCurrentErr = np.sqrt((1/(steps-1)) * (leftCurrentSqr/curr_t - leftCurrent**2/curr_t**2))
-                # err = max(rightCurrentErr, leftCurrentErr)
-                # err = self.get_err(I_var, steps, curr_t)
-                # errors.append(err)
-                # if err < I_avg*0.01:
-                #     break
         err = self.get_err(I_var, steps, curr_t)
         res = (I_avg, err)
         if fullOutput:
@@ -1018,22 +1013,20 @@ class Simulator:
         if flag: #if gradient descent did not converge skipping the point
             self.Q = res
 
-    def plotAverageVoltages(self, Q0, dQ, n0, points_num):
-        size = self.dotArray.rows*self.dotArray.columns
-        vs = np.zeros((points_num,size))
-        vgs = np.zeros((points_num,size))
-        Qmagnitude = np.zeros((points_num,))
-        Q=Q0
-        for point in range(points_num):
-            _,_,v,vg = self.calcAverageNForGivenQ(Q, n0, calcVoltages=True)
-            vs[point,:] = v
-            vgs[point,:] = vg
-            Qmagnitude[point] = np.sqrt(np.sum(Q**2))
-            Q += dQ
-        for dot in range(size):
-            plt.figure()
-            plt.plot(Qmagnitude, vs[:,dot], 'b',
-                     Qmagnitude, vgs[:,dot], 'r')
+    def plotAverageVoltages(self):
+        # Plottting voltage
+        X = np.arange(self.dotArray.columns)
+        Y = np.arange(self.dotArray.rows)
+        X, Y = np.meshgrid(X, Y)
+        v = self.dotArray.invC.dot(self.dotArray.getNprime() + flattenToColumn(self.dotArray.getGroundCharge()))
+        v2 = self.dotArray.invCeq.dot(self.dotArray.getNprime())
+        Z = v.reshape(self.dotArray.rows, self.dotArray.columns)
+        Z2 = v2.reshape(self.dotArray.rows, self.dotArray.columns)
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+        ax.plot_surface(X, Y, Z)
+        ax.plot_surface(X, Y, Z2)
+        # print(self.dotArray.getNprime() + flattenToColumn(self.dotArray.getGroundCharge()))
         plt.show()
 
     def getToSteadyState(self):
@@ -1054,6 +1047,13 @@ class Simulator:
         #     Qn = []
         #     ts = []
         #     t=0
+        while steps < self.min_steps:
+            if self.tauLeaping:
+                self.executeLeapingStep()
+            else:
+                self.executeStep()
+            steps += 1
+        steps = 0
         while err > ALLOWED_ERR and not_decreasing < STEADY_STATE_REP:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
@@ -1072,29 +1072,28 @@ class Simulator:
             #     Qs.append(curr_Q)
             #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
             #     ts.append(t)
-            if steps % MIN_STEPS == 0:
-                new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
+            if steps > self.min_steps and self.get_err(np.average(n_var),steps,curr_t) < ALLOWED_ERR:
+                new_err = self.dotArray.get_dist_from_steady(n_avg, Q_avg)
                 if err < new_err:
                     not_decreasing += 1
                 err = new_err
-                n_avg = np.zeros(
-                    (self.dotArray.getRows(), self.dotArray.getColumns()))
+                n_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
                 n_var = np.zeros(n_avg.shape)
                 Q_avg = np.zeros(n_avg.shape)
                 Q_var = np.zeros(n_avg.shape)
                 curr_t = 0
-                # if plot and steps % (100 * MIN_STEPS):
+                steps = 0
+                # if plot:
                 #     Qs = np.array(Qs)
                 #     Qn = np.array(Qn)
                 #     for i in range(Qs.shape[2]):
-                #         plt.plot(ts, Qs[:,:,i],'.')
+                #         plt.plot(ts, Qs[:, :, i], '.')
                 #         plt.plot(ts, Qn[:, :, i], '*')
                 #     print(err)
                 #     plt.show()
                 #     Qs = []
                 #     Qn = []
                 #     ts = []
-
         return True
 
     def checkSteadyState(self, rep):
@@ -1668,15 +1667,6 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         simulator.checkSteadyState(repeats)
         exit(0)
 
-    if plotVoltages:
-        print("Plotting voltages")
-        points_num = 100
-        Q0 = np.array([[1,1,0.1]])
-        dQ = np.array([[0,0,0.01]])
-        VL0 = 1
-        simulator = Simulator(0, VL0, VR0, Q0, n0, prototypeArray)
-        simulator.plotAverageVoltages(Q0,dQ,n0,points_num)
-        exit(0)
     Is = []
     IsErr = []
     ns = []
