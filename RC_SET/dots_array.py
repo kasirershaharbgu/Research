@@ -1,7 +1,7 @@
 __author__ = 'shahar'
 
 import os
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
+# os.environ["OPENBLAS_NUM_THREADS"] = "1"
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
