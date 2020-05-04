@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../toyModel/.idea/Numerics.iml" filepath="$PROJECT_DIR$/../toyModel/.idea/Numerics.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/RC_SET.iml" filepath="$PROJECT_DIR$/.idea/RC_SET.iml" />
+      <module fileurl="file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/.idea/numerical_exercises.iml" filepath="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/.idea/numerical_exercises.iml" />
     </modules>
   </component>
 </project>

@@ -47,8 +47,10 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/OneDrive/University/Research/toyModel/toyModel.py" />
+    <property name="last_opened_file_path" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -68,7 +70,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.dots_array">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -109,6 +111,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="deposition_models" type="PythonConfigurationType" factoryName="Python">
+      <module name="Numerics" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.6" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="dots_array" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="RC_SET" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -122,7 +145,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vu 0.1 --vd -0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 2 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg_vertical_current --dbg --current-map" />
+      <option name="PARAMETERS" value="-M 5 -N 5 --vmin 0 --vmax 3 --vstep 0.1 --vr 0 --vg-avg -2 --vg-std 0 --c-avg 10 --c-std 9.5 --cg-avg 20 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --file-name dbg -o dbg --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -144,6 +167,27 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_new.py" />
       <option name="PARAMETERS" value="-M 3 -N 3 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vu 0.1 --vd -0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.7 --cg-avg 10 --cg-std 5 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg_vertical_current --dbg --plot-current-map" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="dots_array_reduced" type="PythonConfigurationType" factoryName="Python">
+      <module name="Numerics" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.6" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_reduced.py" />
+      <option name="PARAMETERS" value="-M 100 -N 100 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --file-name dbg_reduced -o dbg dbg --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -237,8 +281,10 @@
     </configuration>
     <list>
       <item itemvalue="Python.ThermalArray" />
+      <item itemvalue="Python.deposition_models" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dots_array_reduced" />
       <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
@@ -246,10 +292,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.ThermalArray" />
-        <item itemvalue="Python.dots_array" />
       </list>
     </recent_temporary>
   </component>
@@ -287,57 +333,91 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586802138671">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588333342212">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586802138671" />
-    <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl" timestamp="1586778310723">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
+    <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
+    <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1588333342212" />
+    <state x="655" y="125" width="666" height="854" key="#deposition_models" timestamp="1588087801096">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="655" y="125" width="666" height="854" key="#deposition_models/67.27.1853.1053@67.27.1853.1053" timestamp="1588087801096" />
+    <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl" timestamp="1588087779617">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl/0.0.1366.741@0.0.1366.741" timestamp="1586778310723" />
-    <state width="1345" height="165" key="GridCell.Tab.0.bottom" timestamp="1586875728293">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
+    <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
+    <state width="1830" height="278" key="GridCell.Tab.0.bottom" timestamp="1588331049214">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1586875728293" />
-    <state width="1345" height="165" key="GridCell.Tab.0.center" timestamp="1586875728291">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
+    <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
+    <state width="1830" height="278" key="GridCell.Tab.0.center" timestamp="1588331049213">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1586875728291" />
-    <state width="1345" height="165" key="GridCell.Tab.0.left" timestamp="1586875728289">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
+    <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
+    <state width="1830" height="278" key="GridCell.Tab.0.left" timestamp="1588331049213">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1586875728289" />
-    <state width="1345" height="165" key="GridCell.Tab.0.right" timestamp="1586875728292">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
+    <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
+    <state width="1830" height="278" key="GridCell.Tab.0.right" timestamp="1588331049213">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="165" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1586875728292" />
-    <state width="1345" height="222" key="GridCell.Tab.1.bottom" timestamp="1586783796354">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
+    <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
+    <state width="1830" height="344" key="GridCell.Tab.1.bottom" timestamp="1588171450424">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1586783796354" />
-    <state width="1345" height="222" key="GridCell.Tab.1.center" timestamp="1586783796351">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833856" />
+    <state width="1510" height="268" key="GridCell.Tab.1.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
+    <state width="1830" height="344" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
+    <state width="1830" height="344" key="GridCell.Tab.1.center" timestamp="1588171450424">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1586783796351" />
-    <state width="1345" height="222" key="GridCell.Tab.1.left" timestamp="1586783796348">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
+    <state width="1510" height="268" key="GridCell.Tab.1.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
+    <state width="1830" height="344" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
+    <state width="1830" height="344" key="GridCell.Tab.1.left" timestamp="1588171450423">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1586783796348" />
-    <state width="1345" height="222" key="GridCell.Tab.1.right" timestamp="1586783796352">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
+    <state width="1510" height="268" key="GridCell.Tab.1.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
+    <state width="1830" height="344" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450423" />
+    <state width="1830" height="344" key="GridCell.Tab.1.right" timestamp="1588171450424">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1586783796352" />
-    <state x="187" y="4" key="SettingsEditor" timestamp="1586778321810">
-      <screen x="0" y="0" width="1366" height="741" />
+    <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
+    <state width="1510" height="268" key="GridCell.Tab.1.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
+    <state width="1830" height="344" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
+    <state x="321" y="33" key="SettingsEditor" timestamp="1587029845917">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="187" y="4" key="SettingsEditor/0.0.1366.741@0.0.1366.741" timestamp="1586778321810" />
+    <state x="321" y="33" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1587029845917" />
+    <state width="683" height="370" key="XDebugger.FullValuePopup" timestamp="1586961381453">
+      <screen x="0" y="0" width="1366" height="741" />
+    </state>
+    <state width="683" height="370" key="XDebugger.FullValuePopup/0.0.1366.741@0.0.1366.741" timestamp="1586961381453" />
+    <state x="586" y="253" width="813" height="818" key="search.everywhere.popup" timestamp="1588085015006">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="496" y="214" width="672" height="678" key="search.everywhere.popup/67.27.1533.873@67.27.1533.873" timestamp="1587464491208" />
+    <state x="586" y="253" width="813" height="818" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588085015006" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>328</line>
+          <line>347</line>
           <option name="timeStamp" value="312" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -355,6 +435,31 @@
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
           <line>375</line>
           <option name="timeStamp" value="340" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_reduced.py</url>
+          <line>915</line>
+          <option name="timeStamp" value="355" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_reduced.py</url>
+          <line>589</line>
+          <option name="timeStamp" value="356" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="362" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>100</line>
+          <option name="timeStamp" value="364" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>104</line>
+          <option name="timeStamp" value="367" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
