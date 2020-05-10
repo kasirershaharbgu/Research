@@ -431,15 +431,15 @@ class SingleResultsProcessor:
     def plot_results(self):
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
-        # plt.figure()
+        plt.figure()
         # plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
         #          self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
         #          self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
         #          self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
         #          self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
         #          self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
-        # plt.xlabel('Voltage')
-        # plt.ylabel('Current')
+        plt.xlabel('Voltage')
+        plt.ylabel('Current')
         if self.full:
             # plt.figure()
             n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
@@ -451,7 +451,7 @@ class SingleResultsProcessor:
             nminusErr = n - nErr
             QplusErr = Q + QErr
             QminusErr = Q - QErr
-            plt.figure()
+            # plt.figure()
             # for i in range(20,30):
             #     plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
             #              self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
@@ -461,13 +461,16 @@ class SingleResultsProcessor:
             #              self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
             #     plt.xlabel('Voltage')
             #     plt.ylabel('Occupation')
-            plt.plot(self.V[:self.mid_idx], np.sum(q[:self.mid_idx, :],axis=1), 'g',
-                     self.V[self.mid_idx:], np.sum(q[self.mid_idx:, :],axis=1), 'orange')
+            factor = np.max(np.diff(np.sum(n[:self.mid_idx, :],axis=1)))/np.max(np.diff(self.I[:self.mid_idx]),)
+            Idiff = np.diff(self.I[:self.mid_idx])
+            Idiff[Idiff < 0.0001] = 0
+            plt.plot(self.V[1:self.mid_idx], np.diff(np.sum(n[:self.mid_idx, :],axis=1)), 'g',
+                     self.V[1:self.mid_idx], Idiff, 'orange')
             # plt.xlabel('Voltage')
             # plt.ylabel('Occupation')
             # # plt.figure()
-            # plt.plot(self.V[:self.mid_idx], np.sum(n[:self.mid_idx, :],axis=1)/100, 'b',
-            #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1)/100, 'r')
+            # plt.plot(self.V[:self.mid_idx], np.sum(n[:self.mid_idx, :],axis=1)/40000, 'b',
+            #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1)/40000, 'r')
             # plt.xlabel('Voltage')
             # plt.ylabel('Total Occupation')
             # plt.figure()
@@ -488,11 +491,11 @@ class SingleResultsProcessor:
             #     plt.xlabel('Voltage')
             #     plt.ylabel('Chagre on tunneling junctions')
             # plt.figure()
-            for i in range(len(self.full_I)):
-                plt.plot(self.V[:self.mid_idx], 3*self.full_I[i,:self.mid_idx], 'o',
-                        self.V[self.mid_idx:], 3*self.full_I[i,self.mid_idx:], '*')
-                plt.xlabel('Voltage')
-                plt.ylabel('Tunnel Chagre')
+            # for i in range(len(self.full_I)):
+            #     plt.plot(self.V[:self.mid_idx], 3*self.full_I[i,:self.mid_idx], 'o',
+            #             self.V[self.mid_idx:], 3*self.full_I[i,self.mid_idx:], '*')
+            #     plt.xlabel('Voltage')
+            #     plt.ylabel('Tunnel Chagre')
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""

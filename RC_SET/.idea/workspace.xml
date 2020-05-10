@@ -19,7 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="" />
+    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/RC_SET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RC_SET.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,7 +54,6 @@
     <property name="FullScreen" value="false" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -70,7 +74,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.dots_array">
+  <component name="RunManager" selected="Python.deposition_models">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -118,7 +122,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="/usr/bin/python3.6" />
+      <option name="SDK_HOME" value="/usr/bin/python3" />
       <option name="WORKING_DIRECTORY" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -280,20 +284,20 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.ThermalArray" />
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
       <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.ThermalArray" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
+        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.ThermalArray" />
       </list>
@@ -333,12 +337,13 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588333342212">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state x="329" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588777376181">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
     <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
     <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1588333342212" />
+    <state x="329" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1588777376181" />
     <state x="655" y="125" width="666" height="854" key="#deposition_models" timestamp="1588087801096">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -349,59 +354,68 @@
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl/0.0.1366.741@0.0.1366.741" timestamp="1586778310723" />
     <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
     <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
-    <state width="1830" height="278" key="GridCell.Tab.0.bottom" timestamp="1588331049214">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="275" key="GridCell.Tab.0.bottom" timestamp="1588842269840">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
-    <state width="1830" height="278" key="GridCell.Tab.0.center" timestamp="1588331049213">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="275" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1588842269840" />
+    <state width="1825" height="275" key="GridCell.Tab.0.center" timestamp="1588842269840">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1830" height="278" key="GridCell.Tab.0.left" timestamp="1588331049213">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="275" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1588842269840" />
+    <state width="1825" height="275" key="GridCell.Tab.0.left" timestamp="1588842269840">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1830" height="278" key="GridCell.Tab.0.right" timestamp="1588331049213">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="275" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1588842269840" />
+    <state width="1825" height="275" key="GridCell.Tab.0.right" timestamp="1588842269840">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1830" height="344" key="GridCell.Tab.1.bottom" timestamp="1588171450424">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="275" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1588842269840" />
+    <state width="1825" height="340" key="GridCell.Tab.1.bottom" timestamp="1588839959543">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833856" />
     <state width="1510" height="268" key="GridCell.Tab.1.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1830" height="344" key="GridCell.Tab.1.center" timestamp="1588171450424">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="340" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1588839959543" />
+    <state width="1825" height="340" key="GridCell.Tab.1.center" timestamp="1588839959542">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1830" height="344" key="GridCell.Tab.1.left" timestamp="1588171450423">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="340" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1588839959542" />
+    <state width="1825" height="340" key="GridCell.Tab.1.left" timestamp="1588839959542">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.1.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="344" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450423" />
-    <state width="1830" height="344" key="GridCell.Tab.1.right" timestamp="1588171450424">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="340" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1588839959542" />
+    <state width="1825" height="340" key="GridCell.Tab.1.right" timestamp="1588839959542">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state x="321" y="33" key="SettingsEditor" timestamp="1587029845917">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state width="1825" height="340" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1588839959542" />
+    <state x="325" y="33" width="1022" height="737" key="SettingsEditor" timestamp="1588777360408">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="187" y="4" key="SettingsEditor/0.0.1366.741@0.0.1366.741" timestamp="1586778321810" />
     <state x="321" y="33" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1587029845917" />
+    <state x="325" y="33" width="1022" height="737" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1588777360408" />
     <state width="683" height="370" key="XDebugger.FullValuePopup" timestamp="1586961381453">
       <screen x="0" y="0" width="1366" height="741" />
     </state>
@@ -448,18 +462,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
-          <line>79</line>
-          <option name="timeStamp" value="362" />
+          <line>249</line>
+          <option name="timeStamp" value="368" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
-          <line>100</line>
-          <option name="timeStamp" value="364" />
+          <line>291</line>
+          <option name="timeStamp" value="369" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
-          <line>104</line>
-          <option name="timeStamp" value="367" />
+          <line>172</line>
+          <option name="timeStamp" value="371" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>126</line>
+          <option name="timeStamp" value="377" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="378" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
+          <line>149</line>
+          <option name="timeStamp" value="379" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
