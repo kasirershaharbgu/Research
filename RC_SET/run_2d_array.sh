@@ -4,6 +4,7 @@ flags="-pe shared 14 -V -S /bin/bash -q jdubi.q -cwd"
 vmin=0
 vr=0
 vg_avg=0
+vg_std=0
 c_avg=1
 r_avg=1
 repeats=20
@@ -13,7 +14,7 @@ q_avg=0
 q_std=0
 vstep=0.01
 rg_avg=500
-rg_atd=0
+rg_std=0
 cg_avg=10
 cg_std=0
 dist="exp"
@@ -40,7 +41,7 @@ if [ ! -d "$f" ]; then
 fi
 custom_rh="\"\""
 custom_rv="\"\""
-custom_ch="\"\""
+ustom_ch="\"\""
 custom_cv="\"\""
 c_avg=10
 c_std=9.5
