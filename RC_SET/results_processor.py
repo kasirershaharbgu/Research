@@ -258,31 +258,75 @@ class SingleResultsProcessor:
 
 
 
-    def calc_jumps_freq(self):
+    def calc_jumps_freq(self, eps=0.001, path=None):
         diff1 = np.diff(self.I[:self.mid_idx])
         diff2 = np.diff(self.I[self.mid_idx:])
-        diff1[np.abs(diff1) < 0.002] = 0
-        diff2[np.abs(diff2) < 0.002] = 0
+        diff1[np.abs(diff1) < eps] = 0
+        diff2[np.abs(diff2) < eps] = 0
         Vjumps1 = self.V[1:self.mid_idx]
         Vjumps1 = Vjumps1[diff1 > 0]
         Vjumps2 = self.V[self.mid_idx:-1]
         Vjumps2 = Vjumps2[diff2 < 0]
+        Ijumps1 = diff1[diff1 > 0]
+        Ijumps2 = diff2[diff2 < 0]
+        new_Vjumps1 = []
+        new_diff1 = []
+        lastV = 0
+        last_jump = 0
+        for v,i in zip(Vjumps1, Ijumps1):
+            if v - lastV > 0.03:
+                new_Vjumps1.append(v)
+                new_diff1.append(last_jump + i)
+                last_jump = 0
+            else:
+                last_jump += i
+            lastV = v
+        Vjumps1 = np.array(new_Vjumps1)
+        diff1 = np.array(new_diff1)
+        new_Vjumps2 = []
+        new_diff2 = []
+        lastV = 0
+        last_jump = 0
+        for v, i in zip(Vjumps2, Ijumps2):
+            if v - lastV > 0.03:
+                new_Vjumps1.append(v)
+                new_diff1.append(last_jump + i)
+                last_jump = 0
+            else:
+                last_jump += i
+            lastV = v
+        Vjumps2 = np.array(new_Vjumps2)
+        diff2 = np.array(new_diff2)
         diffV1 = np.diff(Vjumps1)
         diffV2 = np.diff(Vjumps2)
         plt.figure()
-        plt.hist(diffV1, bins=10)
+        plt.hist(np.hstack((diffV1,-diffV2)), bins=10)
+        plt.xlabel('Delta V')
+        plt.ylabel('Frequency')
+        plt.title('Voltage between jumps histogram')
+        if path is not None:
+            plt.savefig(path + '_deltaV.png')
         plt.figure()
-        plt.hist(-diffV2, bins=10)
+        plt.hist(np.hstack((diff1[diff1>0], -diff2[diff2<0])), bins=10)
+        plt.xlabel('Delta I')
+        plt.ylabel('Frequency')
+        plt.title('Jumps heights histogram')
+        if path is not None:
+            plt.savefig(path + '_deltaI.png')
         plt.figure()
-        plt.hist(diff1[diff1>0], bins=10)
-        plt.figure()
-        plt.hist(-diff2[diff2<0], bins=10)
+        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx])
+        for v in Vjumps1:
+            plt.plot([v,v],[0,np.max(self.I)],'r--')
+        plt.xlabel('V')
+        plt.ylabel('I')
+        if path is not None:
+            plt.savefig(path + '_detected_jumps.png')
 
-    def clac_fourier(self):
+    def clac_fourier(self, eps=0.001):
         diff1 = np.diff(self.I[:self.mid_idx])
         diff2 = np.diff(self.I[self.mid_idx:])
-        diff1[np.abs(diff1) < 0.002] = 0
-        diff2[np.abs(diff2) < 0.002] = 0
+        diff1[np.abs(diff1) < eps] = 0
+        diff2[np.abs(diff2) < eps] = 0
         sample_space = self.V[1] - self.V[0]
         fou1 = np.abs(np.fft.rfft(diff1))
         fou2 = np.abs(np.fft.rfft(diff2))
@@ -775,18 +819,18 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    directory = "2d_array_bgu_custom_paths"
-    name = "array_10_10_r_block"
-    # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    # name = "array_10_10_r_c_disorder_run_2"
-    for run in [""]:
+    # directory = "2d_array_bgu_custom_paths"
+    # name = "array_10_10_r_block"
+    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
+    name = "array_10_10_cg_disorder_run_"
+    for run in ["1","2", "3", "4", "5", "6", "7"]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
-        # s.calc_jumps_freq()
+        s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
         # s.clac_fourier()
-        s.plot_array_params("C")
-        s.plot_array_params("R")
-        s.plot_results()
+        # s.plot_array_params("C")
+        # s.plot_array_params("R")
+        # s.plot_results()
         # s.plot_voltage()
         # s.plot_power()
         # s.save_re_analysis()
