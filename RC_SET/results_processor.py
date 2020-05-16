@@ -831,7 +831,7 @@ if __name__ == "__main__":
         s.plot_array_params("C")
         s.plot_array_params("R")
         # s.plot_results()
-        # s.plot_voltage()
+        s.plot_voltage()
         # s.plot_power()
         # s.save_re_analysis()
     plt.show()
