@@ -821,15 +821,15 @@ if __name__ == "__main__":
     #
     # directory = "2d_array_bgu_custom_paths"
     # name = "array_10_10_r_block"
-    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    name = "array_10_10_cg_disorder_run_"
-    for run in ["1","2", "3", "4", "5", "6", "7"]:
+    directory = "/home/kasirershahar/Research/RC_SET/2d_array_bgu_big_c_disorder/"
+    name = "array_10_10_c_r_disorder_run_3"
+    for run in [""]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
-        s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
+        # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
         # s.clac_fourier()
-        # s.plot_array_params("C")
-        # s.plot_array_params("R")
+        s.plot_array_params("C")
+        s.plot_array_params("R")
         # s.plot_results()
         # s.plot_voltage()
         # s.plot_power()
