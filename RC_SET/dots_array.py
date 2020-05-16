@@ -1622,9 +1622,9 @@ def removeRandomParams(basePath):
 def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
-                      currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False, superconducting=False,
-                      gap=0, leaping=False, modifyR=False, plotVoltages=False,
-                      constQ=False):
+                      currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False,
+                      superconducting=False, gap=0, leaping=False, modifyR=False, plotVoltages=False,
+                      constQ=False, frame_norm=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         fastRelaxation = True
@@ -1637,7 +1637,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         if fullOutput:
             n = np.load(basePath + "_n.npy")
         saveCurrentMaps(avgImaps, V, basePath + "_Imap",full=fullOutput,
-                        n=n, binary=plotBinaryCurrentMaps)
+                        n=n, binary=plotBinaryCurrentMaps, frame_norm=frame_norm)
         exit(0)
     if not resume:
         print("Saving array parameters")
@@ -1784,7 +1784,7 @@ def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=Fa
         os.remove(baseName + "_current_map.npy")
     return True
 
-def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False):
+def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm=False):
     if binary:
         Imaps[Imaps>0] = 1
         Imaps[Imaps<0] = -1
@@ -1792,16 +1792,17 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False):
     Writer = animation.writers['ffmpeg']
     writer = Writer(fps=24, bitrate=1800)
     fig, ax = plt.subplots()
-    Imax = np.max(Imaps)
+    Imax = 1 if frame_norm else np.max(Imaps)
+    Imin = -1 if frame_norm else np.min(Imaps)
     M,N = Imaps[0].shape
-    im = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=-Imax / 2,
+    im = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=Imin,
                     vmax=Imax / 2, animated=True, cmap='PuOr', aspect='equal')
     text = ax.text(1, 1, 'Vext = 0')
     cb1 = plt.colorbar(im, shrink=0.25)
     cb1.set_label('Current')
     if full:
-        nmax = np.max(n)
-        nmin = np.min(n)
+        nmax = 1 if frame_norm else np.max(n)
+        nmin = -1 if frame_norm else np.min(n)
         im2 = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)),
                         vmin=nmin, vmax=nmax, animated=True, cmap='RdBu',
                         aspect='equal')
@@ -1822,7 +1823,7 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False):
     im_ani.save(path + '.mp4', writer=writer)
     plt.close(fig)
 
-def plotCurrentMaps(im, text, M, N, full=False, im2=None):
+def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False):
     '''
     updating the plot to current currents map
     :return: image for animation
@@ -1850,6 +1851,10 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None):
             I, Vext = result
         if I is None:
             return im
+        if frame_norm:
+            I = I/np.max(np.abs(I))
+            if full:
+                n = n/np.max(np.abs(n))
         J[np.ix_(horzRows, horzCols)] = np.repeat(I[0:M:2,:],2,axis=1)
         J[np.ix_(vertRows, vertCols)] = np.repeat(I[1:M:2,:],2,axis=0)
         J_masked = np.ma.masked_array(J,Jmask)
@@ -1918,6 +1923,11 @@ def getOptions():
                            " be plotted using former saved frames (from"
                            " a former run with same file name and"
                            " location and the flag --current-map"
+                           " [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--frame-norm", dest="frame_norm",
+                      help="if true the clip of current distribution will"
+                           " be normalized per frame"
                            " [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("--dbg", dest="dbg", help="Avoids parallel running for debugging [Default:%default]",
@@ -2118,6 +2128,7 @@ if __name__ == "__main__":
     resume = options.resume
     plot_current_map = options.plot_current_map
     plot_binary_current_map = options.plot_binary_current_map
+    frame_norm = options.frame_norm
     modifyR = options.modifyR
     constQ = options.constQ
     if params_file:
@@ -2168,7 +2179,7 @@ if __name__ == "__main__":
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, plotBinaryCurrentMaps=plot_binary_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping,
-                                     modifyR=modifyR, constQ=constQ)
+                                     modifyR=modifyR, constQ=constQ, frame_norm=frame_norm)
     saveParameters(savePath, fileName, options, array_params)
 
     if dbg:

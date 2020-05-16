@@ -258,31 +258,75 @@ class SingleResultsProcessor:
 
 
 
-    def calc_jumps_freq(self):
+    def calc_jumps_freq(self, eps=0.001, path=None):
         diff1 = np.diff(self.I[:self.mid_idx])
         diff2 = np.diff(self.I[self.mid_idx:])
-        diff1[np.abs(diff1) < 0.002] = 0
-        diff2[np.abs(diff2) < 0.002] = 0
+        diff1[np.abs(diff1) < eps] = 0
+        diff2[np.abs(diff2) < eps] = 0
         Vjumps1 = self.V[1:self.mid_idx]
         Vjumps1 = Vjumps1[diff1 > 0]
         Vjumps2 = self.V[self.mid_idx:-1]
         Vjumps2 = Vjumps2[diff2 < 0]
+        Ijumps1 = diff1[diff1 > 0]
+        Ijumps2 = diff2[diff2 < 0]
+        new_Vjumps1 = []
+        new_diff1 = []
+        lastV = 0
+        last_jump = 0
+        for v,i in zip(Vjumps1, Ijumps1):
+            if v - lastV > 0.03:
+                new_Vjumps1.append(v)
+                new_diff1.append(last_jump + i)
+                last_jump = 0
+            else:
+                last_jump += i
+            lastV = v
+        Vjumps1 = np.array(new_Vjumps1)
+        diff1 = np.array(new_diff1)
+        new_Vjumps2 = []
+        new_diff2 = []
+        lastV = 0
+        last_jump = 0
+        for v, i in zip(Vjumps2, Ijumps2):
+            if v - lastV > 0.03:
+                new_Vjumps1.append(v)
+                new_diff1.append(last_jump + i)
+                last_jump = 0
+            else:
+                last_jump += i
+            lastV = v
+        Vjumps2 = np.array(new_Vjumps2)
+        diff2 = np.array(new_diff2)
         diffV1 = np.diff(Vjumps1)
         diffV2 = np.diff(Vjumps2)
         plt.figure()
-        plt.hist(diffV1, bins=10)
+        plt.hist(np.hstack((diffV1,-diffV2)), bins=10)
+        plt.xlabel('Delta V')
+        plt.ylabel('Frequency')
+        plt.title('Voltage between jumps histogram')
+        if path is not None:
+            plt.savefig(path + '_deltaV.png')
         plt.figure()
-        plt.hist(-diffV2, bins=10)
+        plt.hist(np.hstack((diff1[diff1>0], -diff2[diff2<0])), bins=10)
+        plt.xlabel('Delta I')
+        plt.ylabel('Frequency')
+        plt.title('Jumps heights histogram')
+        if path is not None:
+            plt.savefig(path + '_deltaI.png')
         plt.figure()
-        plt.hist(diff1[diff1>0], bins=10)
-        plt.figure()
-        plt.hist(-diff2[diff2<0], bins=10)
+        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx])
+        for v in Vjumps1:
+            plt.plot([v,v],[0,np.max(self.I)],'r--')
+        plt.xlabel('V')
+        plt.ylabel('I')
+        if path is not None:
+            plt.savefig(path + '_detected_jumps.png')
 
-    def clac_fourier(self):
+    def clac_fourier(self, eps=0.001):
         diff1 = np.diff(self.I[:self.mid_idx])
         diff2 = np.diff(self.I[self.mid_idx:])
-        diff1[np.abs(diff1) < 0.002] = 0
-        diff2[np.abs(diff2) < 0.002] = 0
+        diff1[np.abs(diff1) < eps] = 0
+        diff2[np.abs(diff2) < eps] = 0
         sample_space = self.V[1] - self.V[0]
         fou1 = np.abs(np.fft.rfft(diff1))
         fou2 = np.abs(np.fft.rfft(diff2))
@@ -431,15 +475,15 @@ class SingleResultsProcessor:
     def plot_results(self):
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
-        # plt.figure()
-        # plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
-        #          self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
-        #          self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
-        #          self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
-        #          self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
-        #          self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
-        # plt.xlabel('Voltage')
-        # plt.ylabel('Current')
+        plt.figure()
+        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
+                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
+                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IplusErr[self.mid_idx:],'r--',
+                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
+                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+        plt.xlabel('Voltage')
+        plt.ylabel('Current')
         if self.full:
             # plt.figure()
             n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
@@ -452,32 +496,35 @@ class SingleResultsProcessor:
             QplusErr = Q + QErr
             QminusErr = Q - QErr
             plt.figure()
-            # for i in range(20,30):
-            #     plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
-            #              self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
-            #              self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
-            #              self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Occupation')
-            plt.plot(self.V[:self.mid_idx], np.sum(q[:self.mid_idx, :],axis=1), 'g',
-                     self.V[self.mid_idx:], np.sum(q[self.mid_idx:, :],axis=1), 'orange')
+            for i in range(20,30):
+                plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
+                         self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
+                         self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
+                plt.xlabel('Voltage')
+                plt.ylabel('Occupation')
+            # factor = np.max(np.diff(np.sum(n[:self.mid_idx, :],axis=1)))/np.max(np.diff(self.I[:self.mid_idx]),)
+            # Idiff = np.diff(self.I[:self.mid_idx])
+            # Idiff[Idiff < 0.0001] = 0
+            # plt.plot(self.V[1:self.mid_idx], np.diff(np.sum(n[:self.mid_idx, :],axis=1)), 'g',
+            #          self.V[1:self.mid_idx], Idiff, 'orange')
             # plt.xlabel('Voltage')
             # plt.ylabel('Occupation')
             # # plt.figure()
-            # plt.plot(self.V[:self.mid_idx], np.sum(n[:self.mid_idx, :],axis=1)/100, 'b',
-            #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1)/100, 'r')
+            # plt.plot(self.V[:self.mid_idx], np.sum(n[:self.mid_idx, :],axis=1)/40000, 'b',
+            #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1)/40000, 'r')
             # plt.xlabel('Voltage')
             # plt.ylabel('Total Occupation')
-            # plt.figure()
-            # for i in range(10,20):
-            #     plt.plot(self.V[:self.mid_idx], -Q[:self.mid_idx, i], 'g',
-            #              self.V[self.mid_idx:], -Q[self.mid_idx:, i], 'c',
-            #              self.V[:self.mid_idx], -QplusErr[:self.mid_idx, i], 'g--',
-            #              self.V[self.mid_idx:], -QplusErr[self.mid_idx:, i], 'c--',
-            #              self.V[:self.mid_idx], -QminusErr[:self.mid_idx, i], 'g--',
-            #              self.V[self.mid_idx:], -QminusErr[self.mid_idx:, i], 'c--')
+            plt.figure()
+            for i in range(10,20):
+                plt.plot(self.V[:self.mid_idx], -Q[:self.mid_idx, i], 'g',
+                         self.V[self.mid_idx:], -Q[self.mid_idx:, i], 'c',
+                         self.V[:self.mid_idx], -QplusErr[:self.mid_idx, i], 'g--',
+                         self.V[self.mid_idx:], -QplusErr[self.mid_idx:, i], 'c--',
+                         self.V[:self.mid_idx], -QminusErr[:self.mid_idx, i], 'g--',
+                         self.V[self.mid_idx:], -QminusErr[self.mid_idx:, i], 'c--')
             #     plt.xlabel('Voltage')
             #     plt.ylabel('Chagre')
             # plt.figure()
@@ -487,7 +534,7 @@ class SingleResultsProcessor:
             #     #          self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
             #     plt.xlabel('Voltage')
             #     plt.ylabel('Chagre on tunneling junctions')
-            # plt.figure()
+            plt.figure()
             for i in range(len(self.full_I)):
                 plt.plot(self.V[:self.mid_idx], 3*self.full_I[i,:self.mid_idx], 'o',
                         self.V[self.mid_idx:], 3*self.full_I[i,self.mid_idx:], '*')
@@ -773,21 +820,21 @@ if __name__ == "__main__":
     #     s.save_re_analysis()
     #
     # directory = "2d_array_bgu_custom_paths"
-    # name = "dbg"
-    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    name = "array_10_10_r_c_disorder_run_2"
+    # name = "array_10_10_r_block"
+    directory = "/home/kasirershahar/Research/RC_SET/2d_array_bgu_big_c_disorder/"
+    name = "array_10_10_c_r_disorder_run_3"
     for run in [""]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
-        # s.calc_jumps_freq()
+        # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
         # s.clac_fourier()
-        # s.plot_array_params("C")
-        # s.plot_array_params("R")
+        s.plot_array_params("C")
+        s.plot_array_params("R")
         # s.plot_results()
         s.plot_voltage()
         # s.plot_power()
         # s.save_re_analysis()
-    # plt.show()
+    plt.show()
     # files_list = []
     # groups = []
     # group_names = ["c", "cg_c", "cg", "r", "r_c", "r_cg_c", "r_cg", "r_vg"]
