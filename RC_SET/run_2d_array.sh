@@ -35,7 +35,7 @@ vmax=3
 efermi=""
 
 
-f="2d_array_bgu_low_vg
+f="2d_array_bgu_low_vg"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
