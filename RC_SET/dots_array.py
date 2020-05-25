@@ -26,7 +26,7 @@ EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-3
+ALLOWED_ERR = 1e-2
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
@@ -919,7 +919,7 @@ class Simulator:
             self.printState()
         return dt + intervals*self.dotArray.default_dt
 
-    def calcCurrent(self,print_stats=False, fullOutput=False, currentMap=False):
+    def calcCurrent(self,print_stats=False, fullOutput=False, currentMap=False, double_time=False):
         if currentMap:
             self.dotArray.currentMapOn()
         if self.constQ:
@@ -929,6 +929,8 @@ class Simulator:
             self.dotArray.getWork()
         self.dotArray.resetCharge()
         final_t = self.dotArray.timeStep
+        if double_time:
+            final_t = 2 * final_t
         curr_t = 0
         steps = 0
         I_avg = 0
@@ -1170,7 +1172,7 @@ class Simulator:
         return res
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False,
-               currentMap=False, basePath="", resume=False):
+               currentMap=False, basePath="", resume=False, double_time=False, double_loop=False):
         I = []
         IErr = []
         ns = []
@@ -1178,7 +1180,6 @@ class Simulator:
         nsErr = []
         QsErr = []
         Imaps = []
-        tStep = self.dotArray.getTimeStep()
         if vSym:
             Vstep /= 2
             Vmax /= 2
@@ -1188,7 +1189,10 @@ class Simulator:
             VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         else:
             VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
-            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+            if double_loop:
+                VL_vec = np.hstack((VL_vec, np.flip(VL_vec),VL_vec, np.flip(VL_vec)))
+            else:
+                VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
             VR_vec = self.VR * np.ones(VL_vec.shape)
         VL_res = np.copy(VL_vec)
         VR_res = np.copy(VR_vec)
@@ -1214,7 +1218,8 @@ class Simulator:
             if not self.constQ:
                 self.getToSteadyState()
             # now we are in steady state calculate current
-            stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap,
+                                       double_time=double_time)
             current = stepRes[0]
             currentErr = stepRes[1]
             if fullOutput:
@@ -1522,7 +1527,7 @@ class GraphSimulator:
         return res
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False,
-               basePath="", resume=False):
+               basePath="", resume=False, double_time=False, double_loop=False):
         # TODO: add error calculation
         I = []
         ns = []
@@ -1570,13 +1575,14 @@ class GraphSimulator:
 
 def runSingleSimulation(index, VL0, VR0, vSym, Q0, n0,Vmax, Vstep, dotArray,
                         fullOutput=False, printState=False, useGraph=False, currentMap=False,
-                        basePath="", resume=False, constQ=False):
+                        basePath="", resume=False, constQ=False, double_time=False, double_loop=False):
     if useGraph:
         simulator = GraphSimulator(index, VL0, VR0, Q0, n0, dotArray)
     else:
         simulator = Simulator(index, VL0, VR0, Q0, n0, dotArray, constQ)
     out = simulator.calcIV(Vmax, Vstep, vSym, fullOutput=fullOutput, print_stats=printState,
-                           currentMap=currentMap, basePath=basePath, resume=resume)
+                           currentMap=currentMap, basePath=basePath, resume=resume, double_time=double_time,
+                           double_loop=double_loop)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
 
@@ -1624,7 +1630,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False,
                       superconducting=False, gap=0, leaping=False, modifyR=False, plotVoltages=False,
-                      constQ=False, frame_norm=False):
+                      constQ=False, frame_norm=False, double_time=False, double_loop=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         fastRelaxation = True
@@ -1681,7 +1687,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
                                     (repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
-                                     printState, useGraph, currentMap,basePath, resume, constQ))
+                                     printState, useGraph, currentMap,basePath, resume, constQ, double_time, double_loop))
             results.append(res)
         for res in results:
             result = res.get()
@@ -1709,7 +1715,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         print("Starting serial run")
         for repeat in range(repeats):
             result = runSingleSimulation(repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
-                                         printState, useGraph, currentMap,basePath, resume, constQ)
+                                         printState, useGraph, currentMap,basePath, resume, constQ, double_time, double_loop)
             I = result[0]
             IErr = result[1]
             currentMapInd = 3
@@ -1750,10 +1756,28 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     fig = plt.figure()
     IplusErr = avgI + avgIErr
     IminusErr = avgI - avgIErr
-    plt.plot(V[:V.size//2], avgI[:V.size//2], 'b-',V[:V.size//2], IplusErr[:V.size//2], 'b--',
-             V[:V.size//2], IminusErr[:V.size//2], 'b--',
-             V[V.size//2:], avgI[V.size//2:], 'r-',V[V.size//2:], IplusErr[V.size//2:], 'r--',
-             V[V.size//2:], IminusErr[V.size//2:], 'r--')
+    if double_loop:
+        plt.plot(V[:V.size // 4], avgI[:V.size // 4], 'b-',
+                 V[:V.size // 4], IplusErr[:V.size // 4], 'b--',
+                 V[:V.size // 4], IminusErr[:V.size // 4], 'b--',
+                 V[V.size // 4:V.size//2], avgI[V.size // 4:V.size//2], 'r-',
+                 V[V.size // 4:V.size//2],IplusErr[V.size // 4:V.size//2], 'r--',
+                 V[V.size // 4:V.size//2], IminusErr[V.size // 4:V.size//2], 'r--',
+                 V[V.size // 2: 3*V.size//4], avgI[V.size // 2: 3*V.size//4], 'c-',
+                 V[V.size // 2: 3*V.size//4], IplusErr[V.size // 2: 3*V.size//4], 'c--',
+                 V[V.size // 2: 3*V.size//4], IminusErr[V.size // 2: 3*V.size//4], 'c--',
+                 V[3 * V.size // 4 :], avgI[3 * V.size // 4 :], 'm-',
+                 V[3 * V.size // 4 :], IplusErr[3 * V.size // 4 :], 'm--',
+                 V[3 * V.size // 4 :], IminusErr[3 * V.size // 4 :], 'm--',
+                 )
+    else:
+        plt.plot(V[:V.size//2], avgI[:V.size//2], 'b-',
+                 V[:V.size//2], IplusErr[:V.size//2], 'b--',
+                 V[:V.size//2], IminusErr[:V.size//2], 'b--',
+                 V[V.size//2:], avgI[V.size//2:], 'r-',
+                 V[V.size//2:], IplusErr[V.size//2:], 'r--',
+                 V[V.size//2:], IminusErr[V.size//2:], 'r--'
+                 )
     plt.savefig(basePath + "_IV.png")
     np.save(basePath + "_I", avgI)
     np.save(basePath + "_IErr", avgIErr)
@@ -1789,6 +1813,8 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
         Imaps[Imaps>0] = 1
         Imaps[Imaps<0] = -1
         path += "_binary"
+    if frame_norm:
+        path += "_frame_norm"
     Writer = animation.writers['ffmpeg']
     writer = Writer(fps=24, bitrate=1800)
     fig, ax = plt.subplots()
@@ -1796,7 +1822,7 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
     Imin = -1 if frame_norm else np.min(Imaps)
     M,N = Imaps[0].shape
     im = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=Imin,
-                    vmax=Imax / 2, animated=True, cmap='PuOr', aspect='equal')
+                    vmax=Imax , animated=True, cmap='PuOr', aspect='equal')
     text = ax.text(1, 1, 'Vext = 0')
     cb1 = plt.colorbar(im, shrink=0.25)
     cb1.set_label('Current')
@@ -1810,13 +1836,13 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
         cb2.set_label('Occupation')
         frames = [(Imaps[i], V[i], n[i]) for i in range(len(V))]
         im_ani = animation.FuncAnimation(fig,
-                                         plotCurrentMaps(im, text, M, N, full=True, im2=im2),
+                                         plotCurrentMaps(im, text, M, N, full=True, im2=im2, frame_norm=frame_norm),
                                          frames=frames, interval=100,
                                          repeat_delay=1000,
                                          blit=True)
     else:
         frames = [(Imaps[i], V[i]) for i in range(len(V))]
-        im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N),
+        im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N, frame_norm=frame_norm),
                                         frames=frames, interval=100,
                                          repeat_delay=1000,
                                         blit=True)
@@ -1852,9 +1878,13 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False):
         if I is None:
             return im
         if frame_norm:
-            I = I/np.max(np.abs(I))
+            normalization = np.max(np.abs(I))
+            if normalization > 0:
+                I = I/normalization
             if full:
-                n = n/np.max(np.abs(n))
+                normalization = np.max(np.abs(n))
+                if normalization > 0:
+                    n = n/normalization
         J[np.ix_(horzRows, horzCols)] = np.repeat(I[0:M:2,:],2,axis=1)
         J[np.ix_(vertRows, vertCols)] = np.repeat(I[1:M:2,:],2,axis=0)
         J_masked = np.ma.masked_array(J,Jmask)
@@ -1945,6 +1975,14 @@ def getOptions():
                                                             "according to constant density of states assumption, else"
                                                             " it will be assumed constant (infinite density of states"
                                                             " [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--double-time", dest="double_time",
+                      help="if true each simulation step will run twice as long as the default time"
+                           " [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--double-loop", dest="double_loop",
+                      help="if true the voltage would be raised and lowered twice"
+                           " [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
                       help="Output folder [default: current folder]",
@@ -2179,7 +2217,8 @@ if __name__ == "__main__":
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, plotBinaryCurrentMaps=plot_binary_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping,
-                                     modifyR=modifyR, constQ=constQ, frame_norm=frame_norm)
+                                     modifyR=modifyR, constQ=constQ, frame_norm=frame_norm,
+                                     double_time=options.double_time, double_loop=options.double_loop)
     saveParameters(savePath, fileName, options, array_params)
 
     if dbg:

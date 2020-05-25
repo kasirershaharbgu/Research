@@ -819,18 +819,18 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    # directory = "2d_array_bgu_custom_paths"
-    # name = "array_10_10_r_block"
-    directory = "/home/kasirershahar/Research/RC_SET/2d_array_bgu_big_c_disorder/"
-    name = "array_10_10_c_r_disorder_run_3"
-    for run in [""]:
+    directory = "2d_array_bgu_low_vg"
+    name = "array_10_10_c_r_disorder_run_"
+    # directory = "/home/kasirershahar/Research/RC_SET/2d_array_bgu_big_c_disorder/"
+    # name = "array_10_10_c_r_disorder_run_3"
+    for run in ["4"]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
         # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
         # s.clac_fourier()
         s.plot_array_params("C")
         s.plot_array_params("R")
-        # s.plot_results()
+        s.plot_results()
         s.plot_voltage()
         # s.plot_power()
         # s.save_re_analysis()
