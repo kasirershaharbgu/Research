@@ -484,31 +484,31 @@ class SingleResultsProcessor:
                  # self.V[self.mid_idx:], IminusErr[self.mid_idx:],'--')
         plt.xlabel('Voltage')
         plt.ylabel('Current')
-        # if self.full:
-        #     n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
-        #     Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
-        #     q = n+Q
-        #     nErr = self.nErr.reshape((self.nErr.shape[0], self.nErr.shape[1] *self. nErr.shape[2]))
-        #     QErr = self.QErr.reshape((self.QErr.shape[0], self.QErr.shape[1] * self.QErr.shape[2]))
-        #     nplusErr = n + nErr
-        #     nminusErr = n - nErr
-        #     QplusErr = Q + QErr
-        #     QminusErr = Q - QErr
-        #     plt.figure()
-        #     for i in range(10,20):
-        #         plt.plot(self.V[:self.mid_idx // 2], n[:self.mid_idx // 2, i], 'b',
-        #                  self.V[self.mid_idx // 2:self.mid_idx], n[self.mid_idx // 2:self.mid_idx, i], 'r',
-        #                  self.V[self.mid_idx:3 * self.mid_idx // 2], n[self.mid_idx:3 * self.mid_idx // 2, i], 'c',
-        #                  self.V[3 * self.mid_idx // 2:], nplusErr[3 * self.mid_idx // 2:, i], 'm')
+        if self.full:
+            n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
+            Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
+            q = n+Q
+            nErr = self.nErr.reshape((self.nErr.shape[0], self.nErr.shape[1] *self. nErr.shape[2]))
+            QErr = self.QErr.reshape((self.QErr.shape[0], self.QErr.shape[1] * self.QErr.shape[2]))
+            nplusErr = n + nErr
+            nminusErr = n - nErr
+            QplusErr = Q + QErr
+            QminusErr = Q - QErr
+            plt.figure()
             # for i in range(20,30):
-            #     plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
-            #              self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
-            #              self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
-            #              self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Occupation')
+            #     plt.plot(self.V[:self.mid_idx // 2], n[:self.mid_idx // 2, i], 'b',
+            #              self.V[self.mid_idx // 2:self.mid_idx], n[self.mid_idx // 2:self.mid_idx, i], 'r',
+            #              self.V[self.mid_idx:3 * self.mid_idx // 2], n[self.mid_idx:3 * self.mid_idx // 2, i], 'c',
+            #              self.V[3 * self.mid_idx // 2:], nplusErr[3 * self.mid_idx // 2:, i], 'm')
+            for i in range(20,30):
+                plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
+                         self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
+                         self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
+                plt.xlabel('Voltage')
+                plt.ylabel('Occupation')
             # factor = np.max(np.diff(np.sum(n[:self.mid_idx, :],axis=1)))/np.max(np.diff(self.I[:self.mid_idx]),)
             # Idiff = np.diff(self.I[:self.mid_idx])
             # Idiff[Idiff < 0.0001] = 0
@@ -823,8 +823,8 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    directories = ["2d_array_bgu_low_vg", "hysteresis_tries","2d_array_bgu_low_vg", "hysteresis_tries"]
-    names = ["array_10_10_c_r_disorder_run_4", "array_10_10_c_r_disorder_run_4_modified", "array_10_10_c_r_disorder_run_5", "array_10_10_c_r_disorder_run_5_modified"]
+    directories = ["hysteresis_tries"]*4
+    names = ["array_10_10_c_r_disorder_run_4_modified_1", "array_10_10_c_r_disorder_run_4_modified", "array_10_10_c_r_disorder_run_5_modified_1", "array_10_10_c_r_disorder_run_5_modified"]
     # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
     name = "array_10_10_c_r_disorder_run_"
     for d, f in zip(directories, names):
