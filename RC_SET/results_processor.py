@@ -475,7 +475,7 @@ class SingleResultsProcessor:
     def plot_results(self):
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
-        # plt.figure()
+        plt.figure()
         # plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
         #          self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
         #          self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
@@ -495,19 +495,19 @@ class SingleResultsProcessor:
             QplusErr = Q + QErr
             QminusErr = Q - QErr
 
-            plt.plot(self.V[:self.mid_idx // 2], n[:self.mid_idx // 2, 4], 'b',
-                     self.V[self.mid_idx // 2:self.mid_idx], n[self.mid_idx // 2:self.mid_idx, 4], 'r',
-                     self.V[self.mid_idx:3 * self.mid_idx // 2], n[self.mid_idx:3 * self.mid_idx // 2, 4], 'c',
-                     self.V[3 * self.mid_idx // 2:], nplusErr[3 * self.mid_idx // 2:, 4], 'm')
-            # for i in range(len(n[0])):
-                # plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
-                #          self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
-                #          self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
-                #          self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
-                #          self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
-                #          self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
-                # plt.xlabel('Voltage')
-                # plt.ylabel('Occupation')
+            # plt.plot(self.V[:self.mid_idx // 2], n[:self.mid_idx // 2, 4], 'b',
+            #          self.V[self.mid_idx // 2:self.mid_idx], n[self.mid_idx // 2:self.mid_idx, 4], 'r',
+            #          self.V[self.mid_idx:3 * self.mid_idx // 2], n[self.mid_idx:3 * self.mid_idx // 2, 4], 'c',
+            #          self.V[3 * self.mid_idx // 2:], nplusErr[3 * self.mid_idx // 2:, 4], 'm')
+            for i in range(20,30):
+                plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
+                         self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
+                         self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
+                         self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
+                plt.xlabel('Voltage')
+                plt.ylabel('Occupation')
             # factor = np.max(np.diff(np.sum(n[:self.mid_idx, :],axis=1)))/np.max(np.diff(self.I[:self.mid_idx]),)
             # Idiff = np.diff(self.I[:self.mid_idx])
             # Idiff[Idiff < 0.0001] = 0
@@ -825,14 +825,14 @@ if __name__ == "__main__":
     directory = "2d_array_bgu_low_vg"
     # name = "array_10_10_c_r_disorder_run_"
     # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    name = "array_10_10_c_r_disorder_run_4_double_loop"
-    for run in [""]:
+    name = "array_10_10_c_r_disorder_run_"
+    for run in ["5"]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
         # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
         # s.clac_fourier()
-        # s.plot_array_params("C")
-        # s.plot_array_params("R")
+        s.plot_array_params("C")
+        s.plot_array_params("R")
         s.plot_results()
         # s.plot_voltage()
         # s.plot_power()
