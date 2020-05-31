@@ -1189,10 +1189,10 @@ class Simulator:
             VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
         else:
             VL_vec = np.arange(self.VL, Vmax+self.VR, Vstep)
-            if double_loop:
-                VL_vec = np.hstack((VL_vec, np.flip(VL_vec),VL_vec, np.flip(VL_vec)))
-            else:
-                VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+        if double_loop:
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec),VL_vec, np.flip(VL_vec)))
+        else:
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
             VR_vec = self.VR * np.ones(VL_vec.shape)
         VL_res = np.copy(VL_vec)
         VR_res = np.copy(VR_vec)

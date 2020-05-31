@@ -822,10 +822,10 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    directory = "double_cycle"
+    directory = "2d_array_bgu_low_vg"
     # name = "array_10_10_c_r_disorder_run_"
     # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    name = "double_cycle_3_3"
+    name = "array_10_10_c_r_disorder_run_4_double_loop"
     for run in [""]:
         s = SingleResultsProcessor(directory, name+run,fullOutput=True,vertCurrent=False)
         # s.plot_conductance()
