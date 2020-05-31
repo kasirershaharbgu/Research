@@ -21,102 +21,25 @@
   <component name="ChangeListManager">
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.e1072049" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.e1072061" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.e1072071" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.e9255157" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.e985570" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.pe1072049" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.pe1072061" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.pe1072071" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.pe9255157" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_1.pe985570" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.e1072050" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.e1072062" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.e1072072" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.e9255158" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.e985571" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.pe1072050" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.pe1072062" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.pe1072072" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.pe9255158" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_2.pe985571" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.e1072051" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.e1072063" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.e1072073" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.e9255159" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.e985572" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.pe1072051" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.pe1072063" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.pe1072073" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.pe9255159" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_3.pe985572" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.e1072052" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.e1072064" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.e1072074" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.e9255160" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.e985573" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.pe1072052" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.pe1072064" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.pe1072074" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.pe9255160" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_4.pe985573" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.e1072053" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.e1072065" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.e1072075" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.e9255161" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.e985574" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.pe1072053" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.pe1072065" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.pe1072075" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.pe9255161" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_c_r_disorder_run_5.pe985574" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_r_block.e985569" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_10_10_r_block.pe985569" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.e1072054" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.e1072066" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.e1072076" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.e9255162" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.pe1072054" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.pe1072066" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.pe1072076" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_1.pe9255162" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.e1072055" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.e1072067" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.e1072077" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.e9255163" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.pe1072055" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.pe1072067" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.pe1072077" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_2.pe9255163" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.e1072058" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.e1072068" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.e1072078" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.e9255164" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.pe1072058" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.pe1072068" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.pe1072078" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_3.pe9255164" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.e1072059" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.e1072069" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.e1072079" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.e9255165" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.pe1072059" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.pe1072069" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.pe1072079" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_4.pe9255165" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.e1072060" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.e1072070" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.e1072080" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.e9255166" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.pe1072060" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.pe1072070" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.pe1072080" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_5_c_r_disorder_run_5.pe9255166" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_Qs.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_QsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_ns.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_0_nsErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_cycle/double_cycle_3_3_temp_n0.npy" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_RC_SET.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_RC_SET.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,7 +90,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.dynamics_simulation">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -292,6 +215,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="dynamics_simulation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="numerical_exercises" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/dynamics_simulation.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="old single dot run" type="PythonConfigurationType" factoryName="Python">
       <module name="RC_SET" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -386,9 +330,11 @@
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.dynamics_simulation" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.dynamics_simulation" />
         <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.dots_array_new" />
@@ -453,62 +399,62 @@
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl/0.0.1366.741@0.0.1366.741" timestamp="1586778310723" />
     <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
     <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
-    <state width="1825" height="140" key="GridCell.Tab.0.bottom" timestamp="1590339599430">
+    <state width="1825" height="140" key="GridCell.Tab.0.bottom" timestamp="1590914749313">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
-    <state width="1825" height="140" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1590339599430" />
-    <state width="1825" height="140" key="GridCell.Tab.0.center" timestamp="1590339599429">
+    <state width="1825" height="140" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1590914749313" />
+    <state width="1825" height="140" key="GridCell.Tab.0.center" timestamp="1590914749313">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="140" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1590339599429" />
-    <state width="1825" height="140" key="GridCell.Tab.0.left" timestamp="1590339599429">
+    <state width="1825" height="140" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1590914749313" />
+    <state width="1825" height="140" key="GridCell.Tab.0.left" timestamp="1590914749312">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="140" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1590339599429" />
-    <state width="1825" height="140" key="GridCell.Tab.0.right" timestamp="1590339599429">
+    <state width="1825" height="140" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1590914749312" />
+    <state width="1825" height="140" key="GridCell.Tab.0.right" timestamp="1590914749313">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="140" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1590339599429" />
-    <state width="1825" height="190" key="GridCell.Tab.1.bottom" timestamp="1590336280970">
+    <state width="1825" height="140" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1590914749313" />
+    <state width="1825" height="378" key="GridCell.Tab.1.bottom" timestamp="1590914461293">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833856" />
     <state width="1510" height="268" key="GridCell.Tab.1.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="190" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1590336280970" />
-    <state width="1825" height="190" key="GridCell.Tab.1.center" timestamp="1590336280969">
+    <state width="1825" height="378" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1590914461293" />
+    <state width="1825" height="378" key="GridCell.Tab.1.center" timestamp="1590914461292">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="190" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1590336280969" />
-    <state width="1825" height="190" key="GridCell.Tab.1.left" timestamp="1590336280969">
+    <state width="1825" height="378" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1590914461292" />
+    <state width="1825" height="378" key="GridCell.Tab.1.left" timestamp="1590914461292">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.1.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="344" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450423" />
-    <state width="1825" height="190" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1590336280969" />
-    <state width="1825" height="190" key="GridCell.Tab.1.right" timestamp="1590336280970">
+    <state width="1825" height="378" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1590914461292" />
+    <state width="1825" height="378" key="GridCell.Tab.1.right" timestamp="1590914461292">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="190" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1590336280970" />
+    <state width="1825" height="378" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1590914461292" />
     <state x="325" y="33" width="1022" height="737" key="SettingsEditor" timestamp="1588777360408">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -519,12 +465,12 @@
       <screen x="0" y="0" width="1366" height="741" />
     </state>
     <state width="683" height="370" key="XDebugger.FullValuePopup/0.0.1366.741@0.0.1366.741" timestamp="1586961381453" />
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1589789880205">
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1590821292134">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="496" y="214" width="672" height="678" key="search.everywhere.popup/67.27.1533.873@67.27.1533.873" timestamp="1587464491208" />
     <state x="586" y="253" width="813" height="818" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588085015006" />
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1589789880205" />
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1590821292134" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -584,6 +530,26 @@
           <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py</url>
           <line>422</line>
           <option name="timeStamp" value="405" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/dynamics_simulation.py</url>
+          <line>319</line>
+          <option name="timeStamp" value="434" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/dynamics_simulation.py</url>
+          <line>261</line>
+          <option name="timeStamp" value="435" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/dynamics_simulation.py</url>
+          <line>342</line>
+          <option name="timeStamp" value="436" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/dynamics_simulation.py</url>
+          <line>75</line>
+          <option name="timeStamp" value="437" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
