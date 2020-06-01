@@ -5,25 +5,28 @@ M = 10
 N = 10
 VR = 0.0
 Vmin = 0.0
-Vmax = 3.0
+Vmax = 1.1
 vStep = 0.01
 vSym = True
 repeats = 20
-fileName = array_10_10_c_r_disorder_run_4
+fileName = array_10_10_c_r_disorder_run_4_change_3
 dist = exp
 fullOutput = True
 use_graph = False
 current_map = True
 plot_current_map = False
 plot_binary_current_map = False
+frame_norm = False
 dbg = False
 resume = False
 sc = False
 leaping = False
 constQ = False
 modifyR = False
-output_folder = 2d_array_bgu_low_vg
-params_path = 
+double_time = False
+double_loop = False
+output_folder = hysteresis_tries
+params_path = hysteresis_tries/runningParameters_array_10_10_c_r_disorder_run_4_change_3.txt
 VG_avg = -3.5
 VG_std = 0.0
 C_avg = 2.0
@@ -389,7 +392,7 @@ Rh: [[ 6.54178677  1.66487337 11.894558    1.50343802  3.577521    9.55718301
   13.53354346 10.00062397 18.09857882  3.89486058  1.178657  ]
  [ 1.38304043  7.1189991   6.49634496  8.89118533  7.81935116  1.24880006
   10.05960992  2.84170075  7.46915199  2.2126321   9.77630187]
- [ 6.14449809  1.15795948  4.47737021  6.143  1.167   1.04211537
+ [ 6.14449809  1.15795948  4.47737021  6.143       1.167       1.04211537
    1.28927972  9.29269068  2.38136544  1.1941905   2.08233819]
  [ 3.58846271  4.96307986  1.66241491  1.93906238  1.7380227   8.88493194
    1.04899767 13.25998012 10.53105715  2.14281146  2.02406605]

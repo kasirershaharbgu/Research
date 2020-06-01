@@ -55,7 +55,7 @@ columns=10
 vmax=1.1
 double_loop=""
 double_time=""
-for run in 0 1 2 3 4 5 6 7 8 9:
+for run in 0 1 2 3 4 5 6 7 8 9
 do
 	input="hysteresis_tries/runningParameters_array_10_10_c_r_disorder_run_4_change_$run.txt"
 	name="array_10_10_c_r_disorder_run_4_change_$run"
