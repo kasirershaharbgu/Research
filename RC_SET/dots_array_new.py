@@ -850,7 +850,7 @@ class Simulator:
         self.index = index
         self.tauLeaping = dotArray.tauLeaping
         self.constQ = constQ
-        self.minSteps = MIN_STEPS*self.dotArray.columns
+        self.min_steps = MIN_STEPS*self.dotArray.columns*self.dotArray.rows
         if self.constQ:
             self.n = n0
             self.Q = Q0
