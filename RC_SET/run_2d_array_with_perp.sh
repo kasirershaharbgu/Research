@@ -3,8 +3,8 @@
 flags="-pe shared 14 -V -S /bin/bash -q jdubi.q -cwd"
 vmin=0
 vr=0
-vu=0.1
-vd=-0.1
+vu=0
+vd=0
 vg_avg=0
 c_avg=1
 cg_std=0

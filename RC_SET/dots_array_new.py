@@ -1028,7 +1028,7 @@ class Simulator:
         Q_var = np.zeros(n_avg.shape)
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
-        err = ALLOWED_ERR*2
+        err = ALLOWED_ERR * 2
         not_decreasing = 0
         # plot = True
         # if plot:
@@ -1036,6 +1036,13 @@ class Simulator:
         #     Qn = []
         #     ts = []
         #     t=0
+        while steps < self.min_steps:
+            if self.tauLeaping:
+                self.executeLeapingStep()
+            else:
+                self.executeStep()
+            steps += 1
+        steps = 0
         while err > ALLOWED_ERR and not_decreasing < STEADY_STATE_REP:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
@@ -1054,29 +1061,28 @@ class Simulator:
             #     Qs.append(curr_Q)
             #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
             #     ts.append(t)
-            if steps % MIN_STEPS == 0:
-                new_err = np.max(self.dotArray.get_dist_from_steady(n_avg, Q_avg))
+            if steps > self.min_steps and self.get_err(np.average(n_var), steps, curr_t) < ALLOWED_ERR:
+                new_err = self.dotArray.get_dist_from_steady(n_avg, Q_avg)
                 if err < new_err:
                     not_decreasing += 1
                 err = new_err
-                n_avg = np.zeros(
-                    (self.dotArray.getRows(), self.dotArray.getColumns()))
+                n_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
                 n_var = np.zeros(n_avg.shape)
                 Q_avg = np.zeros(n_avg.shape)
                 Q_var = np.zeros(n_avg.shape)
                 curr_t = 0
-                # if plot and steps % (100 * MIN_STEPS):
+                steps = 0
+                # if plot:
                 #     Qs = np.array(Qs)
                 #     Qn = np.array(Qn)
                 #     for i in range(Qs.shape[2]):
-                #         plt.plot(ts, Qs[:,:,i],'.')
+                #         plt.plot(ts, Qs[:, :, i], '.')
                 #         plt.plot(ts, Qn[:, :, i], '*')
                 #     print(err)
                 #     plt.show()
                 #     Qs = []
                 #     Qn = []
                 #     ts = []
-
         return True
 
     def checkSteadyState(self, rep):
@@ -1209,24 +1215,30 @@ class Simulator:
                 Ih = list(resumeParams[-2])
                 Iv = list(resumeParams[-1])
         for VL,VR in zip(VL_vec, VR_vec):
-            self.dotArray.changeVext(VL, VR, self.VU, self.VD)
+            self.dotArray.changeVext(VL, VR, -0.1, 0.1)
             # running once to get to steady state
             if not self.constQ:
                 self.getToSteadyState()
             # now we are in steady state calculate current
-            stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
-            current = stepRes[0]
-            currentErr = stepRes[1]
-            vert_current = stepRes[2]
-            vert_currentErr = stepRes[3]
+            stepRes1 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            self.dotArray.changeVext(VL, VR, 0.1, -0.1)
+            # running once to get to steady state
+            if not self.constQ:
+                self.getToSteadyState()
+            # now we are in steady state calculate current
+            stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            current = (stepRes1[0] + stepRes2[0])/2
+            currentErr = (stepRes1[1] + stepRes2[1])/2
+            vert_current = np.sqrt(stepRes1[2]**2 + stepRes2[2]**2)/2
+            vert_currentErr = np.sqrt(stepRes1[3]**2 + stepRes2[3]**2)/2
             if fullOutput:
-                ns.append(stepRes[4])
-                Qs.append(stepRes[5])
-                nsErr.append(stepRes[6])
-                QsErr.append(stepRes[7])
+                ns.append((stepRes1[4] + stepRes2[4])/2)
+                Qs.append((stepRes1[5] + stepRes1[5])/2)
+                nsErr.append((stepRes1[6] + stepRes2[6])/2)
+                QsErr.append((stepRes1[7] + stepRes2[7])/2)
             if currentMap:
-                Ih.append(stepRes[-2])
-                Iv.append(stepRes[-1])
+                Ih.append((stepRes1[-2] + stepRes2[-2])/2)
+                Iv.append((stepRes1[-1] + stepRes2[-1])/2)
             I.append(current)
             IErr.append(currentErr)
             vertI.append(vert_current)

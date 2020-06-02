@@ -388,24 +388,33 @@ class SingleResultsProcessor:
             vertCols = vertCols[:-1]
             data_horz = np.array(self.arrayParams["Ch"]) if parameter == "C" else np.array(self.arrayParams["Rh"])
             data_vert = np.array(self.arrayParams["Cv"]) if parameter == "C" else np.array(self.arrayParams["Rv"])
+
             if parameter == "C":
                 data_vert = data_vert[1:,:]
+                cmap = 'Greens'
+                neighbors = [data_horz[:, 1:], data_horz[:, :-1],
+                             np.pad(data_vert, ((1, 0),(0,0))), np.pad(data_vert, ((0, 1),(0,0)))]
+                data = np.average(neighbors, axis=0)
+            elif parameter == "R":
+                neighbors = [data_horz[:, 1:], data_horz[:, :-1],
+                             np.pad(data_vert, ((1, 0),(0,0))), np.pad(data_vert, ((0, 1),(0,0)))]
+                data = np.std(neighbors,axis=0)
+                cmap = 'Reds'
             im[np.ix_(horzRows, horzCols)] = np.repeat(data_horz,2,axis=1)
             im[np.ix_(vertRows, vertCols)] = np.repeat(data_vert,2,axis=0)
-            data_max = max(np.max(data_horz), np.max(data_vert))
-            data_min = min(np.min(data_horz), np.min(data_vert))
-            cmap='Reds'
+
         else:
-            rows = np.arange(0, (M // 2) * 3 + 1, 3)
-            cols = np.arange(2, 3 * N, 3)
-            cols = cols[:-1]
             data = self.arrayParams["CG"] if parameter == "CG" else\
                 self.arrayParams["RG"] if parameter == "RG" else self.arrayParams["VG"]
-            data = np.reshape(data, (self.runningParams["M"], self.runningParams["N"]))
-            cmap='RdBu' if parameter=="VG" else 'Greens'
-            im[np.ix_(rows, cols)] = data
-            data_max = np.max(data)
-            data_min = np.min(data)
+            cmap = 'RdBu' if parameter == "VG" else 'Greens'
+        rows = np.arange(0, (M // 2) * 3 + 1, 3)
+        cols = np.arange(2, 3 * N, 3)
+        cols = cols[:-1]
+        data = np.reshape(data, (self.runningParams["M"], self.runningParams["N"]))
+
+        im[np.ix_(rows, cols)] = data
+        data_max = np.max(im)
+        data_min = np.min(im)
         plt.figure()
         plt.imshow(im, vmin=data_min, vmax=data_max, cmap=cmap,
                    aspect='equal')
@@ -823,21 +832,22 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    directories = ["hysteresis_tries"]*4
-    names = ["array_10_10_c_r_disorder_run_4_modified_1", "array_10_10_c_r_disorder_run_4_modified", "array_10_10_c_r_disorder_run_5_modified_1", "array_10_10_c_r_disorder_run_5_modified"]
+    directory = "hysteresis_tries"
+
+    # names = ["array_10_10_c_r_disorder_run_4_modified_1", "array_10_10_c_r_disorder_run_4_modified", "array_10_10_c_r_disorder_run_5_modified_1", "array_10_10_c_r_disorder_run_5_modified"]
     # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    name = "array_10_10_c_r_disorder_run_"
-    for d, f in zip(directories, names):
-        s = SingleResultsProcessor(d, f,fullOutput=True,vertCurrent=False)
-        # s.plot_conductance()
-        # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
-        # s.clac_fourier()
-        s.plot_array_params("C")
-        s.plot_array_params("R")
-        s.plot_results()
-        # s.plot_voltage()
-        # s.plot_power()
-        # s.save_re_analysis()
+    name = "array_10_10_c_r_disorder_run_4_modified"
+
+    s = SingleResultsProcessor(directory, name ,fullOutput=True,vertCurrent=False)
+    # s.plot_conductance()
+    # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
+    # s.clac_fourier()
+    s.plot_array_params("C")
+    s.plot_array_params("R")
+    s.plot_results()
+    # s.plot_voltage()
+    # s.plot_power()
+    # s.save_re_analysis()
 
     plt.show()
     # files_list = []
