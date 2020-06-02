@@ -463,7 +463,7 @@ class DotArray:
         return self._constQnPart + self._matrixQnPart.dot(self.getNprimeForGivenN(n))
 
     def get_dist_from_steady(self, n, Q):
-        return (flattenToColumn(Q) - self.get_steady_Q_for_given_n(n))**2
+        return np.abs(np.average(flattenToColumn(Q) - self.get_steady_Q_for_given_n(n)))
 
     def setConstWork(self):
         invCDiagMat = np.diag(np.copy(self.invC)).reshape((self.rows,self.columns))
