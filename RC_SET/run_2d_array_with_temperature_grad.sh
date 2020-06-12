@@ -12,7 +12,7 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.001
+vstep=0.01
 rg_avg=500
 rg_std=0
 cg_avg=10
@@ -39,7 +39,7 @@ vmax=1.1
 efermi=""
 
 
-f="bgu_2d_array_higher_resolution"
+f="bgu_2d_array_temperature_gradient"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
