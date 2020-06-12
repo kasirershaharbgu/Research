@@ -110,7 +110,7 @@ class SingleResultsProcessor:
                  self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
         plt.xlabel('Voltage')
         plt.ylabel('Current')
-        plt.savefig(self.basePath + '_IV_clean')
+        plt.savefig(self.basePath + '_IV_clean.png')
         plt.close(fig)
 
     def load_params(self):
@@ -274,9 +274,13 @@ class SingleResultsProcessor:
         if path is not None:
             plt.savefig(path + '_deltaI.png')
         plt.figure()
+        plt.plot(self.V[:self.mid_idx], x[:self.mid_idx])
+        for v in Vjumps1:
+            marker = 'r--' if x_parameter == "I" else 'g--'
+            plt.plot([v, v], [0, np.max(x)], marker)
         plt.plot(self.V[self.mid_idx:], x[self.mid_idx:])
         for v in Vjumps2:
-            marker = 'r--' if x_parameter == "I" else 'g--'
+            marker = 'm--' if x_parameter == "I" else 'c--'
             plt.plot([v, v], [0, np.max(x)], marker)
         plt.xlabel('V')
         plt.ylabel('I/n')
@@ -607,7 +611,7 @@ class SingleResultsProcessor:
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
     def __init__(self, directories_list, files_list, relevant_running_params=None, relevant_array_params=None, out_directory = None,
-                 groups=None, group_names=None, resistance_line=0):
+                 groups=None, group_names=None, resistance_line=0, full=False):
         """
         Initializing analyzer
         :param directories_list: list of directories for result files
@@ -641,14 +645,14 @@ class MultiResultAnalyzer:
         self.disorders = {p: [] for p in ["C","R","CG","VG"]}
         self.groups = np.array(groups)
         self.groupNames = group_names
-        self.load_data(resistance_line)
+        self.load_data(resistance_line, full=full)
 
-    def load_data(self, line=0):
+    def load_data(self, line=0, full=False):
         """
         Loading results and calculating scores
         """
         for directory, fileName in zip(self.directories, self.fileNames):
-            processor = SingleResultsProcessor(directory, fileName)
+            processor = SingleResultsProcessor(directory, fileName, fullOutput=full)
             processor.load_results()
             hyst, hystHigh, hystLow = processor.calc_hysteresis_score()
             block, blockHigh, blockLow = processor.calc_blockade()
@@ -830,7 +834,8 @@ class MultiResultAnalyzer:
                 plt.scatter(x,y)
                 plt.xlabel(param + " disorder")
                 plt.ylabel(score)
-                plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'disorder.png'))
+                if self.outDir is not None:
+                    plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'disorder.png'))
 
     def average_similar_results(self, xs, ys, ys_high_err, ys_low_err):
         new_x = []
@@ -882,14 +887,15 @@ if __name__ == "__main__":
     #         m.plot_hystogram(score, {"C_std": [c_std]}, {},
     #                              "c_std_" +  str(c_std) + "_" + score + "_hystogram")
 
-    # files_list = ["c_std_" + str(c_std) + "_r_std_" + str(i) + "_run_" + str(j) for c_std in [0.1,0.2,0.3,0.4,0.5] for i in range(1,10) for j in range(1,11)]
-    # directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * len(files_list)
-    # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], [],
-    #                         "C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10")
-    # m.plot_score('hysteresis', ['R_std','C_std'], 'all_hysteresis')
-    # m.plot_score('jump', ['R_std','C_std'], 'all_jump')
-    # m.plot_score('blockade', ['R_std','C_std'], 'all_blockade')
-
+    files_list = ["array_10_10_disorder_c_std_" + str(c_std) + "_run_" + str(i) for c_std in [0,0.1,0.5,1] for i in range(1,4)]
+    directory_list = ["bgu_2d_array_higher_resolution"] * len(files_list)
+    for name, directory in zip(files_list, directory_list):
+        s = SingleResultsProcessor(directory, name,fullOutput=True,vertCurrent=False)
+        s.plot_jumps_freq("I", eps=0.002)
+        plt.show()
+    # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], full=True)
+    # m.plot_results_by_disorder(["C"], ["hysteresis", "jump", "blockade", "jumpsNum", "resistance"])
+    # plt.show()
     # directory = "2d_array_bgu"
     # for name in ['array_10_10_r_disorder_cg_disorder_run_3',
     #              'array_10_10_r_disorder_cg_disorder_variable_ef_run_2',
@@ -930,29 +936,31 @@ if __name__ == "__main__":
     # s.save_re_analysis()
     # s.plot_differences()
     # plt.show()
-    files_list = []
-    groups = []
-    group_names = ["c", "cg_c", "cg", "r", "r_c", "r_cg_c", "r_cg", "r_vg"]
-    for idx,disorder in enumerate(group_names):
-        for run in [1, 2, 3, 4, 5, 6, 7]:
-            files_list.append("array_10_10_" + disorder + "_disorder_run_" + str(run))
-            groups.append(idx)
-    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    # directory = "2d_array_bgu_low_vg"
-    # directory = "hysteresis_tries"
-    # name = "array_10_10_c_r_disorder_run_4_change_"
-    # files_list = [name + str(run) for run in range(10)]
-    s = SingleResultsProcessor(directory, files_list[0])
-    s.plot_jumps_freq("I")
-    directory_list = [directory] * len(files_list)
-    m = MultiResultAnalyzer(directory_list, files_list,resistance_line=2, group_names=group_names, groups=groups,out_directory="dbg")
-    m.plot_score('resistance')
-    m.plot_score('hysteresis')
-    m.plot_score_by_groups("blockade", "jump")
-    m.plot_score_by_groups("blockade", "hysteresis")
-    m.plot_score_by_groups("blockade", "jumpsNum")
-    m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
-    plt.show()
+    # files_list = []
+    # groups = []
+    # group_names = ["c", "cg_c", "cg", "r", "r_c", "r_cg_c", "r_cg", "r_vg"]
+    # for idx,disorder in enumerate(group_names):
+    #     for run in [1, 2, 3, 4, 5, 6, 7]:
+    #         files_list.append("array_10_10_" + disorder + "_disorder_run_" + str(run))
+    #         groups.append(idx)
+    # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
+    # # directory = "2d_array_bgu_low_vg"
+    # # directory = "hysteresis_tries"
+    # # name = "array_10_10_c_r_disorder_run_4_change_"
+    # # files_list = [name + str(run) for run in range(10)]
+    # s = SingleResultsProcessor(directory, files_list[0])
+    # s.plot_jumps_freq("I")
+    # directory_list = [directory] * len(files_list)
+    # m = MultiResultAnalyzer(directory_list, files_list,resistance_line=2, group_names=group_names, groups=groups,out_directory="dbg")
+    # m.plot_score('resistance')
+    # m.plot_score('hysteresis')
+    # m.plot_score_by_groups("blockade", "jump")
+    # m.plot_score_by_groups("blockade", "hysteresis")
+    # m.plot_score_by_groups("blockade", "jumpsNum")
+    # m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
+    # plt.show()
+
+
 
 
 
