@@ -356,7 +356,7 @@ class DotArray:
         return self.columns
 
     def getTemperatureArray(self, temperature, temperatureGradient):
-        line = temperature + temperatureGradient*np.arange(self.getColumns()+1)
+        line = temperature - temperatureGradient*np.arange(self.getColumns()+1)
         Th = np.tile(line, (self.getRows(),1))
         Tv = (Th[1:,:-1] + Th[1:,1:])/2
         return np.hstack((Th.flatten(), Th.flatten(), Tv.flatten(), Tv.flatten()))
