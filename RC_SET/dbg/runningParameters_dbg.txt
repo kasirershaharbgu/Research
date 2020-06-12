@@ -1,0 +1,89 @@
+-------Running parameters--------
+T = 0.001
+temperature_gradient = 0.01
+gap = 0
+M = 3
+N = 3
+VR = 0.0
+Vmin = 0.0
+Vmax = 1.0
+vStep = 0.1
+vSym = False
+repeats = 1
+fileName = dbg
+dist = exp
+fullOutput = True
+use_graph = False
+current_map = False
+plot_current_map = False
+plot_binary_current_map = False
+frame_norm = False
+dbg = True
+resume = False
+sc = False
+leaping = False
+constQ = False
+modifyR = False
+double_time = False
+double_loop = False
+output_folder = dbg
+params_path = 
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 10.0
+C_std = 2.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+custom_rh = 
+custom_rv = 
+custom_ch = 
+custom_cv = 
+RG_avg = 500.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 3
+Columns: 3
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]
+ [10.]]
+RG: [[500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]]
+Ch: [[10.25327659  8.10652944  9.76156294 11.68497276]
+ [ 8.88540298 10.20399351  8.44523997  8.26807879]
+ [ 9.20563592 11.76021836  8.51181969  9.37840713]]
+Cv: [[ 0.          0.          0.        ]
+ [ 9.61700322 11.96819215  9.6792493 ]
+ [ 8.86694499  8.35892558 10.49626791]]
+Rh: [[ 1.3535103   1.37468376  2.83852902 17.14199046]
+ [ 8.23847053 13.56238298  1.25361134  4.08162663]
+ [ 9.0606995   9.44162733  1.66095599  4.11120922]]
+Rv: [[ 2.21777599 10.79389448 14.79694027]
+ [ 2.6979163  16.62609408  3.21625895]]

@@ -189,6 +189,8 @@ class SingleResultsProcessor:
         return score, score, score
 
     def calc_jumps_score(self, window_size, up=True):
+
+
         score = 0
         high_err = 0
         low_err = 0
@@ -213,19 +215,8 @@ class SingleResultsProcessor:
         return score, high_err-score, score-low_err
 
     def calc_number_of_jumps(self):
-        Vup = self.V[:self.mid_idx]
-        Iup = self.I[:self.mid_idx]
-        IErrup = self.IErr[:self.mid_idx]
-        Vdown = self.V[self.mid_idx:]
-        Idown = self.I[self.mid_idx:]
-        IErrdown = self.IErr[self.mid_idx:]
-        diffUp = np.diff(Iup) / np.diff(Vup)
-        diffErrorUp = IErrup[:-1] + np.roll(IErrup,-1)[:-1]
-        diffDown = np.diff(Idown) / np.diff(Vdown)
-        diffErrorDown = IErrdown[:-1] + np.roll(IErrdown,-1)[:-1]
-        upJumps = np.sum(diffUp > 2* diffErrorUp, dtype=np.int)
-        downJumps = np.sum(diffDown > 2 * diffErrorDown, dtype=np.int)
-        return upJumps + downJumps
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(self.I)
+        return len(Vjumps1) + len(Vjumps2)
 
     def plot_power(self):
         power = self.I*self.V
@@ -257,48 +248,17 @@ class SingleResultsProcessor:
         plt.ylabel('Power')
 
 
+    def plot_jumps_freq(self, x_parameter, index=0, eps=0.001, path=None):
+        if x_parameter == "I":
+            x = self.I
+        elif x_parameter == "n":
+            n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape(
+                (self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
+            x = n[:,index]
+            x/=500
+            eps/=500
 
-    def calc_jumps_freq(self, eps=0.001, path=None):
-        diff1 = np.diff(self.I[:self.mid_idx])
-        diff2 = np.diff(self.I[self.mid_idx:])
-        diff1[np.abs(diff1) < eps] = 0
-        diff2[np.abs(diff2) < eps] = 0
-        Vjumps1 = self.V[1:self.mid_idx]
-        Vjumps1 = Vjumps1[diff1 > 0]
-        Vjumps2 = self.V[self.mid_idx:-1]
-        Vjumps2 = Vjumps2[diff2 < 0]
-        Ijumps1 = diff1[diff1 > 0]
-        Ijumps2 = diff2[diff2 < 0]
-        new_Vjumps1 = []
-        new_diff1 = []
-        lastV = 0
-        last_jump = 0
-        for v,i in zip(Vjumps1, Ijumps1):
-            if v - lastV > 0.03:
-                new_Vjumps1.append(v)
-                new_diff1.append(last_jump + i)
-                last_jump = 0
-            else:
-                last_jump += i
-            lastV = v
-        Vjumps1 = np.array(new_Vjumps1)
-        diff1 = np.array(new_diff1)
-        new_Vjumps2 = []
-        new_diff2 = []
-        lastV = 0
-        last_jump = 0
-        for v, i in zip(Vjumps2, Ijumps2):
-            if v - lastV > 0.03:
-                new_Vjumps1.append(v)
-                new_diff1.append(last_jump + i)
-                last_jump = 0
-            else:
-                last_jump += i
-            lastV = v
-        Vjumps2 = np.array(new_Vjumps2)
-        diff2 = np.array(new_diff2)
-        diffV1 = np.diff(Vjumps1)
-        diffV2 = np.diff(Vjumps2)
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(x, eps=eps)
         plt.figure()
         plt.hist(np.hstack((diffV1,-diffV2)), bins=10)
         plt.xlabel('Delta V')
@@ -314,13 +274,59 @@ class SingleResultsProcessor:
         if path is not None:
             plt.savefig(path + '_deltaI.png')
         plt.figure()
-        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx])
-        for v in Vjumps1:
-            plt.plot([v,v],[0,np.max(self.I)],'r--')
+        plt.plot(self.V[self.mid_idx:], x[self.mid_idx:])
+        for v in Vjumps2:
+            marker = 'r--' if x_parameter == "I" else 'g--'
+            plt.plot([v, v], [0, np.max(x)], marker)
         plt.xlabel('V')
-        plt.ylabel('I')
+        plt.ylabel('I/n')
+        # plt.xlim(2.35,2.5)
         if path is not None:
             plt.savefig(path + '_detected_jumps.png')
+
+    def calc_jumps_freq(self, x, eps=0.001):
+        diff1 = np.diff(x[:self.mid_idx])
+        diff2 = np.diff(x[self.mid_idx:])
+        diff1[np.abs(diff1) < eps] = 0
+        diff2[np.abs(diff2) < eps] = 0
+        Vjumps1 = self.V[1:self.mid_idx]
+        Vjumps1 = Vjumps1[diff1 > 0]
+        Vjumps2 = self.V[self.mid_idx:-1]
+        Vjumps2 = Vjumps2[diff2 < 0]
+        xjumps1 = diff1[diff1 > 0]
+        xjumps2 = diff2[diff2 < 0]
+        new_Vjumps1 = []
+        new_diff1 = []
+        lastV = 0
+        last_jump = 0
+        for v,i in zip(Vjumps1, xjumps1):
+            if v - lastV > 0.03:
+                new_Vjumps1.append(v)
+                new_diff1.append(last_jump + i)
+                last_jump = 0
+            else:
+                last_jump += i
+            lastV = v
+        Vjumps1 = np.array(new_Vjumps1)
+        diff1 = np.array(new_diff1)
+        new_Vjumps2 = []
+        new_diff2 = []
+        lastV = np.max(self.V)
+        last_jump = 0
+        for v, i in zip(Vjumps2, xjumps2):
+            if lastV - v > 0.03:
+                new_Vjumps2.append(v)
+                new_diff2.append(last_jump + i)
+                last_jump = 0
+            else:
+                last_jump += i
+            lastV = v
+        Vjumps2 = np.array(new_Vjumps2)
+        diff2 = np.array(new_diff2)
+        diffV1 = np.diff(Vjumps1)
+        diffV2 = np.diff(Vjumps2)
+        return diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2
+
 
     def clac_fourier(self, eps=0.001):
         diff1 = np.diff(self.I[:self.mid_idx])
@@ -372,6 +378,27 @@ class SingleResultsProcessor:
         plt.ylabel("Conductivity")
         plt.legend()
 
+    def calc_resistance_hysteresis_score(self, line):
+        R = np.array(self.arrayParams["Rh"])
+        C = np.array(self.arrayParams["Ch"])
+        Cv = np.array(self.arrayParams["Cv"])
+        R = R[line, :]
+        C = C[line, :]
+        Cup = Cv[line, :]
+        Cdown = Cv[line+1,:]
+        score = 0
+        mid = int(R.size/2)
+        for i in range(mid):
+            exit = R[i+1]
+            enter = np.max(R[:i+1])
+            # score += (mid - i)*(exit/enter)/(C[i] + C[i+1])
+            score += (exit /enter) / (C[i] + C[i + 1] + Cup[i] + Cdown[i])**2
+        for i in range(mid, R.size-1):
+            exit = np.max(R[i + 1:])
+            enter = R[i]
+            # score += (1+i - mid)*(enter / exit)/(C[i] + C[i+1])
+            score += (enter/exit) / (C[i] + C[i + 1]+ Cup[i] + Cdown[i])**2
+        return score
 
 
     def plot_array_params(self, parameter):
@@ -479,6 +506,29 @@ class SingleResultsProcessor:
             self.plotV(self.i)
             plt.draw()
 
+    def plot_differences(self):
+        # plt.figure()
+        I_up = self.I[:self.mid_idx]
+        I_down = self.I[self.mid_idx:]
+        V = self.V[:self.mid_idx]
+        xmin = np.min(V[I_up > 0.001]) - 0.1
+        plt.plot(V, np.flip(I_down) - I_up)
+        plt.xlim(xmin, np.max(V))
+        plt.ylabel("I")
+        plt.xlabel("V")
+        # if self.full:
+        #     n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
+        #     # Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
+        #     # q = n + Q
+        #     n_up = n[:self.mid_idx]
+        #     n_down = n[self.mid_idx:]
+        #     plt.figure()
+        #     for i in range(20,30):
+        #         plt.plot(V, np.flip(n_down[:,i]) - n_up[:,i])
+        #     plt.ylabel("q")
+        #     plt.xlabel("V")
+        #     plt.xlim(xmin, np.max(V))
+
 
 
     def plot_results(self):
@@ -509,7 +559,7 @@ class SingleResultsProcessor:
             #              self.V[self.mid_idx // 2:self.mid_idx], n[self.mid_idx // 2:self.mid_idx, i], 'r',
             #              self.V[self.mid_idx:3 * self.mid_idx // 2], n[self.mid_idx:3 * self.mid_idx // 2, i], 'c',
             #              self.V[3 * self.mid_idx // 2:], nplusErr[3 * self.mid_idx // 2:, i], 'm')
-            for i in range(20,30):
+            for i in range(len(n[0])):
                 plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
                          self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
                          self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
@@ -557,7 +607,7 @@ class SingleResultsProcessor:
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
     def __init__(self, directories_list, files_list, relevant_running_params=None, relevant_array_params=None, out_directory = None,
-                 groups=None, group_names=None):
+                 groups=None, group_names=None, resistance_line=0):
         """
         Initializing analyzer
         :param directories_list: list of directories for result files
@@ -579,6 +629,7 @@ class MultiResultAnalyzer:
         self.blockadeScoresHighErr = []
         self.blockadeScoresLowErr = []
         self.jumpsNum = []
+        self.resistanceScore = []
         if relevant_array_params:
             self.arrayParams = {p: [] for p in relevant_array_params}
         else:
@@ -590,9 +641,9 @@ class MultiResultAnalyzer:
         self.disorders = {p: [] for p in ["C","R","CG","VG"]}
         self.groups = np.array(groups)
         self.groupNames = group_names
-        self.load_data()
+        self.load_data(resistance_line)
 
-    def load_data(self):
+    def load_data(self, line=0):
         """
         Loading results and calculating scores
         """
@@ -603,6 +654,8 @@ class MultiResultAnalyzer:
             block, blockHigh, blockLow = processor.calc_blockade()
             jump, jumpHigh, jumpLow = processor.calc_jumps_score(0.1)
             num_jumps = processor.calc_number_of_jumps()
+            resistance_score = processor.calc_resistance_hysteresis_score(line)
+            self.resistanceScore.append(resistance_score)
             self.jumpsNum.append(num_jumps)
             self.hysteresisScores.append(hyst)
             self.hysteresisScoresHighErr.append(hystHigh)
@@ -644,6 +697,10 @@ class MultiResultAnalyzer:
             scoresLowErr = np.array(self.blockadeScoresLowErr)
         elif scoreName == 'jumpsNum':
             scores = np.array(self.jumpsNum)
+            scoresHighErr = scores
+            scoresLowErr = scores
+        elif scoreName == 'resistance':
+            scores = np.array(self.resistanceScore)
             scoresHighErr = scores
             scoresLowErr = scores
         else:
@@ -705,9 +762,18 @@ class MultiResultAnalyzer:
         elif score_name == "blockade":
             return "threshold voltage"
 
-    def plot_score(self, score_name, parameter_names, title, runningParam=True, plot=True):
+
+    def plot_score(self, score_name):
+        plt.figure(figsize=(16,18))
+        y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
+        plt.plot(np.arange(y.size), y)
+        plt.ylabel(score_name + " score")
+        plt.xlabel("example num.")
+
+
+    def plot_score_by_parameter(self, score_name, parameter_names, title, runningParam=True, plot=True):
         """
-        Plots score asa function of given parameter
+        Plots score as a function of given parameter
         :param score_name: relevant score name (hysteresis, jump, blockade)
         :param parameter_name: relevant parameter
         """
@@ -783,6 +849,8 @@ class MultiResultAnalyzer:
                 new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)/relevant_low_err.size))
         return new_x, new_y, new_y_high_err, new_y_low_err
 
+
+
 def bistabilityAnalysis(x):
     avg = np.average(x)
     var = np.var(x)
@@ -832,40 +900,59 @@ if __name__ == "__main__":
     #                                    fullOutput=True)
     #     s.save_re_analysis()
     #
-    directory = "hysteresis_tries"
+    # directory = "2d_array_bgu_low_vg"
 
     # names = ["array_10_10_c_r_disorder_run_4_modified_1", "array_10_10_c_r_disorder_run_4_modified", "array_10_10_c_r_disorder_run_5_modified_1", "array_10_10_c_r_disorder_run_5_modified"]
     # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    name = "array_10_10_c_r_disorder_run_4_modified"
+    # name = "array_10_10_c_r_disorder_run_4_smaller_step"
+    # s = SingleResultsProcessor(directory, name,fullOutput=True,vertCurrent=False)
+    # s.plot_results()
+    # for run in range(4,5):
+    #     s = SingleResultsProcessor(directory, name + str(run),fullOutput=True,vertCurrent=False)
+        # s.plot_array_params("C")
+        # s.plot_array_params("R")
+        # s.plot_voltage()
+        # s.plot_results()
+        # plt.figure()
+        # s.plot_jumps_freq("I", eps=0.001)
+        # for index in range(0,100):
+        #     s.plot_jumps_freq("n",index=index, eps=0.1)
 
-    s = SingleResultsProcessor(directory, name ,fullOutput=True,vertCurrent=False)
+    # plt.show()
     # s.plot_conductance()
     # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
     # s.clac_fourier()
-    s.plot_array_params("C")
-    s.plot_array_params("R")
-    s.plot_results()
+    # s.plot_array_params("C")
+    # s.plot_array_params("R")
+    # s.plot_results()
     # s.plot_voltage()
     # s.plot_power()
     # s.save_re_analysis()
-
-    plt.show()
-    # files_list = []
-    # groups = []
-    # group_names = ["c", "cg_c", "cg", "r", "r_c", "r_cg_c", "r_cg", "r_vg"]
-    # for idx,disorder in enumerate(group_names):
-    #     for run in [1, 2, 3, 4, 5, 6, 7]:
-    #         files_list.append("array_10_10_" + disorder + "_disorder_run_" + str(run))
-    #         groups.append(idx)
-    # dir = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    # directory_list = [dir] * len(files_list)
-    # m = MultiResultAnalyzer(directory_list, files_list, groups=groups, group_names=group_names,
-    #                         out_directory="/home/kasirershahar/University/Research/")
-    # m.plot_score_by_groups("blockade", "jump")
-    # m.plot_score_by_groups("blockade", "hysteresis")
-    # m.plot_score_by_groups("blockade", "jumpsNum")
-    # m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
+    # s.plot_differences()
     # plt.show()
+    files_list = []
+    groups = []
+    group_names = ["c", "cg_c", "cg", "r", "r_c", "r_cg_c", "r_cg", "r_vg"]
+    for idx,disorder in enumerate(group_names):
+        for run in [1, 2, 3, 4, 5, 6, 7]:
+            files_list.append("array_10_10_" + disorder + "_disorder_run_" + str(run))
+            groups.append(idx)
+    directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
+    # directory = "2d_array_bgu_low_vg"
+    # directory = "hysteresis_tries"
+    # name = "array_10_10_c_r_disorder_run_4_change_"
+    # files_list = [name + str(run) for run in range(10)]
+    s = SingleResultsProcessor(directory, files_list[0])
+    s.plot_jumps_freq("I")
+    directory_list = [directory] * len(files_list)
+    m = MultiResultAnalyzer(directory_list, files_list,resistance_line=2, group_names=group_names, groups=groups,out_directory="dbg")
+    m.plot_score('resistance')
+    m.plot_score('hysteresis')
+    m.plot_score_by_groups("blockade", "jump")
+    m.plot_score_by_groups("blockade", "hysteresis")
+    m.plot_score_by_groups("blockade", "jumpsNum")
+    m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
+    plt.show()
 
 
 

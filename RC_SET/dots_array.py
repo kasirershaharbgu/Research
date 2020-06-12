@@ -26,7 +26,7 @@ EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-3
+ALLOWED_ERR = 1e-2
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
@@ -218,8 +218,8 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False,
-                 tauLeaping=False, modifyR=False, constQ=False):
+    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, temperature_gradient=0,
+                 fastRelaxation=False, tauLeaping=False, modifyR=False, constQ=False):
         """
         Creates new array of quantum dots
         :param rows: number of rows (int)
@@ -232,7 +232,7 @@ class DotArray:
         :param Ch: horizotal capacitances ((rowsXcolumns+1 double array)
         :param Cv: vertical capacitances (rows-1Xcolumns double array)
         :param Rh: vertical tunnelling ressistances (rowsXcolumns+1 double array)
-        :param Rv: horizontal tunnelling ressistances (rowsXcolumns+1 double array)
+        :param Rv: horizontal tunnelling ressistances (rows-1Xcolumns double array)
         :param RG: ground resistances (rowsXcolumns double array)
         """
         self.fast_relaxation = fastRelaxation
@@ -251,7 +251,7 @@ class DotArray:
         self.Rh = Rh
         self.Rv = Rv if Rv.size else np.zeros((0,0))
         self.R = np.hstack((Rh.flatten(), Rh.flatten(), Rv.flatten(), Rv.flatten()))
-        self.temperature = temperature
+        self.temperature = temperature if temperature_gradient==0 else self.getTemperatureArray(temperature, temperature_gradient)
         self.variableRightWorkLen = (self.columns + 1) * self.rows
         self.variableDownWorkLen = self.columns * (self.rows - 1)
         self.totalChargePassedRight = 0
@@ -354,6 +354,12 @@ class DotArray:
 
     def getColumns(self):
         return self.columns
+
+    def getTemperatureArray(self, temperature, temperatureGradient):
+        line = temperature + temperatureGradient*np.arange(self.getColumns()+1)
+        Th = np.tile(line, (self.getRows(),1))
+        Tv = (Th[1:,:-1] + Th[1:,1:])/2
+        return np.hstack((Th.flatten(), Th.flatten(), Tv.flatten(), Tv.flatten()))
 
     def resetCharge(self):
         """
@@ -553,13 +559,18 @@ class DotArray:
         if not self.constQ:
             self.getWork()
         work = np.copy(self.variableWork)
-        if self.temperature == 0:
+        if hasattr(self.temperature, "__len__"):
+            zero_temp = (self.temperature == 0).all()
+        else:
+            zero_temp = (self.temperature == 0)
+        if zero_temp:
             work[work > -EPS] = 0
         else:
             exp_arg = work/self.temperature
             work[exp_arg > 20] = 0
-            work[np.abs(exp_arg) < EPS] = -self.temperature
-            rest = np.logical_and(EPS <= np.abs(exp_arg), np.abs(exp_arg)<= 20)
+            work[np.abs(exp_arg) < EPS] = -self.temperature[np.abs(exp_arg) < EPS] if \
+                hasattr(self.temperature, "__len__") else -self.temperature
+            rest = np.logical_and(EPS <= np.abs(exp_arg), np.abs(exp_arg) <= 20)
             work[rest] = work[rest]/(1-np.exp(exp_arg[rest]))
         if self.use_modifyR:
             self.modifyR()
@@ -1626,7 +1637,7 @@ def removeRandomParams(basePath):
     return True
 
 def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                      Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
+                      Vmax, Vstep, temperature=0, temperature_gradient=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False,
                       superconducting=False, gap=0, leaping=False, modifyR=False, plotVoltages=False,
@@ -1662,7 +1673,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     else:
         prototypeArray = DotArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                   np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                  temperature, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR,
+                                  temperature, temperature_gradient=temperature_gradient,
+                                  fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR,
                                   constQ=constQ)
         print("Normal prototype array was created")
     if checkSteadyState:
@@ -1905,6 +1917,9 @@ def getOptions():
     parser.add_option("-T", "--temperature", dest="T",
                       help="Environment temperature (in units of planckConstant/timeUnits) [default: %default]",
                       default=0, type=float)
+    parser.add_option("--temperature-gradient", dest="temperature_gradient",
+                      help="Temperature gradient (in units of planckConstant/(timeUnits*Lattice constant)) [default: %default]",
+                      default=0, type=float)
     parser.add_option("--gap", dest="gap",
                       help="superconducting gap (in units of planckConstant/timeUnits)[default: %default]",
                       default=0, type=float)
@@ -2146,6 +2161,7 @@ if __name__ == "__main__":
     VL0 = VR0 + options.Vmin
     dist = options.dist
     T = options.T
+    temperature_gradient = options.temperature_gradient
     gap = options.gap
     sc = options.sc
     leaping = options.leaping
@@ -2212,7 +2228,8 @@ if __name__ == "__main__":
         pr.enable()
 
     array_params = runFullSimulation(VL0, VR0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
-                                     Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
+                                     Vmax, Vstep, temperature=T, temperature_gradient=temperature_gradient,
+                                     repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, plotBinaryCurrentMaps=plot_binary_current_map, resume=resume,
