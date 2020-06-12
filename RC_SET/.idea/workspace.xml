@@ -19,10 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array_with_temperature_grad.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array_with_temperature_grad.sh" afterDir="false" />
-    </list>
+    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -72,7 +69,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.dots_array">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -126,7 +123,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 3 -N 3 --vmin 0 --vmax 1 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 10 --c-std 2 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0.01 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg --full --dbg" />
+      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 1.1 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0.005 --distribution exp --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_10_10_disorder_m_t_grad_0.005_run_1 -o bgu_2d_array_reverse_temperature_gradient -i bgu_2d_array_temperature_gradient/runningParameters_array_10_10_disorder_t_grad_0.005_run_1.txt --full --current-map   --symmetric-v" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -316,8 +313,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array" />
+        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.ising1d" />
         <item itemvalue="Python.dynamics_simulation" />
         <item itemvalue="Python.dots_array_new" />
@@ -364,13 +361,13 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="329" y="247" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591952853860">
+    <state x="329" y="247" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591969818871">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
     <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
     <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1588333342212" />
-    <state x="329" y="247" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1591952853860" />
+    <state x="329" y="247" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1591969818871" />
     <state x="655" y="125" width="666" height="854" key="#deposition_models" timestamp="1588087801096">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
