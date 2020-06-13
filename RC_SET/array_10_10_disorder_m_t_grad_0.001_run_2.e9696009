@@ -1,0 +1,46 @@
+dots_array.py:569: RuntimeWarning: divide by zero encountered in true_divide
+  exp_arg = work/self.temperature
+dots_array.py:569: RuntimeWarning: divide by zero encountered in true_divide
+  exp_arg = work/self.temperature
+dots_array.py:569: RuntimeWarning: divide by zero encountered in true_divide
+  exp_arg = work/self.temperature
+dots_array.py:569: RuntimeWarning: divide by zero encountered in true_divide
+  exp_arg = work/self.temperature
+dots_array.py:569: RuntimeWarning: divide by zero encountered in true_divide
+  exp_arg = work/self.temperature
+dots_array.py:569: RuntimeWarning: divide by zero encountered in true_divide
+  exp_arg = work/self.temperature
+dots_array.py:569: RuntimeWarning: divide by zero encountered in true_divide
+  exp_arg = work/self.temperature
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/gpfs0/jdubi/users/kasirer/Python-3.7/lib/python3.7/multiprocessing/pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "dots_array.py", line 1596, in runSingleSimulation
+    double_loop=double_loop)
+  File "dots_array.py", line 1230, in calcIV
+    self.getToSteadyState()
+  File "dots_array.py", line 1067, in getToSteadyState
+    self.executeStep()
+  File "dots_array.py", line 928, in executeStep
+    self.dotArray.nextStep(dt,r[1])
+  File "dots_array.py", line 703, in nextStep
+    self.executeAction(actionInd)
+  File "dots_array.py", line 800, in executeAction
+    self.tunnel(fromDot, toDot, charge=charge)
+  File "dots_array.py", line 721, in tunnel
+    self.n[fromDot[0]*self.columns + fromDot[1],0] -= charge
+IndexError: index 100 is out of bounds for axis 0 with size 100
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "dots_array.py", line 2238, in <module>
+    double_time=options.double_time, double_loop=options.double_loop)
+  File "dots_array.py", line 1705, in runFullSimulation
+    result = res.get()
+  File "/gpfs0/jdubi/users/kasirer/Python-3.7/lib/python3.7/multiprocessing/pool.py", line 657, in get
+    raise self._value
+IndexError: index 100 is out of bounds for axis 0 with size 100
