@@ -6,13 +6,14 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 import matplotlib
-# matplotlib.use("Agg")
+matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
 # from mayavi import mlab
 from optparse import OptionParser
 import re
+from time import sleep
 from multiprocessing import Pool
 from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
@@ -151,7 +152,10 @@ class TunnelingRateCalculator:
         deltaEmin = None
         deltaEmax = None
         deltaEstep = None
+
         if os.path.isdir(self.dirName):
+            while not os.path.exists(os.path.join(self.dirName, "vals.npy")):
+                sleep(60)
             deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
             deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
             deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))

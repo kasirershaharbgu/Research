@@ -22,14 +22,6 @@
     <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.02_0.2/deltaEmax.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.02_0.2/deltaEmin.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.02_0.2/deltaEstep.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.02_0.2/vals.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.1_0.01/deltaEmax.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.1_0.01/deltaEmin.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.1_0.01/deltaEstep.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.1_0.01/vals.npy" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -498,12 +490,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1900</line>
+          <line>1903</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1905</line>
+          <line>1908</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -578,12 +570,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>566</line>
+          <line>569</line>
           <option name="timeStamp" value="451" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>364</line>
+          <line>367</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
