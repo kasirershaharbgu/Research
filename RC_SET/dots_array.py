@@ -6,7 +6,7 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 import matplotlib
-matplotlib.use("Agg")
+# matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
@@ -15,7 +15,8 @@ from optparse import OptionParser
 import re
 from multiprocessing import Pool
 from scipy.linalg import null_space
-from scipy.integrate import cumtrapz, dblquad
+from scipy.integrate import cumtrapz
+from mpmath import quad, exp, sqrt, fabs, re, inf, ninf
 from scipy.interpolate import interp1d
 from scipy.stats import norm
 from ast import literal_eval
@@ -81,48 +82,53 @@ def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-2, max_iter=100, plot_lc=Tr
 # Methods for calculating superconducting related tunneling rates
 
 def high_impadance_p(x,Ec,T,kappa):
-    sigma = 4*(kappa**2)*Ec*T
+    sigma = 2*(kappa**2)*Ec*T
     mu = kappa**2*Ec
-    return norm.pdf(x, loc=mu, scale=np.sqrt(sigma))
+    return exp(-(x-mu)**2/(2*sigma))/sqrt(2*np.pi*sigma)
 
 def fermi_dirac_dist(x,T):
     exp_arg = x/T
     if exp_arg > 20:
         return 0
     else:
-        return 1/(1 + np.exp(x/T))
+        return 1/(1 + exp(x/T))
 
 def qp_density_of_states(x,energy_gap):
     arg = x**2-energy_gap**2
-    if arg < EPS:
-        arg = EPS
-    return np.abs(x) / np.sqrt(arg)
+    # if arg < EPS:
+    #     arg = EPS
+    return fabs(x) / sqrt(arg)
 
 def cp_tunneling(x, Ec, Ej, T):
-    return (np.pi*Ej)**2 * high_impadance_p(x, Ec, T, 2)
+    res = np.zeros(x.shape)
+    for ind, val in enumerate(x):
+        res[ind] = (np.pi*Ej)**2 * high_impadance_p(val, Ec, T, 2)
+    return res
 
-def qp_integrand(x2, x1, deltaE, Ec, gap, T):
-    return qp_density_of_states(x1, gap)*qp_density_of_states(x2, gap)*fermi_dirac_dist(-x1, T)\
-           *fermi_dirac_dist(x2, T)*high_impadance_p(x2-x1 - deltaE, Ec, T, 1)
+def qp_integrand(deltaE, Ec, gap, T):
+    def f(x1, x2):
+        return qp_density_of_states(x1, gap)*qp_density_of_states(x2 + deltaE, gap)*fermi_dirac_dist(x1, T)\
+               *(1-fermi_dirac_dist(x2 + deltaE, T))*high_impadance_p(x1 - x2, Ec, T, 1)
+    return f
 
 
 
 def qp_tunneling_single(deltaE, Ec, gap, T):
-    part1 = dblquad(qp_integrand, -np.infty, -gap-EPS, lambda x: -np.infty,
-                    lambda x: -gap-EPS, args=(deltaE,Ec, gap, T))[0]
-    part2 = dblquad(qp_integrand, -np.infty, -gap-EPS, lambda x: gap,
-                    lambda x: np.infty, args=(deltaE,Ec, gap, T))[0]
-    part3 = dblquad(qp_integrand, gap+EPS, np.infty, lambda x: -np.infty,
-                    lambda x: -gap-EPS, args=(deltaE,Ec, gap, T))[0]
-    part4 = dblquad(qp_integrand, gap+EPS, np.infty, lambda x: gap,
-                    lambda x: np.infty+EPS, args=(deltaE,Ec, gap, T))[0]
-    return part1 + part2 + part3 + part4
+    # lower1 = -20*T
+    # upper1 = 20*T
+    # lower2 = -20*(T + deltaE)
+    # upper2 = 20*(T + deltaE)
+    part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
+    part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
+    part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap-deltaE])
+    part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap-deltaE, inf])
+    return re(part1 + part2 + part3 + part4)
 
 def qp_tunneling(deltaE, Ec, gap, T):
         res = np.zeros(deltaE.shape)
         for ind,val in enumerate(deltaE):
-            res[ind] = np.exp(val/T)*qp_tunneling_single(val, Ec, gap, T)
-            # res[ind] =  qp_tunneling_single(val, Ec, gap, T)
+            res[ind] = qp_tunneling_single(val, Ec, gap, T)
+        res[res < 0] = 0
         return res
 
 class TunnelingRateCalculator:
@@ -198,9 +204,9 @@ class TunnelingRateCalculator:
         print("Low limit dencreased, Emin= " + str(self.deltaEmin))
 
     def get_tunnling_rates(self, deltaE):
-        while self.deltaEmin - np.min(deltaE) >= self.deltaEstep:
+        while self.deltaEmin - np.min(deltaE) >= -self.deltaEstep:
             self.decrease_low_limit()
-        while self.deltaEmax - np.max(deltaE) <= -self.deltaEstep:
+        while self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
             self.increase_high_limit()
         return self.approx(deltaE)
 
@@ -632,7 +638,7 @@ class DotArray:
         np.cumsum(rates, out=self.cumRates)
         sum_rates = self.cumRates[-1]
         intervals = 0
-        if sum_rates == 0:
+        if sum_rates < 1e-10:
             self.no_tunneling_next_time = True
             return self.default_dt, intervals
         dt = np.log(1 / randomNumber) / sum_rates
@@ -809,7 +815,7 @@ class JJArray(DotArray):
                           temperature, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
         self.gap = scGap
         self.Ej = self.getEj()
-        self.Ec = 1/np.mean(CG)
+        self.Ec = 1/(2*np.mean(CG))
         self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, scGap,
                                                           "quasi_particles_rate")
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
