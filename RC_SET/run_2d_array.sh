@@ -58,6 +58,7 @@ double_time=""
 for c_std in 0 0.1 0.5 1
 do
 	for r_std in 1 5 9
+	do
 		for run in 1 2 3 4 5 
 		do
 			name="array_10_10_disorder_c_std_${c_std}_r_std_${r_std}_run_${run}"
