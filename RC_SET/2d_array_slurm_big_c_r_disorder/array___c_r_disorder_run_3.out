@@ -1,0 +1,6 @@
+
+python3 dots_array.py -M  -N  --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std  --c-avg 10 --c-std 9.5 --cg-avg 50 --cg-std 0 --r-avg 30 --r-std  --rg-avg 500 --rg-std 29 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array___c_r_disorder_run_3 -o 2d_array_slurm_big_c_r_disorder -i  --full --current-map     
+
+Usage: dots_array.py [options]
+
+dots_array.py: error: option -M: invalid integer value: ''
