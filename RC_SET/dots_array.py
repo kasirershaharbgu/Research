@@ -1,7 +1,7 @@
 __author__ = 'shahar'
 
 import os
-# os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "5"
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
@@ -26,7 +26,7 @@ EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-3
+ALLOWED_ERR = 1e-2
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
