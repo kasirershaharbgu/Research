@@ -147,6 +147,17 @@ class TunnelingRateCalculator:
         self.set_results()
         self.set_approx()
 
+    def isWriting(self):
+        return os.path.exists(os.path.join(self.dirName, "writing.txt"))
+
+    def getWritingLock(self):
+        with open(os.path.join(self.dirName, "writing.txt"), "w") as f:
+            f.write("writing")
+
+    def freeWritingLock(self):
+        os.remove(os.path.join(self.dirName, "writing.txt"))
+
+
     def set_results(self):
         can_load = False
         deltaEmin = None
@@ -154,14 +165,14 @@ class TunnelingRateCalculator:
         deltaEstep = None
 
         if os.path.isdir(self.dirName):
-            while not os.path.exists(os.path.join(self.dirName, "vals.npy")):
+            while self.isWriting():
                 sleep(60)
             deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
             deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
             deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))
             can_load = deltaEmin <= self.deltaEmin and deltaEmax >= self.deltaEmax and deltaEstep <= self.deltaEstep
         else:
-            os.mkdir(self.dirName, 744)
+            os.mkdir(self.dirName)
         if can_load:
             self.deltaEstep = deltaEstep
             self.deltaEmax = deltaEmax
@@ -169,9 +180,11 @@ class TunnelingRateCalculator:
             self.deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
             self.vals = np.load(os.path.join(self.dirName, "vals.npy"))
         else:
+            self.getWritingLock()
             self.deltaEvals = np.arange(self.deltaEmin, self.deltaEmax, self.deltaEstep)
             self.vals = self.rateFunc(self.deltaEvals, self.Ec, self.otherParam, self.T)
             self.saveVals()
+            self.freeWritingLock()
         return True
 
     def saveVals(self):
@@ -208,10 +221,16 @@ class TunnelingRateCalculator:
         print("Low limit dencreased, Emin= " + str(self.deltaEmin))
 
     def get_tunnling_rates(self, deltaE):
+        while self.isWriting():
+            sleep(60)
         while self.deltaEmin - np.min(deltaE) >= -self.deltaEstep:
+            self.getWritingLock()
             self.decrease_low_limit()
+            self.freeWritingLock()
         while self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
+            self.getWritingLock()
             self.increase_high_limit()
+            self.freeWritingLock()
         return self.approx(deltaE)
 
     def plot_rate(self):
@@ -825,12 +844,6 @@ class JJArray(DotArray):
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
         print("Rates were calculated")
-        # dbg
-        fig1 = self.qp_rate_calculator.plot_rate()
-        fig2 = self.cp_rate_calculator.plot_rate()
-        plt.show()
-        plt.close(fig1)
-        plt.close(fig2)
 
     def __copy__(self):
         copy_array = super().__copy__()
@@ -1840,11 +1853,11 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
     Writer = animation.writers['ffmpeg']
     writer = Writer(fps=24, bitrate=1800)
     fig, ax = plt.subplots()
-    Imax = 1 if frame_norm else np.max(Imaps)
-    Imin = -1 if frame_norm else np.min(Imaps)
+    Imax = 1 if frame_norm else max(np.max(Imaps), -np.min(Imaps))
+    Imin = -1 if frame_norm else min(np.min(Imaps), -np.max(Imaps))
     M,N = Imaps[0].shape
     im = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=Imin,
-                    vmax=Imax , animated=True, cmap='PuOr', aspect='equal')
+                    vmax=Imax, animated=True, cmap='PuOr', aspect='equal')
     text = ax.text(1, 1, 'Vext = 0')
     cb1 = plt.colorbar(im, shrink=0.25)
     cb1.set_label('Current')
