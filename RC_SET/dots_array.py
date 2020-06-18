@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 # from mayavi import mlab
 from optparse import OptionParser
-import re
+import re as regex
 from time import sleep
 from multiprocessing import Pool
 from scipy.linalg import null_space
@@ -2146,9 +2146,9 @@ def load_params_from_file(file_path):
                     key = splitted[0]
                     try:
                         splitted[1] = splitted[1].rstrip('\n')
-                        splitted[1] = re.sub('\[\s+','[',splitted[1])
-                        splitted[1] = re.sub('\s+\]', ']', splitted[1])
-                        splitted[1] = re.sub('\s+', ',', splitted[1])
+                        splitted[1] = regex.sub('\[\s+','[',splitted[1])
+                        splitted[1] = regex.sub('\s+\]', ']', splitted[1])
+                        splitted[1] = regex.sub('\s+', ',', splitted[1])
                         value = literal_eval(splitted[1])
                     except Exception:
                         value = splitted[1].rstrip('\n')
@@ -2160,11 +2160,11 @@ def load_params_from_file(file_path):
         key = splitted[0]
         try:
             splitted[1] = splitted[1].rstrip('\n')
-            splitted[1] = re.sub('\[\s+', '[', splitted[1])
-            splitted[1] = re.sub('\s+\]', ']', splitted[1])
-            splitted[1] = re.sub('\s+', ',', splitted[1])
+            splitted[1] = regex.sub('\[\s+', '[', splitted[1])
+            splitted[1] = regex.sub('\s+\]', ']', splitted[1])
+            splitted[1] = regex.sub('\s+', ',', splitted[1])
             value = literal_eval(splitted[1])
-        except Exception:
+        except Exception as e:
             value = splitted[1].rstrip('\n')
         arrayParams[key] = value
     return runningParams, arrayParams
