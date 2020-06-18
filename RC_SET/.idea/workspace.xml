@@ -19,12 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array_on_slurm.sh" afterDir="false" />
-    </list>
+    <list default="true" id="bbe643b9-0292-4220-8595-639a0ea71c74" name="Default" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -284,15 +279,15 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.toy model" />
       <item itemvalue="Python.ThermalArray" />
+      <item itemvalue="Python.deposition_models" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.single dot run" />
+      <item itemvalue="Python.toy model" />
     </list>
     <recent_temporary>
       <list>
