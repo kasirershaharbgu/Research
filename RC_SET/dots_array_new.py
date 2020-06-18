@@ -25,8 +25,8 @@ from copy import copy
 EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 100
-STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-4
+STEADY_STATE_VAR = 1e-3
+ALLOWED_ERR = 1e-2
 STEADY_STATE_REP = 100
 INV_DOS = 0.01
 
