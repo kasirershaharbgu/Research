@@ -189,8 +189,6 @@ class SingleResultsProcessor:
         return score, score, score
 
     def calc_jumps_score(self, window_size, up=True):
-
-
         score = 0
         high_err = 0
         low_err = 0
@@ -386,6 +384,21 @@ class SingleResultsProcessor:
         R = np.array(self.arrayParams["Rh"])
         C = np.array(self.arrayParams["Ch"])
         Cv = np.array(self.arrayParams["Cv"])
+        # chosen_line = 0
+        # max_min_c = 0
+        # for line in range(1,C.shape[0]-1):
+        #     c = C[line,:-1] + C[line,1:] + Cv[line, :] + Cv[line-1,:]
+        #     min_c = np.min(c)
+        #     if min_c > max_min_c:
+        #         max_min_c = min_c
+        #         chosen_line = line
+        min_resistance = np.inf
+        for line in range(1, R.shape[0]-1):
+            resistance = np.sum(R[line,:])
+            if resistance < min_resistance:
+                min_resistance = resistance
+                chosen_line = line
+        line = chosen_line
         R = R[line, :]
         C = C[line, :]
         Cup = Cv[line, :]
@@ -538,7 +551,7 @@ class SingleResultsProcessor:
     def plot_results(self):
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
-        # plt.figure()
+        plt.figure()
         plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], '.',label=self.directory + "_up")
         plt.plot(self.V[self.mid_idx:], self.I[self.mid_idx:], '.',label=self.directory + "_down")
                  # self.V[:self.mid_idx], IplusErr[:self.mid_idx], '--',
@@ -547,31 +560,22 @@ class SingleResultsProcessor:
                  # self.V[self.mid_idx:], IminusErr[self.mid_idx:],'--')
         plt.xlabel('Voltage')
         plt.ylabel('Current')
-        # if self.full:
-        #     n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
-        #     Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
-        #     q = n+Q
-        #     nErr = self.nErr.reshape((self.nErr.shape[0], self.nErr.shape[1] *self. nErr.shape[2]))
-        #     QErr = self.QErr.reshape((self.QErr.shape[0], self.QErr.shape[1] * self.QErr.shape[2]))
-        #     nplusErr = n + nErr
-        #     nminusErr = n - nErr
-        #     QplusErr = Q + QErr
-        #     QminusErr = Q - QErr
-        #     plt.figure()
-            # for i in range(20,30):
-            #     plt.plot(self.V[:self.mid_idx // 2], n[:self.mid_idx // 2, i], 'b',
-            #              self.V[self.mid_idx // 2:self.mid_idx], n[self.mid_idx // 2:self.mid_idx, i], 'r',
-            #              self.V[self.mid_idx:3 * self.mid_idx // 2], n[self.mid_idx:3 * self.mid_idx // 2, i], 'c',
-            #              self.V[3 * self.mid_idx // 2:], nplusErr[3 * self.mid_idx // 2:, i], 'm')
-            # for i in range(len(n[0])):
-            #     plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
-            #              self.V[self.mid_idx:], n[self.mid_idx:, i], 'r',
-            #              self.V[:self.mid_idx], nplusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], nplusErr[self.mid_idx:, i], 'r--',
-            #              self.V[:self.mid_idx], nminusErr[:self.mid_idx, i], 'b--',
-            #              self.V[self.mid_idx:], nminusErr[self.mid_idx:, i], 'r--')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Occupation')
+        if self.full:
+            n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
+            Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
+            q = n+Q
+            nErr = self.nErr.reshape((self.nErr.shape[0], self.nErr.shape[1] *self. nErr.shape[2]))
+            QErr = self.QErr.reshape((self.QErr.shape[0], self.QErr.shape[1] * self.QErr.shape[2]))
+            nplusErr = n + nErr
+            nminusErr = n - nErr
+            QplusErr = Q + QErr
+            QminusErr = Q - QErr
+            plt.figure()
+            for i in range(len(n[0])):
+                plt.plot(self.V[:self.mid_idx], n[:self.mid_idx, i], 'b',
+                         self.V[self.mid_idx:], n[self.mid_idx:, i], 'r')
+                plt.xlabel('Voltage')
+                plt.ylabel('Occupation')
             # factor = np.max(np.diff(np.sum(n[:self.mid_idx, :],axis=1)))/np.max(np.diff(self.I[:self.mid_idx]),)
             # Idiff = np.diff(self.I[:self.mid_idx])
             # Idiff[Idiff < 0.0001] = 0
@@ -584,29 +588,23 @@ class SingleResultsProcessor:
             #          self.V[self.mid_idx:], np.sum(n[self.mid_idx:, :],axis=1)/40000, 'r')
             # plt.xlabel('Voltage')
             # plt.ylabel('Total Occupation')
-            # plt.figure()
-            # for i in range(len(Q[0])):
-            #     plt.plot(self.V[:self.mid_idx], -Q[:self.mid_idx, i], 'g',
-            #              self.V[self.mid_idx:], -Q[self.mid_idx:, i], 'c',
-            #              self.V[:self.mid_idx], -QplusErr[:self.mid_idx, i], 'g--',
-            #              self.V[self.mid_idx:], -QplusErr[self.mid_idx:, i], 'c--',
-            #              self.V[:self.mid_idx], -QminusErr[:self.mid_idx, i], 'g--',
-            #              self.V[self.mid_idx:], -QminusErr[self.mid_idx:, i], 'c--')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Chagre')
-            # plt.figure()
-            # for i in range(21,30):
-            #     plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i])
-            #     # plt.plot(self.V[:self.mid_idx], q[:self.mid_idx, i], 'b',
-            #     #          self.V[self.mid_idx:], q[self.mid_idx:, i], 'r')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Chagre on tunneling junctions')
+            plt.figure()
+            for i in range(len(Q[0])):
+                plt.plot(self.V[:self.mid_idx], -Q[:self.mid_idx, i], 'g',
+                         self.V[self.mid_idx:], -Q[self.mid_idx:, i], 'c',
+                         self.V[:self.mid_idx], -QplusErr[:self.mid_idx, i], 'g--',
+                         self.V[self.mid_idx:], -QplusErr[self.mid_idx:, i], 'c--',
+                         self.V[:self.mid_idx], -QminusErr[:self.mid_idx, i], 'g--',
+                         self.V[self.mid_idx:], -QminusErr[self.mid_idx:, i], 'c--')
+                plt.xlabel('Voltage')
+                plt.ylabel('Chagre')
+
             # plt.figure()
             # for i in range(len(self.full_I)):
-            #     plt.plot(self.V[:self.mid_idx], 3*self.full_I[i,:self.mid_idx], 'o',
-            #             self.V[self.mid_idx:], 3*self.full_I[i,self.mid_idx:], '*')
+            #     plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], 'o',
+            #             self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '*')
             #     plt.xlabel('Voltage')
-            #     plt.ylabel('Tunnel Chagre')
+            #     plt.ylabel('Current')
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
@@ -744,6 +742,8 @@ class MultiResultAnalyzer:
         fig = plt.figure()
         plt.hist(scores, bins=bins)
         plt.title(title)
+        plt.xlabel("score")
+        plt.ylabel("freq.")
         plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
         plt.close(fig)
         np.save(os.path.join(self.outDir,title), np.array(scores))
@@ -911,18 +911,18 @@ if __name__ == "__main__":
     #
     # directory = "2d_array_bgu_low_vg"
 
-    names = ["array_10_10_disorder_T_0.051_run_", "array_10_10_disorder_t_grad_0.01_run_",
-             "array_10_10_disorder_m_t_grad_0.01_run_"]
-    directories = ["bgu_2d_array_finite_temperature","bgu_2d_array_temperature_gradient",
-                   "bgu_2d_array_reverse_temperature_gradient"]
-    for run in [1,2,3]:
-        plt.figure()
-        for name,directory in zip(names, directories):
-            s = SingleResultsProcessor(directory, name + str(run),fullOutput=True,vertCurrent=False)
-            s.plot_differences()
-        plt.legend()
-
-    plt.show()
+    # names = ["array_10_10_disorder_T_0.051_run_", "array_10_10_disorder_t_grad_0.01_run_",
+    #          "array_10_10_disorder_m_t_grad_0.01_run_"]
+    # directories = ["bgu_2d_array_finite_temperature","bgu_2d_array_temperature_gradient",
+    #                "bgu_2d_array_reverse_temperature_gradient"]
+    # for run in [1,2,3]:
+    #     plt.figure()
+    #     for name,directory in zip(names, directories):
+    #         s = SingleResultsProcessor(directory, name + str(run),fullOutput=True,vertCurrent=False)
+    #         s.plot_differences()
+    #     plt.legend()
+    #
+    # plt.show()
     # s.plot_conductance()
     # s.calc_jumps_freq(eps=0.002, path='/home/kasirershahar/University/Research/jumps_analysis/'+name+run)
     # s.clac_fourier()
@@ -942,21 +942,32 @@ if __name__ == "__main__":
     #         files_list.append("array_10_10_" + disorder + "_disorder_run_" + str(run))
     #         groups.append(idx)
     # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    # directory = "bgu_2d_finite_temperature_different_disorders"
-    # directory = "hysteresis_tries"
-    # name = "array_10_10_disorder_c_std_"
-    # files_list = [name + str(c_std) + "_r_std_" + str(r_std) + "_run_" + str(run) for
-    #               c_std in [0, 0.1,0.5, 1] for r_std in [1, 5, 9] for run in range(1,6)]
-    # s = SingleResultsProcessor(directory, files_list[0])
-    # s.plot_jumps_freq("I")
+    # directory = "bgu_2d_finite_temperature_different_disorders_statistics"
+    # # directory = "hysteresis_tries"
+    # name = "array_10_10_disorder_c_std_0.1_r_std_"
+    # files_list = [name + str(r_std) + "_run_" + str(run)
+    #               for r_std in [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5] for run in range(1,11)]
+    # # for file in files_list:
+    # #     s = SingleResultsProcessor(directory, file)
+    # #     s.save_re_analysis()
     # directory_list = [directory] * len(files_list)
-    # m = MultiResultAnalyzer(directory_list, files_list, relevant_running_params=["C_std", "R_std"], out_directory="finite_temp_results")
+    # m = MultiResultAnalyzer(directory_list, files_list, relevant_running_params=["C_std", "R_std"],
+    #                         out_directory="finite_temp_high_resolution_results", resistance_line=3)
     # m.plot_score('hysteresis')
-    # m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
-    # m.plot_score_by_parameter("jumpsNum", ["C_std", "R_std"], "number_of_jumps_score")
+    # m.plot_score('resistance')
+    # # m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
+    # # for score in ["blockade","jump","hysteresis","jumpsNum"]:
+    # #     for r_std in [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5]:
+    # #         m.plot_hystogram(score, {"R_std":[r_std],}, {}, score + " " + str(r_std) + " histogram")
     # plt.show()
 
-
+    directory = "bgu_2d_finite_temperature_different_disorders_statistics"
+    name = "array_10_10_disorder_c_std_0.1_r_std_9_run_1"
+    s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
+    s.plot_array_params("C")
+    s.plot_array_params("R")
+    s.plot_results()
+    plt.show()
 
 
 
