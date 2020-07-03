@@ -961,8 +961,13 @@ if __name__ == "__main__":
     # #         m.plot_hystogram(score, {"R_std":[r_std],}, {}, score + " " + str(r_std) + " histogram")
     # plt.show()
 
-    directory = "bgu_2d_finite_temperature_different_disorders_statistics"
-    name = "array_10_10_disorder_c_std_0.1_r_std_9_run_1"
+    directory = "/home/kasirershahar/University/Research/old_results/bgu_2d_finite_temperature_different_disorders_statistics"
+    name = "array_10_10_disorder_c_std_0.1_r_std_9_run_2"
+    s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
+    s.plot_array_params("C")
+    s.plot_array_params("R")
+    s.plot_results()
+    name = "array_10_10_disorder_c_std_0.1_r_std_9_run_3"
     s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
     s.plot_array_params("C")
     s.plot_array_params("R")

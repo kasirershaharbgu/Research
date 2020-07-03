@@ -21,7 +21,10 @@
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ThermalArray.py" beforeDir="false" afterPath="$PROJECT_DIR$/ThermalArray.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +55,7 @@
     <property name="FullScreen" value="false" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/deposition_models.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ThermalArray.py" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -72,7 +75,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.thermalArray">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -126,7 +129,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 1.1 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0.001 --distribution exp --gap 0 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_10_10_disorder_t_grad_0.001_run_1 -o bgu_2d_array_temperature_gradient_non_symmetric_v -i bgu_2d_array_temperature_gradient/runningParameters_array_10_10_disorder_t_grad_0.001_run_1.txt --full --current-map --dbg" />
+      <option name="PARAMETERS" value="-M 10 -N 10 --vmin 0 --vmax 1.1 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 7 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg_heating_3 -o dbg --full --current-map --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -281,6 +284,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="thermalArray" type="PythonConfigurationType" factoryName="Python">
+      <module name="Numerics" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ThermalArray.py" />
+      <option name="PARAMETERS" value="-M 30 -N 30 -T 0.01 -R 1 --alpha 0 --vmin 0 --vmax 1 --vstep 0.1 --vr 0 --vu 0 --vd 0 --symmetric-v --distribution exp -o thermal_dbg --file-name dbg --n-avg 10 --n-std 9" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="toy model" type="PythonConfigurationType" factoryName="Python">
       <module name="RC_SET" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -308,6 +332,7 @@
       <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.dynamics_simulation" />
       <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.dots_array" />
@@ -316,9 +341,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dynamics_simulation" />
-        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.ising1d" />
       </list>
@@ -364,79 +389,80 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="381" y="385" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1592473413032">
+    <state x="378" y="389" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593763145466">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
     <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
     <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1588333342212" />
-    <state x="381" y="385" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1592473413032" />
+    <state x="378" y="389" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1593763145466" />
     <state x="655" y="125" width="666" height="854" key="#deposition_models" timestamp="1588087801096">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="655" y="125" width="666" height="854" key="#deposition_models/67.27.1853.1053@67.27.1853.1053" timestamp="1588087801096" />
-    <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl" timestamp="1588087779617">
-      <screen x="67" y="27" width="1853" height="1053" />
+    <state x="694" y="203" width="424" height="484" key="FileChooserDialogImpl" timestamp="1593596523461">
+      <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="460" y="124" width="424" height="479" key="FileChooserDialogImpl/0.0.1366.741@0.0.1366.741" timestamp="1586778310723" />
     <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
     <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1593350717340">
+    <state x="694" y="203" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1593596523461" />
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1593763621204">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1593350717340" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1593350717340">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1593763621204" />
+    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1593763621203">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1593350717340" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1593350717339">
+    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1593763621203" />
+    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1593763621203">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1593350717339" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1593350717340">
+    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1593763621203" />
+    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1593763621204">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1593350717340" />
-    <state width="1825" height="185" key="GridCell.Tab.1.bottom" timestamp="1592829998244">
+    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1593763621204" />
+    <state width="1825" height="185" key="GridCell.Tab.1.bottom" timestamp="1593597101125">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833856" />
     <state width="1510" height="268" key="GridCell.Tab.1.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="185" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1592829998244" />
-    <state width="1825" height="185" key="GridCell.Tab.1.center" timestamp="1592829998244">
+    <state width="1825" height="185" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1593597101125" />
+    <state width="1825" height="185" key="GridCell.Tab.1.center" timestamp="1593597101125">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="185" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1592829998244" />
-    <state width="1825" height="185" key="GridCell.Tab.1.left" timestamp="1592829998244">
+    <state width="1825" height="185" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1593597101125" />
+    <state width="1825" height="185" key="GridCell.Tab.1.left" timestamp="1593597101125">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.1.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="344" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450423" />
-    <state width="1825" height="185" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1592829998244" />
-    <state width="1825" height="185" key="GridCell.Tab.1.right" timestamp="1592829998244">
+    <state width="1825" height="185" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1593597101125" />
+    <state width="1825" height="185" key="GridCell.Tab.1.right" timestamp="1593597101125">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.1.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833852" />
     <state width="1510" height="268" key="GridCell.Tab.1.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
     <state width="1830" height="344" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="185" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1592829998244" />
+    <state width="1825" height="185" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1593597101125" />
     <state x="325" y="33" width="1022" height="737" key="SettingsEditor" timestamp="1588777360408">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -464,12 +490,6 @@
           <option name="timeStamp" value="313" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="np.max(diffusion) &gt; 0.1" language="Python" />
-          <url>file://$PROJECT_DIR$/ThermalArray.py</url>
-          <line>86</line>
-          <option name="timeStamp" value="338" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
           <line>375</line>
           <option name="timeStamp" value="340" />
@@ -486,12 +506,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1917</line>
+          <line>1923</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1922</line>
+          <line>1928</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -541,11 +561,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>589</line>
-          <option name="timeStamp" value="451" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
           <line>387</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
@@ -571,18 +586,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2165</line>
+          <line>2171</line>
           <option name="timeStamp" value="477" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2162</line>
+          <line>2168</line>
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2167</line>
+          <line>2173</line>
           <option name="timeStamp" value="480" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ThermalArray.py</url>
+          <line>37</line>
+          <option name="timeStamp" value="482" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ThermalArray.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="483" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ThermalArray.py</url>
+          <line>34</line>
+          <option name="timeStamp" value="484" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -987,6 +987,12 @@ class Simulator:
             curr_I = self.dotArray.getCurrentFromRates()
             I_avg, I_var = self.update_statistics(curr_I, I_avg, I_var,
                                                   curr_t, dt)
+            # TODO: trying something new, remove before run
+            # power = I_avg * (self.dotArray.VL - self.dotArray.VR)
+            # heat_balance = 0.1*(self.dotArray.temperature**6 - 0.001**6)
+            # self.dotArray.temperature += dt*(power - heat_balance)
+            # end of addition
+
             if fullOutput:
                 n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
                 Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var, curr_t, dt)

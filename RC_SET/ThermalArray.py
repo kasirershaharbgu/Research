@@ -5,13 +5,15 @@ import matplotlib.animation as animation
 from scipy.linalg import solve as linsolve
 from scipy.integrate import odeint
 import os
+import matplotlib
+matplotlib.use("Agg")
 from optparse import OptionParser
 
 class ThermalArray:
     """
     A model for array with different local temperature for each location
     """
-    def __init__(self, rows, columns, density_avg, density_std, resistance,
+    def __init__(self, rows, columns, density_avg, density_std, distribution, resistance,
                  diffusionConst, bath_temp, VL, VR, VU, VD):
         self.rows = rows
         self.columns = columns
@@ -21,12 +23,16 @@ class ThermalArray:
         self.VR = VR
         self.VU = VU
         self.VD = VD
-        self.tempConst = create_random_array(rows, columns, navg, nstd,
-                                             "exp", True)
+        self.tempConst = create_random_array(rows, columns, density_avg, density_std,
+                                             distribution, True)
         self.bath_temperature = bath_temp
         self.setLaplacianMatrix()
+
     def getResistance(self, T):
-        return self.R0*np.exp(1/T)
+        resistance = self.R0*np.exp(1/T)
+        resistance[0,:] = 10000
+        resistance[-1,:] = 10000
+        return resistance
 
     def getConductanceMatrix(self, R):
         padded = np.pad(R, ((1,1),(1,1)), mode='constant')
@@ -177,11 +183,12 @@ class ThermalArray:
 
         return self.Iimg, self.Timg, self.text
 
-    def plotICartoon(self, Vs, Is, Ts, path):
+    def plotICartoon(self, Vs, Is, Ts, directory, fileName):
         '''
         updating the plot to current currents map
         :return: image for animation
         '''
+        path = os.path.join(directory, fileName)
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=24, bitrate=1800)
         self.setPlot(np.max(np.array(Is)),np.min(np.array(Is)),
@@ -195,7 +202,8 @@ class ThermalArray:
         im_ani.save(path + '_cartoon.mp4', writer=writer)
         plt.close(self.fig)
 
-    def plotIV(self, Vs, Is, path):
+    def plotIV(self, Vs, Is, directory, fileName):
+        path = os.path.join(directory, fileName)
         Itot = []
         for I in Is:
             Ileft, Iright, Iup, Idown = I
@@ -218,27 +226,62 @@ class ThermalArray:
         T = sol[-1]
         return T
 
-    def getIV(self, vmax):
+    def getIV(self, vmax, vstep, symmetric=False):
         steadyT = self.bath_temperature*np.ones((self.rows*self.columns,))
-        Vvec = np.linspace(0,vmax,100)
-        Vvec = np.hstack((Vvec,np.flipud(Vvec)))
+        if symmetric:
+            vstep /= 2
+            vmax /= 2
+            VR_vec = np.arange(self.VR - (self.VL / 2), self.VR - vmax, -vstep)
+            VR_vec = np.hstack((VR_vec, np.flip(VR_vec)))
+            VL_vec = np.arange(self.VL / 2 + self.VR, vmax + self.VR, vstep)
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+        else:
+            VL_vec = np.arange(self.VL, vmax + self.VR, vstep)
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+            VR_vec = self.VR * np.ones(VL_vec.shape)
         Is = []
         Ts = []
-        for VL in Vvec:
+        for VL, VR in zip(VL_vec, VR_vec):
             self.VL = VL
+            self.VR = VR
             steadyT = self.getSteadyStateTemperature(steadyT)
             I = self.getI(steadyT)
             plt.show()
             Is.append(I)
             Ts.append(steadyT)
-            print(VL,end=',')
-        return Vvec, Is, Ts
+            print(VL-VR, end=',', flush=True)
+        return VL_vec-VR_vec, Is, Ts
 
-    def saveRes(self, Vs, Is, Ts):
-        pass
+    def saveRes(self, Vs, Is, Ts, directory, fileName):
+        path = os.path.join(directory, fileName)
+        np.save(path+"_T", Ts)
+        np.save(path+"_I", Is)
+        np.save(path+"_V", Vs)
 
-    def saveParams(self):
-        pass
+    def loadRes(self, directory, fileName):
+        path = os.path.join(directory, fileName)
+        Ts = np.load(path + "_T")
+        Is = np.load(path + "_I")
+        Vs = np.load(path + "_V")
+        return Vs, Is, Ts
+
+    def __str__(self):
+        rows = "Rows: " + str(self.rows)
+        columns = "Columns: " + str(self.columns)
+        density = "Density: " + str(self.tempConst)
+        res = "----Array Parameters-----"
+        for param in [rows, columns, density]:
+            res += "\n" + param
+        return res
+
+def saveParameters(directory, fileName, options, array_params):
+    optionsDict = options.__dict__
+    with open(os.path.join(directory, 'runningParameters_' + fileName +
+                                 ".txt"), mode='w') as f:
+        f.write("-------Running parameters--------\n")
+        for key in vars(options):
+            f.write(key + " = " + str(optionsDict[key]) + "\n")
+        f.write(array_params)
 
 
 def create_random_array(M,N, avg, std, dist, only_positive=False):
@@ -269,27 +312,79 @@ def create_random_array(M,N, avg, std, dist, only_positive=False):
         res = res + 0.1 - np.min(res.flatten())
     return res
 
+def getOptions():
+    parser = OptionParser(usage= "usage: %prog [options]")
+    # Normal parameters
+    parser.add_option("-T", "--temperature", dest="T",
+                      help="Environment temperature (in units of planckConstant/timeUnits) [default: %default]",
+                      default=0, type=float)
+    parser.add_option("-M", "--height", dest="M", help="number of lines in "
+                      "the array [default: %default]", default=1, type=int)
+    parser.add_option("-N", "--width", dest="N", help="number of columns in "
+                      "the array [default: %default]", default=1, type=int)
+    parser.add_option("-R", "--resistance", dest="R", help="array large temperature resistance "
+                                                           "[default: %default]", default=1, type=float)
+    parser.add_option("--alpha", "--diffusion", dest="alpha", help="array diffusion coefficient"
+                                                           "[default: %default]", default=1, type=float)
+    parser.add_option("--vmin", dest="Vmin", help="minimum external voltage  (in units of"
+                                              " planckConstant/electronCharge*timeUnits)"
+                      " [default: %default]", default=0, type=float)
+    parser.add_option("--vmax", dest="Vmax", help="maximum external voltage  (in units of"
+                                              " planckConstant/electronCharge*timeUnits)"
+                      " [default: %default]", default=10, type=float)
+    parser.add_option("--vstep", dest="vStep", help="size of voltage step  (in units of"
+                                              " planckConstant/electronCharge*timeUnits)[default: %default]",
+                      default=1, type=float)
+    parser.add_option("--vr", dest="VR", help="right electrode voltage (in units of"
+                                              " planckConstant/electronCharge*timeUnits) [default: %default]",
+                      default=0, type=float)
+    parser.add_option("--vu", dest="VU",
+                      help="upper electrode voltage (in units of"
+                           " planckConstant/electronCharge*timeUnits) [default: %default]",
+                      default=0, type=float)
+    parser.add_option("--vd", dest="VD",
+                      help="lower electrode voltage (in units of"
+                           " planckConstant/electronCharge*timeUnits) [default: %default]",
+                      default=0, type=float)
+    parser.add_option("--symmetric-v", dest="vSym", help="Voltage raises symmetric on VR and VL["
+                                                    "default: %default]", default=False, action='store_true')
+    parser.add_option("--file-name", dest="fileName", help="optional "
+                      "output files name", default='')
+    parser.add_option("--distribution", dest="dist", help="probability distribution to use [Default:%default]",
+                      default='uniform')
+    parser.add_option("--dbg", dest="dbg", help="Avoids parallel running for debugging [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--plot-cartoon", dest="plot_cartoon", help="Plots current cartoon [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("-o", "--output-folder", dest="output_folder",
+                      help="Output folder [default: current folder]",
+                      default='.')
+
+
+    # Disorder Parameters
+    parser.add_option("--n-avg", dest="n_avg", help="charge carrier density average [default:%default]",
+                      default=0, type=float)
+    parser.add_option("--n-std", dest="n_std", help="charge carrier density std [default:%default]",
+                      default=0, type=float)
+    return parser.parse_args()
+
+
+
+
 if __name__ == "__main__":
-    M = 30
-    N = 30
-    Tbath = 0.1
-    navg = 10
-    nstd = 9
-    R0 = np.ones((M,N))
-    R0[(0,-1),:] = 1000
-    alpha = 0
-    VL = 0
-    VR = 0
-    VU = 0
-    VD = 0
-    array = ThermalArray(M, N, navg, nstd, R0,
-                         alpha, Tbath, VL, VR, VU, VD)
-    dir_path = "dbg_thermal"
-    if not os.path.isdir(dir_path):
-        os.mkdir(dir_path)
-    file_name = "dbg_no_diffusion_30_30"
-    path = os.path.join(dir_path,file_name)
-    Vs, Is, Ts = array.getIV(3)
-    array.plotICartoon(Vs, Is, Ts, path)
-    array.plotIV(Vs, Is, path)
+    options, args = getOptions()
+    array = ThermalArray(options.M, options.N, options.n_avg, options.n_std, options.dist, options.R,
+                         options.alpha, options.T, options.Vmin + options.VR, options.VR, options.VU, options.VD)
+    if options.plot_cartoon:
+        Vs, Is, Ts = array.loadRes(options.output_folder, options.fileName)
+        array.plotICartoon(Vs, Is, Ts, options.output_folder, options.fileName)
+    else:
+        if not os.path.isdir(options.output_folder):
+            os.mkdir(options.output_folder)
+        Vs, Is, Ts = array.getIV(options.Vmax, options.vStep, symmetric=options.vSym)
+        array.saveRes(Vs, Is, Ts, options.output_folder, options.fileName)
+        saveParameters(options.output_folder,options.fileName,options,str(array))
+        array.plotIV(Vs, Is, options.output_folder, options.fileName)
+    exit(0)
+
 
