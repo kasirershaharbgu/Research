@@ -1215,13 +1215,13 @@ class Simulator:
                 Ih = list(resumeParams[-2])
                 Iv = list(resumeParams[-1])
         for VL,VR in zip(VL_vec, VR_vec):
-            self.dotArray.changeVext(VL, VR, -0.1, 0.1)
+            self.dotArray.changeVext(VL, VR, -0.05, 0.05)
             # running once to get to steady state
             if not self.constQ:
                 self.getToSteadyState()
             # now we are in steady state calculate current
             stepRes1 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
-            self.dotArray.changeVext(VL, VR, 0.1, -0.1)
+            self.dotArray.changeVext(VL, VR, 0.05, -0.05)
             # running once to get to steady state
             if not self.constQ:
                 self.getToSteadyState()

@@ -245,6 +245,45 @@ class SingleResultsProcessor:
         plt.xlabel('Voltage')
         plt.ylabel('Power')
 
+    def plot_resistance(self, out=None):
+        Vup = self.V[:self.mid_idx]
+        Iup = self.I[:self.mid_idx]
+        Vup = Vup[Iup != 0]
+        Iup = Iup[Iup != 0]
+        resistance_up = Vup/Iup
+
+        Vdown = self.V[self.mid_idx:]
+        Idown = self.I[self.mid_idx:]
+        Vdown = Vdown[Idown != 0]
+        Idown = Idown[Idown != 0]
+        resistance_down = Vdown / Idown
+
+        plt.figure()
+        plt.semilogy(Vup, resistance_up, 'b.',
+                 Vdown, resistance_down, 'r.',
+                 label="horizontal resistance")
+
+        if self.vert:
+            vertV = 0.2
+            vertIup = self.vertI[:self.mid_idx]
+            Vup = self.V[:self.mid_idx]
+            Vup = Vup[vertIup != 0]
+            vertIup = vertIup[vertIup != 0]
+            resistance_up = vertV/vertIup
+            vertIdown = self.vertI[self.mid_idx:]
+            Vdown = self.V[self.mid_idx:]
+            Vdown = Vdown[vertIdown != 0]
+            vertIdown = vertIdown[vertIdown != 0]
+            resistance_down = vertV / vertIdown
+
+            plt.semilogy(Vup, resistance_up, 'g.',
+                     Vdown, resistance_down, 'm.',
+                     label="vertical resistance")
+            plt.legend()
+        plt.xlabel('Voltage')
+        plt.ylabel('Resistance')
+        if out is not None:
+            plt.savefig(out + "_log_resistance.png")
 
     def plot_jumps_freq(self, x_parameter, index=0, eps=0.001, path=None):
         if x_parameter == "I":
@@ -874,6 +913,7 @@ def bistabilityAnalysis(x):
 
 
 if __name__ == "__main__":
+
     # for c_std in [0.1, 0.2, 0.3, 0.4, 0.5]:
     #     files_list = ["c_std_" + str(c_std) + "_r_std_" + str(i) + "_run_" + str(j) for i in range(1,10) for j in range(1,11)]
     #     directory_list = ["C:\\Users\\shahar\\Research\\old_results\\3X3_array_statistics_r_avg_10"] * len(files_list)
@@ -889,13 +929,12 @@ if __name__ == "__main__":
     #     for score in ['hysteresis', 'jump', 'blockade']:
     #         m.plot_hystogram(score, {"C_std": [c_std]}, {},
     #                              "c_std_" +  str(c_std) + "_" + score + "_hystogram")
-
-    # files_list = ["array_10_10_disorder_c_std_" + str(c_std) + "_run_" + str(i) for c_std in [0,0.1,0.5,1] for i in range(1,4)]
-    # directory_list = ["bgu_2d_array_higher_resolution"] * len(files_list)
-    # for name, directory in zip(files_list, directory_list):
-    #     s = SingleResultsProcessor(directory, name,fullOutput=True,vertCurrent=False)
-    #     s.plot_jumps_freq("I", eps=0.002)
-    #     plt.show()
+    directory = "2d_array_bgu_with_perp_avg"
+    for disorder in ["c", "cg", "r_cg", "r"]:
+        file = "array_10_10_" + disorder + "_disorder_run_1"
+        s = SingleResultsProcessor(directory, file ,fullOutput=True,vertCurrent=True)
+        s.plot_resistance("2d_array_bgu_with_perp_avg/resistnce_comparison_" + disorder)
+    plt.show()
     # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], full=True)
     # m.plot_results_by_disorder(["C"], ["hysteresis", "jump", "blockade", "jumpsNum", "resistance"])
     # plt.show()
@@ -942,37 +981,37 @@ if __name__ == "__main__":
     #         files_list.append("array_10_10_" + disorder + "_disorder_run_" + str(run))
     #         groups.append(idx)
     # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder/"
-    # directory = "bgu_2d_finite_temperature_different_disorders_statistics"
-    # # directory = "hysteresis_tries"
-    # name = "array_10_10_disorder_c_std_0.1_r_std_"
-    # files_list = [name + str(r_std) + "_run_" + str(run)
-    #               for r_std in [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5] for run in range(1,11)]
-    # # for file in files_list:
-    # #     s = SingleResultsProcessor(directory, file)
-    # #     s.save_re_analysis()
+    # directory = "bgu_2d_narrow_arrays"
+    # directory = "hysteresis_tries"
+    # name = "array_5_15_disorder_c_std_"
+    # files_list = [name + str(c_std) + "_r_std_9_run_" + str(run)
+    #               for c_std in [0.1, 0.5, 1, 1.5] for run in range(1,11)]
+    # for file in files_list:
+    #     s = SingleResultsProcessor(directory, file)
+    #     s.save_re_analysis()
     # directory_list = [directory] * len(files_list)
     # m = MultiResultAnalyzer(directory_list, files_list, relevant_running_params=["C_std", "R_std"],
-    #                         out_directory="finite_temp_high_resolution_results", resistance_line=3)
+    #                         out_directory="narrow_array_results", resistance_line=3)
     # m.plot_score('hysteresis')
     # m.plot_score('resistance')
-    # # m.plot_results_by_disorder(["C","R","CG","VG"],["blockade","jump","hysteresis","jumpsNum"])
-    # # for score in ["blockade","jump","hysteresis","jumpsNum"]:
-    # #     for r_std in [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5]:
-    # #         m.plot_hystogram(score, {"R_std":[r_std],}, {}, score + " " + str(r_std) + " histogram")
+    # m.plot_results_by_disorder(["C"],["blockade","jump","hysteresis","jumpsNum"])
+    # for score in ["blockade","jump","hysteresis","jumpsNum"]:
+    #     for c_std in [0.1, 0.5, 1, 1.5]:
+    #         m.plot_hystogram(score, {"C_std":[c_std],}, {}, score + " " + str(c_std) + " histogram")
     # plt.show()
 
-    directory = "/home/kasirershahar/University/Research/old_results/bgu_2d_finite_temperature_different_disorders_statistics"
-    name = "array_10_10_disorder_c_std_0.1_r_std_9_run_2"
-    s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
-    s.plot_array_params("C")
-    s.plot_array_params("R")
-    s.plot_results()
-    name = "array_10_10_disorder_c_std_0.1_r_std_9_run_3"
-    s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
-    s.plot_array_params("C")
-    s.plot_array_params("R")
-    s.plot_results()
-    plt.show()
+    # directory = "/home/kasirershahar/University/Research/old_results/bgu_2d_finite_temperature_different_disorders_statistics"
+    # name = "array_10_10_disorder_c_std_0.1_r_std_9_run_2"
+    # s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
+    # s.plot_array_params("C")
+    # s.plot_array_params("R")
+    # s.plot_results()
+    # name = "array_10_10_disorder_c_std_0.1_r_std_9_run_3"
+    # s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
+    # s.plot_array_params("C")
+    # s.plot_array_params("R")
+    # s.plot_results()
+    # plt.show()
 
 
 

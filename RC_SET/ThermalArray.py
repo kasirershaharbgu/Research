@@ -30,8 +30,6 @@ class ThermalArray:
 
     def getResistance(self, T):
         resistance = self.R0*np.exp(1/T)
-        resistance[0,:] = 10000
-        resistance[-1,:] = 10000
         return resistance
 
     def getConductanceMatrix(self, R):
