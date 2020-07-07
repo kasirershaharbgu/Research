@@ -21,94 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ThermalArray.py" beforeDir="false" afterPath="$PROJECT_DIR$/ThermalArray.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_1.e9853489" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_1.pe9853489" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_10.e9853498" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_10.pe9853498" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_2.e9853490" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_2.pe9853490" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_3.e9853491" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_3.pe9853491" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_4.e9853492" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_4.pe9853492" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_5.e9853493" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_5.pe9853493" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_6.e9853494" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_6.pe9853494" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_7.e9853495" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_7.pe9853495" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_8.e9853496" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_8.pe9853496" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_9.e9853497" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.1_r_std_9_run_9.pe9853497" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_1.e9853499" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_1.pe9853499" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_10.e9853508" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_10.pe9853508" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_2.e9853500" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_2.pe9853500" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_3.e9853501" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_3.pe9853501" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_4.e9853502" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_4.pe9853502" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_5.e9853503" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_5.pe9853503" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_6.e9853504" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_6.pe9853504" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_7.e9853505" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_7.pe9853505" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_8.e9853506" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_8.pe9853506" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_9.e9853507" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_0.5_r_std_9_run_9.pe9853507" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_1.e9853520" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_1.pe9853520" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_10.e9853529" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_10.pe9853529" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_2.e9853521" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_2.pe9853521" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_3.e9853522" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_3.pe9853522" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_4.e9853523" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_4.pe9853523" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_5.e9853524" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_5.pe9853524" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_6.e9853525" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_6.pe9853525" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_7.e9853526" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_7.pe9853526" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_8.e9853527" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_8.pe9853527" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_9.e9853528" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1.5_r_std_9_run_9.pe9853528" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_1.e9853509" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_1.pe9853509" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_10.e9853519" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_10.pe9853519" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_2.e9853510" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_2.pe9853510" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_3.e9853511" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_3.pe9853511" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_4.e9853512" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_4.pe9853512" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_5.e9853514" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_5.pe9853514" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_6.e9853515" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_6.pe9853515" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_7.e9853516" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_7.pe9853516" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_8.e9853517" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_8.pe9853517" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_9.e9853518" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/array_5_15_disorder_c_std_1_r_std_9_run_9.pe9853518" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finite_temp_high_resolution_results/blockade_C_disorder.png" beforeDir="false" afterPath="$PROJECT_DIR$/finite_temp_high_resolution_results/blockade_C_disorder.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finite_temp_high_resolution_results/hysteresis_C_disorder.png" beforeDir="false" afterPath="$PROJECT_DIR$/finite_temp_high_resolution_results/hysteresis_C_disorder.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finite_temp_high_resolution_results/jump_C_disorder.png" beforeDir="false" afterPath="$PROJECT_DIR$/finite_temp_high_resolution_results/jump_C_disorder.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finite_temp_high_resolution_results/jumpsNum_C_disorder.png" beforeDir="false" afterPath="$PROJECT_DIR$/finite_temp_high_resolution_results/jumpsNum_C_disorder.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array_with_perp.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array_with_perp.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -491,34 +404,34 @@
     <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
     <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
     <state x="694" y="203" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1593596523461" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1594024914077">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1594107142405">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1594024914077" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1594024914077">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1594107142405" />
+    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1594107142405">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1594024914077" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1594024914076">
+    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1594107142405" />
+    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1594107142404">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1594024914076" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1594024914077">
+    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1594107142404" />
+    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1594107142405">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1594024914077" />
+    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1594107142405" />
     <state width="1825" height="185" key="GridCell.Tab.1.bottom" timestamp="1594024727693">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>

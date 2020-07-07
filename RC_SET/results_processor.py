@@ -929,11 +929,11 @@ if __name__ == "__main__":
     #     for score in ['hysteresis', 'jump', 'blockade']:
     #         m.plot_hystogram(score, {"C_std": [c_std]}, {},
     #                              "c_std_" +  str(c_std) + "_" + score + "_hystogram")
-    directory = "2d_array_bgu_with_perp_avg"
-    for disorder in ["c", "cg", "r_cg", "r"]:
-        file = "array_10_10_" + disorder + "_disorder_run_1"
-        s = SingleResultsProcessor(directory, file ,fullOutput=True,vertCurrent=True)
-        s.plot_resistance("2d_array_bgu_with_perp_avg/resistnce_comparison_" + disorder)
+    directory = "2d_long_array_bgu_with_perp"
+    for run in range(1,11):
+        file = "array_5_15_r_std_9_run_" + str(run)
+        s = SingleResultsProcessor(directory, file , fullOutput=True, vertCurrent=True)
+        s.plot_resistance("2d_long_array_bgu_with_perp/resistnce_comparison_r_std_9_run_" + str(run))
     plt.show()
     # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], full=True)
     # m.plot_results_by_disorder(["C"], ["hysteresis", "jump", "blockade", "jumpsNum", "resistance"])
