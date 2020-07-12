@@ -218,7 +218,8 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, VL, VR, VU, VD, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, fastRelaxation=False,
+    def __init__(self, rows, columns, VL, VR, VU, VD, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, leftElectrode,
+                 rightElectrode, upElectrode, downElectrode, fastRelaxation=False,
                  tauLeaping=False, modifyR=False, constQ=False):
         """
         Creates new array of quantum dots
@@ -243,6 +244,10 @@ class DotArray:
         self.VR = VR
         self.VU = VU
         self.VD = VD
+        self.leftElectrode = np.array(leftElectrode, dtype=np.bool)
+        self.rightElectrode = np.array(rightElectrode, dtype=np.bool)
+        self.upElectrode = np.array(upElectrode, dtype=np.bool)
+        self.downElectrode = np.array(downElectrode, dtype=np.bool)
         self.VG = flattenToColumn(VG)
         self.Q = flattenToColumn(Q0)
         self.n = flattenToColumn(n0)
@@ -262,7 +267,7 @@ class DotArray:
         self.setConstWork()
         self.setConstMatrix()
         self.setConstNprimePart()
-        self.use_modifyR=modifyR
+        self.use_modifyR = modifyR
 
         # for variable R calculation
         if self.use_modifyR:
@@ -287,6 +292,11 @@ class DotArray:
         copy_array.VU = self.VU
         copy_array.VD = self.VD
         copy_array.VG = self.VG
+        copy_array.leftElectrode = self.leftElectrode
+        copy_array.rightElectrode = self.rightElectrode
+        copy_array.upElectrode = self.upElectrode
+        copy_array.downElectrode = self.downElectrode
+        copy_array.no_connections = self.no_connections
         copy_array.Q = np.copy(self.Q)
         copy_array.n = np.copy(self.n)
         copy_array.CG = self.CG
@@ -397,12 +407,16 @@ class DotArray:
     def setConstNprimePart(self):
         self._left_part_n_prime = np.copy(self.Ch[:, :-1])
         self._left_part_n_prime[:, 1:] = 0
+        self._left_part_n_prime[:,0] = self._left_part_n_prime[:,0]*self.leftElectrode
         self._right_part_n_prime = np.copy(self.Ch[:, 1:])
         self._right_part_n_prime[:, :-1] = 0
+        self._right_part_n_prime[:,-1] = self._right_part_n_prime[:,-1]*self.rightElectrode
         self._up_part_n_prime = np.copy(self.Cv[:-1, :])
         self._up_part_n_prime[1:, :] = 0
+        self._up_part_n_prime[0,:] = self._up_part_n_prime[0,:]*self.upElectrode
         self._down_part_n_prime = np.copy(self.Cv[1:, :])
         self._down_part_n_prime[:-1, :] = 0
+        self._down_part_n_prime[-1,:] = self._down_part_n_prime[-1,:] *self.downElectrode
         self._right_part_n_prime = flattenToColumn(self._right_part_n_prime)
         self._left_part_n_prime = flattenToColumn(self._left_part_n_prime)
         self._up_part_n_prime = flattenToColumn(self._up_part_n_prime)
@@ -483,17 +497,18 @@ class DotArray:
                           np.pad(lowerNCDiag,((1,1),(0,0)),mode='constant') -\
                           np.pad(upperNCDiag,((1,1),(0,0)),mode='constant')
 
+
         self.additionalLeft = np.zeros((self.rows,self.columns+1))
-        self.additionalLeft[:,0] = self.VL
-        self.additionalLeft[:,-1] = -self.VR
+        self.additionalLeft[self.leftElectrode,0] = self.VL
+        self.additionalLeft[self.rightElectrode,-1] = -self.VR
         self.leftConstWork = (0.5*self.commonHorz + self.additionalLeft).flatten()
 
         additionalRight = -self.additionalLeft
         self.rightConstWork = (0.5*self.commonHorz + additionalRight).flatten()
         
         self.additionalUp = np.zeros((self.rows + 1,self.columns))
-        self.additionalUp[0, :] = self.VU
-        self.additionalUp[-1, :] = -self.VD
+        self.additionalUp[0, self.upElectrode] = self.VU
+        self.additionalUp[-1, self.downElectrode] = -self.VD
         self.upConstWork = (0.5*self.commonVert + self.additionalUp).flatten()
 
         additionalDown = -self.additionalUp
@@ -501,6 +516,16 @@ class DotArray:
 
         self.variableWork = np.zeros((4*self.rows*self.columns + 2*(self.rows + self.columns),))
         self.rates = np.zeros(self.variableWork.shape)
+        horz_no_connections = np.zeros((self.rows, self.columns+1), dtype=np.bool)
+        horz_no_connections[:,0] = np.logical_not(self.leftElectrode)
+        horz_no_connections[:, -1] = np.logical_not(self.rightElectrode)
+        horz_no_connections = horz_no_connections.flatten()
+        vert_no_connections = np.zeros((self.rows+1, self.columns), dtype=bool)
+        vert_no_connections[0,:] = np.logical_not(self.upElectrode)
+        vert_no_connections[-1,:] = np.logical_not(self.downElectrode)
+        vert_no_connections = vert_no_connections.flatten()
+        self.no_connections = np.hstack((horz_no_connections, horz_no_connections,
+                                                           vert_no_connections, vert_no_connections))
         self.cumRates = np.zeros(self.variableWork.shape)
         return True
 
@@ -550,6 +575,7 @@ class DotArray:
         if self.use_modifyR:
             self.modifyR()
         self.rates = -work / self.R
+        self.rates[self.no_connections] = 0
         return self.rates
 
     def getCurrentFromRates(self):
@@ -758,9 +784,11 @@ class DotArray:
 
 class JJArray(DotArray):
     def __init__(self, rows, columns, VL, VR, VU, VD,  VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                 temperature, scGap, fastRelaxation=False, tauLeaping=False, modifyR=False):
+                 temperature, scGap, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                 fastRelaxation=False, tauLeaping=False, modifyR=False):
         DotArray.__init__(self, rows, columns, VL, VR, VU, VD, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                          temperature, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
+                          temperature, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                          fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
         self.gap = scGap
         self.Ej = self.getEj()
         self.Ec = 1/np.mean(CG)
@@ -1639,7 +1667,8 @@ def removeRandomParams(basePath):
     return True
 
 def runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
-                      Vmax, Vstep, temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
+                      Vmax, Vstep, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                      temperature=0, repeats=1, savePath=".", fileName="", fullOutput=False,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False, superconducting=False,
                       gap=0, leaping=False, modifyR=False, plotVoltages=False,
@@ -1671,12 +1700,14 @@ def runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh,
     if superconducting:
         prototypeArray = JJArray(rows, columns, VL0, VR0, VU0, VD0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                  np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                 temperature, gap, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
+                                 temperature, gap, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                                 fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
         print("Superconducting prototype array was created")
     else:
         prototypeArray = DotArray(rows, columns, VL0, VR0, VU0, VD0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                   np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                  temperature, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR,
+                                  temperature, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                                  fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR,
                                   constQ=constQ)
         print("Normal prototype array was created")
     if checkSteadyState:
@@ -1955,6 +1986,22 @@ def getOptions():
                       help="lower electrode voltage (in units of"
                            " planckConstant/electronCharge*timeUnits) [default: %default]",
                       default=0, type=float)
+    parser.add_option("--right-electrode", dest="rightElectrode",
+                      help="Location of right electrode in form of a binary array, i.e. if the array height is 7 and"
+                           " the electrode is connected in the second and fifth rows then [0,1,0,0,1,0,0] [default: connected to all rows]",
+                      default="")
+    parser.add_option("--left-electrode", dest="leftElectrode",
+                      help="Location of left electrode in form of a binary array, i.e. if the array height is 7 and"
+                           " the electrode is connected in the second and fifth rows then [0,1,0,0,1,0,0] default: connected to all rows]",
+                      default="")
+    parser.add_option("--up-electrode", dest="upElectrode",
+                      help="Location of upper electrode in form of a binary array, i.e. if the array width is 5 and"
+                           " the electrode is connected in the second and fifth rows then [0,1,0,0,1] [default: connected to all columns]",
+                      default="")
+    parser.add_option("--down-electrode", dest="downElectrode",
+                      help="Location of lower electrode in form of a binary array, i.e. if the array width is 5 and"
+                           " the electrode is connected in the second and fifth rows then [0,1,0,0,1] [default: connected to all columns]",
+                      default="")
     parser.add_option("--vmin", dest="Vmin", help="minimum external voltage  (in units of"
                                               " planckConstant/electronCharge*timeUnits)"
                       " [default: %default]", default=0, type=float)
@@ -2238,8 +2285,15 @@ if __name__ == "__main__":
         pr = cProfile.Profile()
         pr.enable()
 
+    leftElectrode = literal_eval(options.leftElectrode) if options.leftElectrode else [1]*rows
+    rightElectrode = literal_eval(options.rightElectrode) if options.rightElectrode else [1]*rows
+    upElectrode = literal_eval(options.upElectrode) if options.upElectrode else [1]*columns
+    downElectrode = literal_eval(options.downElectrode) if options.downElectrode else [1]*columns
+
+
     array_params = runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
-                                     Vmax, Vstep, temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
+                                     Vmax, Vstep, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                                     temperature=T, repeats=repeats, savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,
                                      dbg=dbg, plotCurrentMaps=plot_current_map, plotBinaryCurrentMaps=plot_binary_current_map, resume=resume,

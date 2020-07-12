@@ -2,9 +2,10 @@ import numpy as np
 import matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
-font = {'family' : 'normal',
+font = {'family' : 'sans-serif',
         'weight' : 'bold',
-        'size'   : 22}
+        'size' : 22}
+matplotlib.rc('font', **font)
 from matplotlib import colors
 from scipy import integrate
 from ast import literal_eval
@@ -47,8 +48,17 @@ class SingleResultsProcessor:
 
     def reAnalyzeI(self):
         full_I = self.full_I.T
-        for i,point in enumerate(full_I):
+        self.alternativeI = []
+        self.alternativeIErr = []
+        self.alternativeV = []
+        for i in range(len(full_I)):
+            min_idx = max(0, i-5)
+            max_idx = min(len(full_I)-1, i+5)
+            point = np.hstack([full_I[j] for j in range(min_idx, max_idx)])
             bins = bistabilityAnalysis(point)
+            # if i > 450:
+            #     plt.hist(point)
+            #     plt.show()
             if i > 0 and len(bins) > 1 and len(bins[0]) > 0 and len(bins[1]) > 0:
                 avg1 = np.average(bins[0])
                 avg2 = np.average(bins[1])
@@ -56,16 +66,33 @@ class SingleResultsProcessor:
                 # if len(bins[0]) > len(bins[1]):
                     self.I[i] = avg1
                     self.IErr[i] = np.std(bins[0])
+                    self.alternativeI.append(avg2)
+                    self.alternativeIErr.append(np.std(bins[1]))
+                    self.alternativeV.append(self.V[i])
                 else:
                     self.I[i] = avg2
                     self.IErr[i] = np.std(bins[1])
+                    self.alternativeI.append(avg1)
+                    self.alternativeIErr.append(np.std(bins[0]))
+                    self.alternativeV.append(self.V[i])
             else:
                 if len(bins) > 1:
-                    bin = bins[0] if len(bins[0]) > len(bins[1]) else bins[1]
+                    if len(bins[0]) > len(bins[1]):
+                        bin = bins[0]
+                        alternativeBin = bins[1]
+                    else:
+                        bin = bins[1]
+                        alternativeBin = bins[0]
+                    if len(alternativeBin) > 0:
+                        self.alternativeI.append(np.average(alternativeBin))
+                        self.alternativeIErr.append(np.std(alternativeBin))
+                        self.alternativeV.append(self.V[i])
                 else:
                     bin = bins[0]
                 self.I[i] = np.average(bin)
                 self.IErr[i] = np.std(bin)
+            if i == self.mid_idx:
+                self.alternative_mid_idx = len(self.alternativeI)
         return True
 
 
@@ -99,17 +126,15 @@ class SingleResultsProcessor:
     def save_re_analysis(self):
         np.save(self.basePath + '_I_clean', self.I)
         np.save(self.basePath + '_I_Err_clean', self.IErr)
-        IplusErr = self.I + self.IErr
-        IminusErr = self.I - self.IErr
-        fig = plt.figure()
-        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], 'b.',
-                 self.V[self.mid_idx:], self.I[self.mid_idx:], 'r.',
-                 self.V[:self.mid_idx], IplusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IplusErr[self.mid_idx:], 'r--',
-                 self.V[:self.mid_idx], IminusErr[:self.mid_idx], 'b--',
-                 self.V[self.mid_idx:], IminusErr[self.mid_idx:], 'r--')
+        fig = plt.figure(figsize=(30,16))
+        plt.errorbar(self.V[:self.mid_idx], self.I[:self.mid_idx], fmt='r.', yerr=self.IErr[:self.mid_idx],
+                     errorevery=10, label="increasing voltage")
+        plt.errorbar(self.V[self.mid_idx:], self.I[self.mid_idx:], fmt='b.', yerr=self.IErr[self.mid_idx:],
+                     errorevery=10, label="decreasing voltage")
+        plt.xlim(np.min(self.V[self.I > 0.0001]) - 0.01, np.max(self.V))
         plt.xlabel('Voltage')
         plt.ylabel('Current')
+        plt.legend()
         plt.savefig(self.basePath + '_IV_clean.png')
         plt.close(fig)
 
@@ -213,7 +238,7 @@ class SingleResultsProcessor:
         return score, high_err-score, score-low_err
 
     def calc_number_of_jumps(self):
-        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(self.I)
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(self.I, self.IErr)
         return len(Vjumps1) + len(Vjumps2)
 
     def plot_power(self):
@@ -285,17 +310,19 @@ class SingleResultsProcessor:
         if out is not None:
             plt.savefig(out + "_log_resistance.png")
 
-    def plot_jumps_freq(self, x_parameter, index=0, eps=0.001, path=None):
+    def plot_jumps_freq(self, x_parameter, index=0, path=None):
         if x_parameter == "I":
             x = self.I
+            xerr = self.IErr
         elif x_parameter == "n":
             n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape(
                 (self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
             x = n[:,index]
+            xerr = self.nErr[:,index]
             x/=500
-            eps/=500
+            xerr/=500
 
-        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(x, eps=eps)
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(x, xerr)
         plt.figure()
         plt.hist(np.hstack((diffV1,-diffV2)), bins=10)
         plt.xlabel('Delta V')
@@ -325,11 +352,14 @@ class SingleResultsProcessor:
         if path is not None:
             plt.savefig(path + '_detected_jumps.png')
 
-    def calc_jumps_freq(self, x, eps=0.001):
+    def calc_jumps_freq(self, x, xerr):
         diff1 = np.diff(x[:self.mid_idx])
         diff2 = np.diff(x[self.mid_idx:])
-        diff1[np.abs(diff1) < eps] = 0
-        diff2[np.abs(diff2) < eps] = 0
+        eps1 = np.clip(xerr[:self.mid_idx-1], a_min=0.001, a_max=None)
+        eps2 = np.clip(xerr[self.mid_idx:-1], a_min=0.001, a_max=None)
+
+        diff1[np.abs(diff1) < eps1] = 0
+        diff2[np.abs(diff2) < eps2] = 0
         Vjumps1 = self.V[1:self.mid_idx]
         Vjumps1 = Vjumps1[diff1 > 0]
         Vjumps2 = self.V[self.mid_idx:-1]
@@ -588,17 +618,20 @@ class SingleResultsProcessor:
 
 
     def plot_results(self):
-        IplusErr = self.I + self.IErr
-        IminusErr = self.I - self.IErr
         plt.figure()
-        plt.plot(self.V[:self.mid_idx], self.I[:self.mid_idx], '.',label=self.directory + "_up")
-        plt.plot(self.V[self.mid_idx:], self.I[self.mid_idx:], '.',label=self.directory + "_down")
-                 # self.V[:self.mid_idx], IplusErr[:self.mid_idx], '--',
-                 # self.V[self.mid_idx:], IplusErr[self.mid_idx:],'--',
-                 # self.V[:self.mid_idx], IminusErr[:self.mid_idx], '--',
-                 # self.V[self.mid_idx:], IminusErr[self.mid_idx:],'--')
+        plt.errorbar(self.V[:self.mid_idx], self.I[:self.mid_idx], fmt='r.', yerr=self.IErr[:self.mid_idx],
+                     errorevery=10, label=self.directory + "_up")
+        plt.errorbar(self.V[self.mid_idx:], self.I[self.mid_idx:], fmt='b.', yerr=self.IErr[self.mid_idx:],
+                     errorevery=10, label=self.directory + "_down")
+        plt.errorbar(self.alternativeV[:self.alternative_mid_idx], self.alternativeI[:self.alternative_mid_idx],
+                     fmt='m.', yerr=self.alternativeIErr[:self.alternative_mid_idx],
+                     errorevery=10, label=self.directory + "_alterntive")
+        plt.errorbar(self.alternativeV[self.alternative_mid_idx:], self.alternativeI[self.alternative_mid_idx:],
+                     fmt='c.', yerr=self.alternativeIErr[self.alternative_mid_idx:],
+                     errorevery=10, label=self.directory + "_alterntive")
         plt.xlabel('Voltage')
         plt.ylabel('Current')
+        plt.legend()
         if self.full:
             n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
             Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
@@ -638,12 +671,12 @@ class SingleResultsProcessor:
                 plt.xlabel('Voltage')
                 plt.ylabel('Chagre')
 
-            # plt.figure()
-            # for i in range(len(self.full_I)):
-            #     plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], 'o',
-            #             self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '*')
-            #     plt.xlabel('Voltage')
-            #     plt.ylabel('Current')
+            plt.figure()
+            for i in range(len(self.full_I)):
+                plt.plot(self.V[:self.mid_idx], self.full_I[i,:self.mid_idx], 'o',
+                        self.V[self.mid_idx:], self.full_I[i,self.mid_idx:], '*')
+                plt.xlabel('Voltage')
+                plt.ylabel('Current')
 
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
@@ -896,6 +929,26 @@ class MultiResultAnalyzer:
                 new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)/relevant_low_err.size))
         return new_x, new_y, new_y_high_err, new_y_low_err
 
+def resistance_temperature_analysis(directory, file_names):
+    I = []
+    T = []
+    V = []
+    Vthreshold = []
+    for file in file_names:
+        s = SingleResultsProcessor(directory, file)
+        I.append(s.I)
+        T.append(s.get_running_param("T"))
+        V.append(s.V)
+        temp = s.V[s.I>0]
+        Vthreshold.append(temp[0])
+    I = np.array(I)
+    V = np.array(V)
+    T = np.array(T)
+    for i in range(0,I.shape[1]//4,50):
+        It = I[:,i]
+        Vt = V[:,i]
+        plt.semilogy(1/T, np.abs(Vt/It))
+
 
 
 def bistabilityAnalysis(x):
@@ -929,12 +982,12 @@ if __name__ == "__main__":
     #     for score in ['hysteresis', 'jump', 'blockade']:
     #         m.plot_hystogram(score, {"C_std": [c_std]}, {},
     #                              "c_std_" +  str(c_std) + "_" + score + "_hystogram")
-    directory = "2d_long_array_bgu_with_perp"
-    for run in range(1,11):
-        file = "array_5_15_r_std_9_run_" + str(run)
-        s = SingleResultsProcessor(directory, file , fullOutput=True, vertCurrent=True)
-        s.plot_resistance("2d_long_array_bgu_with_perp/resistnce_comparison_r_std_9_run_" + str(run))
-    plt.show()
+    # directory = "2d_long_array_bgu_with_perp"
+    # for run in range(1,11):
+    #     file = "array_5_15_r_std_9_run_" + str(run)
+    #     s = SingleResultsProcessor(directory, file , fullOutput=True, vertCurrent=True)
+    #     s.plot_resistance("2d_long_array_bgu_with_perp/resistnce_comparison_r_std_9_run_" + str(run))
+    # plt.show()
     # m = MultiResultAnalyzer(directory_list, files_list, ["C_std", "R_std"], full=True)
     # m.plot_results_by_disorder(["C"], ["hysteresis", "jump", "blockade", "jumpsNum", "resistance"])
     # plt.show()
@@ -1000,18 +1053,17 @@ if __name__ == "__main__":
     #         m.plot_hystogram(score, {"C_std":[c_std],}, {}, score + " " + str(c_std) + " histogram")
     # plt.show()
 
-    # directory = "/home/kasirershahar/University/Research/old_results/bgu_2d_finite_temperature_different_disorders_statistics"
-    # name = "array_10_10_disorder_c_std_0.1_r_std_9_run_2"
-    # s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
-    # s.plot_array_params("C")
-    # s.plot_array_params("R")
-    # s.plot_results()
-    # name = "array_10_10_disorder_c_std_0.1_r_std_9_run_3"
-    # s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
-    # s.plot_array_params("C")
-    # s.plot_array_params("R")
-    # s.plot_results()
-    # plt.show()
-
-
-
+    # directory = "bgu_2d_narrow_arrays"
+    # for c_std in [0.1]:
+    #     for run in range(1, 11):
+    #         name = "array_5_15_disorder_c_std_" + str(c_std) + "_r_std_9_run_" + str(run)
+    #         s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False)
+    #         # s.plot_array_params("C")
+    #         # s.plot_array_params("R")
+    #         s.plot_jumps_freq("I")
+    #         s.plot_results()
+    #         plt.show()
+    directory = "same_array_different_temperature"
+    file_names =  ["array_10_10_T_" + str(T) for T in [0.001, 0.002, 0.005, 0.007, 0.01, 0.015,0.02, 0.03]]
+    resistance_temperature_analysis(directory, file_names)
+    plt.show()
