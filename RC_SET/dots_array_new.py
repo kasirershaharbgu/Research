@@ -2285,10 +2285,10 @@ if __name__ == "__main__":
         pr = cProfile.Profile()
         pr.enable()
 
-    leftElectrode = literal_eval(options.leftElectrode) if options.leftElectrode else [1]*rows
-    rightElectrode = literal_eval(options.rightElectrode) if options.rightElectrode else [1]*rows
-    upElectrode = literal_eval(options.upElectrode) if options.upElectrode else [1]*columns
-    downElectrode = literal_eval(options.downElectrode) if options.downElectrode else [1]*columns
+    leftElectrode = literal_eval(options.leftElectrode.replace('\"', '')) if options.leftElectrode else [1]*rows
+    rightElectrode = literal_eval(options.rightElectrode.replace('\"', '')) if options.rightElectrode else [1]*rows
+    upElectrode = literal_eval(options.upElectrode.replace('\"', '')) if options.upElectrode else [1]*columns
+    downElectrode = literal_eval(options.downElectrode.replace('\"', '')) if options.downElectrode else [1]*columns
 
 
     array_params = runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,

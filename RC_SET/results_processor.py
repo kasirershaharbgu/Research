@@ -15,7 +15,7 @@ from sklearn.mixture import GaussianMixture
 from mpl_toolkits.mplot3d import Axes3D
 
 EPS = 1e-6
-
+FIGSIZE=(30,16)
 
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
@@ -126,12 +126,13 @@ class SingleResultsProcessor:
     def save_re_analysis(self):
         np.save(self.basePath + '_I_clean', self.I)
         np.save(self.basePath + '_I_Err_clean', self.IErr)
-        fig = plt.figure(figsize=(30,16))
+        fig = plt.figure(figsize=FIGSIZE)
         plt.errorbar(self.V[:self.mid_idx], self.I[:self.mid_idx], fmt='r.', yerr=self.IErr[:self.mid_idx],
                      errorevery=10, label="increasing voltage")
         plt.errorbar(self.V[self.mid_idx:], self.I[self.mid_idx:], fmt='b.', yerr=self.IErr[self.mid_idx:],
                      errorevery=10, label="decreasing voltage")
-        plt.xlim(np.min(self.V[self.I > 0.0001]) - 0.01, np.max(self.V))
+        if (self.I > 0.0001).any():
+            plt.xlim(np.min(self.V[self.I > 0.0001]) - 0.01, np.max(self.V))
         plt.xlabel('Voltage')
         plt.ylabel('Current')
         plt.legend()
@@ -270,7 +271,7 @@ class SingleResultsProcessor:
         plt.xlabel('Voltage')
         plt.ylabel('Power')
 
-    def plot_resistance(self, out=None):
+    def plot_resistance(self, out=None, show=False):
         Vup = self.V[:self.mid_idx]
         Iup = self.I[:self.mid_idx]
         Vup = Vup[Iup != 0]
@@ -283,10 +284,9 @@ class SingleResultsProcessor:
         Idown = Idown[Idown != 0]
         resistance_down = Vdown / Idown
 
-        plt.figure()
-        plt.semilogy(Vup, resistance_up, 'b.',
-                 Vdown, resistance_down, 'r.',
-                 label="horizontal resistance")
+        fig = plt.figure(figsize=FIGSIZE)
+        plt.semilogy(Vup, resistance_up, 'r.',label="horizontal resistance increasing v")
+        plt.semilogy(Vdown, resistance_down, 'b.', label="horizontal resistance decreasing v")
 
         if self.vert:
             vertV = 0.2
@@ -301,14 +301,17 @@ class SingleResultsProcessor:
             vertIdown = vertIdown[vertIdown != 0]
             resistance_down = vertV / vertIdown
 
-            plt.semilogy(Vup, resistance_up, 'g.',
-                     Vdown, resistance_down, 'm.',
-                     label="vertical resistance")
+            plt.semilogy(Vup, resistance_up, 'm.', label="vertical resistance increasing v")
+            plt.semilogy(Vdown, resistance_down, 'g.', label="vertical resistance dencreasing v")
             plt.legend()
         plt.xlabel('Voltage')
         plt.ylabel('Resistance')
         if out is not None:
             plt.savefig(out + "_log_resistance.png")
+        if show:
+            plt.show()
+        else:
+            plt.close(fig)
 
     def plot_jumps_freq(self, x_parameter, index=0, path=None):
         if x_parameter == "I":
@@ -969,3 +972,12 @@ if __name__ == "__main__":
 
 
     ###### Perpendicular Current analysis ######
+    directory = "2d_long_array_bgu_with_perp_point_contact"
+    names = ["array_5_15_r_std_9_run_" + str(run) for run in range(1,11)]
+    full=True
+    save_re_analysis=False
+    for name in names:
+        s = SingleResultsProcessor(directory, name, fullOutput=full,vertCurrent=True)
+        if save_re_analysis:
+            s.save_re_analysis()
+        s.plot_resistance(out=os.path.join(directory,name))
