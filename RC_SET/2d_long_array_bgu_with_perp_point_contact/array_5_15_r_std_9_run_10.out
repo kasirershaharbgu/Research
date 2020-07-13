@@ -1,0 +1,10 @@
+
+python3 dots_array_new.py -M 5 -N 15 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode [0 --up-electrode [0 --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_5_15_r_std_9_run_10 -o 2d_long_array_bgu_with_perp_point_contact --full --current-map   --symmetric-v   
+
+
+python3 dots_array_new.py -M 5 -N 15 --vmin 0 --vmax 2 --vstep 0.01 --vr 0 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode "[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]" --up-electrode "[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]" --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_5_15_r_std_9_run_10 -o 2d_long_array_bgu_with_perp_point_contact --full --current-map   --symmetric-v   
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+Saving results
