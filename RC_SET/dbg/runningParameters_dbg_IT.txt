@@ -1,0 +1,63 @@
+-------Running parameters--------
+T = 0.001
+gap = 0
+M = 1
+N = 1
+VR = -0.1
+VU = 0.0
+VD = 0.0
+rightElectrode = "[0]"
+leftElectrode = "[0]"
+upElectrode = 
+downElectrode = 
+Vmin = 0.2
+Vmax = 0.1
+vStep = 0.001
+vSym = True
+repeats = 1
+fileName = dbg_IT
+dist = exp
+fullOutput = True
+use_graph = False
+current_map = True
+plot_current_map = False
+plot_binary_current_map = False
+dbg = True
+resume = False
+sc = False
+leaping = False
+constQ = False
+modifyR = False
+calcIT = True
+output_folder = dbg
+params_path = 
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 1.0
+CG_avg = 10.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 9.0
+custom_rh = 
+custom_rv = 
+custom_ch = 
+custom_cv = 
+RG_avg = 500.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 1
+Columns: 1
+VG: [[0.]]
+CG: [[10.]]
+RG: [[500.]]
+Ch: [[0.60511237 0.0230247 ]]
+Cv: [[0.02222513]
+ [1.27038125]]
+Rh: [[13.99691833  5.35635832]]
+Rv: [[1.19468942]
+ [1.12308482]]
