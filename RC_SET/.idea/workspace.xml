@@ -21,8 +21,22 @@
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array_with_perp.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array_with_perp.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_IV.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Ih.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Ih.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Iv.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Iv.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_QErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_V.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_V.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_full_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_full_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_nErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertIErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vert_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vert_IV.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_1.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +162,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_new.py" />
-      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0.2 --vmax 0.1 --vstep 0.001 --vr -0.1 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --right-electrode &quot;\&quot;[0]\&quot;&quot; --left-electrode &quot;\&quot;[0]\&quot;&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg_IT -o dbg --full --current-map --symmetric-v --calc-it --dbg" />
+      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 0 --vmax 20 --vstep 1 --vr 0 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_5_15_r_std_9_run_1 -o 2d_long_array_bgu_with_perp_point_contact --full --current-map --symmetric-v --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -387,13 +401,13 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="72" y="144" width="1848" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594642283204">
+    <state x="72" y="144" width="1848" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594797414939">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="141" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.741@0.0.1366.741" timestamp="1586961352261" />
     <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
     <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1588333342212" />
-    <state x="72" y="144" width="1848" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1594642283204" />
+    <state x="72" y="144" width="1848" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1594797414939" />
     <state x="655" y="125" width="666" height="854" key="#deposition_models" timestamp="1588087801096">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -405,34 +419,34 @@
     <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
     <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
     <state x="694" y="203" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1593596523461" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1594642284246">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1594797368036">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.bottom/0.0.1366.741@0.0.1366.741" timestamp="1587022833851" />
     <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1594642284246" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1594642284245">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1594797368036" />
+    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1594797368035">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.center/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1594642284245" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1594642284245">
+    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1594797368035" />
+    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1594797368034">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.left/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1594642284245" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1594642284245">
+    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1594797368034" />
+    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1594797368036">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1345" height="222" key="GridCell.Tab.0.right/0.0.1366.741@0.0.1366.741" timestamp="1587022833849" />
     <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
     <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1594642284245" />
+    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1594797368036" />
     <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1594641730996">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>

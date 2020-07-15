@@ -34,7 +34,7 @@ custom_cv="\"\""
 up_electrode="\"[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]\""
 down_electrode="\"[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]\""
 T=0.001
-vmax=3
+vmax=10
 efermi=""
 f="2d_long_array_bgu_with_perp_point_contact"
 if [ ! -d "$f" ]; then
