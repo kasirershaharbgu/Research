@@ -9,7 +9,7 @@ matplotlib.rc('font', **font)
 from matplotlib import colors
 from scipy import integrate
 from ast import literal_eval
-import os
+import os, sys
 import re
 from sklearn.mixture import GaussianMixture
 from mpl_toolkits.mplot3d import Axes3D
@@ -969,15 +969,50 @@ def bistabilityAnalysis(x):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        action = sys.argv[1]
+    else:
+        print("No action was selected")
+        exit(0)
+    if action == "perpendicular":
+        ###### Perpendicular Current analysis ######
+        directory = "2d_long_array_bgu_with_perp_point_contact"
+        names = ["array_5_15_r_std_9_run_" + str(run) for run in range(1,11)]
+        full = True
+        save_re_analysis = True
+        for name in names:
+            s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=True)
+            if save_re_analysis:
+                s.save_re_analysis()
+            s.plot_resistance(out=os.path.join(directory,name))
 
-
-    ###### Perpendicular Current analysis ######
-    directory = "2d_long_array_bgu_with_perp_point_contact"
-    names = ["array_5_15_r_std_9_run_" + str(run) for run in range(1,11)]
-    full=True
-    save_re_analysis=False
-    for name in names:
-        s = SingleResultsProcessor(directory, name, fullOutput=full,vertCurrent=True)
-        if save_re_analysis:
-            s.save_re_analysis()
-        s.plot_resistance(out=os.path.join(directory,name))
+    elif action == "jumps":
+        ###### Jumps analysis ############
+        directory = "bgu_2d_narrow_arrays"
+        names = ["array_5_15_disorder_c_std_0.1_r_std_9_run_10", "array_5_15_disorder_c_std_0_r_std_9_run_10",
+                 "array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder"]
+        full = True
+        save_re_analysis = False
+        for name in names:
+            s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False)
+            if save_re_analysis:
+                s.save_re_analysis()
+            s.plot_jumps_freq("I")
+            # s.plot_results()
+        plt.show()
+    else:
+        ###### General analysis ############
+        directory = "bgu_2d_narrow_arrays"
+        names = ["array_5_15_disorder_c_std_0.1_r_std_9_run_4", "array_5_15_disorder_c_std_1_r_std_9_run_4",
+                 "array_5_15_disorder_c_std_1.5_r_std_9_run_4"]
+        full = True
+        save_re_analysis = False
+        for name in names:
+            s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False)
+            if save_re_analysis:
+                s.save_re_analysis()
+            # s.plot_jumps_freq("I")
+            s.plot_results()
+            s.plot_array_params("R")
+            s.plot_array_params("C")
+        plt.show()

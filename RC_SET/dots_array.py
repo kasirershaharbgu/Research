@@ -28,7 +28,7 @@ EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
-ALLOWED_ERR = 1e-3
+ALLOWED_ERR = 1e-2
 STEADY_STATE_REP = 10
 INV_DOS = 0.01
 
@@ -1081,7 +1081,8 @@ class Simulator:
         Q_var = np.zeros(n_avg.shape)
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
-        err = ALLOWED_ERR*2
+        allowed_err = ALLOWED_ERR / (self.dotArray.getRows())
+        err = allowed_err * 2
         not_decreasing = 0
         # plot = True
         # if plot:
@@ -1096,7 +1097,7 @@ class Simulator:
                 self.executeStep()
             steps += 1
         steps = 0
-        while err > ALLOWED_ERR and not_decreasing < STEADY_STATE_REP:
+        while err > allowed_err and not_decreasing < STEADY_STATE_REP:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
             else:
@@ -1114,7 +1115,7 @@ class Simulator:
             #     Qs.append(curr_Q)
             #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
             #     ts.append(t)
-            if steps > self.min_steps and self.get_err(np.average(n_var),steps,curr_t) < ALLOWED_ERR:
+            if steps > self.min_steps and self.get_err(np.average(n_var),steps,curr_t) < allowed_err:
                 new_err = self.dotArray.get_dist_from_steady(n_avg, Q_avg)
                 if err < new_err:
                     not_decreasing += 1
@@ -1386,27 +1387,12 @@ class GraphSimulator:
 
     def find_probabilities(self, Q):
         self.buildGraph(Q)
-        # steady state probabilities are the belong to null-space of edgesMat.T
-        null = null_space(self.edgesMat.T)
-        sol = []
-        second_round = False
-        sucess = False
-        while not sucess:
-            for i in range(null.shape[1]):
-                candidate = null[:,i]
-                if second_round:
-                    candidate[np.abs(candidate) < EPS] = 0
-                if (candidate >= 0).all() or (candidate <= 0).all():
-                    sol.append(candidate / np.sum(candidate))
-            if len(sol) > 0:
-                self.prob = sol[0]
-                sucess = True
-            elif second_round:
-                self.prob = np.zeros((len(self.states),))
-                self.prob[0] = 1
-                sucess = True
-            else:
-                second_round = True
+        # steady state probabilities are the belong to null-space of edgesMat.T and sum of probabiliteis must be 1
+        a = np.vstack(self.edgesMat, np.ones((1,self.edgesMat.shape[1])))
+        b = np.zeros((a.shape[0],1))
+        b[-1,0] = 1
+        self.prob = np.linalg.lstsq(a,b)[0]
+
         return True
 
     def get_average_state(self, Q):

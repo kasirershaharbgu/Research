@@ -1062,7 +1062,7 @@ class Simulator:
         Q_var = np.zeros(n_avg.shape)
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
-        allowed_err = ALLOWED_ERR/(self.dotArray.getRows()*self.dotArray.getColumns())
+        allowed_err = ALLOWED_ERR/self.dotArray.getRows()
         err = allowed_err * 2
         not_decreasing = 0
         # plot = True
@@ -1078,7 +1078,7 @@ class Simulator:
                 self.executeStep()
             steps += 1
         steps = 0
-        while err > ALLOWED_ERR and not_decreasing < STEADY_STATE_REP:
+        while err > allowed_err and not_decreasing < STEADY_STATE_REP:
             if self.tauLeaping:
                 dt = self.executeLeapingStep()
             else:
