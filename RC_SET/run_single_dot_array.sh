@@ -40,7 +40,7 @@ f="bgu_2d_arrays_big_cg"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
-ustom_ch="\"[[0.333,0.666]]\""
+custom_ch="\"[[0.333,0.666]]\""
 custom_cv="\"[[]]\""
 
 
