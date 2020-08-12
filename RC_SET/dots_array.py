@@ -29,7 +29,7 @@ EPS = 0.0001
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-2
-STEADY_STATE_REP = 10
+STEADY_STATE_REP = 100
 INV_DOS = 0.01
 
 # Tau Leaping Constants
@@ -37,8 +37,8 @@ TAU_EPS = 0.03
 # Lyaponuv Constants
 DQ = 0.1
 Q_SHIFT = 10
-GRAD_REP = 5
-INI_LR = 0.1
+GRAD_REP = 100
+INI_LR = 0.001
 
 
 def flattenToColumn(a):
@@ -61,7 +61,7 @@ def detect_local_minima(arr):
     neighborhood = morphology.generate_binary_structure(len(arr.shape),2)
     return np.where(filters.generic_filter(arr, local_min_func, footprint=neighborhood,
                                            mode='constant', cval=np.min(arr)-1))
-def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-2, max_iter=100, plot_lc=True):
+def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-3, max_iter=1000000, plot_lc=True):
     x=x0.flatten()
     curr_grad = grad(x)
     if plot_lc:
@@ -69,7 +69,7 @@ def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-2, max_iter=100, plot_lc=Tr
     iter=0
     while np.max(np.abs(curr_grad)) > eps and iter < max_iter:
         if plot_lc:
-            print(iter)
+            # print(iter)
             gradvec.append(curr_grad)
         x = x - curr_grad*lr
         curr_grad = grad(x)
@@ -1054,6 +1054,8 @@ class Simulator:
             lr = lr/10
         if flag: #if gradient descent did not converge skipping the point
             self.Q = res
+        else:
+            print("gradient descent didn't convarge")
 
     def plotAverageVoltages(self):
         # Plottting voltage
@@ -1072,8 +1074,6 @@ class Simulator:
         plt.show()
 
     def getToSteadyState(self):
-        curr_t = 0
-        steps = 0
         n_avg = np.zeros(
             (self.dotArray.getRows(), self.dotArray.getColumns()))
         n_var = np.zeros(n_avg.shape)
@@ -1084,59 +1084,28 @@ class Simulator:
         allowed_err = ALLOWED_ERR / (self.dotArray.getRows())
         err = allowed_err * 2
         not_decreasing = 0
-        # plot = True
-        # if plot:
-        #     Qs = []
-        #     Qn = []
-        #     ts = []
-        #     t=0
-        while steps < self.min_steps:
-            if self.tauLeaping:
-                self.executeLeapingStep()
-            else:
-                self.executeStep()
-            steps += 1
-        steps = 0
         while err > allowed_err and not_decreasing < STEADY_STATE_REP:
-            if self.tauLeaping:
-                dt = self.executeLeapingStep()
-            else:
-                dt = self.executeStep()
-            steps += 1
-            n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var,
-                                                  curr_t, dt)
-            Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var,
-                                                  curr_t, dt)
-            curr_n = self.dotArray.getOccupation()
-            curr_Q = self.dotArray.getGroundCharge()
-            curr_t += dt
-            # if plot:
-            #     t+=dt
-            #     Qs.append(curr_Q)
-            #     Qn.append(self.dotArray.get_steady_Q_for_given_n(n_avg).reshape(Qs[0].shape))
-            #     ts.append(t)
-            if steps > self.min_steps and self.get_err(np.average(n_var),steps,curr_t) < allowed_err:
-                new_err = self.dotArray.get_dist_from_steady(n_avg, Q_avg)
-                if err < new_err:
-                    not_decreasing += 1
-                err = new_err
-                n_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
-                n_var = np.zeros(n_avg.shape)
-                Q_avg = np.zeros(n_avg.shape)
-                Q_var = np.zeros(n_avg.shape)
-                curr_t = 0
-                steps = 0
-                # if plot:
-                #     Qs = np.array(Qs)
-                #     Qn = np.array(Qn)
-                #     for i in range(Qs.shape[2]):
-                #         plt.plot(ts, Qs[:, :, i], '.')
-                #         plt.plot(ts, Qn[:, :, i], '*')
-                #     print(err)
-                #     plt.show()
-                #     Qs = []
-                #     Qn = []
-                #     ts = []
+            n_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
+            n_var = np.zeros(n_avg.shape)
+            Q_avg = np.zeros(n_avg.shape)
+            Q_var = np.zeros(n_avg.shape)
+            curr_t = 0
+            while curr_t < self.dotArray.timeStep:
+                if self.tauLeaping:
+                    dt = self.executeLeapingStep()
+                else:
+                    dt = self.executeStep()
+                n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var,
+                                                      curr_t, dt)
+                Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var,
+                                                      curr_t, dt)
+                curr_n = self.dotArray.getOccupation()
+                curr_Q = self.dotArray.getGroundCharge()
+                curr_t += dt
+            new_err = self.dotArray.get_dist_from_steady(n_avg, Q_avg)
+            if err < new_err:
+                not_decreasing += 1
+            err = new_err
         return True
 
     def checkSteadyState(self, rep):
@@ -1346,6 +1315,7 @@ class GraphSimulator:
         states_dict = dict()
         edges = []
         self.dotArray.setGroundCharge(np.copy(Q))
+        self.dotArray.setOccupation(np.copy(self.n0))
         states.append(np.copy(self.n0).flatten())
         tup_n = tuple(self.n0.flatten())
         states_dict[tup_n] = 0
@@ -1380,7 +1350,7 @@ class GraphSimulator:
         for ind, line in enumerate(edges):
             edgesMat[ind,:len(line)] = line
         diagonal = np.sum(edgesMat,axis=1)
-        self.edgesMat = edgesMat - np.diagflat(diagonal)
+        self.edgesMat = edgesMat.T - np.diagflat(diagonal)
         self.states = np.array(states)
         self.rates_diff_left = np.array(right_rates_diff)
         self.rates_diff_right = np.array(left_rates_diff)
@@ -1388,16 +1358,16 @@ class GraphSimulator:
     def find_probabilities(self, Q):
         self.buildGraph(Q)
         # steady state probabilities are the belong to null-space of edgesMat.T and sum of probabiliteis must be 1
-        a = np.vstack(self.edgesMat, np.ones((1,self.edgesMat.shape[1])))
+        a = np.vstack((self.edgesMat, np.ones((1,self.edgesMat.shape[1]))))
         b = np.zeros((a.shape[0],1))
         b[-1,0] = 1
-        self.prob = np.linalg.lstsq(a,b)[0]
+        self.prob = np.linalg.lstsq(a,b, rcond=None)[0]
 
         return True
 
     def get_average_state(self, Q):
         self.find_probabilities(Q)
-        average_state = np.sum(np.multiply(self.states.T, self.prob),axis=1)
+        average_state = np.sum(np.multiply(self.states, self.prob),axis=0)
         return self.reshape_to_array(average_state)
 
     def get_average_voltages(self, Q):
@@ -1473,37 +1443,41 @@ class GraphSimulator:
         mlab.show()
 
     def find_next_QG_using_lyaponuv(self, basePath):
-        # q_shift = Q_SHIFT
-        # peaks = (np.array([]),)
-        # while not peaks[0].size:
-        #     self.set_lyaponuv(self.QG - q_shift, self.QG + q_shift)
-        #     q_shift *= 2
-        #     peaks = detect_local_minima(self.lyaponuv)
-        # Qind = np.argmin(np.sum((self.Q_grid[peaks] - self.QG)**2,axis=1))
-        # self.QG = self.Q_grid[peaks][Qind]
+        q_shift = Q_SHIFT
+        peaks = (np.array([]),)
+        while not peaks[0].size:
+            self.set_lyaponuv(self.QG - q_shift, self.QG + q_shift)
+            q_shift *= 2
+            peaks = detect_local_minima(self.lyaponuv)
+        Qind = np.argmin(np.sum((self.Q_grid[peaks] - self.QG)**2,axis=1))
+        self.QG = self.Q_grid[peaks][Qind]
         # dbg
         self.set_lyaponuv(self.QG - Q_SHIFT, self.QG + Q_SHIFT)
         fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
-        x = np.searchsorted(self.Q_grid[:,0,0], self.QG[0,0])
-        y = np.searchsorted(self.Q_grid[0,:,1], self.QG[0,1])
-        ax.scatter3D(self.QG[0,0], self.QG[0,1], self.lyaponuv[x,y], marker='o',color='red')
-        str_ind = "0"*(4-len(str(self.counter))) + str(self.counter)
-        plt.savefig(basePath + "Lyaponuv_" + str_ind)
-        plt.close(fig)
-        self.counter += 1
+        plt.plot(np.arange(self.QG - Q_SHIFT, self.QG + Q_SHIFT,DQ),self.lyaponuv)
+        plt.show()
+        # ax = fig.gca(projection='3d')
+        # ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
+        # x = np.searchsorted(self.Q_grid[:,0,0], self.QG[0,0])
+        # y = np.searchsorted(self.Q_grid[0,:,1], self.QG[0,1])
+        # ax.scatter3D(self.QG[0,0], self.QG[0,1], self.lyaponuv[x,y], marker='o',color='red')
+        # str_ind = "0"*(4-len(str(self.counter))) + str(self.counter)
+        # plt.savefig(basePath + "Lyaponuv_" + str_ind)
+        # plt.close(fig)
+        # self.counter += 1
 
     def find_next_QG_using_gradient_descent(self):
         flag = False
         rep = 0
         lr = INI_LR
         while (not flag) and rep < GRAD_REP:
-            res, flag = simple_gadient_descent(self.calc_lyaponuv_grad, self.QG, lr=lr, plot_lc=False)
+            res, flag = simple_gadient_descent(self.calc_lyaponuv_grad, self.QG, lr=lr, plot_lc=False, max_iter=100000,eps=1e-5)
             rep += 1
             lr = lr/10
         if flag: #if gradient descent did not converge skipping the point
             self.QG = self.reshape_to_array(res)
+        else:
+            print("gradient descent didn't convarge")
 
     def calcCurrent(self, fullOutput=False, basePath=""):
         self.find_next_QG_using_gradient_descent()
@@ -1514,8 +1488,8 @@ class GraphSimulator:
         #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
         self.n0 = np.floor(n_avg)
-        left_current = np.sum(self.prob*self.rates_diff_left.T)
-        right_current = np.sum(self.prob*self.rates_diff_right.T)
+        left_current = np.sum(self.prob*self.rates_diff_left)
+        right_current = np.sum(self.prob*self.rates_diff_right)
         if fullOutput:
             return right_current, left_current, n_avg, self.reshape_to_array(self.QG)
         return right_current, left_current
@@ -1561,13 +1535,15 @@ class GraphSimulator:
         if vSym:
             Vstep /= 2
             Vmax /= 2
-            VR_vec = np.arange(self.VR, -Vmax + self.VR, -Vstep)
+            VR_vec = np.arange(self.VR - (self.VL / 2), self.VR - Vmax, -Vstep)
             VR_vec = np.hstack((VR_vec, np.flip(VR_vec)))
-        VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
-        VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+            VL_vec = np.arange(self.VL / 2 + self.VR, Vmax + self.VR, Vstep)
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+        else:
+            VL_vec = np.arange(self.VL, Vmax + self.VR, Vstep)
+            VL_vec = np.hstack((VL_vec, np.flip(VL_vec)))
+            VR_vec = self.VR * np.ones(VL_vec.shape)
         VL_res = np.copy(VL_vec)
-        if not vSym:
-            VR_vec = self.VR*np.ones(VL_vec.shape)
         VR_res = np.copy(VR_vec)
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, basePath=basePath)
@@ -1580,9 +1556,9 @@ class GraphSimulator:
             if fullOutput:
                 ns = list(resumeParams[3])
                 Qs = list(resumeParams[4])
+
         for VL,VR in zip(VL_vec,VR_vec):
-            if self.index == 0:
-                print(VL-VR,end=',')
+            print(VL-VR,end=',')
             self.dotArray.changeVext(VL, VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
@@ -1659,7 +1635,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       constQ=False, frame_norm=False, double_time=False, double_loop=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
-        fastRelaxation = True
+        dbg = True
         repeats = 1
     if plotCurrentMaps or plotBinaryCurrentMaps:
         print("Plotting Current Maps")

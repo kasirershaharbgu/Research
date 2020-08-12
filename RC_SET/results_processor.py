@@ -16,6 +16,13 @@ from mpl_toolkits.mplot3d import Axes3D
 
 EPS = 1e-6
 FIGSIZE=(30,16)
+SCORE_NAMES=['hysteresisArea', 'jumpSeparationUp', 'jumpSeparationDown', 'jumpSeparationUpDown', 'jumpHeightUp',
+             'jumpHeightDown', 'thresholdVoltageUp', 'thresholdVoltageDown', 'jumpNumUp', 'jumpNumDown']
+SCORE_VAL = 'score'
+SCORE_HIGH_ERR = 'high_err'
+SCORE_LOW_ERROR = 'low_err'
+
+
 
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
@@ -25,7 +32,7 @@ def flattenToRow(a):
 
 class SingleResultsProcessor:
     """ Used for proccessing result from one dot array simulation"""
-    def __init__(self, directory, file_name, fullOutput=False, vertCurrent=False):
+    def __init__(self, directory, file_name, fullOutput=False, vertCurrent=False, reAnalyze=True, graph=False):
         self.basePath = os.path.join(directory, file_name)
         self.fileName = file_name
         self.directory = directory
@@ -38,13 +45,16 @@ class SingleResultsProcessor:
         self.Q = None
         self.nErr = None
         self.QErr = None
+        self.jumpScores = None
         self.mid_idx = 0
         self.runningParams = dict()
         self.arrayParams = dict()
-        self.load_results()
-        self.load_params()
-        self.rows = self.runningParams["M"]
-        self.columns = self.runningParams["N"]
+        self.graph = graph
+        self.load_results(reAnalyze)
+        if not graph:
+            self.load_params()
+            self.rows = self.runningParams["M"]
+            self.columns = self.runningParams["N"]
 
     def reAnalyzeI(self):
         full_I = self.full_I.T
@@ -93,15 +103,21 @@ class SingleResultsProcessor:
                 self.IErr[i] = np.std(bin)
             if i == self.mid_idx:
                 self.alternative_mid_idx = len(self.alternativeI)
+        self.alternativeI = np.array(self.alternativeI)
+        self.alternativeV = np.array(self.alternativeV)
+        self.alternativeIErr = np.array(self.alternativeIErr)
         return True
 
 
-    def load_results(self):
+    def load_results(self, reAnalyze=True):
         I_file = os.path.join(self.basePath + '_I.npy')
         V_file = os.path.join(self.basePath + '_V.npy')
         IErr_file = os.path.join(self.basePath + '_IErr.npy')
         self.I = np.load(I_file)
-        self.IErr = np.load(IErr_file)
+        if self.graph:
+            self.IErr = np.zeros(self.I.shape)
+        else:
+            self.IErr = np.load(IErr_file)
         self.V = np.load(V_file)
         self.mid_idx = self.V.size // 2
         if self.full:
@@ -112,10 +128,15 @@ class SingleResultsProcessor:
             full_I_file = os.path.join(self.basePath + '_full_I.npy')
             self.n = np.load(n_file)
             self.Q = np.load(Q_file)
-            self.nErr = np.load(nErr_file)
-            self.QErr = np.load(QErr_file)
-            self.full_I = np.load(full_I_file)
-            self.reAnalyzeI()
+            if self.graph:
+                self.nErr = np.zeros(self.n.shape)
+                self.QErr = np.zeros(self.Q.shape)
+            else:
+                self.nErr = np.load(nErr_file)
+                self.QErr = np.load(QErr_file)
+                self.full_I = np.load(full_I_file)
+            if reAnalyze:
+                self.reAnalyzeI()
         if self.vert:
             vertI_file = os.path.join(self.basePath + '_vertI.npy')
             vertIErr_file = os.path.join(self.basePath + '_vertIErr.npy')
@@ -198,6 +219,8 @@ class SingleResultsProcessor:
         return self.n + (flattenToColumn(VL).dot(left_part_n_prime) + flattenToColumn(VR).dot(right_part_n_prime)).reshape(self.n.shape)
 
     def calc_hysteresis_score(self):
+        if self.jumpScores is None:
+            self.calc_jumps_scores()
         IplusErr = self.I + self.IErr
         IminusErr = self.I - self.IErr
         score = -integrate.trapz(self.I, self.V)
@@ -205,14 +228,28 @@ class SingleResultsProcessor:
                 integrate.trapz(IminusErr[self.mid_idx:], self.V[self.mid_idx:])
         high_err = -integrate.trapz(IminusErr[:self.mid_idx], self.V[:self.mid_idx]) - \
                   integrate.trapz(IplusErr[self.mid_idx:], self.V[self.mid_idx:])
-        return score, high_err-score, score-low_err
+        normalization = self.jumpScores["jumpNumUp"][0]
+        if normalization ==0:
+            normalization = 1
+        return score/normalization, (high_err-score)/normalization, (score-low_err)/normalization
 
-    def calc_blockade(self):
+    def calc_threshold_voltage_up(self):
         I = self.I[:self.mid_idx]
         IErr = self.IErr[:self.mid_idx]
         matchingV = self.V[:self.mid_idx]
-        score = np.min(np.abs(matchingV[I > 2*IErr]))
-        return score, score, score
+        small = np.min(np.abs(matchingV[I > IErr]))
+        big = np.min(np.abs(matchingV[I > 2*IErr]))
+        avg = (small + big)/2
+        return avg, big - avg, avg-small
+
+    def calc_threshold_voltage_down(self):
+        I = self.I[self.mid_idx:]
+        IErr = self.IErr[self.mid_idx:]
+        matchingV = self.V[self.mid_idx:]
+        small = np.min(np.abs(matchingV[I > IErr]))
+        big = np.min(np.abs(matchingV[I > 2*IErr]))
+        avg = (small + big)/2
+        return avg, big - avg, avg-small
 
     def calc_jumps_score(self, window_size, up=True):
         score = 0
@@ -358,8 +395,8 @@ class SingleResultsProcessor:
     def calc_jumps_freq(self, x, xerr):
         diff1 = np.diff(x[:self.mid_idx])
         diff2 = np.diff(x[self.mid_idx:])
-        eps1 = np.clip(xerr[:self.mid_idx-1], a_min=0.001, a_max=None)
-        eps2 = np.clip(xerr[self.mid_idx:-1], a_min=0.001, a_max=None)
+        eps1 = np.clip(xerr[:self.mid_idx-1], a_min=0.1, a_max=None)
+        eps2 = np.clip(xerr[self.mid_idx:-1], a_min=0.1, a_max=None)
 
         diff1[np.abs(diff1) < eps1] = 0
         diff2[np.abs(diff2) < eps2] = 0
@@ -374,7 +411,7 @@ class SingleResultsProcessor:
         lastV = 0
         last_jump = 0
         for v,i in zip(Vjumps1, xjumps1):
-            if v - lastV > 0.03:
+            if v - lastV > 0.003:
                 new_Vjumps1.append(v)
                 new_diff1.append(last_jump + i)
                 last_jump = 0
@@ -388,7 +425,7 @@ class SingleResultsProcessor:
         lastV = np.max(self.V)
         last_jump = 0
         for v, i in zip(Vjumps2, xjumps2):
-            if lastV - v > 0.03:
+            if lastV - v > 0.003:
                 new_Vjumps2.append(v)
                 new_diff2.append(last_jump + i)
                 last_jump = 0
@@ -400,6 +437,38 @@ class SingleResultsProcessor:
         diffV1 = np.diff(Vjumps1)
         diffV2 = np.diff(Vjumps2)
         return diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2
+
+    def calc_jumps_scores(self):
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(self.I, self.IErr)
+        self.jumpScores = dict()
+        self.jumpScores['jumpSeparationUp'] = (np.average(diffV1), np.std(diffV1), np.std(diffV1)) if diffV1.size > 0 else (0,0,0)
+        self.jumpScores['jumpSeparationDown'] = (-np.average(diffV2), -np.std(diffV2), -np.std(diffV2)) if diffV2.size > 0 else (0,0,0)
+        self.jumpScores['jumpHeightUp'] = (np.average(diff1), np.std(diff1), np.std(diff1)) if diff1.size > 0 else (0,0,0)
+        self.jumpScores['jumpHeightDown'] = (-np.average(diff2), -np.std(diff2), -np.std(diff2)) if diff2.size > 0 else (0,0,0)
+        self.jumpScores['jumpNumUp'] = (Vjumps1.size, 0, 0)
+        self.jumpScores['jumpNumDown'] = (Vjumps2.size, 0, 0)
+        # upDownDiff = []
+        # for up in reversed(Vjumps1):
+        #     downNeighbors = Vjumps2[Vjumps2 < up]
+        #     if downNeighbors.size > 0:
+        #         down = np.max(downNeighbors)
+        #         upDownDiff.append(up-down)
+        #     else:
+        #         break
+        # if not upDownDiff:
+        #     upDownDiff.append(0)
+        # self.jumpScores['jumpSeparationUpDown'] = (np.max(upDownDiff), np.std(upDownDiff), np.std(upDownDiff))
+        if len(Vjumps2) > 0 and len(Vjumps1)> 0:
+            down = Vjumps2[-1]
+            up_jumps_larger_than_down = Vjumps1[Vjumps1>down]
+            if len(up_jumps_larger_than_down) > 0:
+                up = np.min(up_jumps_larger_than_down)
+            else:
+                down = up
+            self.jumpScores['jumpSeparationUpDown'] = (up-down, 0, 0)
+        else:
+            self.jumpScores['jumpSeparationUpDown'] = (0, 0, 0)
+
 
 
     def clac_fourier(self, eps=0.001):
@@ -489,6 +558,19 @@ class SingleResultsProcessor:
             score += (enter/exit) / (C[i] + C[i + 1]+ Cup[i] + Cdown[i])**2
         return score
 
+    def calc_score(self, scoreName):
+        if 'jump' in scoreName:
+            if self.jumpScores is None:
+                self.calc_jumps_scores()
+            return self.jumpScores[scoreName]
+        elif scoreName == "hysteresisArea":
+            return self.calc_hysteresis_score()
+        elif scoreName == 'thresholdVoltageUp':
+            return self.calc_threshold_voltage_up()
+        elif scoreName == 'thresholdVoltageDown':
+            return self.calc_threshold_voltage_down()
+        else:
+            raise NotImplementedError
 
     def plot_array_params(self, parameter):
         M = self.runningParams["M"]*2 - 1
@@ -618,23 +700,35 @@ class SingleResultsProcessor:
         #     plt.xlabel("V")
         #     plt.xlim(xmin, np.max(V))
 
+    def plot_IV(self, label, err=True, alternative=False, errorevery=10,
+                Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current'):
+        if err:
+            plt.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm, fmt='r.',
+                         yerr=self.IErr[:self.mid_idx]/Inorm,
+                         errorevery=errorevery, label=label + " up")
+            plt.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm, fmt='b.',
+                         yerr=self.IErr[self.mid_idx:]/Inorm,
+                         errorevery=errorevery, label=label + " down")
+        else:
+            plt.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm, 'm', label=label + " up")
+            plt.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm, 'g', label=label + " down")
+        if alternative:
+            plt.errorbar(self.alternativeV[:self.alternative_mid_idx]/Vnorm,
+                         self.alternativeI[:self.alternative_mid_idx]/Inorm,
+                         fmt='m.', yerr=self.alternativeIErr[:self.alternative_mid_idx]/Inorm,
+                         errorevery=errorevery, label=label + " alterntive up")
+            plt.errorbar(self.alternativeV[self.alternative_mid_idx:]/Vnorm,
+                         self.alternativeI[self.alternative_mid_idx:]/Inorm,
+                         fmt='c.', yerr=self.alternativeIErr[self.alternative_mid_idx:]/Inorm,
+                         errorevery=errorevery, label=label + " alterntive down")
 
+        plt.xlabel(Vlabel)
+        plt.ylabel(Ilabel)
+        plt.legend()
 
     def plot_results(self):
         plt.figure()
-        plt.errorbar(self.V[:self.mid_idx], self.I[:self.mid_idx], fmt='r.', yerr=self.IErr[:self.mid_idx],
-                     errorevery=10, label=self.directory + "_up")
-        plt.errorbar(self.V[self.mid_idx:], self.I[self.mid_idx:], fmt='b.', yerr=self.IErr[self.mid_idx:],
-                     errorevery=10, label=self.directory + "_down")
-        plt.errorbar(self.alternativeV[:self.alternative_mid_idx], self.alternativeI[:self.alternative_mid_idx],
-                     fmt='m.', yerr=self.alternativeIErr[:self.alternative_mid_idx],
-                     errorevery=10, label=self.directory + "_alterntive")
-        plt.errorbar(self.alternativeV[self.alternative_mid_idx:], self.alternativeI[self.alternative_mid_idx:],
-                     fmt='c.', yerr=self.alternativeIErr[self.alternative_mid_idx:],
-                     errorevery=10, label=self.directory + "_alterntive")
-        plt.xlabel('Voltage')
-        plt.ylabel('Current')
-        plt.legend()
+        self.plot_IV(self.directory, err=True, alternative=True)
         if self.full:
             n = self.getNprime(self.V, np.zeros(self.V.shape)).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
             Q = self.Q.reshape((self.Q.shape[0], self.Q.shape[1] * self.Q.shape[2]))
@@ -684,7 +778,7 @@ class SingleResultsProcessor:
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
     def __init__(self, directories_list, files_list, relevant_running_params=None, relevant_array_params=None, out_directory = None,
-                 groups=None, group_names=None, resistance_line=0, full=False):
+                 groups=None, group_names=None, resistance_line=0, full=False, graph=False):
         """
         Initializing analyzer
         :param directories_list: list of directories for result files
@@ -699,17 +793,9 @@ class MultiResultAnalyzer:
                 os.mkdir(out_directory)
         self.directories = directories_list
         self.fileNames = files_list
-        self.hysteresisScores = []
-        self.hysteresisScoresHighErr = []
-        self.hysteresisScoresLowErr = []
-        self.jumpScores = []
-        self.jumpScoresHighErr = []
-        self.jumpScoresLowErr = []
-        self.blockadeScores = []
-        self.blockadeScoresHighErr = []
-        self.blockadeScoresLowErr = []
-        self.jumpsNum = []
-        self.resistanceScore = []
+        self.scores = dict()
+        for score in SCORE_NAMES:
+            self.scores[score] = {SCORE_VAL:[],SCORE_HIGH_ERR:[],SCORE_LOW_ERROR:[]}
         if relevant_array_params:
             self.arrayParams = {p: [] for p in relevant_array_params}
         else:
@@ -721,38 +807,31 @@ class MultiResultAnalyzer:
         self.disorders = {p: [] for p in ["C","R","CG","VG"]}
         self.groups = np.array(groups)
         self.groupNames = group_names
-        self.load_data(resistance_line, full=full)
+        load_params = (relevant_array_params is not None) or (relevant_running_params is not None)
+        self.load_data(resistance_line, full=full, graph=graph, load_params=load_params)
 
-    def load_data(self, line=0, full=False):
+    def load_data(self, line=0, full=False, graph=False, load_params=True):
         """
         Loading results and calculating scores
         """
         for directory, fileName in zip(self.directories, self.fileNames):
-            processor = SingleResultsProcessor(directory, fileName, fullOutput=full)
+            processor = SingleResultsProcessor(directory, fileName, fullOutput=full, graph=graph)
             processor.load_results()
-            hyst, hystHigh, hystLow = processor.calc_hysteresis_score()
-            block, blockHigh, blockLow = processor.calc_blockade()
-            jump, jumpHigh, jumpLow = processor.calc_jumps_score(0.1)
-            num_jumps = processor.calc_number_of_jumps()
-            resistance_score = processor.calc_resistance_hysteresis_score(line)
-            self.resistanceScore.append(resistance_score)
-            self.jumpsNum.append(num_jumps)
-            self.hysteresisScores.append(hyst)
-            self.hysteresisScoresHighErr.append(hystHigh)
-            self.hysteresisScoresLowErr.append(hystLow)
-            self.blockadeScores.append(block)
-            self.blockadeScoresHighErr.append(blockHigh)
-            self.blockadeScoresLowErr.append(blockLow)
-            self.jumpScores.append(jump)
-            self.jumpScoresHighErr.append(jumpHigh)
-            self.jumpScoresLowErr.append(jumpLow)
-            processor.load_params()
-            for p in self.arrayParams:
-                self.arrayParams[p].append(processor.get_array_param(p))
-            for p in self.runningParams:
-                self.runningParams[p].append(processor.get_running_param(p))
-            for p in self.disorders:
-                self.disorders[p].append(self.calc_disorder(p, processor))
+            if load_params:
+                processor.load_params()
+            for score in self.scores:
+                val, high, low = processor.calc_score(score)
+                self.scores[score][SCORE_VAL].append(val)
+                self.scores[score][SCORE_HIGH_ERR].append(high)
+                self.scores[score][SCORE_LOW_ERROR].append(low)
+
+            if load_params:
+                for p in self.arrayParams:
+                    self.arrayParams[p].append(processor.get_array_param(p))
+                for p in self.runningParams:
+                    self.runningParams[p].append(processor.get_running_param(p))
+                for p in self.disorders:
+                    self.disorders[p].append(self.calc_disorder(p, processor))
 
     def calc_disorder(self, name, processor):
         if name in ["C","R"]:
@@ -763,29 +842,12 @@ class MultiResultAnalyzer:
         return std
 
     def get_relevant_scores(self, scoreName):
-        if scoreName == 'hysteresis':
-            scores = np.array(self.hysteresisScores)
-            scoresHighErr = np.array(self.hysteresisScoresHighErr)
-            scoresLowErr = np.array(self.hysteresisScoresLowErr)
-        elif scoreName == 'jump':
-            scores = np.array(self.jumpScores)
-            scoresHighErr = np.array(self.jumpScoresHighErr)
-            scoresLowErr = np.array(self.jumpScoresLowErr)
-        elif scoreName == 'blockade':
-            scores = np.array(self.blockadeScores)
-            scoresHighErr = np.array(self.blockadeScoresHighErr)
-            scoresLowErr = np.array(self.blockadeScoresLowErr)
-        elif scoreName == 'jumpsNum':
-            scores = np.array(self.jumpsNum)
-            scoresHighErr = scores
-            scoresLowErr = scores
-        elif scoreName == 'resistance':
-            scores = np.array(self.resistanceScore)
-            scoresHighErr = scores
-            scoresLowErr = scores
+        if scoreName in self.scores:
+            score = self.scores[scoreName]
+            return score[SCORE_VAL], score[SCORE_HIGH_ERR], score[SCORE_LOW_ERROR]
         else:
             raise NotImplementedError
-        return scores, scoresHighErr, scoresLowErr
+
 
 
     def plot_hystogram(self, scoreName, runinng_parameter_vals, array_parameter_vals, title):
@@ -795,8 +857,8 @@ class MultiResultAnalyzer:
         :param (running/array)_parameter_vals: dictionary with {parameter_name:list_of_parameter_values}.
         For non-given parameters all values will be considered as valid
         """
-        scores, _, _ = self.get_relevant_scores(scoreName)
-        indices = set(range(scores.size))
+        score= self.get_relevant_scores(scoreName)[SCORE_VAL]
+        indices = set(range(score.size))
         for p in runinng_parameter_vals:
             good_inds = set()
             good_vals = runinng_parameter_vals[p]
@@ -812,7 +874,7 @@ class MultiResultAnalyzer:
                     good_inds.add(ind)
             indices = indices.intersection(good_inds)
         indices = list(indices)
-        scores = scores[indices]
+        scores = score[indices]
         bins = max(len(scores)//10, 5)
         fig = plt.figure()
         plt.hist(scores, bins=bins)
@@ -824,8 +886,8 @@ class MultiResultAnalyzer:
         np.save(os.path.join(self.outDir,title), np.array(scores))
 
     def plot_score_by_groups(self, score1_name, score2_name):
-        score1, _, _ = self.get_relevant_scores(score1_name)
-        score2, _, _ = self.get_relevant_scores(score2_name)
+        score1 = self.get_relevant_scores(score1_name)[SCORE_VAL]
+        score2 = self.get_relevant_scores(score2_name)[SCORE_VAL]
         plt.figure()
         for i in range(np.max(self.groups)+1):
             plt.scatter(score1[self.groups == i],score2[self.groups == i], label=self.groupNames[i])
@@ -837,20 +899,32 @@ class MultiResultAnalyzer:
 
 
     def get_y_label(self, score_name):
-        if score_name == "hysteresis":
-            return "loop area"
-        elif score_name == "jump":
+        if score_name == "hysteresisArea":
+            return "hysteresis loop area"
+        elif score_name == "jump ":
             return "voltage diff for biggest jump"
         elif score_name == "blockade":
             return "threshold voltage"
 
 
-    def plot_score(self, score_name):
-        plt.figure(figsize=(16,18))
+    def plot_score(self, score_name, xs=None, xlabel=None, ylabel=None, label="", shift=0, fmt='.'):
         y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
-        plt.plot(np.arange(y.size), y)
-        plt.ylabel(score_name + " score")
-        plt.xlabel("example num.")
+        yerror = np.zeros((2,len(y)))
+        yerror[0,:] = y_low_err
+        yerror[1,:] = y_high_err
+        x = xs if xs is not None else np.arange(len(y))
+        y = np.array(y)
+        x = np.array(x)
+        yerror = yerror[:,y>0]
+        x = x[y>0]
+        y = y[y > 0]
+        if ylabel is None:
+            ylabel = score_name
+        if xlabel is None:
+            xlabel = "example num."
+        plt.errorbar(x, np.array(y) + shift, yerr=yerror, fmt=fmt, label=label)
+        plt.ylabel(ylabel)
+        plt.xlabel(xlabel)
 
 
     def plot_score_by_parameter(self, score_name, parameter_names, title, runningParam=True, plot=True):
@@ -966,14 +1040,51 @@ def bistabilityAnalysis(x):
     return bins
 
 
+def approx_jumps_separation(R1, R2, C1, C2, CG):
+    if R2>R1:
+        return 1 / ((CG / 2) * ((R2 - R1) / (R2 + R1)) + C2)
+    else:
+        return 1 / ((CG / 2) * ((R1 - R2) / (R2 + R1)) + C1)
 
+
+def approx_threshold_voltage(R1, R2, C1, C2, CG, VG, nini):
+    q1 = -CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) - nini
+    q2 = CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) + nini
+    Vt1 = q1 / (C1 + CG / 2)
+    Vt2 = q2 / (C2 + CG / 2)
+    if Vt2 < Vt1:
+        if R1 > R2:
+            return Vt2
+        else:
+            nini = 1
+            q1 = -CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) - nini
+            q2 = CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) + nini
+            Vt1 = q1 / (C1 + CG / 2)
+            Vt2 = q2 / (C2 + CG / 2)
+            return min(Vt1, Vt2)
+    else:
+        if R2 > R1:
+            return Vt1
+        else:
+            nini = -1
+            q1 = -CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) - nini
+            q2 = CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) + nini
+            Vt1 = q1 / (C1 + CG / 2)
+            Vt2 = q2 / (C2 + CG / 2)
+            return min(Vt1, Vt2)
+
+def approx_jumps_height(R1, R2, C1, C2, CG):
+    return 1 / ((C1 + C2 + CG) * (R1 + R2))
+
+def approx_jump_up_down(R1, R2, C1, C2, CG):
+    factor = (0.5*CG)/(C1+C2)
+    return factor *approx_jumps_separation(R1, R2, C1, C2, CG)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         action = sys.argv[1]
     else:
-        print("No action was selected")
-        exit(0)
+        action="default"
     if action == "perpendicular":
         ###### Perpendicular Current analysis ######
         directory = "2d_long_array_bgu_with_perp_point_contact"
@@ -988,9 +1099,176 @@ if __name__ == "__main__":
 
     elif action == "jumps":
         ###### Jumps analysis ############
-        directory = "bgu_2d_narrow_arrays"
-        names = ["array_5_15_disorder_c_std_0.1_r_std_9_run_10", "array_5_15_disorder_c_std_0_r_std_9_run_10",
-                 "array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder"]
+        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10] for Cratio in [1,2]]
+        full = True
+        save_re_analysis = False
+        for name in names:
+            s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, graph=True, reAnalyze=False)
+            if save_re_analysis:
+                s.save_re_analysis()
+            s.plot_jumps_freq("I")
+            # s.plot_results()
+            plt.show()
+
+    elif action == "compareIV": # compares methods
+        directory = "graph_results"
+        resultNames= ["big_CG_big_R2","big_CG_small_R2","small_CG_big_R2","small_CG_small_R2"]
+        namesLyapunov = ["graph_1_1_big_CG_big_R2","graph_1_1_big_CG_small_R2","graph_1_1_small_CG_big_R2","graph_1_1_small_CG_small_R2"]
+        namesGillespie = ["gillespie_1_1_big_CG_big_R2","gillespie_1_1_big_CG_small_R2","gillespie_1_1_small_CG_big_R2","gillespie_1_1_small_CG_small_R2"]
+        for nameLyapunov, nameGillespie, resultName in zip(namesLyapunov, namesGillespie, resultNames):
+            pLyapunov = SingleResultsProcessor(directory, nameLyapunov, fullOutput=False, vertCurrent=False,
+                                               reAnalyze=False, graph=True)
+            pGillespie = SingleResultsProcessor(directory, nameGillespie, fullOutput=False, vertCurrent=False,
+                                                reAnalyze=True)
+            fig = plt.figure(figsize=FIGSIZE)
+            pLyapunov.plot_IV("Graph method", err=False, alternative=False,
+                              Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e")
+            pGillespie.plot_IV("Dynamical method", err=True, alternative=False, errorevery=1,
+                               Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e")
+            plt.savefig(os.path.join(directory, resultName+".png"))
+            plt.close(fig)
+
+    elif action == "jumps_separation_compare":
+        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        plt.figure(figsize=FIGSIZE)
+        for Cratio in [0.1,0.2,0.3,0.4,0.5,0.6, 0.7, 0.8, 0.9, 1]:
+            Rratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10]
+            names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
+            full = True
+            save_re_analysis = False
+            directories_list = [directory]*len(names)
+            m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
+            labelprefix = "C2/C1 = " + str(Cratio)
+            shift = 10*Cratio
+            Rratios = np.array(Rratios)
+            CG=2
+            C1 = 1/(Cratio + 1)
+            C2 = Cratio/(Cratio + 1)
+            approx = []
+            for Rratio in Rratios:
+                R1 = 1/(Rratio + 1)
+                R2 = Rratio/(Rratio + 1)
+                approx.append(approx_jumps_separation(R1, R2, C1, C2, CG))
+            m.plot_score("jumpSeparationUp", xs=Rratios, xlabel="R2/R1", ylabel="Average voltage difference [e/(C1+C2)]", fmt='r.',
+                          shift=shift)
+            m.plot_score("jumpSeparationDown", xs=Rratios, xlabel="R2/R1", ylabel="Average voltage difference [e/(C1+C2)]", fmt='b.',
+                          shift=shift)
+            plt.plot(Rratios, np.array(approx) + shift, 'orange')
+        plt.show()
+
+    elif action == "jumps_up_down_compare":
+        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        plt.figure(figsize=FIGSIZE)
+        for Rratio in [0.1,10]:
+            Cratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10]
+            names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
+            full = True
+            save_re_analysis = False
+            directories_list = [directory]*len(names)
+            m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
+            labelprefix = "R2 < R1" if Rratio == 0.1 else "R2 > R1"
+            shift = 0 if Rratio == 0.1 else 1
+            Cratios = np.array(Cratios)
+            CG=2
+            VG=0.5
+            approx = []
+            for Cratio in Cratios:
+                C1 = 1/(Cratio + 1)
+                C2 = Cratio/(Cratio + 1)
+                R1 = 1/(Rratio + 1)
+                R2 = Rratio/(Rratio + 1)
+                approx.append(approx_jump_up_down(R1, R2, C1, C2, CG))
+
+            m.plot_score("jumpSeparationUpDown", xs=Cratios, xlabel="C2/C1", ylabel="Average voltage difference [e/(C1+C2)]",
+                         label=labelprefix + " numerical results", shift=shift, fmt='m.')
+            plt.plot(Cratios, np.array(approx)+shift, "orange", label=labelprefix + " analytic approximation")
+        plt.legend()
+        plt.show()
+
+    elif action == "jumps_height_compare":
+        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        plt.figure(figsize=FIGSIZE)
+        for Rratio in [2,3,4,5,6,7,8,9,10]:
+            Cratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2]
+            names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
+            full = True
+            save_re_analysis = False
+            directories_list = [directory] * len(names)
+            m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
+            labelprefix = "R2 < R1" if Rratio == 0.1 else "R2 > R1"
+            shift = Rratio
+            Cratios = np.array(Cratios)
+            CG = 2
+            C1 = 1 / (Cratios + 1)
+            C2 = Cratios / (Cratios + 1)
+            R1 = 1 / (Rratio + 1)
+            R2 = Rratio / (Rratio + 1)
+            approx = 1/((C1+C2+CG)*(R1+R2)) + shift
+            m.plot_score("jumpHeightUp", xs=Cratios, xlabel="C2/C1",
+                         ylabel="Average current difference [e/(C1+C2)(R1+R2)]",
+                         label=labelprefix + " increasing voltage numerical results", shift=shift, fmt=".r")
+            m.plot_score("jumpHeightDown", xs=Cratios, xlabel="C2/C1",
+                         ylabel="Average current difference [e/(C1+C2)(R1+R2)]",
+                         label=labelprefix + " decreasing voltage numerical results", shift=shift, fmt=".b")
+            plt.plot(Cratios, approx, "orange",label=labelprefix + " analytic approximation")
+        plt.show()
+    elif action == "hysteresis_area_compare":
+        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        plt.figure(figsize=FIGSIZE)
+        for Rratio in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+            Cratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+            names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
+            full = True
+            save_re_analysis = False
+            directories_list = [directory] * len(names)
+            m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
+            shift = Rratio
+            CG = 2
+            approx = []
+            for Cratio in Cratios:
+                C1 = 1 / (Cratio + 1)
+                C2 = Cratio / (Cratio + 1)
+                R1 = 1 / (Rratio + 1)
+                R2 = Rratio / (Rratio + 1)
+                approx.append(approx_jumps_height(R1, R2, C1, C2, CG)*approx_jump_up_down(R1, R2, C1, C2, CG))
+            m.plot_score("hysteresisArea", xs=Cratios, xlabel="C2/C1",
+                         ylabel="Average loop area [e^2/(C1+C2)^2(R1+R2)]", shift=shift, fmt='m.')
+            plt.plot(Cratios, np.array(approx) + shift, 'orange')
+        plt.show()
+    elif action == "threshold_voltage_compare":
+        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        plt.figure(figsize=FIGSIZE)
+        for Cratio in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]:
+            Rratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
+            full = True
+            save_re_analysis = False
+            directories_list = [directory] * len(names)
+            m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
+            labelprefix = "C2 = C1" if Cratio == 1 else "C2 = 2C1"
+            shift = 10* Cratio
+            approx = []
+            CG = 2
+            VG = 0.5
+            nini = 0
+            for Rratio in Rratios:
+                C1 = 1 / (Cratio + 1)
+                C2 = Cratio / (Cratio + 1)
+                R1 = 1 / (Rratio + 1)
+                R2 = Rratio / (Rratio + 1)
+                approx.append(approx_threshold_voltage(R1, R2, C1, C2, CG, VG, nini))
+            m.plot_score("thresholdVoltageUp", xs=Rratios, xlabel="R2/R1",
+                         ylabel="Threshold voltage [e^2/(C1+C2)^2(R1+R2)]",
+                         label=labelprefix + " numerical results", shift=shift, fmt=".m")
+            plt.plot(Rratios, np.array(approx)+shift, "orange", label=labelprefix + " analytic approximation")
+        plt.show()
+
+
+    else:
+        ###### General analysis ############
+        directory = "graph_results"
+        names = ["gillespie_1_1_big_CG_big_R2"]
         full = True
         save_re_analysis = False
         for name in names:
@@ -998,21 +1276,7 @@ if __name__ == "__main__":
             if save_re_analysis:
                 s.save_re_analysis()
             s.plot_jumps_freq("I")
-            # s.plot_results()
-        plt.show()
-    else:
-        ###### General analysis ############
-        directory = "bgu_2d_narrow_arrays"
-        names = ["array_5_15_disorder_c_std_0.1_r_std_9_run_4", "array_5_15_disorder_c_std_1_r_std_9_run_4",
-                 "array_5_15_disorder_c_std_1.5_r_std_9_run_4"]
-        full = True
-        save_re_analysis = False
-        for name in names:
-            s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False)
-            if save_re_analysis:
-                s.save_re_analysis()
-            # s.plot_jumps_freq("I")
             s.plot_results()
-            s.plot_array_params("R")
-            s.plot_array_params("C")
+            # s.plot_array_params("R")
+            # s.plot_array_params("C")
         plt.show()

@@ -21,135 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_10_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_Ih.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_Iv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_CG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_Ch.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_Cv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_Q0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_RG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_Rh.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_Rv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_VG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_temp_n0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_vertI.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_vertIErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_dbg_vert_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_5_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_6_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_7_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_8_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_IV_clean.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_IV_clean.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_I_Err_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_I_Err_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_I_clean.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_I_clean.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_log_resistance.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_9_log_resistance.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_IV.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Imap.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_QErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_full_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_full_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_nErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_IV.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_Imap.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_Imap.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_QErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_full_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_full_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/array_5_15_disorder_c_std_0_r_std_9_run_10_nErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/runningParameters_array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/runningParameters_array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_2d_narrow_arrays/runningParameters_array_5_15_disorder_c_std_0_r_std_9_run_10.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_2d_narrow_arrays/runningParameters_array_5_15_disorder_c_std_0_r_std_9_run_10.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_2d_array.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_RC_SET_with_perp.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_RC_SET_with_perp.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/array_5_15_disorder_c_std_0_r_std_9_run_10_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/runningParameters_array_5_15_disorder_c_std_0.1_r_std_9_run_10_high_r_disorder.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/same_array_different_temperature/runningParameters_array_5_15_disorder_c_std_0_r_std_9_run_10.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -254,7 +127,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 10 -N 5 --vmin 0 --vmax 1.8 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 50 --cg-std 0 --r-avg 10 --r-std 9.5 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0 --file-name dbg_big_cg -o dbg --full --symmetric-v" />
+      <option name="PARAMETERS" value="-M 1 -N 1 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0.5 --vg-std 0 --c-avg 1 --c-std 0.5 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.1 --temperature-gradient 0 --distribution exp --gap 0 --file-name gillespie_1_1_big_CG_big_R2_dbg -o graph_results --full --custom-rh [[0.1111,0.9999]] --custom-rv [[]] --custom-ch [[0.3333,0.6666]] --custom-cv [[]] --symmetric-v --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -380,7 +253,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="perpendicular" />
+      <option name="PARAMETERS" value="hysteresis_area_compare" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -467,13 +340,14 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.dots_array" />
-        <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.results_processor" />
+        <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.dynamics_simulation" />
         <item itemvalue="Python.ising1d" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -514,70 +388,51 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="1094" y="215" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595850407304">
+    <state x="72" y="127" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597239276441">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="225" y="59" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1533.873@67.27.1533.873" timestamp="1587476296749" />
     <state x="325" y="245" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1588333342212" />
-    <state x="1094" y="215" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1595850407304" />
-    <state x="655" y="125" width="666" height="854" key="#deposition_models" timestamp="1588087801096">
-      <screen x="67" y="27" width="1853" height="1053" />
-    </state>
-    <state x="655" y="125" width="666" height="854" key="#deposition_models/67.27.1853.1053@67.27.1853.1053" timestamp="1588087801096" />
+    <state x="72" y="127" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1597239276441" />
     <state x="694" y="203" width="424" height="484" key="FileChooserDialogImpl" timestamp="1593596523461">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="583" y="173" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1587468240047" />
-    <state x="691" y="203" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1588087779617" />
     <state x="694" y="203" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1593596523461" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1595849464841">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1597239277878">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.0.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049214" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1595849464841" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1595849464841">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1597239277878" />
+    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1597239277877">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.0.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1595849464841" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1595849464841">
+    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1597239277877" />
+    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1597239277877">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.0.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1595849464841" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1595849464841">
+    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1597239277877" />
+    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1597239277877">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588331049213" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1595849464841" />
-    <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1594978153922">
+    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1597239277877" />
+    <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1597236441804">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.1.bottom/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
-    <state width="1830" height="344" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="345" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1594978153922" />
-    <state width="1825" height="345" key="GridCell.Tab.1.center" timestamp="1594978153922">
+    <state width="1825" height="345" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1597236441804" />
+    <state width="1825" height="345" key="GridCell.Tab.1.center" timestamp="1597236441803">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.1.center/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
-    <state width="1830" height="344" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="345" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1594978153922" />
-    <state width="1825" height="345" key="GridCell.Tab.1.left" timestamp="1594978153922">
+    <state width="1825" height="345" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1597236441803" />
+    <state width="1825" height="345" key="GridCell.Tab.1.left" timestamp="1597236441803">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.1.left/67.27.1533.873@67.27.1533.873" timestamp="1587486679635" />
-    <state width="1830" height="344" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450423" />
-    <state width="1825" height="345" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1594978153922" />
-    <state width="1825" height="345" key="GridCell.Tab.1.right" timestamp="1594978153922">
+    <state width="1825" height="345" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1597236441803" />
+    <state width="1825" height="345" key="GridCell.Tab.1.right" timestamp="1597236441803">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1510" height="268" key="GridCell.Tab.1.right/67.27.1533.873@67.27.1533.873" timestamp="1587486679636" />
-    <state width="1830" height="344" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588171450424" />
-    <state width="1825" height="345" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1594978153922" />
+    <state width="1825" height="345" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1597236441803" />
+    <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog" timestamp="1596370832608">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596370832608" />
     <state x="325" y="33" width="1022" height="737" key="SettingsEditor" timestamp="1588777360408">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -586,12 +441,10 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="924" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053@72.27.1848.1053" timestamp="1594212516669" />
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1590821292134">
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1596971197249">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="496" y="214" width="672" height="678" key="search.everywhere.popup/67.27.1533.873@67.27.1533.873" timestamp="1587464491208" />
-    <state x="586" y="253" width="813" height="818" key="search.everywhere.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588085015006" />
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1590821292134" />
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1596971197249" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -613,12 +466,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1909</line>
+          <line>1885</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1914</line>
+          <line>1890</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -648,23 +501,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>598</line>
+          <line>680</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>608</line>
+          <line>690</line>
           <option name="timeStamp" value="443" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>614</line>
+          <line>696</line>
           <option name="timeStamp" value="444" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>849</line>
-          <option name="timeStamp" value="445" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
@@ -683,22 +531,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>890</line>
+          <line>964</line>
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2157</line>
+          <line>2133</line>
           <option name="timeStamp" value="477" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2154</line>
+          <line>2130</line>
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2159</line>
+          <line>2135</line>
           <option name="timeStamp" value="480" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -718,12 +566,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>291</line>
+          <line>328</line>
           <option name="timeStamp" value="485" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>134</line>
+          <line>155</line>
           <option name="timeStamp" value="495" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -739,7 +587,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>950</line>
+          <line>1024</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -761,6 +609,26 @@
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
           <line>661</line>
           <option name="timeStamp" value="530" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1157</line>
+          <option name="timeStamp" value="547" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1182</line>
+          <option name="timeStamp" value="549" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>230</line>
+          <option name="timeStamp" value="551" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>912</line>
+          <option name="timeStamp" value="552" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
