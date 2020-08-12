@@ -1,5 +1,5 @@
 #!/bin/bash
-
+flags="-pe shared 14 -V -S /bin/bash -q jdubi.q -cwd"
 vmin=0
 vr=0
 vg_avg=0
