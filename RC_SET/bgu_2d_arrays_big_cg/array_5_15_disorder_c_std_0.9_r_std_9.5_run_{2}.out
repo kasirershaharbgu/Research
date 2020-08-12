@@ -1,0 +1,7 @@
+
+python3 dots_array.py -M 10 -N 5 --vmin 0 --vmax 2 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 50 --cg-std 0 --r-avg 10 --r-std 9.5 --rg-avg 500 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0 --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_5_15_disorder_c_std_0.9_r_std_9.5_run_{2} -o bgu_2d_arrays_big_cg -i  --full --current-map   --symmetric-v      
+
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+0.0,0.001,
