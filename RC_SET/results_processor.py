@@ -1325,6 +1325,21 @@ if __name__ == "__main__":
                      label=labelprefix + " numerical results", shift=shift)
         # plt.plot(Rratios, np.array(approx) + shift, "orange", label=labelprefix + " analytic approximation")
         plt.show()
+    elif action == 'IV_different_temperatures':
+        directory = "/home/kasirershahar/University/Research/old_results/same_array_different_temperature"
+        Ts = [0.001, 0.002, 0.005, 0.007, 0.01, 0.015, 0.02]
+        names = ["array_10_10_T_" + str(T) for T in Ts]
+        shift=0
+        for T,name in zip(Ts,names):
+            p = SingleResultsProcessor(directory, name, reAnalyze=False, graph=False, fullOutput=True)
+            p.plot_IV("T = " + str(T), Vnorm=1/2, Inorm=1/20, shift=shift, err=True, errorevery=1,
+                      Ilabel="I(<R><C>)/e",Vlabel="V<C>/e")
+            shift+=0.1
+        plt.xlim(1,2)
+        plt.ylim(-0.1,2.5)
+        plt.legend(["Increasing voltage", "Decreasing voltage"])
+        plt.show()
+
 
     else:
         ###### General analysis ############
