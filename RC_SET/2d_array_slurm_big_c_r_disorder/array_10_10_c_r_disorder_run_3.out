@@ -1,7 +1,0 @@
-
-python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 3 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 10 --c-std 9.5 --cg-avg 50 --cg-std 0 --r-avg 30 --r-std 29 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_c_r_disorder_run_3 -o 2d_array_slurm_big_c_r_disorder --full --current-map  --resume   
-
-Loading array parameters
-Normal prototype array was created
-Starting parallel run
-2.73,2.74,2.75,2.7600000000000002,2.77,2.7800000000000002,2.79,2.8000000000000003,2.81,2.82,2.83,2.84,2.85,2.86,2.87,2.88,2.89,2.9,2.91,2.92,2.93,2.94,2.95,2.96,2.97,2.98,2.99,2.99,2.98,2.97,2.96,2.95,2.94,2.93,2.92,2.91,2.9,2.89,2.88,2.87,2.86,2.85,2.84,2.83,2.82,2.81,2.8000000000000003,2.79,2.7800000000000002,2.77,2.7600000000000002,2.75,2.74,2.73,2.72,2.71,2.7,2.69,2.68,2.67,2.66,2.65,2.64,2.63,2.62,

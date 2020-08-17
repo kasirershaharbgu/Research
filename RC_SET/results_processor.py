@@ -17,7 +17,7 @@ from mpl_toolkits.mplot3d import Axes3D
 EPS = 1e-6
 FIGSIZE=(30,16)
 SCORE_NAMES=['hysteresisArea', 'jumpSeparationUp', 'jumpSeparationDown', 'jumpSeparationUpDown', 'jumpHeightUp',
-             'jumpHeightDown', 'thresholdVoltageUp', 'thresholdVoltageDown', 'jumpNumUp', 'jumpNumDown']
+             'jumpHeightDown', 'thresholdVoltageUp', 'thresholdVoltageDown', 'jumpNumUp', 'jumpNumDown', 'firstJumpV']
 SCORE_VAL = 'score'
 SCORE_HIGH_ERR = 'high_err'
 SCORE_LOW_ERROR = 'low_err'
@@ -228,10 +228,7 @@ class SingleResultsProcessor:
                 integrate.trapz(IminusErr[self.mid_idx:], self.V[self.mid_idx:])
         high_err = -integrate.trapz(IminusErr[:self.mid_idx], self.V[:self.mid_idx]) - \
                   integrate.trapz(IplusErr[self.mid_idx:], self.V[self.mid_idx:])
-        normalization = self.jumpScores["jumpNumUp"][0]
-        if normalization ==0:
-            normalization = 1
-        return score/normalization, (high_err-score)/normalization, (score-low_err)/normalization
+        return score, (high_err-score), (score-low_err)
 
     def calc_threshold_voltage_up(self):
         I = self.I[:self.mid_idx]
@@ -438,6 +435,10 @@ class SingleResultsProcessor:
         diffV2 = np.diff(Vjumps2)
         return diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2
 
+    def get_Vjumps(self):
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(self.I, self.IErr)
+        return Vjumps1, Vjumps2
+
     def calc_jumps_scores(self):
         diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2 = self.calc_jumps_freq(self.I, self.IErr)
         self.jumpScores = dict()
@@ -464,10 +465,13 @@ class SingleResultsProcessor:
             if len(up_jumps_larger_than_down) > 0:
                 up = np.min(up_jumps_larger_than_down)
             else:
-                down = up
+                up = down
             self.jumpScores['jumpSeparationUpDown'] = (up-down, 0, 0)
+            self.jumpScores['firstJumpV'] = (up,0,0)
         else:
             self.jumpScores['jumpSeparationUpDown'] = (0, 0, 0)
+            self.jumpScores['firstJumpV'] = (0,0,0)
+
 
 
 
@@ -559,7 +563,7 @@ class SingleResultsProcessor:
         return score
 
     def calc_score(self, scoreName):
-        if 'jump' in scoreName:
+        if 'jump' in scoreName or 'Jump' in scoreName:
             if self.jumpScores is None:
                 self.calc_jumps_scores()
             return self.jumpScores[scoreName]
@@ -701,30 +705,29 @@ class SingleResultsProcessor:
         #     plt.xlim(xmin, np.max(V))
 
     def plot_IV(self, label, err=True, alternative=False, errorevery=10,
-                Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current'):
+                Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current', shift=0, fmt_up='r.', fmt_down='b.'):
         if err:
-            plt.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm, fmt='r.',
+            plt.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt=fmt_up,
                          yerr=self.IErr[:self.mid_idx]/Inorm,
                          errorevery=errorevery, label=label + " up")
-            plt.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm, fmt='b.',
+            plt.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt=fmt_down,
                          yerr=self.IErr[self.mid_idx:]/Inorm,
                          errorevery=errorevery, label=label + " down")
         else:
-            plt.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm, 'm', label=label + " up")
-            plt.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm, 'g', label=label + " down")
+            plt.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt_up , label=label + " up")
+            plt.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt_down , label=label + " down")
         if alternative:
             plt.errorbar(self.alternativeV[:self.alternative_mid_idx]/Vnorm,
-                         self.alternativeI[:self.alternative_mid_idx]/Inorm,
+                         self.alternativeI[:self.alternative_mid_idx]/Inorm + shift,
                          fmt='m.', yerr=self.alternativeIErr[:self.alternative_mid_idx]/Inorm,
                          errorevery=errorevery, label=label + " alterntive up")
-            plt.errorbar(self.alternativeV[self.alternative_mid_idx:]/Vnorm,
-                         self.alternativeI[self.alternative_mid_idx:]/Inorm,
+            plt.errorbar(self.alternativeV[self.alternative_mid_idx:]/Vnorm ,
+                         self.alternativeI[self.alternative_mid_idx:]/Inorm + shift,
                          fmt='c.', yerr=self.alternativeIErr[self.alternative_mid_idx:]/Inorm,
                          errorevery=errorevery, label=label + " alterntive down")
 
         plt.xlabel(Vlabel)
         plt.ylabel(Ilabel)
-        plt.legend()
 
     def plot_results(self):
         plt.figure()
@@ -1076,9 +1079,22 @@ def approx_threshold_voltage(R1, R2, C1, C2, CG, VG, nini):
 def approx_jumps_height(R1, R2, C1, C2, CG):
     return 1 / ((C1 + C2 + CG) * (R1 + R2))
 
-def approx_jump_up_down(R1, R2, C1, C2, CG):
-    factor = (0.5*CG)/(C1+C2)
-    return factor *approx_jumps_separation(R1, R2, C1, C2, CG)
+def approx_jump_up_down(R1, R2, C1, C2, CG, V):
+    Rmax = max(R1, R2)
+    Rmin = min(R1,R2)
+    Ugap = np.abs((Rmax/(C1+C2)+ Rmin * V)/(Rmax-Rmin) - (C1+C2+2*CG)*(np.sqrt((R1*R2*V)/(CG*(C1+C2+CG)*(C1+C2)*(R1-R2)**2))))
+    return CG * Ugap * approx_jumps_separation(R1, R2, C1, C2, CG)
+
+def approx_hysteresis_total_area(R1, R2, C1, C2, CG, VG, Vmax):
+    Vmax = min((max(R1, R2)*CG)/(min(R1, R2)*(C1+C2)*(C1+C2+CG)),Vmax)
+    Vmin = 1.1
+    dV = approx_jumps_separation(R1,R2,C1,C2,CG)
+    V = Vmin
+    area = 0
+    while V < Vmax:
+        area += approx_jump_up_down(R1,R2,C1,C2,CG,V)*approx_jumps_height(R1,R2,C1,C2,CG)
+        V += dV
+    return area
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -1112,35 +1128,50 @@ if __name__ == "__main__":
             plt.show()
 
     elif action == "compareIV": # compares methods
-        directory = "graph_results"
+        output_dir = 'graph_results'
+        directory_graph = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        directory_gillespie = "single_island_different_temperature"
         resultNames= ["big_CG_big_R2","big_CG_small_R2","small_CG_big_R2","small_CG_small_R2"]
-        namesLyapunov = ["graph_1_1_big_CG_big_R2","graph_1_1_big_CG_small_R2","graph_1_1_small_CG_big_R2","graph_1_1_small_CG_small_R2"]
-        namesGillespie = ["gillespie_1_1_big_CG_big_R2","gillespie_1_1_big_CG_small_R2","gillespie_1_1_small_CG_big_R2","gillespie_1_1_small_CG_small_R2"]
-        for nameLyapunov, nameGillespie, resultName in zip(namesLyapunov, namesGillespie, resultNames):
-            pLyapunov = SingleResultsProcessor(directory, nameLyapunov, fullOutput=False, vertCurrent=False,
+        namesGraph = ["large_R2_large_CG", "small_R2_large_CG",
+                      "large_R2_small_CG", "small_R2_small_CG"]
+        namesGillespie = ["array_1_1_big_cg_big_r2_T_", "array_1_1_big_cg_small_r2_T_",
+                          "array_1_1_small_cg_big_r2_T_", "array_1_1_small_cg_small_r2_T_"]
+        for nameGraph, nameGillespie, resultName in zip(namesGraph, namesGillespie, resultNames):
+            pGraph = SingleResultsProcessor(directory_graph, nameGraph, fullOutput=False, vertCurrent=False,
                                                reAnalyze=False, graph=True)
-            pGillespie = SingleResultsProcessor(directory, nameGillespie, fullOutput=False, vertCurrent=False,
-                                                reAnalyze=True)
+            psGillespie = [SingleResultsProcessor(directory_gillespie, nameGillespie + str(T), fullOutput=False, vertCurrent=False,
+                                                reAnalyze=True) for T in [0, 0.001, 0.01, 0.1]]
             fig = plt.figure(figsize=FIGSIZE)
-            pLyapunov.plot_IV("Graph method", err=False, alternative=False,
-                              Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e")
-            pGillespie.plot_IV("Dynamical method", err=True, alternative=False, errorevery=1,
-                               Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e")
-            plt.savefig(os.path.join(directory, resultName+".png"))
+            shift = 0
+            psGillespie[0].plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
+                      Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", shift=shift)
+            shift += 1
+            pGraph.plot_IV("Graph method", err=False, alternative=False,
+                           Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", fmt_up='c*', fmt_down='m*')
+            for p in psGillespie[1:]:
+                p.plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
+                               Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", shift=shift)
+                shift += 1
+
+            plt.legend(['Dynamical method (increasing voltage)', 'Dynamical method (decreasing voltage)',
+                        'Graph method (increasing voltage)','Graph method (decreasing voltage)'])
+            # plt.show()
+            plt.savefig(os.path.join(output_dir, resultName+".png"))
             plt.close(fig)
+
 
     elif action == "jumps_separation_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
         plt.figure(figsize=FIGSIZE)
-        for Cratio in [0.1,0.2,0.3,0.4,0.5,0.6, 0.7, 0.8, 0.9, 1]:
-            Rratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10]
+        shift = 0
+        for Cratio in [0.1,0.2,0.3,0.4,0.5,0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+            Rratios = [0.1,0.2,0.3,0.4,0.5,3,4,5,6,7,8,9,10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
             full = True
             save_re_analysis = False
             directories_list = [directory]*len(names)
             m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
             labelprefix = "C2/C1 = " + str(Cratio)
-            shift = 10*Cratio
             Rratios = np.array(Rratios)
             CG=2
             C1 = 1/(Cratio + 1)
@@ -1155,49 +1186,52 @@ if __name__ == "__main__":
             m.plot_score("jumpSeparationDown", xs=Rratios, xlabel="R2/R1", ylabel="Average voltage difference [e/(C1+C2)]", fmt='b.',
                           shift=shift)
             plt.plot(Rratios, np.array(approx) + shift, 'orange')
+            shift += 1
         plt.show()
 
     elif action == "jumps_up_down_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
         plt.figure(figsize=FIGSIZE)
-        for Rratio in [0.1,10]:
+        shift = 0
+        for Rratio in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,2,3,4,5,6,7,8,9,10]:
             Cratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
             full = True
             save_re_analysis = False
             directories_list = [directory]*len(names)
             m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
+            loopV, _, _ = m.get_relevant_scores('firstJumpV')
+            loopV = np.array(loopV)
             labelprefix = "R2 < R1" if Rratio == 0.1 else "R2 > R1"
-            shift = 0 if Rratio == 0.1 else 1
             Cratios = np.array(Cratios)
             CG=2
             VG=0.5
             approx = []
-            for Cratio in Cratios:
+            for i,Cratio in enumerate(Cratios):
                 C1 = 1/(Cratio + 1)
                 C2 = Cratio/(Cratio + 1)
                 R1 = 1/(Rratio + 1)
                 R2 = Rratio/(Rratio + 1)
-                approx.append(approx_jump_up_down(R1, R2, C1, C2, CG))
+                approx.append(approx_jump_up_down(R1, R2, C1, C2, CG, loopV[i]))
 
             m.plot_score("jumpSeparationUpDown", xs=Cratios, xlabel="C2/C1", ylabel="Average voltage difference [e/(C1+C2)]",
                          label=labelprefix + " numerical results", shift=shift, fmt='m.')
-            plt.plot(Cratios, np.array(approx)+shift, "orange", label=labelprefix + " analytic approximation")
-        plt.legend()
+            plt.plot(Cratios[loopV > 0], np.array(approx)[loopV > 0]+shift, "orange", label=labelprefix + " analytic approximation")
+            shift += 1
         plt.show()
 
     elif action == "jumps_height_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
         plt.figure(figsize=FIGSIZE)
-        for Rratio in [2,3,4,5,6,7,8,9,10]:
-            Cratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2]
+        shift = 0
+        for Rratio in [0.1, 0.2, 0.3, 0.4, 2,3,4,5,6,7,8,9,10]:
+            Cratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
             full = True
             save_re_analysis = False
             directories_list = [directory] * len(names)
             m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
             labelprefix = "R2 < R1" if Rratio == 0.1 else "R2 > R1"
-            shift = Rratio
             Cratios = np.array(Cratios)
             CG = 2
             C1 = 1 / (Cratios + 1)
@@ -1212,34 +1246,39 @@ if __name__ == "__main__":
                          ylabel="Average current difference [e/(C1+C2)(R1+R2)]",
                          label=labelprefix + " decreasing voltage numerical results", shift=shift, fmt=".b")
             plt.plot(Cratios, approx, "orange",label=labelprefix + " analytic approximation")
+            shift += 1
         plt.show()
     elif action == "hysteresis_area_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
         plt.figure(figsize=FIGSIZE)
-        for Rratio in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
-            Cratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-            names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
+        shift = 0
+        for Cratio in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2, 3, 4, 5, 6, 7, 8, 9, 10]:
+            Rratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2, 3, 4, 5, 6, 7, 8, 9, 10]
+            names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
             full = True
             save_re_analysis = False
             directories_list = [directory] * len(names)
             m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
-            shift = Rratio
             CG = 2
+            VG = 0.5
             approx = []
-            for Cratio in Cratios:
+
+            for Rratio in Rratios:
                 C1 = 1 / (Cratio + 1)
                 C2 = Cratio / (Cratio + 1)
                 R1 = 1 / (Rratio + 1)
                 R2 = Rratio / (Rratio + 1)
-                approx.append(approx_jumps_height(R1, R2, C1, C2, CG)*approx_jump_up_down(R1, R2, C1, C2, CG))
-            m.plot_score("hysteresisArea", xs=Cratios, xlabel="C2/C1",
+                approx.append(approx_hysteresis_total_area(R1, R2, C1, C2, CG, VG, 4))
+            m.plot_score("hysteresisArea", xs=Rratios, xlabel="R2/R1",
                          ylabel="Average loop area [e^2/(C1+C2)^2(R1+R2)]", shift=shift, fmt='m.')
-            plt.plot(Cratios, np.array(approx) + shift, 'orange')
+            plt.plot(Rratios, np.array(approx) + shift, 'orange', linestyle='dashed')
+            shift += 1
         plt.show()
     elif action == "threshold_voltage_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
         plt.figure(figsize=FIGSIZE)
-        for Cratio in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]:
+        shift = 0
+        for Cratio in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
             Rratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
             full = True
@@ -1247,7 +1286,6 @@ if __name__ == "__main__":
             directories_list = [directory] * len(names)
             m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
             labelprefix = "C2 = C1" if Cratio == 1 else "C2 = 2C1"
-            shift = 10* Cratio
             approx = []
             CG = 2
             VG = 0.5
@@ -1262,8 +1300,31 @@ if __name__ == "__main__":
                          ylabel="Threshold voltage [e^2/(C1+C2)^2(R1+R2)]",
                          label=labelprefix + " numerical results", shift=shift, fmt=".m")
             plt.plot(Rratios, np.array(approx)+shift, "orange", label=labelprefix + " analytic approximation")
+            shift+=1
         plt.show()
-
+    elif action == "jumps_num_compare":
+        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
+        plt.figure(figsize=FIGSIZE)
+        Rratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        Cratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6]
+        names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios for Rratio in Rratios]
+        full = True
+        save_re_analysis = False
+        directories_list = [directory] * len(names)
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
+        shift = 0
+        CG = 2
+        VG = 0.5
+        nini = 0
+        groups = np.arange(len(names))
+        m.plot_score_by("jumpNumUp", xs=np.array(Cratios), xlabel="C2/C1",
+                     ylabel="Number of jumps",
+                     label=labelprefix + " numerical results", shift=shift)
+        m.plot_score("jumpNumDown", xs=np.array(Cratios), xlabel="C2/C1",
+                     ylabel="Number of jumps",
+                     label=labelprefix + " numerical results", shift=shift)
+        # plt.plot(Rratios, np.array(approx) + shift, "orange", label=labelprefix + " analytic approximation")
+        plt.show()
 
     else:
         ###### General analysis ############
