@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib
+import glob
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'sans-serif',
@@ -781,7 +782,7 @@ class SingleResultsProcessor:
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
     def __init__(self, directories_list, files_list, relevant_running_params=None, relevant_array_params=None, out_directory = None,
-                 groups=None, group_names=None, resistance_line=0, full=False, graph=False):
+                 groups=None, group_names=None, resistance_line=0, full=False, graph=False, reAnalyze=False):
         """
         Initializing analyzer
         :param directories_list: list of directories for result files
@@ -808,17 +809,18 @@ class MultiResultAnalyzer:
         else:
             self.runningParams = dict()
         self.disorders = {p: [] for p in ["C","R","CG","VG"]}
+        self.averages = {p: [] for p in ["C", "R", "CG", "VG"]}
         self.groups = np.array(groups)
         self.groupNames = group_names
         load_params = (relevant_array_params is not None) or (relevant_running_params is not None)
-        self.load_data(resistance_line, full=full, graph=graph, load_params=load_params)
+        self.load_data(resistance_line, full=full, graph=graph, load_params=load_params, reAnalyze=reAnalyze)
 
-    def load_data(self, line=0, full=False, graph=False, load_params=True):
+    def load_data(self, line=0, full=False, graph=False, load_params=True, reAnalyze=False):
         """
         Loading results and calculating scores
         """
         for directory, fileName in zip(self.directories, self.fileNames):
-            processor = SingleResultsProcessor(directory, fileName, fullOutput=full, graph=graph)
+            processor = SingleResultsProcessor(directory, fileName, fullOutput=full, graph=graph, reAnalyze=reAnalyze)
             processor.load_results()
             if load_params:
                 processor.load_params()
@@ -834,15 +836,19 @@ class MultiResultAnalyzer:
                 for p in self.runningParams:
                     self.runningParams[p].append(processor.get_running_param(p))
                 for p in self.disorders:
-                    self.disorders[p].append(self.calc_disorder(p, processor))
+                    std, avg = self.calc_disorder_and_average(p, processor)
+                    self.disorders[p].append(std)
+                    self.averages[p].append(avg)
 
-    def calc_disorder(self, name, processor):
+    def calc_disorder_and_average(self, name, processor):
         if name in ["C","R"]:
-            var = np.var(processor.get_array_param(name + "h")) + np.var(processor.get_array_param(name + "v"))
-            std = np.sqrt(var)
+            combined = np.hstack((np.array(processor.get_array_param(name + "h")).flatten(),np.array(processor.get_array_param(name + "v")).flatten()))
+            std = np.std(combined)
+            avg = np.average(combined)
         else:
             std = np.std(processor.get_array_param(name))
-        return std
+            avg = np.average(processor.get_array_param(name))
+        return std, avg
 
     def get_relevant_scores(self, scoreName):
         if scoreName in self.scores:
@@ -930,7 +936,8 @@ class MultiResultAnalyzer:
         plt.xlabel(xlabel)
 
 
-    def plot_score_by_parameter(self, score_name, parameter_names, title, runningParam=True, plot=True):
+    def plot_score_by_parameter(self, score_name, parameter_names, title, runningParam=True, outputDir=None,
+                                average_results=True):
         """
         Plots score as a function of given parameter
         :param score_name: relevant score name (hysteresis, jump, blockade)
@@ -940,43 +947,47 @@ class MultiResultAnalyzer:
             parameter_name = parameter_names[0]
             y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
             if runningParam:
-                x = self.runningParams[parameter_name]
+                x = np.array(self.runningParams[parameter_name])
             else:
-                x = self.arrayParams[parameter_name]
-            x, y, y_high_err, y_low_err = self.average_similar_results(x, y, y_high_err, y_low_err)
+                x = np.array(self.arrayParams[parameter_name])
+            if average_results:
+                x, y, y_high_err, y_low_err = self.average_similar_results(x, y, y_high_err, y_low_err)
             errors = [y_low_err, y_high_err]
-            fig = plt.figure()
+            fig = plt.figure(figsize=FIGSIZE)
             plt.errorbar(x, y, yerr=errors, marker='o')
             plt.title(title)
             plt.xlabel(parameter_name)
             plt.ylabel(self.get_y_label(score_name))
-            plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
-            plt.close(fig)
-            np.save(os.path.join(self.outDir, title + "parameter"), np.array(x))
-            np.save(os.path.join(self.outDir, title + "score"), np.array(y))
-            np.save(os.path.join(self.outDir, title + "score_high_err"), np.array(y_high_err))
-            np.save(os.path.join(self.outDir, title + "score_low_err"), np.array(y_low_err))
+            if outputDir is not None:
+                plt.savefig(os.path.join(outputDir, title.replace(' ', '_') + '.png'))
+                plt.close(fig)
+                np.save(os.path.join(outputDir, title + "parameter"), np.array(x))
+                np.save(os.path.join(outputDir, title + "score"), np.array(y))
+                np.save(os.path.join(outputDir, title + "score_high_err"), np.array(y_high_err))
+                np.save(os.path.join(outputDir, title + "score_low_err"), np.array(y_low_err))
         elif len(parameter_names) == 2:
             z, z_high_err, z_low_err = self.get_relevant_scores(score_name)
             if runningParam:
-                x = self.runningParams[parameter_names[0]]
-                y = self.runningParams[parameter_names[1]]
+                x = np.array(self.runningParams[parameter_names[0]])
+                y = np.array(self.runningParams[parameter_names[1]])
             else:
-                x = self.arrayParams[parameter_names[0]]
-                y = self.arrayParams[parameter_names[1]]
+                x = np.array(self.arrayParams[parameter_names[0]])
+                y = np.array(self.arrayParams[parameter_names[1]])
             points = [(x[i],y[i]) for i in range(len(x))]
-            points, z, z_high_err, z_low_err = self.average_similar_results(points, z, z_high_err, z_low_err)
-            x = [point[0] for point in points]
-            y = [point[1] for point in points]
-            fig = plt.figure()
+            if average_results:
+                points, z, z_high_err, z_low_err = self.average_similar_results(points, z, z_high_err, z_low_err)
+            x = np.array([point[0] for point in points])
+            y = np.array([point[1] for point in points])
+            fig = plt.figure(figsize=FIGSIZE)
             plt.scatter(x, y, c=z, cmap='viridis',norm=colors.LogNorm())
             plt.title(title)
             plt.xlabel(parameter_names[0])
             plt.ylabel(parameter_names[1])
             cbar = plt.colorbar()
             cbar.set_label(self.get_y_label(score_name))
-            plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
-            plt.close(fig)
+            if outputDir is not None:
+                plt.savefig(os.path.join(outputDir, title.replace(' ', '_') + '.png'))
+                plt.close(fig)
         else:
             raise NotImplementedError
 
@@ -985,14 +996,29 @@ class MultiResultAnalyzer:
             for score in scores:
                 x = self.disorders[param]
                 y, y_high_err, y_low_err = self.get_relevant_scores(score)
-                plt.figure()
+                plt.figure(figsize=FIGSIZE)
                 plt.scatter(x,y)
                 plt.xlabel(param + " disorder")
                 plt.ylabel(score)
                 if self.outDir is not None:
                     plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'disorder.png'))
 
+    def plot_results_by_average(self, parameters, scores):
+        for param in parameters:
+            for score in scores:
+                x = self.averages[param]
+                y, y_high_err, y_low_err = self.get_relevant_scores(score)
+                plt.figure(figsize=FIGSIZE)
+                plt.scatter(x,y)
+                plt.xlabel(param + " average")
+                plt.ylabel(score)
+                if self.outDir is not None:
+                    plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'average.png'))
+
     def average_similar_results(self, xs, ys, ys_high_err, ys_low_err):
+        ys = np.array(ys)
+        ys_high_err = np.array(ys_high_err)
+        ys_low_err = np.array(ys_low_err)
         new_x = []
         new_y = []
         new_y_high_err = []
@@ -1001,9 +1027,9 @@ class MultiResultAnalyzer:
             if x not in new_x:
                 new_x.append(x)
                 indices = [i for i, val in enumerate(xs) if val == x]
-                relevant_ys = np.array(ys[indices])
-                relevant_high_err = np.array(ys_high_err[indices])
-                relevant_low_err = np.array(ys_low_err[indices])
+                relevant_ys = ys[indices]
+                relevant_high_err = ys_high_err[indices]
+                relevant_low_err = ys_low_err[indices]
                 new_y.append(np.average(relevant_ys))
                 new_y_high_err.append(np.sqrt(np.average(relevant_high_err**2)/relevant_high_err.size))
                 new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)/relevant_low_err.size))
@@ -1126,6 +1152,26 @@ if __name__ == "__main__":
             s.plot_jumps_freq("I")
             # s.plot_results()
             plt.show()
+
+    elif action == "threshold_voltage":
+        # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder"
+        # names = ["array_10_10_c_disorder_run_" + str(run) for run in range(1,6)]
+        # names.extend(["array_10_10_cg_c_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_cg_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_c_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_cg_c_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_cg_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_vg_disorder_run_" + str(run) for run in range(1,6)])
+        directory = "/home/kasirershahar/University/Research/old_results/bgu_2d_finite_temperature_different_disorders_statistics"
+        names = [f.replace("_IV.png","") for f in os.listdir(directory) if "_IV.png" in f]
+        directories_list = [directory] * len(names)
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"], relevant_running_params=["C_std","R_std"])
+        # m.plot_score_by_parameter('thresholdVoltageUp', ["R_std"], 'title', average_results=True)
+        m.plot_results_by_disorder(["R"],SCORE_NAMES)
+
+        plt.show()
 
     elif action == "compareIV": # compares methods
         output_dir = 'graph_results'
@@ -1331,10 +1377,10 @@ if __name__ == "__main__":
         names = ["array_10_10_T_" + str(T) for T in Ts]
         shift=0
         for T,name in zip(Ts,names):
-            p = SingleResultsProcessor(directory, name, reAnalyze=False, graph=False, fullOutput=True)
-            p.plot_IV("T = " + str(T), Vnorm=1/2, Inorm=1/20, shift=shift, err=True, errorevery=1,
+            p = SingleResultsProcessor(directory, name, reAnalyze=True, graph=False, fullOutput=True)
+            p.plot_IV("T = " + str(T), Vnorm=1/2, Inorm=1/20, shift=shift, err=True, errorevery=5,alternative=False,
                       Ilabel="I(<R><C>)/e",Vlabel="V<C>/e")
-            shift+=0.1
+            shift+=0.3
         plt.xlim(1,2)
         plt.ylim(-0.1,2.5)
         plt.legend(["Increasing voltage", "Decreasing voltage"])
