@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib
+import glob
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'sans-serif',
@@ -13,6 +14,7 @@ import os, sys
 import re
 from sklearn.mixture import GaussianMixture
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.optimize import curve_fit
 
 EPS = 1e-6
 FIGSIZE=(30,16)
@@ -184,6 +186,8 @@ class SingleResultsProcessor:
                             value = literal_eval(splitted[1])
                         except Exception:
                             value = splitted[1].rstrip('\n')
+                        if key == "Cv":
+                            value = value[1:]
                         self.arrayParams[key] = value
                     start = True
                     splitted = line.split(': ')
@@ -198,6 +202,8 @@ class SingleResultsProcessor:
                 value = literal_eval(splitted[1])
             except Exception:
                 value = splitted[1].rstrip('\n')
+            if key == "Cv":
+                value = value[1:]
             self.arrayParams[key] = value
         return True
 
@@ -232,21 +238,27 @@ class SingleResultsProcessor:
 
     def calc_threshold_voltage_up(self):
         I = self.I[:self.mid_idx]
-        IErr = self.IErr[:self.mid_idx]
+        IErr = np.clip(self.IErr[:self.mid_idx],a_min=0.002, a_max=np.inf)
         matchingV = self.V[:self.mid_idx]
-        small = np.min(np.abs(matchingV[I > IErr]))
-        big = np.min(np.abs(matchingV[I > 2*IErr]))
-        avg = (small + big)/2
-        return avg, big - avg, avg-small
+        if (I > 4*IErr).any():
+            small = np.min(np.abs(matchingV[I > 2*IErr]))
+            big = np.min(np.abs(matchingV[I > 4*IErr]))
+            avg = (small + big)/2
+            return avg, big - avg, avg-small
+        else:
+            return 0,0,0
 
     def calc_threshold_voltage_down(self):
         I = self.I[self.mid_idx:]
         IErr = self.IErr[self.mid_idx:]
         matchingV = self.V[self.mid_idx:]
-        small = np.min(np.abs(matchingV[I > IErr]))
-        big = np.min(np.abs(matchingV[I > 2*IErr]))
-        avg = (small + big)/2
-        return avg, big - avg, avg-small
+        if (I > 4 * IErr).any():
+            small = np.min(np.abs(matchingV[I > 2 * IErr]))
+            big = np.min(np.abs(matchingV[I > 4 * IErr]))
+            avg = (small + big) / 2
+            return avg, big - avg, avg - small
+        else:
+            return 0, 0, 0
 
     def calc_jumps_score(self, window_size, up=True):
         score = 0
@@ -392,8 +404,8 @@ class SingleResultsProcessor:
     def calc_jumps_freq(self, x, xerr):
         diff1 = np.diff(x[:self.mid_idx])
         diff2 = np.diff(x[self.mid_idx:])
-        eps1 = np.clip(xerr[:self.mid_idx-1], a_min=0.1, a_max=None)
-        eps2 = np.clip(xerr[self.mid_idx:-1], a_min=0.1, a_max=None)
+        eps1 = np.clip(xerr[:self.mid_idx-1], a_min=0.001, a_max=None)
+        eps2 = np.clip(xerr[self.mid_idx:-1], a_min=0.001, a_max=None)
 
         diff1[np.abs(diff1) < eps1] = 0
         diff2[np.abs(diff2) < eps2] = 0
@@ -592,7 +604,6 @@ class SingleResultsProcessor:
             data_vert = np.array(self.arrayParams["Cv"]) if parameter == "C" else np.array(self.arrayParams["Rv"])
 
             if parameter == "C":
-                data_vert = data_vert[1:,:]
                 cmap = 'Greens'
                 neighbors = [data_horz[:, 1:], data_horz[:, :-1],
                              np.pad(data_vert, ((1, 0),(0,0))), np.pad(data_vert, ((0, 1),(0,0)))]
@@ -629,6 +640,7 @@ class SingleResultsProcessor:
         """
         Ch = np.array(self.get_array_param("Ch"))
         Cv = np.array(self.get_array_param("Cv"))
+        Cv = np.pad(Cv,((1,0),(0,0)))
         diagonal = Ch[:,:-1] + Ch[:,1:] + Cv + np.roll(Cv, -1, axis=0)
         second_diagonal = np.copy(Ch[:,1:])
         second_diagonal[:,-1] = 0
@@ -781,7 +793,7 @@ class SingleResultsProcessor:
 class MultiResultAnalyzer:
     """ Used for statistical analysis of results from many simulations"""
     def __init__(self, directories_list, files_list, relevant_running_params=None, relevant_array_params=None, out_directory = None,
-                 groups=None, group_names=None, resistance_line=0, full=False, graph=False):
+                 groups=None, group_names=None, resistance_line=0, full=False, graph=False, reAnalyze=False):
         """
         Initializing analyzer
         :param directories_list: list of directories for result files
@@ -790,6 +802,10 @@ class MultiResultAnalyzer:
         :param relevant_running_params: list of array parameters that are relevant
         :param out_directory: directory for results
         """
+        self.I = None
+        self.IErr = None
+        self.V = None
+        self.mid_idx = 0
         self.outDir = out_directory
         if out_directory is not None:
             if not os.path.isdir(out_directory):
@@ -808,20 +824,31 @@ class MultiResultAnalyzer:
         else:
             self.runningParams = dict()
         self.disorders = {p: [] for p in ["C","R","CG","VG"]}
+        self.averages = {p: [] for p in ["C", "R", "CG", "VG"]}
         self.groups = np.array(groups)
         self.groupNames = group_names
         load_params = (relevant_array_params is not None) or (relevant_running_params is not None)
-        self.load_data(resistance_line, full=full, graph=graph, load_params=load_params)
+        self.load_data(resistance_line, full=full, graph=graph, load_params=load_params, reAnalyze=reAnalyze)
 
-    def load_data(self, line=0, full=False, graph=False, load_params=True):
+
+    def load_data(self, line=0, full=False, graph=False, load_params=True, reAnalyze=False):
         """
         Loading results and calculating scores
         """
         for directory, fileName in zip(self.directories, self.fileNames):
-            processor = SingleResultsProcessor(directory, fileName, fullOutput=full, graph=graph)
+            processor = SingleResultsProcessor(directory, fileName, fullOutput=full, graph=graph, reAnalyze=reAnalyze)
             processor.load_results()
             if load_params:
                 processor.load_params()
+            if self.V is None:
+                self.V = np.copy(processor.V)
+                self.mid_idx = self.V.size//2
+                self.I = np.copy(processor.I)
+                self.IErr = np.copy(processor.IErr**2)
+            else:
+                self.I += processor.I
+                self.IErr += processor.IErr**2
+
             for score in self.scores:
                 val, high, low = processor.calc_score(score)
                 self.scores[score][SCORE_VAL].append(val)
@@ -834,15 +861,21 @@ class MultiResultAnalyzer:
                 for p in self.runningParams:
                     self.runningParams[p].append(processor.get_running_param(p))
                 for p in self.disorders:
-                    self.disorders[p].append(self.calc_disorder(p, processor))
+                    std, avg = self.calc_disorder_and_average(p, processor)
+                    self.disorders[p].append(std)
+                    self.averages[p].append(avg)
+        self.I/=len(self.fileNames)
+        self.IErr = np.sqrt(self.IErr)/len(self.fileNames)
 
-    def calc_disorder(self, name, processor):
+    def calc_disorder_and_average(self, name, processor):
         if name in ["C","R"]:
-            var = np.var(processor.get_array_param(name + "h")) + np.var(processor.get_array_param(name + "v"))
-            std = np.sqrt(var)
+            combined = np.hstack((np.array(processor.get_array_param(name + "h")).flatten(),np.array(processor.get_array_param(name + "v")).flatten()))
+            std = np.std(combined)
+            avg = np.average(combined)
         else:
             std = np.std(processor.get_array_param(name))
-        return std
+            avg = np.average(processor.get_array_param(name))
+        return std, avg
 
     def get_relevant_scores(self, scoreName):
         if scoreName in self.scores:
@@ -930,69 +963,144 @@ class MultiResultAnalyzer:
         plt.xlabel(xlabel)
 
 
-    def plot_score_by_parameter(self, score_name, parameter_names, title, runningParam=True, plot=True):
+    def plot_score_by_parameter(self, score_name, parameter_names, title, runningParam=True, outputDir=None,
+                                average_results=True, normalizing_parameter_names=None):
         """
         Plots score as a function of given parameter
         :param score_name: relevant score name (hysteresis, jump, blockade)
         :param parameter_name: relevant parameter
         """
         if len(parameter_names) == 1:
+
             parameter_name = parameter_names[0]
             y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
             if runningParam:
-                x = self.runningParams[parameter_name]
+                normalization = np.array(self.runningParams[normalizing_parameter_names[0]]) if\
+                    normalizing_parameter_names is not None else 1
+                x = np.array(self.runningParams[parameter_name])/normalization
             else:
-                x = self.arrayParams[parameter_name]
-            x, y, y_high_err, y_low_err = self.average_similar_results(x, y, y_high_err, y_low_err)
+                normalization = np.array(self.arrayParams[normalizing_parameter_names[0]]) if \
+                    normalizing_parameter_names is not None else 1
+                x = np.array(self.arrayParams[parameter_name])/normalization
+            if average_results:
+                x, y, y_high_err, y_low_err = self.average_similar_results(x, y, y_high_err, y_low_err)
             errors = [y_low_err, y_high_err]
-            fig = plt.figure()
-            plt.errorbar(x, y, yerr=errors, marker='o')
+            fig = plt.figure(figsize=FIGSIZE)
+            plt.errorbar(x, y, yerr=errors, fmt='.',)
             plt.title(title)
             plt.xlabel(parameter_name)
             plt.ylabel(self.get_y_label(score_name))
-            plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
-            plt.close(fig)
-            np.save(os.path.join(self.outDir, title + "parameter"), np.array(x))
-            np.save(os.path.join(self.outDir, title + "score"), np.array(y))
-            np.save(os.path.join(self.outDir, title + "score_high_err"), np.array(y_high_err))
-            np.save(os.path.join(self.outDir, title + "score_low_err"), np.array(y_low_err))
+            if outputDir is not None:
+                plt.savefig(os.path.join(outputDir, title.replace(' ', '_') + '.png'))
+                plt.close(fig)
+                np.save(os.path.join(outputDir, title + "parameter"), np.array(x))
+                np.save(os.path.join(outputDir, title + "score"), np.array(y))
+                np.save(os.path.join(outputDir, title + "score_high_err"), np.array(y_high_err))
+                np.save(os.path.join(outputDir, title + "score_low_err"), np.array(y_low_err))
         elif len(parameter_names) == 2:
             z, z_high_err, z_low_err = self.get_relevant_scores(score_name)
             if runningParam:
-                x = self.runningParams[parameter_names[0]]
-                y = self.runningParams[parameter_names[1]]
+                x = np.array(self.runningParams[parameter_names[0]])
+                y = np.array(self.runningParams[parameter_names[1]])
             else:
-                x = self.arrayParams[parameter_names[0]]
-                y = self.arrayParams[parameter_names[1]]
+                x = np.array(self.arrayParams[parameter_names[0]])
+                y = np.array(self.arrayParams[parameter_names[1]])
             points = [(x[i],y[i]) for i in range(len(x))]
-            points, z, z_high_err, z_low_err = self.average_similar_results(points, z, z_high_err, z_low_err)
-            x = [point[0] for point in points]
-            y = [point[1] for point in points]
-            fig = plt.figure()
-            plt.scatter(x, y, c=z, cmap='viridis',norm=colors.LogNorm())
+            if average_results:
+                points, z, z_high_err, z_low_err = self.average_similar_results(points, z, z_high_err, z_low_err)
+            x = np.array([point[0] for point in points])
+            y = np.array([point[1] for point in points])
+            fig = plt.figure(figsize=FIGSIZE)
+            ax = fig.add_subplot(111, projection='3d')
+            ax.scatter(x, y, z)
             plt.title(title)
             plt.xlabel(parameter_names[0])
             plt.ylabel(parameter_names[1])
-            cbar = plt.colorbar()
-            cbar.set_label(self.get_y_label(score_name))
-            plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
-            plt.close(fig)
+            if outputDir is not None:
+                plt.savefig(os.path.join(outputDir, title.replace(' ', '_') + '.png'))
+                plt.close(fig)
         else:
             raise NotImplementedError
 
-    def plot_results_by_disorder(self, parameters, scores):
+    def plot_results_by_disorder(self, parameters, scores, plot3D=False):
+        if plot3D and len(parameters) ==2:
+            for score in scores:
+                x = np.array(self.disorders[parameters[0]]) / np.array(self.averages[parameters[0]])
+                y = np.array(self.disorders[parameters[1]]) / np.array(self.averages[parameters[1]])
+                z, z_high_err, z_low_err = self.get_relevant_scores(score)
+                fig = plt.figure(figsize=FIGSIZE)
+                ax = fig.add_subplot(111, projection='3d')
+                ax.scatter(x, y, z)
+                plt.xlabel(parameters[0] + " disorder")
+                plt.ylabel(parameters[1] + " disorder")
+                if self.outDir is not None:
+                    plt.savefig(os.path.join(self.outDir, score + "_" + parameters[0] + '_' + parameters[1] + '_' 'disorder.png'))
+        else:
+            for param in parameters:
+                for score in scores:
+                    x = np.array(self.disorders[param])/np.array(self.averages[param])
+                    y, y_high_err, y_low_err = self.get_relevant_scores(score)
+                    plt.figure(figsize=FIGSIZE)
+                    plt.scatter(x,y)
+                    plt.xlabel(param + " disorder")
+                    plt.ylabel(score)
+                    if self.outDir is not None:
+                        plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'disorder.png'))
+
+    def plot_results_by_average(self, parameters, scores):
         for param in parameters:
             for score in scores:
-                x = self.disorders[param]
+                x = self.averages[param]
                 y, y_high_err, y_low_err = self.get_relevant_scores(score)
-                plt.figure()
+                plt.figure(figsize=FIGSIZE)
                 plt.scatter(x,y)
-                plt.xlabel(param + " disorder")
+                plt.xlabel(param + " average")
                 plt.ylabel(score)
                 if self.outDir is not None:
-                    plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'disorder.png'))
+                    plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'average.png'))
+
+    def plot_average_IV(self, label, err=True, errorevery=10, Vlabel='Voltage', Ilabel='Current', shift=0,
+                        fmt_up='r.', fmt_down='b.', fit=False):
+        VUp = self.V[:self.mid_idx]
+        IUp = self.I[:self.mid_idx]
+        IErrUp = self.IErr[:self.mid_idx]
+        VthresholdUp = np.min(VUp[IUp > IErrUp*2])
+        IUp = IUp[VUp > VthresholdUp]
+        IErrUp = IErrUp[VUp > VthresholdUp]
+        VUp = (VUp[VUp > VthresholdUp] - VthresholdUp)/VthresholdUp
+
+
+        VDown = self.V[self.mid_idx:]
+        IDown = self.I[self.mid_idx:]
+        IErrDown = self.IErr[self.mid_idx:]
+        VthresholdDown = np.min(VDown[IDown > IErrDown * 2])
+        IDown = IDown[VDown > VthresholdDown]
+        IErrDown = IErrDown[VDown > VthresholdDown]
+        VDown = (VDown[VDown > VthresholdDown] - VthresholdDown) / VthresholdDown
+
+        if err:
+            plt.errorbar(VUp, IUp + shift, fmt=fmt_up, yerr=IErrUp,
+                         errorevery=errorevery, label=label + " up")
+            plt.errorbar(VDown, IDown + shift, fmt=fmt_down,
+                         yerr=IErrDown,
+                         errorevery=errorevery, label=label + " down")
+        else:
+            plt.loglog(VUp, IUp + shift, fmt_up, label=label + " up")
+            plt.loglog(VDown, IDown + shift, fmt_down, label=label + " down")
+
+        if fit:
+            params, cov = curve_fit(f=lambda x,a,b: a*x**2 + b*x,xdata=VUp,ydata=VDown,
+                                    p0=[0,0],bounds=(-np.inf, np.inf))
+
+        plt.xlabel(Vlabel)
+        plt.ylabel(Ilabel)
+
+
 
     def average_similar_results(self, xs, ys, ys_high_err, ys_low_err):
+        ys = np.array(ys)
+        ys_high_err = np.array(ys_high_err)
+        ys_low_err = np.array(ys_low_err)
         new_x = []
         new_y = []
         new_y_high_err = []
@@ -1001,9 +1109,9 @@ class MultiResultAnalyzer:
             if x not in new_x:
                 new_x.append(x)
                 indices = [i for i, val in enumerate(xs) if val == x]
-                relevant_ys = np.array(ys[indices])
-                relevant_high_err = np.array(ys_high_err[indices])
-                relevant_low_err = np.array(ys_low_err[indices])
+                relevant_ys = ys[indices]
+                relevant_high_err = ys_high_err[indices]
+                relevant_low_err = ys_low_err[indices]
                 new_y.append(np.average(relevant_ys))
                 new_y_high_err.append(np.sqrt(np.average(relevant_high_err**2)/relevant_high_err.size))
                 new_y_low_err.append(np.sqrt(np.average(relevant_low_err**2)/relevant_low_err.size))
@@ -1115,8 +1223,8 @@ if __name__ == "__main__":
 
     elif action == "jumps":
         ###### Jumps analysis ############
-        directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10] for Cratio in [1,2]]
+        directory = "/home/kasirershahar/University/Research/old_results/bgu_2d_finite_temperature_different_disorders"
+        names = [f.replace("_IV.png", "") for f in os.listdir(directory) if "_IV.png" in f]
         full = True
         save_re_analysis = False
         for name in names:
@@ -1126,6 +1234,28 @@ if __name__ == "__main__":
             s.plot_jumps_freq("I")
             # s.plot_results()
             plt.show()
+
+    elif action == "threshold_voltage":
+        # directory = "/home/kasirershahar/University/Research/old_results/2d_array_bgu_different_disorder"
+        # names = ["array_10_10_c_disorder_run_" + str(run) for run in range(1,6)]
+        # names.extend(["array_10_10_cg_c_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_cg_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_c_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_cg_c_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_cg_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_disorder_run_" + str(run) for run in range(1,6)])
+        # names.extend(["array_10_10_r_vg_disorder_run_" + str(run) for run in range(1,6)])
+        directory = "/home/kasirershahar/University/Research/old_results/bgu_2d_finite_temperature_different_disorders"
+        names = [f.replace("_IV.png","") for f in os.listdir(directory) if "_IV.png" in f]
+        directories_list = [directory] * len(names)
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True,reAnalyze=False,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"], relevant_running_params=["C_std","R_std", "R_avg","C_avg"])
+        # m.plot_score_by_parameter('thresholdVoltageUp', ["R_std"], 'title', average_results=True, normalizing_parameter_names=["R_avg"])
+        # m.plot_score_by_parameter('thresholdVoltageUp', ["R_std","C_std"], 'Threshold Voltage', average_results=True,
+        #                           normalizing_parameter_names=["C_avg"])
+        m.plot_results_by_disorder(["R", "C"],["thresholdVoltageUp"], plot3D=True)
+
+        plt.show()
 
     elif action == "compareIV": # compares methods
         output_dir = 'graph_results'
@@ -1325,19 +1455,45 @@ if __name__ == "__main__":
                      label=labelprefix + " numerical results", shift=shift)
         # plt.plot(Rratios, np.array(approx) + shift, "orange", label=labelprefix + " analytic approximation")
         plt.show()
+    elif action == 'IV_different_temperatures':
+        directory = "/home/kasirershahar/University/Research/old_results/same_array_different_temperature"
+        Ts = [0.001, 0.002, 0.005, 0.007, 0.01, 0.015, 0.02]
+        names = ["array_10_10_T_" + str(T) for T in Ts]
+        shift=0
+        for T,name in zip(Ts,names):
+            p = SingleResultsProcessor(directory, name, reAnalyze=True, graph=False, fullOutput=True)
+            p.plot_IV("T = " + str(T), Vnorm=1/2, Inorm=1/20, shift=shift, err=True, errorevery=5,alternative=False,
+                      Ilabel="I(<R><C>)/e",Vlabel="V<C>/e")
+            shift+=0.3
+        plt.xlim(1,2)
+        plt.ylim(-0.1,2.5)
+        plt.legend(["Increasing voltage", "Decreasing voltage"])
+        plt.show()
+    elif action == 'average_IV':
+        directory = "bgu_2d_arrays_different_cg"
+        names = ["array_10_10_disorder_c_std_0.9_r_std_9.5_cg_" + str(cg) + "_run_" + str(run) for run in range(1,11) for cg in [1,2]]
+        full = True
+        m = MultiResultAnalyzer([directory]*len(names),names,full=full,reAnalyze=False)
+        m.plot_average_IV("average IV",err=False, errorevery=10)
+        plt.show()
+
 
     else:
         ###### General analysis ############
-        directory = "graph_results"
-        names = ["gillespie_1_1_big_CG_big_R2"]
+        directory = "bgu_2d_arrays_different_cg"
+        names = ["array_10_10_disorder_c_std_0.9_r_std_9.5_cg_1_run_4",
+                 "array_10_10_disorder_c_std_0.9_r_std_9.5_cg_1_run_5"]
         full = True
         save_re_analysis = False
         for name in names:
-            s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False)
+            s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, reAnalyze=True)
             if save_re_analysis:
                 s.save_re_analysis()
-            s.plot_jumps_freq("I")
-            s.plot_results()
+            # s.plot_jumps_freq("I")
+            # s.plot_results()
             # s.plot_array_params("R")
             # s.plot_array_params("C")
+            # s.plot_voltage()
+            plt.figure()
+            s.plot_IV("IV",err=True, errorevery=10, alternative=True)
         plt.show()

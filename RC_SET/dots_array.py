@@ -6,7 +6,7 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 import matplotlib
-matplotlib.use("Agg")
+# matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
@@ -144,35 +144,39 @@ class TunnelingRateCalculator:
         self.deltaEmax = deltaEmax
         self.deltaEstep = deltaEstep
         self.rateFunc = rateFunc
+        self.deltaEvals = None
+        self.vals = None
         self.set_results()
         self.set_approx()
+        self.plot_rate()
+        plt.show()
 
     def isWriting(self):
         return os.path.exists(os.path.join(self.dirName, "writing.txt"))
 
     def getWritingLock(self):
+        while self.isWriting():
+            sleep(60)
         with open(os.path.join(self.dirName, "writing.txt"), "w") as f:
             f.write("writing")
 
     def freeWritingLock(self):
         os.remove(os.path.join(self.dirName, "writing.txt"))
 
-
     def set_results(self):
         can_load = False
         deltaEmin = None
         deltaEmax = None
         deltaEstep = None
-
         if os.path.isdir(self.dirName):
-            while self.isWriting():
-                sleep(60)
+            self.getWritingLock()
             deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
             deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
             deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))
             can_load = deltaEmin <= self.deltaEmin and deltaEmax >= self.deltaEmax and deltaEstep <= self.deltaEstep
         else:
             os.mkdir(self.dirName)
+            self.getWritingLock()
         if can_load:
             self.deltaEstep = deltaEstep
             self.deltaEmax = deltaEmax
@@ -180,11 +184,10 @@ class TunnelingRateCalculator:
             self.deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
             self.vals = np.load(os.path.join(self.dirName, "vals.npy"))
         else:
-            self.getWritingLock()
             self.deltaEvals = np.arange(self.deltaEmin, self.deltaEmax, self.deltaEstep)
             self.vals = self.rateFunc(self.deltaEvals, self.Ec, self.otherParam, self.T)
             self.saveVals()
-            self.freeWritingLock()
+        self.freeWritingLock()
         return True
 
     def saveVals(self):
@@ -220,9 +223,20 @@ class TunnelingRateCalculator:
         self.set_approx()
         print("Low limit dencreased, Emin= " + str(self.deltaEmin))
 
+
+    def update_rates(self):
+        self.getWritingLock()
+        self.deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
+        self.deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
+        self.deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))
+        self.deltaEvals = np.arange(self.deltaEmin, self.deltaEmax, self.deltaEstep)
+        self.vals = np.load(os.path.join(self.dirName, "vals.npy"))
+        self.set_approx()
+        self.freeWritingLock()
+
     def get_tunnling_rates(self, deltaE):
-        while self.isWriting():
-            sleep(60)
+        if self.deltaEmin - np.min(deltaE) >= -self.deltaEstep or self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
+            self.update_rates()
         while self.deltaEmin - np.min(deltaE) >= -self.deltaEstep:
             self.getWritingLock()
             self.decrease_low_limit()
@@ -521,7 +535,7 @@ class DotArray:
         return self._constQnPart + self._matrixQnPart.dot(self.getNprimeForGivenN(n))
 
     def get_dist_from_steady(self, n, Q):
-        return np.abs(np.average(flattenToColumn(Q) - self.get_steady_Q_for_given_n(n)))
+        return np.max(np.abs(flattenToColumn(Q) - self.get_steady_Q_for_given_n(n)))
 
 
     def setConstWork(self):
@@ -1105,6 +1119,8 @@ class Simulator:
             new_err = self.dotArray.get_dist_from_steady(n_avg, Q_avg)
             if err < new_err:
                 not_decreasing += 1
+                if not_decreasing > STEADY_STATE_REP:
+                    print("No convergaence")
             err = new_err
         return True
 
