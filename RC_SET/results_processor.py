@@ -1089,9 +1089,14 @@ class MultiResultAnalyzer:
             plt.loglog(VDown, IDown + shift, fmt_down, label=label + " down")
 
         if fit:
-            params, cov = curve_fit(f=lambda x,a,b: a*x**2 + b*x,xdata=VUp,ydata=VDown,
+            def power_law(x,a,b):
+                return a*x**2 + b*x
+            paramsUp, covUp = curve_fit(f=power_law,xdata=VUp[VUp < 0.5],ydata=IUp[VUp < 0.5],
                                     p0=[0,0],bounds=(-np.inf, np.inf))
-
+            plt.loglog(VUp, power_law(VUp,*paramsUp), label="fit up")
+            paramsDown, covDown = curve_fit(f=power_law, xdata=VDown[VDown < 0.5], ydata=IDown[VDown < 0.5],
+                                        p0=[0, 0], bounds=(-np.inf, np.inf))
+            plt.loglog(VDown, power_law(VDown, *paramsDown), label="fit down")
         plt.xlabel(Vlabel)
         plt.ylabel(Ilabel)
 
@@ -1473,8 +1478,8 @@ if __name__ == "__main__":
         directory = "bgu_2d_arrays_different_cg"
         names = ["array_10_10_disorder_c_std_0.9_r_std_9.5_cg_" + str(cg) + "_run_" + str(run) for run in range(1,11) for cg in [1,2]]
         full = True
-        m = MultiResultAnalyzer([directory]*len(names),names,full=full,reAnalyze=False)
-        m.plot_average_IV("average IV",err=False, errorevery=10)
+        m = MultiResultAnalyzer([directory]*len(names),names,full=full, reAnalyze=False)
+        m.plot_average_IV("average IV",err=False, errorevery=10, fit=True)
         plt.show()
 
 
