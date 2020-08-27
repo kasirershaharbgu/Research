@@ -12,7 +12,7 @@ n_avg=0
 n_std=0
 q_avg=0
 q_std=0
-vstep=0.001
+vstep=0.01
 rg_avg=500
 rg_std=0
 cg_std=0
@@ -32,7 +32,7 @@ custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 temperature_gradient=0
-vmax=3
+vmax=5
 efermi=""
 gap=0
 T=0.001
@@ -53,7 +53,7 @@ columns=10
 double_loop=""
 double_time=""
 input=""
-for cg_avg in 1 2 5 10 30
+for cg_avg in 2 5 10 30
 do 
 	for run in 1 2 3 4 5 6 7 8 9 10
 	do
