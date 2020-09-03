@@ -53,7 +53,7 @@ columns=10
 double_loop=""
 double_time=""
 input=""
-for cg_avg in 2 5 10 30
+for cg_avg in 5 10 30
 do 
 	for run in 1 2 3 4 5 6 7 8 9 10
 	do
