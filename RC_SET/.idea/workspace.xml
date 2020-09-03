@@ -20,7 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +74,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.dots_array">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -125,7 +128,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="python3 dots_array.py -M 10 -N 10 --vmin 0 --vmax 2 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.005 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o super_conducting_array_different_temperatures -i super_conducting_array_different_temperatures/runningParameters_array_10_10_disorder_c_std_0.1_r_std_9_run_1.txt --full --current-map --superconducting" />
+      <option name="PARAMETERS" value="python3 dots_array.py -M 1 -N 1 --vmin 1 --vmax 0.1 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name single_island -o dbg_IT --full --current-map --calc-it" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -251,7 +254,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="average_IV" />
+      <option name="PARAMETERS" value="--action plot_score_by_disorder --score thresholdVoltageUp --score thresholdVoltageDown --parameter R --normalizing C_avg --normalizing R_avg -i $USER_HOME$/University/Research/simulation_results/zero_temperature/ --window-size 0.05" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -337,8 +340,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array" />
+        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.dynamics_simulation" />
         <item itemvalue="Python.ising1d" />
@@ -386,58 +389,66 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598452692383">
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598972992644">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598452692383" />
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598972992644" />
+    <state x="728" y="345" width="525" height="423" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1598884618639">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="728" y="345" width="525" height="423" key="#com.intellij.ide.util.TreeClassChooserDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598884618639" />
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl" timestamp="1597329223318">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1598510222928">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1598972994110">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598510222928" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1598510222928">
+    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994110" />
+    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1598972994109">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598510222928" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1598510222928">
+    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994109" />
+    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1598972994109">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598510222928" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1598510222928">
+    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994109" />
+    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1598972994110">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598510222928" />
-    <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1598260905019">
+    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994110" />
+    <state width="1825" height="377" key="GridCell.Tab.1.bottom" timestamp="1598962359055">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="345" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598260905019" />
-    <state width="1825" height="345" key="GridCell.Tab.1.center" timestamp="1598260905019">
+    <state width="1825" height="377" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
+    <state width="1825" height="377" key="GridCell.Tab.1.center" timestamp="1598962359055">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="345" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598260905019" />
-    <state width="1825" height="345" key="GridCell.Tab.1.left" timestamp="1598260905019">
+    <state width="1825" height="377" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
+    <state width="1825" height="377" key="GridCell.Tab.1.left" timestamp="1598962359055">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="345" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598260905019" />
-    <state width="1825" height="345" key="GridCell.Tab.1.right" timestamp="1598260905019">
+    <state width="1825" height="377" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
+    <state width="1825" height="377" key="GridCell.Tab.1.right" timestamp="1598962359055">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="345" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598260905019" />
+    <state width="1825" height="377" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
     <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog" timestamp="1596370832608">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596370832608" />
-    <state width="924" height="526" key="XDebugger.FullValuePopup" timestamp="1594212516669">
+    <state width="924" height="526" key="XDebugger.FullValuePopup" timestamp="1598539125712">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="924" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053@72.27.1848.1053" timestamp="1594212516669" />
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1596971197249">
+    <state width="924" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053@72.27.1848.1053" timestamp="1598539125712" />
+    <state x="532" y="265" width="917" height="583" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1598884631366">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1596971197249" />
+    <state x="532" y="265" width="917" height="583" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/72.27.1848.1053@72.27.1848.1053" timestamp="1598884631366" />
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1599033017375">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1599033017375" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -459,12 +470,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1899</line>
+          <line>1975</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1904</line>
+          <line>1980</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -494,52 +505,47 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>696</line>
+          <line>726</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>706</line>
+          <line>736</line>
           <option name="timeStamp" value="443" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>712</line>
+          <line>742</line>
           <option name="timeStamp" value="444" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>399</line>
+          <line>397</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>129</line>
+          <line>127</line>
           <option name="timeStamp" value="456" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>125</line>
+          <line>123</line>
           <option name="timeStamp" value="457" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1009</line>
-          <option name="timeStamp" value="474" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2147</line>
+          <line>2231</line>
           <option name="timeStamp" value="477" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2144</line>
+          <line>2228</line>
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2149</line>
+          <line>2233</line>
           <option name="timeStamp" value="480" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -559,12 +565,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>337</line>
+          <line>365</line>
           <option name="timeStamp" value="485" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>157</line>
+          <line>177</line>
           <option name="timeStamp" value="495" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -580,7 +586,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1140</line>
+          <line>1318</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -605,43 +611,58 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1324</line>
+          <line>1577</line>
           <option name="timeStamp" value="547" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1351</line>
+          <line>1604</line>
           <option name="timeStamp" value="549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>948</line>
+          <line>1032</line>
           <option name="timeStamp" value="552" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1203</line>
+          <line>1381</line>
           <option name="timeStamp" value="553" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1339</line>
+          <line>1592</line>
           <option name="timeStamp" value="555" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1116</line>
-          <option name="timeStamp" value="557" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1117</line>
+          <line>1122</line>
           <option name="timeStamp" value="562" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>205</line>
+          <line>227</line>
           <option name="timeStamp" value="568" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1736</line>
+          <option name="timeStamp" value="575" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1246</line>
+          <option name="timeStamp" value="593" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1493</line>
+          <option name="timeStamp" value="602" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>927</line>
+          <option name="timeStamp" value="603" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
