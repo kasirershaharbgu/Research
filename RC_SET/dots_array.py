@@ -15,11 +15,9 @@ from optparse import OptionParser
 import re as regex
 from time import sleep
 from multiprocessing import Pool
-from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
 from mpmath import quad, exp, sqrt, fabs, re, inf, ninf
 from scipy.interpolate import interp1d
-from scipy.stats import norm
 from ast import literal_eval
 from copy import copy
 
@@ -402,6 +400,13 @@ class DotArray:
         Tv = (Th[1:,:-1] + Th[1:,1:])/2
         return np.hstack((Th.flatten(), Th.flatten(), Tv.flatten(), Tv.flatten()))
 
+    def setTemperature(self, temperature):
+        self.temperature = temperature
+
+
+    def getTemperature(self):
+        return self.temperature
+
     def resetCharge(self):
         """
         Reset the counter for total charge passed
@@ -510,7 +515,7 @@ class DotArray:
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
         # print(-1/self._JeigenValues)
-        self.timeStep = -10/np.max(self._JeigenValues)
+        self.timeStep = -2/np.max(self._JeigenValues)
         self.default_dt = -0.1/np.min(self._JeigenValues)
         invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
         self._constQnPart = invMat.dot(self.VG)
@@ -1266,6 +1271,60 @@ class Simulator:
             res = res + (np.array(Imaps),)
         return res
 
+    def calcIT(self, Tmax, Tstep, fullOutput=False, print_stats=False,
+               currentMap=False, basePath="", resume=False):
+        I = []
+        IErr = []
+        ns = []
+        Qs = []
+        nsErr = []
+        QsErr = []
+        Imaps = []
+        T_vec = np.arange(self.dotArray.getTemperature(), Tmax, Tstep)
+        if resume:
+            resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
+            I = list(resumeParams[0])
+            IErr = list(resumeParams[1])
+            Tind = len(I)
+            T_vec = T_vec[Tind:]
+            self.dotArray.setOccupation(resumeParams[2])
+            self.dotArray.setGroundCharge(resumeParams[3])
+            if fullOutput:
+                ns = list(resumeParams[4])
+                Qs = list(resumeParams[5])
+                nsErr = list(resumeParams[6])
+                QsErr = list(resumeParams[7])
+            if currentMap:
+                Imaps = list(resumeParams[-1])
+        for T in T_vec:
+            self.dotArray.setTemperature(T)
+            # running once to get to steady state
+            if not self.constQ:
+                self.getToSteadyState()
+            # now we are in steady state calculate current
+            stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            current = stepRes[0]
+            currentErr = stepRes[1]
+            if fullOutput:
+                ns.append(stepRes[2])
+                Qs.append(stepRes[3])
+                nsErr.append(stepRes[4])
+                QsErr.append(stepRes[5])
+            if currentMap:
+                Imaps.append(stepRes[-1])
+            I.append(current)
+            IErr.append(currentErr)
+            if self.index == 0:
+                print(T, end=',')
+            self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps=Imaps, fullOutput=fullOutput,
+                           currentMap=currentMap, basePath=basePath)
+        res = (np.array(I), np.array(IErr), T_vec)
+        if fullOutput:
+            res = res + (np.array(ns), np.array(Qs), np.array(nsErr), np.array(QsErr))
+        if currentMap:
+            res = res + (np.array(Imaps),)
+        return res
+
     def printState(self):
         self.dotArray.printState()
 
@@ -1591,14 +1650,19 @@ class GraphSimulator:
 
 def runSingleSimulation(index, VL0, VR0, vSym, Q0, n0,Vmax, Vstep, dotArray,
                         fullOutput=False, printState=False, useGraph=False, currentMap=False,
-                        basePath="", resume=False, constQ=False, double_time=False, double_loop=False):
+                        basePath="", resume=False, constQ=False, double_time=False, double_loop=False,
+                        calcIT=False):
     if useGraph:
         simulator = GraphSimulator(index, VL0, VR0, Q0, n0, dotArray)
     else:
         simulator = Simulator(index, VL0, VR0, Q0, n0, dotArray, constQ)
-    out = simulator.calcIV(Vmax, Vstep, vSym, fullOutput=fullOutput, print_stats=printState,
-                           currentMap=currentMap, basePath=basePath, resume=resume, double_time=double_time,
-                           double_loop=double_loop)
+    if calcIT:
+        out = simulator.calcIT(Vmax, Vstep, fullOutput=fullOutput, print_stats=printState,
+                               currentMap=currentMap, basePath=basePath, resume=resume)
+    else:
+        out = simulator.calcIV(Vmax, Vstep, vSym, fullOutput=fullOutput, print_stats=printState,
+                               currentMap=currentMap, basePath=basePath, resume=resume, double_time=double_time,
+                               double_loop=double_loop)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
 
@@ -1646,7 +1710,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False,
                       superconducting=False, gap=0, leaping=False, modifyR=False, plotVoltages=False,
-                      constQ=False, frame_norm=False, double_time=False, double_loop=False):
+                      constQ=False, frame_norm=False, double_time=False, double_loop=False, calcIT=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         dbg = True
@@ -1704,7 +1768,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
                                     (repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
-                                     printState, useGraph, currentMap,basePath, resume, constQ, double_time, double_loop))
+                                     printState, useGraph, currentMap,basePath, resume, constQ, double_time,
+                                     double_loop, calcIT))
             results.append(res)
         for res in results:
             result = res.get()
@@ -1732,7 +1797,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         print("Starting serial run")
         for repeat in range(repeats):
             result = runSingleSimulation(repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
-                                         printState, useGraph, currentMap,basePath, resume, constQ, double_time, double_loop)
+                                         printState, useGraph, currentMap,basePath, resume, constQ, double_time,
+                                         double_loop, calcIT)
             I = result[0]
             IErr = result[1]
             currentMapInd = 3
@@ -1773,7 +1839,14 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     fig = plt.figure()
     IplusErr = avgI + avgIErr
     IminusErr = avgI - avgIErr
-    if double_loop:
+    if calcIT:
+        plt.plot(V, avgI, 'g-', V, IplusErr, 'g--',
+                 V, IminusErr, 'g--')
+        plt.xlabel('Temperature')
+        plt.ylabel('Current from left to right')
+        plt.savefig(basePath + "_IT.png")
+        np.save(basePath + "_T", V)
+    elif double_loop:
         plt.plot(V[:V.size // 4], avgI[:V.size // 4], 'b-',
                  V[:V.size // 4], IplusErr[:V.size // 4], 'b--',
                  V[:V.size // 4], IminusErr[:V.size // 4], 'b--',
@@ -1787,6 +1860,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                  V[3 * V.size // 4 :], IplusErr[3 * V.size // 4 :], 'm--',
                  V[3 * V.size // 4 :], IminusErr[3 * V.size // 4 :], 'm--',
                  )
+        plt.savefig(basePath + "_IV.png")
+        np.save(basePath + "_V", V)
     else:
         plt.plot(V[:V.size//2], avgI[:V.size//2], 'b-',
                  V[:V.size//2], IplusErr[:V.size//2], 'b--',
@@ -1795,10 +1870,10 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                  V[V.size//2:], IplusErr[V.size//2:], 'r--',
                  V[V.size//2:], IminusErr[V.size//2:], 'r--'
                  )
-    plt.savefig(basePath + "_IV.png")
+        plt.savefig(basePath + "_IV.png")
+        np.save(basePath + "_V", V)
     np.save(basePath + "_I", avgI)
     np.save(basePath + "_IErr", avgIErr)
-    np.save(basePath + "_V", V)
     plt.close(fig)
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
@@ -1825,7 +1900,7 @@ def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=Fa
         os.remove(baseName + "_current_map.npy")
     return True
 
-def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm=False):
+def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm=False, calcIT=False):
     if binary:
         Imaps[Imaps>0] = 1
         Imaps[Imaps<0] = -1
@@ -1853,20 +1928,21 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
         cb2.set_label('Occupation')
         frames = [(Imaps[i], V[i], n[i]) for i in range(len(V))]
         im_ani = animation.FuncAnimation(fig,
-                                         plotCurrentMaps(im, text, M, N, full=True, im2=im2, frame_norm=frame_norm),
+                                         plotCurrentMaps(im, text, M, N, full=True, im2=im2, frame_norm=frame_norm,
+                                                         calcIT=calcIT),
                                          frames=frames, interval=100,
                                          repeat_delay=1000,
                                          blit=True)
     else:
         frames = [(Imaps[i], V[i]) for i in range(len(V))]
-        im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N, frame_norm=frame_norm),
+        im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N, frame_norm=frame_norm, calcIT=calcIT),
                                         frames=frames, interval=100,
                                          repeat_delay=1000,
                                         blit=True)
     im_ani.save(path + '.mp4', writer=writer)
     plt.close(fig)
 
-def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False):
+def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False, calcIT=False):
     '''
     updating the plot to current currents map
     :return: image for animation
@@ -1906,7 +1982,10 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False):
         J[np.ix_(vertRows, vertCols)] = np.repeat(I[1:M:2,:],2,axis=0)
         J_masked = np.ma.masked_array(J,Jmask)
         im.set_array(J_masked)
-        text.set_text('Vext = ' + str(Vext))
+        if calcIT:
+            text.set_text('T = ' + str(Vext))
+        else:
+            text.set_text('Vext = ' + str(Vext))
         if full:
             dots_im[np.ix_(dot_rows, dot_cols)] = n
             dots_im_masked = np.ma.masked_array(dots_im, dots_im_mask)
@@ -2002,6 +2081,11 @@ def getOptions():
                       default=False, action='store_true')
     parser.add_option("--double-loop", dest="double_loop",
                       help="if true the voltage would be raised and lowered twice"
+                           " [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--calc-it", dest="calcIT",
+                      help="Instead of calculating IV curve calculates current as a function of the temperature,"
+                           " in this case Vmax, Vstep would be used as Tmax, Tstep instead"
                            " [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
@@ -2240,7 +2324,8 @@ if __name__ == "__main__":
                                      dbg=dbg, plotCurrentMaps=plot_current_map, plotBinaryCurrentMaps=plot_binary_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping,
                                      modifyR=modifyR, constQ=constQ, frame_norm=frame_norm,
-                                     double_time=options.double_time, double_loop=options.double_loop)
+                                     double_time=options.double_time, double_loop=options.double_loop,
+                                     calcIT=options.calcIT)
     saveParameters(savePath, fileName, options, array_params)
 
     if dbg:
