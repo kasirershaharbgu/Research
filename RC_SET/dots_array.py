@@ -1171,6 +1171,8 @@ class Simulator:
 
     def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
+        if not os.path.isfile(baseName + "_I.npy"):
+            return None
         I = np.load(baseName + "_I.npy")
         loadLen = len(I)
         IErr = np.load(baseName + "_IErr.npy")
@@ -1227,20 +1229,21 @@ class Simulator:
         VR_res = np.copy(VR_vec)
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
-            I = list(resumeParams[0])
-            IErr = list(resumeParams[1])
-            Vind = len(I)
-            VL_vec = VL_vec[Vind:]
-            VR_vec = VR_vec[Vind:]
-            self.dotArray.setOccupation(resumeParams[2])
-            self.dotArray.setGroundCharge(resumeParams[3])
-            if fullOutput:
-                ns = list(resumeParams[4])
-                Qs = list(resumeParams[5])
-                nsErr = list(resumeParams[6])
-                QsErr = list(resumeParams[7])
-            if currentMap:
-                Imaps = list(resumeParams[8])
+            if resumeParams is not None:
+                I = list(resumeParams[0])
+                IErr = list(resumeParams[1])
+                Vind = len(I)
+                VL_vec = VL_vec[Vind:]
+                VR_vec = VR_vec[Vind:]
+                self.dotArray.setOccupation(resumeParams[2])
+                self.dotArray.setGroundCharge(resumeParams[3])
+                if fullOutput:
+                    ns = list(resumeParams[4])
+                    Qs = list(resumeParams[5])
+                    nsErr = list(resumeParams[6])
+                    QsErr = list(resumeParams[7])
+                if currentMap:
+                    Imaps = list(resumeParams[8])
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
@@ -1283,19 +1286,20 @@ class Simulator:
         T_vec = np.arange(self.dotArray.getTemperature(), Tmax, Tstep)
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
-            I = list(resumeParams[0])
-            IErr = list(resumeParams[1])
-            Tind = len(I)
-            T_vec = T_vec[Tind:]
-            self.dotArray.setOccupation(resumeParams[2])
-            self.dotArray.setGroundCharge(resumeParams[3])
-            if fullOutput:
-                ns = list(resumeParams[4])
-                Qs = list(resumeParams[5])
-                nsErr = list(resumeParams[6])
-                QsErr = list(resumeParams[7])
-            if currentMap:
-                Imaps = list(resumeParams[-1])
+            if resumeParams is not None:
+                I = list(resumeParams[0])
+                IErr = list(resumeParams[1])
+                Tind = len(I)
+                T_vec = T_vec[Tind:]
+                self.dotArray.setOccupation(resumeParams[2])
+                self.dotArray.setGroundCharge(resumeParams[3])
+                if fullOutput:
+                    ns = list(resumeParams[4])
+                    Qs = list(resumeParams[5])
+                    nsErr = list(resumeParams[6])
+                    QsErr = list(resumeParams[7])
+                if currentMap:
+                    Imaps = list(resumeParams[-1])
         for T in T_vec:
             self.dotArray.setTemperature(T)
             # running once to get to steady state
@@ -1681,6 +1685,8 @@ def saveRandomParams(VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,basePath):
 
 def loadRandomParams(basePath):
     baseName = basePath + "_temp_"
+    if not os.path.isfile(baseName + "VG.npy"):
+        return None
     VG0 = np.load(baseName + "VG.npy")
     Q0 = np.load(baseName + "Q0.npy")
     n0 = np.load(baseName + "n0.npy")
@@ -1725,15 +1731,22 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         saveCurrentMaps(avgImaps, V, basePath + "_Imap",full=fullOutput,
                         n=n, binary=plotBinaryCurrentMaps, frame_norm=frame_norm)
         exit(0)
-    if not resume:
+    load = False
+    if resume:
+        print("Loading array parameters")
+        loaded = loadRandomParams(basePath)
+        if loaded is not None:
+            VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loaded
+            load = True
+        else:
+            print("Couldn't load parameters, generating new parameters")
+    if not load:
         print("Saving array parameters")
         saveRandomParams(np.array(VG0),
                          np.array(Q0), np.array(n0), np.array(CG),
                          np.array(RG), np.array(Ch), np.array(Cv),
                          np.array(Rh), np.array(Rv), basePath)
-    else:
-        print("Loading array parameters")
-        VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loadRandomParams(basePath)
+
     if superconducting:
         prototypeArray = JJArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                  np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),

@@ -22,8 +22,6 @@
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -327,16 +325,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.toy model" />
-      <item itemvalue="Python.thermalArray" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.single dot run" />
+      <item itemvalue="Python.thermalArray" />
+      <item itemvalue="Python.toy model" />
     </list>
     <recent_temporary>
       <list>
@@ -401,38 +399,38 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom" timestamp="1598972994110">
+    <state width="1825" height="377" key="GridCell.Tab.0.bottom" timestamp="1599128982599">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994110" />
-    <state width="1825" height="249" key="GridCell.Tab.0.center" timestamp="1598972994109">
+    <state width="1825" height="377" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
+    <state width="1825" height="377" key="GridCell.Tab.0.center" timestamp="1599128982598">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994109" />
-    <state width="1825" height="249" key="GridCell.Tab.0.left" timestamp="1598972994109">
+    <state width="1825" height="377" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982598" />
+    <state width="1825" height="377" key="GridCell.Tab.0.left" timestamp="1599128982598">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994109" />
-    <state width="1825" height="249" key="GridCell.Tab.0.right" timestamp="1598972994110">
+    <state width="1825" height="377" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982598" />
+    <state width="1825" height="377" key="GridCell.Tab.0.right" timestamp="1599128982598">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598972994110" />
-    <state width="1825" height="377" key="GridCell.Tab.1.bottom" timestamp="1598962359055">
+    <state width="1825" height="377" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982598" />
+    <state width="1825" height="377" key="GridCell.Tab.1.bottom" timestamp="1599128982599">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
-    <state width="1825" height="377" key="GridCell.Tab.1.center" timestamp="1598962359055">
+    <state width="1825" height="377" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
+    <state width="1825" height="377" key="GridCell.Tab.1.center" timestamp="1599128982599">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
-    <state width="1825" height="377" key="GridCell.Tab.1.left" timestamp="1598962359055">
+    <state width="1825" height="377" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
+    <state width="1825" height="377" key="GridCell.Tab.1.left" timestamp="1599128982599">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
-    <state width="1825" height="377" key="GridCell.Tab.1.right" timestamp="1598962359055">
+    <state width="1825" height="377" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
+    <state width="1825" height="377" key="GridCell.Tab.1.right" timestamp="1599128982599">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598962359055" />
+    <state width="1825" height="377" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
     <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog" timestamp="1596370832608">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -470,12 +468,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1975</line>
+          <line>1988</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1980</line>
+          <line>1993</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -535,17 +533,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2231</line>
+          <line>2244</line>
           <option name="timeStamp" value="477" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2228</line>
+          <line>2241</line>
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2233</line>
+          <line>2246</line>
           <option name="timeStamp" value="480" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
