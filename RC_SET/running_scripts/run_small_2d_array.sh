@@ -34,9 +34,10 @@ custom_cv="\"\""
 temperature_gradient=0
 vmax=2
 efermi=""
-gap=0
-T=0
-f="bgu_1d_horizontal_arrays"
+superconducting="--superconducting"
+gap=0.1
+T=0.001
+f="bgu_1d_horizontal_superconducting_arrays"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
