@@ -6,11 +6,11 @@ M = 5
 N = 5
 VR = 0.0
 Vmin = 0.0
-Vmax = 3.0
+Vmax = 2.0
 vStep = 0.01
 vSym = True
 repeats = 50
-fileName = array_5_5_custome_r_c_disorder_cg_1_run_0
+fileName = array_5_5_custome_r_c_disorder_cg_50_run_0
 dist = exp
 fullOutput = True
 use_graph = False
@@ -20,7 +20,7 @@ plot_binary_current_map = False
 frame_norm = False
 dbg = False
 resume = False
-sc = False
+sc = True
 leaping = False
 constQ = False
 modifyR = False
@@ -33,7 +33,7 @@ VG_avg = 0.0
 VG_std = 0.0
 C_avg = 1.0
 C_std = 0.9
-CG_avg = 1.0
+CG_avg = 50.0
 CG_std = 0.0
 R_avg = 10.0
 R_std = 9.5
@@ -75,31 +75,31 @@ VG: [[0.]
  [0.]
  [0.]
  [0.]]
-CG: [[1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]
- [1.]]
+CG: [[50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]
+ [50.]]
 RG: [[500.]
  [500.]
  [500.]
