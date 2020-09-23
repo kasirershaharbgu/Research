@@ -1284,6 +1284,7 @@ class Simulator:
         QsErr = []
         Imaps = []
         T_vec = np.arange(self.dotArray.getTemperature(), Tmax, Tstep)
+        T_res = np.copy(T_vec)
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
             if resumeParams is not None:
@@ -1319,10 +1320,10 @@ class Simulator:
             I.append(current)
             IErr.append(currentErr)
             if self.index == 0:
-                print(T, end=',')
+                print(T, end=',', flush=True)
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps=Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
-        res = (np.array(I), np.array(IErr), T_vec)
+        res = (np.array(I), np.array(IErr), T_res)
         if fullOutput:
             res = res + (np.array(ns), np.array(Qs), np.array(nsErr), np.array(QsErr))
         if currentMap:
@@ -2007,6 +2008,48 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False, calc
         else:
             return im,text
     return updateCurrent
+
+def findPaths(Imap, rows, columns, eps=1e-5):
+    paths = []
+    paths_current = []
+    def array_DFS(i ,j , path, path_current):
+        if j == columns:
+            path_copy = copy(path)
+            path_current_copy = copy(path_current)
+            path_copy.append((i,j))
+            paths.append(path_copy)
+            paths_current.append(path_current_copy)
+            return True
+        elif (i,j) in path or i < 0 or j < 0 or i == rows:
+            return False
+        else:
+            path.append((i,j))
+            if Imap[i*2,j+1] > eps:
+                path_current.append(Imap[i*2, j + 1])
+                array_DFS(i, j + 1, path, path_current)
+                del path_current[-1]
+            if Imap[i*2,j] < -eps:
+                path_current.append(Imap[i*2 , j ])
+                array_DFS(i,j-1,path, path_current)
+                del path_current[-1]
+            if Imap[i*2-1,j] < -eps:
+                path_current.append(Imap[i*2 - 1, j ])
+                array_DFS(i - 1, j, path, path_current)
+                del path_current[-1]
+            if Imap[i*2 + 1,j] > eps:
+                path_current.append(Imap[i*2 + 1, j + 1])
+                array_DFS(i+1, j, path, path_current)
+                del path_current[-1]
+        del path[-1]
+        return True
+    for i in range(rows):
+        if Imap[i*2, 0] > eps:
+            path = []
+            path_current = [Imap[i*2, 0]]
+            array_DFS(i, 0, path, path_current)
+    return paths, paths_current
+
+
 
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
