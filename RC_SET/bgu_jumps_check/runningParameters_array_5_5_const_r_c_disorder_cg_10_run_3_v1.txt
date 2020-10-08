@@ -10,7 +10,7 @@ Vmax = 5.0
 vStep = 0.01
 vSym = True
 repeats = 50
-fileName = array_5_5_const_r_c_disorder_cg_10_run_3
+fileName = array_5_5_const_r_c_disorder_cg_10_run_3_v1
 dist = exp
 fullOutput = True
 use_graph = False
@@ -27,8 +27,8 @@ modifyR = False
 double_time = False
 double_loop = False
 calcIT = False
-output_folder = bgu_2d_custome_arrays
-params_path = 
+output_folder = bgu_jumps_check
+params_path = bgu_jumps_check/runningParameters_array_5_5_const_r_c_disorder_cg_10_run_3_v1.txt
 VG_avg = 0.0
 VG_std = 0.0
 C_avg = 1.0
@@ -138,7 +138,7 @@ Cv: [[0.         0.         0.         0.         0.        ]
 Rh: [[10. 10. 10. 10. 10. 10.]
  [10. 10. 10. 10. 10. 10.]
  [10. 10. 10. 10. 10. 10.]
- [1. 10. 10. 10. 10. 10.]
+ [ 1. 10. 10. 10. 10. 10.]
  [10. 10. 10. 10. 10. 10.]]
 Rv: [[10. 10. 10. 10. 10.]
  [10. 10. 10. 10. 10.]
