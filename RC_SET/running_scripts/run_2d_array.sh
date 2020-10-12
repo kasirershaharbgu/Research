@@ -20,7 +20,7 @@ dist="exp"
 graph=""
 currentmap="--current-map"
 full="--full"
-resume=""
+resume="--resume"
 vSym="--symmetric-v"
 leaping=""
 efermi=""
@@ -53,7 +53,7 @@ columns=10
 double_loop=""
 double_time=""
 input=""
-for cg_avg in 5 10 30
+for cg_avg in 2
 do 
 	for run in 1 2 3 4 5 6 7 8 9 10
 	do
