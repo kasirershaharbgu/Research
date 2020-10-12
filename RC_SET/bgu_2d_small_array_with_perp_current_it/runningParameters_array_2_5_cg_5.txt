@@ -1,0 +1,98 @@
+-------Running parameters--------
+T = 0.001
+temperature_gradient = 0
+gap = 0
+M = 2
+N = 5
+VR = -0.5
+VU = 0.1
+VD = -0.1
+rightElectrode = 
+leftElectrode = 
+upElectrode = "[0,0,1,0,0]"
+downElectrode = "[0,0,1,0,0]"
+Vmin = 0.5
+Vmax = 0.1
+vStep = 0.001
+vSym = True
+repeats = 50
+fileName = array_2_5_cg_5
+dist = exp
+fullOutput = True
+use_graph = False
+current_map = True
+plot_current_map = False
+plot_binary_current_map = False
+frame_norm = False
+dbg = False
+resume = False
+sc = False
+leaping = False
+constQ = False
+modifyR = False
+double_time = False
+double_loop = False
+calcIT = True
+output_folder = bgu_2d_small_array_with_perp_current_it
+params_path = 
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 2.0
+CG_avg = 5.0
+CG_std = 0.0
+R_avg = 10.0
+R_std = 20.0
+custom_rh = "[[1,5,8,12,15,19],[19,15,12,8,5,1]]"
+custom_rv = "[[1,5,10,15,19],[5,19,10,15,1],[19,15,1,10,5]]"
+custom_ch = "[[0.1,0.5,0.8,1.2,1.5,1.9],[1.9,1.5,1.2,0.8,0.5,0.1]]"
+custom_cv = "[[0.1,1,1.5,1.9,0.5],[0.1,1,1.5,1.9,0.5],[0.1,1,1.5,1.9,0.5]]"
+RG_avg = 500.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 2
+Columns: 5
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[5.]
+ [5.]
+ [5.]
+ [5.]
+ [5.]
+ [5.]
+ [5.]
+ [5.]
+ [5.]
+ [5.]]
+RG: [[500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]
+ [500.]]
+Ch: [[0.1 0.5 0.8 1.2 1.5 1.9]
+ [1.9 1.5 1.2 0.8 0.5 0.1]]
+Cv: [[0.1 1.  1.5 1.9 0.5]
+ [0.1 1.  1.5 1.9 0.5]
+ [0.1 1.  1.5 1.9 0.5]]
+Rh: [[ 1  5  8 12 15 19]
+ [19 15 12  8  5  1]]
+Rv: [[ 1  5 10 15 19]
+ [ 5 19 10 15  1]
+ [19 15  1 10  5]]
