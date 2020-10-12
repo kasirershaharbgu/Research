@@ -9,11 +9,11 @@ import matplotlib
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
+from mayavi import mlab
 from optparse import OptionParser
 import re as regex
 from time import sleep
 from multiprocessing import Pool
-from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
 from mpmath import quad, exp, sqrt, fabs, re, inf, ninf
 from scipy.interpolate import interp1d
@@ -34,7 +34,7 @@ INV_DOS = 0.01
 TAU_EPS = 0.03
 # Lyaponuv Constants
 DQ = 0.1
-Q_SHIFT = 10
+Q_SHIFT = 1
 GRAD_REP = 100
 INI_LR = 0.001
 
@@ -416,9 +416,9 @@ class DotArray:
         Iv = self.rates[2 * self.variableRightWorkLen:(2 * self.variableRightWorkLen + self.variableDownWorkLen)] - \
                       self.rates[(2 * self.variableRightWorkLen + self.variableDownWorkLen):]
         map = np.zeros((self.rows*2 - 1, self.columns+1))
-        map[1::2,:] = Ih.reshape((self.rows, self.columns+1))
+        map[::2,:] = Ih.reshape((self.rows, self.columns+1))
         if Iv.size:
-            map[::2,:-1] = Iv.reshape((self.rows - 1, self.columns))
+            map[1::2,:-1] = Iv.reshape((self.rows - 1, self.columns))
         return map
 
 
@@ -1288,6 +1288,8 @@ class GraphSimulator:
         self.lyaponuv = None
         self.rates_diff_left = None
         self.rates_diff_right = None
+        self.rows = dotArray.rows
+        self.columns = dotArray.columns
 
     def reshape_to_array(self,a):
         return a.reshape((self.dotArray.getRows(), self.dotArray.getColumns()))
@@ -1360,7 +1362,7 @@ class GraphSimulator:
         Q_copy = self.dotArray.getGroundCharge()
         n = self.get_average_state(Q)
         self.dotArray.setOccupation(n)
-        self.dotArray.setOccupation(Q)
+        self.dotArray.setGroundCharge(Q)
         v = self.dotArray.getVoltages()
         self.dotArray.setOccupation(n_copy)
         self.dotArray.setGroundCharge(Q_copy)
@@ -1416,16 +1418,22 @@ class GraphSimulator:
         return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
 
     def plot_average_voltages(self, Qmin, Qmax):
-        from mayavi import mlab
         Q_grid, voltages = self.calc_on_grid(Qmin, Qmax, self.get_average_voltages, res_len=Qmin.size)
         _, voltages_from_ground = self.calc_on_grid(Qmin, Qmax, self.get_voltages_from_ground, res_len=Qmin.size)
-        fig1 = mlab.figure()
-        surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages[0], colormap='Blues')
-        surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages_from_ground[0], colormap='Oranges')
-        fig1 = mlab.figure()
-        surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages[1], colormap='Blues')
-        surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages_from_ground[1], colormap='Oranges')
-        mlab.show()
+        if Qmin.size == 2:
+            fig1 = mlab.figure()
+            surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages[0], colormap='Blues')
+            surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages_from_ground[0], colormap='Oranges')
+            fig1 = mlab.figure()
+            surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages[1], colormap='Blues')
+            surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages_from_ground[1], colormap='Oranges')
+            mlab.show()
+        elif Qmin.size == 1:
+            fig1 = plt.figure()
+            plt.plot(Q_grid[:,0], voltages[0], Q_grid[:,0], voltages_from_ground[0])
+            plt.show()
+        else:
+            pass
 
     def find_next_QG_using_lyaponuv(self, basePath):
         q_shift = Q_SHIFT
@@ -1453,9 +1461,8 @@ class GraphSimulator:
     def calcCurrent(self, fullOutput=False, basePath=""):
         self.find_next_QG_using_gradient_descent()
         #dbg
-        # self.find_next_QG_using_lyaponuv(basePath)
-        # print(self.QG)
-        # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
+        print(self.QG)
+        self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
         self.n0 = np.floor(n_avg)
