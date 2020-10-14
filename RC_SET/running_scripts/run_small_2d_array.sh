@@ -32,7 +32,7 @@ custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 temperature_gradient=0
-vmax=5
+vmax=3
 efermi=""
 superconducting=""
 gap=0.1
@@ -56,28 +56,28 @@ cg_avg=5
 
 
 custom_ch="\"[[1,1,1,1],[1,1,1,1],[1,1,1,1]]\""
-custom_cv="\"[[1,1,1],[1,1,1]\""
+custom_cv="\"[[1,1,1],[1,1,1]]\""
 custom_rh="\"[[10,10,10,10],[10,10,10,10],[10,10,10,10]]\""
-custom_rv="\"[[10,10,10],[10,10,10]\""
+custom_rv="\"[[10,10,10],[10,10,10]]\""
 name="array_${rows}_${columns}_const_r_const_c_cg_${cg_avg}"
 qsub "$flags" -N "$name" -o "$f/$name.out" -v M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",temperature_gradient="$temperature_gradient",gap="$gap",file_name="$name",out="$f",input="$input",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi",superconducting="$superconducting",double_time="$double_time",double_loop="$double_loop",dbg="$dbg" -v custom_rh="$custom_rh" -v custom_rv="$custom_rv" -v custom_ch="$custom_ch" -v custom_cv="$custom_cv" running_scripts/run_RC_SET.sh
 sleep 1
 
 cg_avg=3.45
 custom_ch="\"[[1,0.1,0.1,1],[1,1,1,1],[1,0.1,0.1,1]]\""
-custom_cv="\"[[1,0.01,1],[1,0.01,1]\""
+custom_cv="\"[[1,0.01,1],[1,0.01,1]]\""
 custom_rh="\"[[10,10,10,10],[10,10,10,10],[10,10,10,10]]\""
-custom_rv="\"[[10,10,10],[10,10,10]\""
+custom_rv="\"[[10,10,10],[10,10,10]]\""
 name="array_${rows}_${columns}_const_r_custom_c_cg_${cg_avg}"
 qsub "$flags" -N "$name" -o "$f/$name.out" -v M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",temperature_gradient="$temperature_gradient",gap="$gap",file_name="$name",out="$f",input="$input",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi",superconducting="$superconducting",double_time="$double_time",double_loop="$double_loop",dbg="$dbg" -v custom_rh="$custom_rh" -v custom_rv="$custom_rv" -v custom_ch="$custom_ch" -v custom_cv="$custom_cv" running_scripts/run_RC_SET.sh
 sleep 1
 
 cg_avg=5
 custom_ch="\"[[1,1,1,1],[1,1,1,1],[1,1,1,1]]\""
-custom_cv="\"[[1,1,1],[1,1,1]\""
+custom_cv="\"[[1,1,1],[1,1,1]]\""
 custom_rh="\"[[1,10,10,1],[1,1,1,1],[1,10,10,1]]\""
-custom_rv="\"[[10,100,10],[10,100,10]\""
-name="array_${rows}_${columns}_const_r_custom_c_cg_${cg_avg}"
+custom_rv="\"[[10,100,10],[10,100,10]]\""
+name="array_${rows}_${columns}_const_c_custom_r_cg_${cg_avg}"
 qsub "$flags" -N "$name" -o "$f/$name.out" -v M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",temperature_gradient="$temperature_gradient",gap="$gap",file_name="$name",out="$f",input="$input",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi",superconducting="$superconducting",double_time="$double_time",double_loop="$double_loop",dbg="$dbg" -v custom_rh="$custom_rh" -v custom_rv="$custom_rv" -v custom_ch="$custom_ch" -v custom_cv="$custom_cv" running_scripts/run_RC_SET.sh
 sleep 1
 
