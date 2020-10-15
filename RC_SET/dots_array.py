@@ -933,7 +933,7 @@ class Simulator:
         if fullOutput:
             res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
         if currentMap:
-            res = res + (self.dotArray.getCurrentMap()/curr_t,)
+            res = res + (map_avg/curr_t,)
         return res
 
     def calcAverageNForGivenQ(self, Q, n0, calcVoltages=False):
@@ -1171,7 +1171,7 @@ class Simulator:
             I.append(current)
             IErr.append(currentErr)
             if self.index == 0:
-                print(VL - VR, end=',', flush=True)
+                print("%.3f" % float(VL - VR), end=',', flush=True)
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
@@ -1227,7 +1227,7 @@ class Simulator:
             I.append(current)
             IErr.append(currentErr)
             if self.index == 0:
-                print(T, end=',', flush=True)
+                print("%.3f" % float(T), end=',', flush=True)
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps=Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), T_res)
@@ -1535,7 +1535,7 @@ class GraphSimulator:
                 Qs = list(resumeParams[4])
         for VL,VR in zip(VL_vec,VR_vec):
             if self.index == 0:
-                print(VL-VR,end=',')
+                print("%.3f" % float(VL-VR),end=',', flush=True)
             self.dotArray.changeVext(VL, VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
@@ -1549,7 +1549,7 @@ class GraphSimulator:
             self.saveState(I, ns, Qs, fullOutput=fullOutput, basePath=basePath)
         result = (np.array(I), np.zeros((len(I),)), VL_res - VR_res)
         if fullOutput:
-            result = result + (ns, Qs, np.zeros((len(ns),)), np.zeros((len(Qs),)))
+            result = result + (ns, Qs, np.zeros(np.array(ns).shape), np.zeros(np.array(Qs).shape))
         return result
 
 def runSingleSimulation(index, VL0, VR0, vSym, Q0, n0,Vmax, Vstep, dotArray,
@@ -1621,6 +1621,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if useGraph:
         dbg = True
         repeats = 1
+        currentMap = False
     if plotCurrentMaps or plotBinaryCurrentMaps:
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
@@ -1819,7 +1820,7 @@ def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=Fa
         if not graph:
             os.remove(baseName + "_nsErr.npy")
             os.remove(baseName + "_QsErr.npy")
-    if currentMap:
+    if currentMap and not graph:
         os.remove(baseName + "_current_map.npy")
     return True
 
@@ -1906,9 +1907,9 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False, calc
         J_masked = np.ma.masked_array(J,Jmask)
         im.set_array(J_masked)
         if calcIT:
-            text.set_text('T = ' + str(Vext))
+            text.set_text('T = %.3f' % float(Vext))
         else:
-            text.set_text('Vext = ' + str(Vext))
+            text.set_text('Vext = %.3f' % float(Vext))
         if full:
             dots_im[np.ix_(dot_rows, dot_cols)] = n
             dots_im_masked = np.ma.masked_array(dots_im, dots_im_mask)
