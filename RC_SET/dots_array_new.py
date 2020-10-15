@@ -1006,7 +1006,7 @@ class Simulator:
         if fullOutput:
             res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
         if currentMap:
-            res = res + (self.dotArray.getCurrentMap()/curr_t,)
+            res = res + (map_avg/curr_t,)
         return res
 
     def calcAverageNForGivenQ(self, Q, n0, calcVoltages=False):
@@ -1265,7 +1265,7 @@ class Simulator:
             vertI.append(vert_current)
             vertIErr.append(vert_currentErr)
             if self.index == 0:
-                print(VL - VR, end=',', flush=True)
+                print("%.3f" % float(VL - VR), end=',', flush=True)
             self.saveState(I, IErr, vertI, vertIErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), np.array(vertI), np.array(vertIErr), VL_res - VR_res)
@@ -1329,7 +1329,7 @@ class Simulator:
             vertI.append(vert_current)
             vertIErr.append(vert_currentErr)
             if self.index == 0:
-                print(T, end=',', flush=True)
+                print("%.3f" % float(T), end=',', flush=True)
             self.saveState(I, IErr, vertI, vertIErr, ns, Qs, nsErr, QsErr, Imaps=Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), np.array(vertI), np.array(vertIErr), T_res)
@@ -1627,7 +1627,7 @@ class GraphSimulator:
                 Qs = list(resumeParams[4])
         for VL,VR in zip(VL_vec,VR_vec):
             if self.index == 0:
-                print(VL-VR,end=',')
+                print("%.3f" % float(VL-VR),end=',', flush=True)
             self.dotArray.changeVext(VL, VR, self.VU, self.VD)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
@@ -2054,9 +2054,9 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False, calc
         J_masked = np.ma.masked_array(J,Jmask)
         im.set_array(J_masked)
         if calcIT:
-            text.set_text('T = ' + str(Vext))
+            text.set_text('T = %.3f' % float(Vext))
         else:
-            text.set_text('Vext = ' + str(Vext))
+            text.set_text('Vext = %.3f' % float(Vext))
         if full:
             dots_im[np.ix_(dot_rows, dot_cols)] = n
             dots_im_masked = np.ma.masked_array(dots_im, dots_im_mask)
