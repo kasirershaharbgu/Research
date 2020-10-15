@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
-from mayavi import mlab
+#from mayavi import mlab
 from optparse import OptionParser
 import re as regex
 from time import sleep
