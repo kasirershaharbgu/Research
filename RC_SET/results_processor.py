@@ -454,8 +454,9 @@ class SingleResultsProcessor:
         ax1.set_ylabel('$I\\frac{\\left<C\\right>\\left<R\\right>}{e}$')
         ax1.plot(V[:mid_idx], I[:mid_idx], 'r*')
         ax1.plot(V[mid_idx:], I[mid_idx:], 'b*')
-        ax1.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = " +
-                      str(np.round(self.calc_param_average("CG")/self.calc_param_average("C")*100)/100) + "$")
+        if not self.graph:
+            ax1.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = " +
+                          str(np.round(self.calc_param_average("CG")/self.calc_param_average("C")*100)/100) + "$")
         arrow_length = np.max(I)/100
         arrow_head_width = np.max(V)/50
         if self.Imaps is not None and self.path_dict is None:
@@ -481,7 +482,7 @@ class SingleResultsProcessor:
             fou_ax[0].plot(IV_freq1, IV_fou1)
             fou_ax[1].plot(IV_freq2, IV_fou2)
             if not by_occupation and self.Imaps is not None:
-                ax2.set_ylabel("$I\\frac{e}{\\left<C\\right>\\left<R\\right>}$")
+                ax2.set_ylabel("$I\\frac{\\left<C\\right>\\left<R\\right>}{e}$")
                 if len(self.path_dict.keys()) > 0:
                     fig2, hist_axes = plt.subplots(4, len(self.path_dict.keys())+1, figsize=FIGSIZE)
                     hist_axes[0][0].hist(IV_diff1)
@@ -497,9 +498,9 @@ class SingleResultsProcessor:
                     V_path = np.array(self.path_dict[path][0])
                     mid_idx_path = np.argmax(V_path)
                     color = colors[index]
-                    diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2, freq1, freq2, fou1, fou2 = self.calc_jumps_freq(x, xerr, V=V_path, mid_idx=mid_idx_path,
-                                                                                          threshold_factor=4,
-                                                                                          window_size_factor=1)
+                    diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2, freq1, freq2, fou1, fou2 =\
+                    self.calc_jumps_freq(x, xerr, V=V_path, mid_idx=mid_idx_path,threshold_factor=10,
+                                         window_size_factor=1, absolute_threshold=0.001)
                     hist_axes[0][index+1].hist(diff1, color=color)
                     hist_axes[1][index+1].hist(diff2, color=color)
                     hist_axes[2][index+1].hist(diffV1, color=color)
@@ -534,10 +535,11 @@ class SingleResultsProcessor:
                 ax2.set_ylabel("$\\left<n'\\right>$")
                 for index in range(self.columns*self.rows):
                     color = colors[index]
-                    x = n[:,index] + index
+                    x = n[:,index]
                     xerr = nErr[:,index]
                     diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2, freq1, freq2, fou1, fou2 = \
-                        self.calc_jumps_freq(x, xerr, V=V,mid_idx=mid_idx, up_and_down=True, threshold_factor=4)
+                        self.calc_jumps_freq(x, xerr, V=V,mid_idx=mid_idx, up_and_down=True, threshold_factor=5,
+                                             window_size_factor=2)
                     ax2.plot(V[:mid_idx], x[:mid_idx], color=color, marker='.')
                     fou1 *= np.max(IV_fou1)/np.max(fou1)
                     fou2 *= np.max(IV_fou2)/np.max(fou2)
@@ -560,12 +562,16 @@ class SingleResultsProcessor:
         return fig, fig2, fig3
 
 
-    def calc_jumps_freq(self, x, xerr, V=None, mid_idx=None, threshold_factor=1, window_size_factor=1, up_and_down=False):
+    def calc_jumps_freq(self, x, xerr, V=None, mid_idx=None, threshold_factor=1, window_size_factor=1,
+                        absolute_threshold=0.001, up_and_down=False):
         if V is None:
             V = self.V
         if mid_idx is None:
             mid_idx = self.mid_idx
-        window_size = int(np.round(0.05*window_size_factor / self.get_running_param("vStep")))
+        vstep = self.get_running_param("vStep")
+        if vstep == 0:
+            vstep = 0.01
+        window_size = int(np.round(0.05*window_size_factor / vstep))
         diff1 = average_diff(x[:mid_idx], window_size)
         diff2 = average_diff(x[mid_idx:], window_size)
         if up_and_down:
@@ -592,7 +598,7 @@ class SingleResultsProcessor:
             if len(small_diff1) < 1:
                 threshold1 = 0.1
             else:
-                threshold1 = max(threshold_factor * np.std(small_diff1),0.001)
+                threshold1 = max(threshold_factor * np.std(small_diff1),absolute_threshold)
         if len(diff2) < 1:
             threshold2 = 0.1
         else:
@@ -600,7 +606,7 @@ class SingleResultsProcessor:
             if len(small_diff2) < 1:
                 threshold2 = 0.1
             else:
-                threshold2 = max(threshold_factor * np.std(small_diff2),0.001)
+                threshold2 = max(threshold_factor * np.std(small_diff2),absolute_threshold)
         jumps_indices1, _ = find_peaks(diff1, prominence=0.5*threshold1, height=threshold1)
         height1 = diff1[jumps_indices1]
         Vup = V[:mid_idx]
@@ -618,7 +624,8 @@ class SingleResultsProcessor:
         return Vjumps1, Vjumps2
 
     def calc_jumps_scores(self):
-        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(self.I, self.IErr)
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(self.I, self.IErr,
+                                                                                      absolute_threshold=0.1)
         self.jumpScores = dict()
         self.jumpScores['jumpSeparationUp'] = (np.average(diffV1), np.std(diffV1), np.std(diffV1)) if diffV1.size > 0 else (0,0,0)
         self.jumpScores['jumpSeparationDown'] = (-np.average(diffV2), -np.std(diffV2), -np.std(diffV2)) if diffV2.size > 0 else (0,0,0)
@@ -632,6 +639,7 @@ class SingleResultsProcessor:
             up_jumps_larger_than_down = Vjumps1[Vjumps1>down]
             if len(up_jumps_larger_than_down) > 0:
                 up = np.min(up_jumps_larger_than_down)
+
             else:
                 up = down
             self.jumpScores['jumpSeparationUpDown'] = ((up-down), 0, 0)
@@ -1650,7 +1658,7 @@ def resistance_temperature_analysis(directory, file_names):
         Vt = V[:,i]
         plt.semilogy(1/T, np.abs(Vt/It))
 
-def findPaths(Imap, rows, columns, eps=0.001):
+def findPaths(Imap, rows, columns, eps=0.000001):
     paths = []
     paths_current = []
     def array_DFS(i ,j , path, path_current):
@@ -1666,8 +1674,11 @@ def findPaths(Imap, rows, columns, eps=0.001):
             for node_idx in range(len(path_copy)-1):
                 flow_row, flow_column = path_copy[node_idx]
                 flow_row += path_copy[node_idx+1][0]
-                flow_column += path_copy[node_idx+1][1]-flow_column
-                Imap[flow_row, flow_column] -= path_flow
+                flow_column += max(path_copy[node_idx+1][1]-flow_column,0)
+                if Imap[flow_row, flow_column] > 0:
+                    Imap[flow_row, flow_column] -= path_flow
+                else:
+                    Imap[flow_row, flow_column] += path_flow
             return True
         elif (i,j) in path or i < 0 or j < 0 or i == rows:
             return False
@@ -1801,8 +1812,9 @@ def approx_jumps_height(R1, R2, C1, C2, CG):
 
 def approx_jump_up_down(R1, R2, C1, C2, CG, V):
     Rmax = max(R1, R2)
-    Rmin = min(R1,R2)
+    Rmin = min(R1, R2)
     Ugap = np.abs((Rmax/(C1+C2)+ Rmin * V)/(Rmax-Rmin) - (C1+C2+2*CG)*(np.sqrt((R1*R2*V)/(CG*(C1+C2+CG)*(C1+C2)*(R1-R2)**2))))
+    # Ugap = ((Rmax/(C1+C2)+ ((C1+C2+CG)/CG)*Rmin * V - 2*(np.sqrt((R1*R2*V*(C1+C2+CG))/(CG*(C1+C2))))))/(Rmax-Rmin)
     return CG * Ugap * approx_jumps_separation(R1, R2, C1, C2, CG)
 
 def approx_hysteresis_total_area(R1, R2, C1, C2, CG, VG, Vmax):
@@ -2112,7 +2124,9 @@ if __name__ == "__main__":
             directories_list = [directory]*len(names)
             m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
             loopV, _, _ = m.get_relevant_scores('firstJumpV')
+            score,_,_ = m.get_relevant_scores("jumpSeparationUpDown")
             loopV = np.array(loopV)
+            loopV[score==0] = 0
             labelprefix = "R2 < R1" if Rratio == 0.1 else "R2 > R1"
             Cratios = np.array(Cratios)
             CG=2
