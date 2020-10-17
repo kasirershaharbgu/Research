@@ -20,7 +20,7 @@ dist="exp"
 graph=""
 currentmap="--current-map"
 full="--full"
-resume="--resume"
+resume=""
 vSym="--symmetric-v"
 leaping=""
 efermi=""
@@ -37,7 +37,7 @@ efermi=""
 superconducting=""
 gap=0
 T=0
-f="bgu_2_2_jumps_test"
+f="bgu_1d_horizontal_arrays"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi

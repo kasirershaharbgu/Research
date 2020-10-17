@@ -46,6 +46,12 @@ if [ ! -d "$f" ]; then
 fi
 c_std=2
 r_std=20
+for cg_avg in 5 10 30
+do      
+        name="array_${rows}_${columns}_cg_${cg_avg}"
+qsub "$flags" -N "$name" -o "$f/$name.out" -v M="$rows",N="$columns",vmin="$vl",vmax="$Tmax",vstep="$Tstep",vd="$vd",vu="$vu",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",file_name="$name",out="$f",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",graph="$graph",resume="$resume",vSym="$vSym",leaping="$leaping",efermi="$efermi",dbg="$dbg",calc_it="$calc_it" -v custom_rh="$custom_rh" -v custom_rv="$custom_rv" -v custom_ch="$custom_ch" -v custom_cv="$custom_cv" -v down_electrode="$down_electrode" -v up_electrode="$up_electrode" running_scripts/run_RC_SET_with_perp.sh
+sleep 1
+done
 
 
 Tmin=0.001
@@ -55,6 +61,7 @@ vl=0.5
 vr=-0.5
 vu=0.1
 vd=-0.1
+
 f="bgu_2d_small_array_with_perp_current_it"
 calc_it="--calc-it"
 if [ ! -d "$f" ]; then
