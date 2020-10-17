@@ -1,27 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BranchesTreeState">
-    <expand>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </expand>
+    <expand />
     <select />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_0_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_0_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_10_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_10_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_11_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_11_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_12_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_12_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_13_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_13_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_14_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_14_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_15_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_15_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_16_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_16_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_17_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_17_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_18_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_18_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_19_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_19_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_1_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_1_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_20_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_20_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_21_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_21_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_22_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_22_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_23_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_23_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_24_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_24_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_25_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_25_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_26_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_26_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_27_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_27_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_28_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_28_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_29_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_29_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_2_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_2_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_30_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_30_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_31_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_31_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_32_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_32_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_33_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_33_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_34_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_34_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_35_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_35_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_36_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_36_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_37_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_37_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_38_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_38_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_39_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_39_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_3_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_3_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_40_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_40_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_41_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_41_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_42_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_42_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_43_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_43_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_44_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_44_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_45_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_45_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_46_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_46_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_47_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_47_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_48_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_48_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_49_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_49_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_4_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_4_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_5_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_5_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_6_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_6_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_7_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_7_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_8_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_8_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_9_Ih.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bgu_2d_small_array_with_perp_current/array_2_5_cg_5_temp_9_Iv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +158,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.dots_array">
+  <component name="RunManager" selected="Python.results_processor">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -126,7 +212,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="python3 dots_array.py -M 1 -N 1 --vmin 1 --vmax 0.1 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 1 --r-std 0 --rg-avg 500 --rg-std 0 --repeats 20 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name single_island -o dbg_IT --full --current-map --calc-it" />
+      <option name="PARAMETERS" value="-M 1 -N 2 --vmin 0 --vmax 1.5 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 5 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --temperature-gradient 0 --distribution exp --gap 0 --file-name dbg -o dbg --full --current-map --symmetric-v --graph --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -252,7 +338,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="--action plot_score_by_disorder --score thresholdVoltageUp --score thresholdVoltageDown --parameter R --normalizing C_avg --normalizing R_avg -i $USER_HOME$/University/Research/simulation_results/zero_temperature/ --window-size 0.05" />
+      <option name="PARAMETERS" value="--action plot_jumps -i bgu_2_2_jumps_test/ --full" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -325,21 +411,21 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.single dot run" />
+      <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.dynamics_simulation" />
       <item itemvalue="Python.ising1d" />
-      <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.results_processor" />
-      <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.thermalArray" />
-      <item itemvalue="Python.toy model" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
+        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.dynamics_simulation" />
         <item itemvalue="Python.ising1d" />
@@ -387,73 +473,95 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598972992644">
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1602752784288">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598972992644" />
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1602752784288" />
+    <state x="705" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.3768.1053@72.27.3768.1053" timestamp="1602681501306" />
     <state x="728" y="345" width="525" height="423" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1598884618639">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="728" y="345" width="525" height="423" key="#com.intellij.ide.util.TreeClassChooserDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598884618639" />
-    <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl" timestamp="1597329223318">
+    <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl" timestamp="1600928495264">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="1825" height="377" key="GridCell.Tab.0.bottom" timestamp="1599128982599">
+    <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1600928495264" />
+    <state width="1825" height="266" key="GridCell.Tab.-1.bottom" timestamp="1601200614937">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
-    <state width="1825" height="377" key="GridCell.Tab.0.center" timestamp="1599128982598">
+    <state width="1825" height="266" key="GridCell.Tab.-1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1601200614937" />
+    <state width="1825" height="266" key="GridCell.Tab.-1.center" timestamp="1601200614937">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982598" />
-    <state width="1825" height="377" key="GridCell.Tab.0.left" timestamp="1599128982598">
+    <state width="1825" height="266" key="GridCell.Tab.-1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1601200614937" />
+    <state width="1825" height="266" key="GridCell.Tab.-1.left" timestamp="1601200614937">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982598" />
-    <state width="1825" height="377" key="GridCell.Tab.0.right" timestamp="1599128982598">
+    <state width="1825" height="266" key="GridCell.Tab.-1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1601200614937" />
+    <state width="1825" height="266" key="GridCell.Tab.-1.right" timestamp="1601200614937">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982598" />
-    <state width="1825" height="377" key="GridCell.Tab.1.bottom" timestamp="1599128982599">
+    <state width="1825" height="266" key="GridCell.Tab.-1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1601200614937" />
+    <state width="1825" height="275" key="GridCell.Tab.0.bottom" timestamp="1602752788138">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
-    <state width="1825" height="377" key="GridCell.Tab.1.center" timestamp="1599128982599">
+    <state width="1825" height="275" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1602752788138" />
+    <state width="901" height="275" key="GridCell.Tab.0.bottom/72.27.3768.1053@72.27.3768.1053" timestamp="1602686489555" />
+    <state width="1825" height="275" key="GridCell.Tab.0.center" timestamp="1602752788137">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
-    <state width="1825" height="377" key="GridCell.Tab.1.left" timestamp="1599128982599">
+    <state width="1825" height="275" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1602752788137" />
+    <state width="901" height="275" key="GridCell.Tab.0.center/72.27.3768.1053@72.27.3768.1053" timestamp="1602686489550" />
+    <state width="1825" height="275" key="GridCell.Tab.0.left" timestamp="1602752788137">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
-    <state width="1825" height="377" key="GridCell.Tab.1.right" timestamp="1599128982599">
+    <state width="1825" height="275" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602752788137" />
+    <state width="901" height="275" key="GridCell.Tab.0.left/72.27.3768.1053@72.27.3768.1053" timestamp="1602686489549" />
+    <state width="1825" height="275" key="GridCell.Tab.0.right" timestamp="1602752788137">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="377" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1599128982599" />
+    <state width="1825" height="275" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602752788137" />
+    <state width="901" height="275" key="GridCell.Tab.0.right/72.27.3768.1053@72.27.3768.1053" timestamp="1602686489552" />
+    <state width="1825" height="266" key="GridCell.Tab.1.bottom" timestamp="1601200584737">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1825" height="266" key="GridCell.Tab.1.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1601200584737" />
+    <state width="1825" height="266" key="GridCell.Tab.1.center" timestamp="1601200584736">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1825" height="266" key="GridCell.Tab.1.center/72.27.1848.1053@72.27.1848.1053" timestamp="1601200584736" />
+    <state width="1825" height="266" key="GridCell.Tab.1.left" timestamp="1601200584736">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1825" height="266" key="GridCell.Tab.1.left/72.27.1848.1053@72.27.1848.1053" timestamp="1601200584736" />
+    <state width="1825" height="266" key="GridCell.Tab.1.right" timestamp="1601200584737">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1825" height="266" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1601200584737" />
     <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog" timestamp="1596370832608">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596370832608" />
-    <state width="924" height="526" key="XDebugger.FullValuePopup" timestamp="1598539125712">
-      <screen x="72" y="27" width="1848" height="1053" />
+    <state width="1884" height="526" key="XDebugger.FullValuePopup" timestamp="1602665710163">
+      <screen x="72" y="27" width="3768" height="1053" />
     </state>
-    <state width="924" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053@72.27.1848.1053" timestamp="1598539125712" />
+    <state width="924" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053@72.27.1848.1053" timestamp="1601470441790" />
+    <state width="1884" height="526" key="XDebugger.FullValuePopup/72.27.3768.1053@72.27.3768.1053" timestamp="1602665710163" />
     <state x="532" y="265" width="917" height="583" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1598884631366">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="532" y="265" width="917" height="583" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/72.27.1848.1053@72.27.1848.1053" timestamp="1598884631366" />
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1599033017375">
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1600510595903">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1599033017375" />
+    <state x="590" y="253" width="811" height="818" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1600510595903" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1944</line>
+          <line>1947</line>
           <option name="timeStamp" value="313" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -468,12 +576,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1988</line>
+          <line>1899</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1993</line>
+          <line>1904</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -503,47 +611,37 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>726</line>
+          <line>941</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>736</line>
-          <option name="timeStamp" value="443" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>742</line>
-          <option name="timeStamp" value="444" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>397</line>
+          <line>379</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>127</line>
+          <line>124</line>
           <option name="timeStamp" value="456" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>123</line>
+          <line>120</line>
           <option name="timeStamp" value="457" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2244</line>
+          <line>2197</line>
           <option name="timeStamp" value="477" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2241</line>
+          <line>2194</line>
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2246</line>
+          <line>2199</line>
           <option name="timeStamp" value="480" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -563,104 +661,157 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>365</line>
+          <line>416</line>
           <option name="timeStamp" value="485" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>177</line>
+          <line>228</line>
           <option name="timeStamp" value="495" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>856</line>
+          <line>906</line>
           <option name="timeStamp" value="498" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="fromDot == (-1,0)" language="Python" />
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>724</line>
+          <line>780</line>
           <option name="timeStamp" value="505" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1318</line>
+          <line>1665</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1700</line>
+          <line>1658</line>
           <option name="timeStamp" value="520" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1209</line>
+          <line>1194</line>
           <option name="timeStamp" value="523" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1099</line>
+          <line>1102</line>
           <option name="timeStamp" value="527" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>661</line>
+          <line>717</line>
           <option name="timeStamp" value="530" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1577</line>
-          <option name="timeStamp" value="547" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1604</line>
-          <option name="timeStamp" value="549" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1032</line>
-          <option name="timeStamp" value="552" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1381</line>
+          <line>1831</line>
           <option name="timeStamp" value="553" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1592</line>
-          <option name="timeStamp" value="555" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1122</line>
-          <option name="timeStamp" value="562" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>227</line>
-          <option name="timeStamp" value="568" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1736</line>
-          <option name="timeStamp" value="575" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1246</line>
+          <line>1578</line>
           <option name="timeStamp" value="593" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1493</line>
-          <option name="timeStamp" value="602" />
+          <line>1450</line>
+          <option name="timeStamp" value="622" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>927</line>
-          <option name="timeStamp" value="603" />
+          <line>1153</line>
+          <option name="timeStamp" value="630" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1022</line>
+          <option name="timeStamp" value="635" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1233</line>
+          <option name="timeStamp" value="646" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1008</line>
+          <option name="timeStamp" value="655" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1940</line>
+          <option name="timeStamp" value="656" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>820</line>
+          <option name="timeStamp" value="665" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>841</line>
+          <option name="timeStamp" value="666" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>300</line>
+          <option name="timeStamp" value="667" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>1342</line>
+          <option name="timeStamp" value="687" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>1347</line>
+          <option name="timeStamp" value="688" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>1356</line>
+          <option name="timeStamp" value="689" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>623</line>
+          <option name="timeStamp" value="690" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="VL-VR&gt;0.75" language="Python" />
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>1540</line>
+          <option name="timeStamp" value="691" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="VL-VR &gt; 0.75" language="Python" />
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>1159</line>
+          <option name="timeStamp" value="692" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array.py</url>
+          <line>705</line>
+          <option name="timeStamp" value="693" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="v&gt; 2.85" language="Python" />
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1128</line>
+          <option name="timeStamp" value="699" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1674</line>
+          <option name="timeStamp" value="700" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>2152</line>
+          <option name="timeStamp" value="704" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
