@@ -481,7 +481,7 @@ class SingleResultsProcessor:
             fou_ax[1].set_title("Decreasing voltage")
             fou_ax[0].plot(IV_freq1, IV_fou1)
             fou_ax[1].plot(IV_freq2, IV_fou2)
-            if not by_occupation and not by_path_occupation and self.Imaps is not None:
+            if not by_occupation and self.Imaps is not None:
                 ax2.set_ylabel("$I\\frac{\\left<C\\right>\\left<R\\right>}{e}$")
                 if len(self.path_dict.keys()) > 0:
                     fig2, hist_axes = plt.subplots(4, len(self.path_dict.keys())+1, figsize=FIGSIZE)
@@ -525,45 +525,52 @@ class SingleResultsProcessor:
                         ax1.arrow(v, i, 0, -diff, fc=color, ec=color, head_length=arrow_length,
                                   head_width=arrow_head_width)
 
-            elif self.n is not None:
+            if self.n is not None and (by_occupation or by_path_occupation) :
                 VL = self.V / 2 if self.symmetricV else self.V
                 VR = -self.V / 2 if self.symmetricV else np.zeros(self.V.shape)
                 n = self.getNprime(VL, VR).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
                 n = n[self.V >= 0]
-                colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, len(n[0])))
                 nErr = self.nErr[self.V >= 0].reshape(n.shape)
-                ax2.set_ylabel("$\\left<n'\\right>$")
                 if by_path_occupation and self.path_dict is not None:
+                    current_ax = add_subplot_axes(fig, ax1, [0, 0.1, 0.3r., 0.35])
+                    current_ax.yaxis.set_label_position("right")
+                    current_ax.yaxis.tick_right()
+                    current_ax.set_ylabel("$\\sum\\left<n'\\right>$")
                     path_n = np.zeros((n.shape[0],len(self.path_dict)))
                     for index,path in enumerate(sorted(self.path_dict.keys())):
                         for i,j in path:
-                            path_n[:,index] += n[:,i*self.columns + j]
+                            if j < self.columns:
+                                path_n[:,index] += n[:,i*self.columns + j]
                     index_range = len(self.path_dict)
                     n = path_n
                 else:
                     index_range = self.columns*self.rows
+                    current_ax = ax2
+                    current_ax.set_ylabel("$\\left<n'\\right>$")
+                colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, index_range))
                 for index in range(index_range):
                     color = colors[index]
                     x = n[:,index]
                     xerr = nErr[:,index]
                     diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2, freq1, freq2, fou1, fou2 = \
-                        self.calc_jumps_freq(x, xerr, V=V,mid_idx=mid_idx, up_and_down=True, threshold_factor=20,
-                                             window_size_factor=0.5, absolute_threshold=0.1)
-                    ax2.plot(V[:mid_idx], x[:mid_idx], color=color, marker='.')
+                        self.calc_jumps_freq(x, xerr, V=V,mid_idx=mid_idx, up_and_down=True, threshold_factor=10,
+                                             window_size_factor=1, absolute_threshold=0.01)
+                    current_ax.plot(V[:mid_idx], x[:mid_idx], color=color, marker='.')
+                    current_ax.plot(V[mid_idx:], x[mid_idx:], color=color, marker='*')
                     fou1 *= np.max(IV_fou1)/np.max(fou1)
                     fou2 *= np.max(IV_fou2)/np.max(fou2)
                     fou_ax[0].plot(freq1, fou1, color=color)
                     fou_ax[1].plot(freq2, fou2, color=color)
-                    for v, diff in zip(Vjumps1, diff1):
-                        i = I[V==v][0]
-                        ax1.arrow(v, i, 0, diff/100, fc=color, ec=color, head_length=arrow_length,
-                                  head_width=arrow_head_width)
-                    ax2.plot(V[mid_idx:], x[mid_idx:], color=color, marker='*')
-                    for v, diff in zip(Vjumps2, diff2):
-                        i = I[V==v][-1]
-                        ax1.arrow(v, i, 0, -diff/100, fc=color, ec=color,
-                                  head_length=arrow_length, head_width=arrow_head_width)
-                    island_colors = colors
+                    if by_occupation:
+                        for v, diff in zip(Vjumps1, diff1):
+                            i = I[V==v][0]
+                            ax1.arrow(v, i, 0, diff/100, fc=color, ec=color, head_length=arrow_length,
+                                      head_width=arrow_head_width)
+                        for v, diff in zip(Vjumps2, diff2):
+                            i = I[V==v][-1]
+                            ax1.arrow(v, i, 0, -diff/100, fc=color, ec=color,
+                                      head_length=arrow_length, head_width=arrow_head_width)
+                        island_colors = colors
             ax3 = add_subplot_axes(fig, ax1, [0.02,0.5,0.5,0.5])
             self.plot_array_params("RC", ax3, fig, island_colors=island_colors)
             if self.Imaps is not None and not by_occupation:
@@ -1875,7 +1882,7 @@ def getOptions():
     parser.add_option("--by-occupation", dest="by_occupation", action="store_true", default=False,
                       help="Only used for plotting jumps. If ture jumps would be plotted by island occupation,"
                            " otherwise by paths current.")
-    parser.add_option("--path-by-occupation", dest="by_path_occupation", action="store_true", default=False,
+    parser.add_option("--by-path-occupation", dest="by_path_occupation", action="store_true", default=False,
                       help="Only used for plotting jumps. If ture jumps would be plotted by path occupation,"
                            " otherwise by paths current.")
     parser.add_option("--re-analyze", dest="re_analyze", action="store_true", default=False,
