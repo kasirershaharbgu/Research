@@ -300,22 +300,24 @@ class SingleResultsProcessor:
 
         return self.n + (flattenToColumn(VL).dot(left_part_n_prime) + flattenToColumn(VR).dot(right_part_n_prime)).reshape(self.n.shape)
 
-    def calc_hysteresis_score(self):
+    def calc_hysteresis_score(self, I, IErr, V, mid_idx):
         if self.jumpScores is None:
-            self.calc_jumps_scores()
-        IplusErr = self.I + self.IErr
-        IminusErr = self.I - self.IErr
-        score = -integrate.trapz(self.I, self.V)
-        low_err = -integrate.trapz(IplusErr[:self.mid_idx], self.V[:self.mid_idx]) -\
-                integrate.trapz(IminusErr[self.mid_idx:], self.V[self.mid_idx:])
-        high_err = -integrate.trapz(IminusErr[:self.mid_idx], self.V[:self.mid_idx]) - \
-                  integrate.trapz(IplusErr[self.mid_idx:], self.V[self.mid_idx:])
+            self.calc_jumps_scores(I, IErr, V, mid_idx)
+        IplusErr = np.copy(I)
+        IplusErr[:mid_idx] -= IErr[:mid_idx]
+        IplusErr[mid_idx:] += IErr[mid_idx:]
+        IminusErr = np.copy(I)
+        IminusErr[:mid_idx] += IErr[:mid_idx]
+        IminusErr[mid_idx:] -= IErr[mid_idx:]
+        score = -integrate.trapz(I, V)
+        low_err = -integrate.trapz(IplusErr, V)
+        high_err = -integrate.trapz(IminusErr, V)
         return score, (high_err-score), (score-low_err)
 
-    def calc_threshold_voltage_up(self):
-        I = self.I[:self.mid_idx]
-        IErr = np.clip(self.IErr[:self.mid_idx],a_min=0.01, a_max=np.inf)
-        matchingV = self.V[:self.mid_idx]
+    def calc_threshold_voltage_up(self, I, IErr, V, mid_idx):
+        I = np.array(I[:mid_idx])
+        IErr = np.clip(IErr[:mid_idx],a_min=0.01, a_max=np.inf)
+        matchingV = np.array(V[:mid_idx])
         dV = np.abs(self.V[1] - self.V[0])
         if (I < 2*IErr).any():
             small = np.max(matchingV[I < 2*IErr])
@@ -325,10 +327,10 @@ class SingleResultsProcessor:
         else:
             return 0,0,0
 
-    def calc_threshold_voltage_down(self):
-        I = self.I[self.mid_idx:]
-        IErr = np.clip(self.IErr[self.mid_idx:],a_min=0.01, a_max=np.inf)
-        matchingV = self.V[self.mid_idx:]
+    def calc_threshold_voltage_down(self, I, IErr, V, mid_idx):
+        I = np.array(I[mid_idx:])
+        IErr = np.clip(IErr[mid_idx:],a_min=0.01, a_max=np.inf)
+        matchingV = np.array(V[mid_idx:])
         dV = np.abs(self.V[1] - self.V[0])
         if (I < 2 * IErr).any():
             small = np.max(matchingV[I < 2 * IErr])
@@ -337,32 +339,6 @@ class SingleResultsProcessor:
             return avg, max(big - avg, dV), max(avg - small, dV)
         else:
             return 0, 0, 0
-
-    def calc_jumps_score(self, window_size, up=True):
-        score = 0
-        high_err = 0
-        low_err = 0
-        if up:
-            V = self.V[:self.mid_idx]
-            I = self.I[:self.mid_idx]
-            IplusErr = I + self.IErr[:self.mid_idx]
-            IminusErr = I - self.IErr[:self.mid_idx]
-        else:
-            V = self.V[self.mid_idx:]
-            I = self.I[self.mid_idx:]
-            IplusErr = I + self.IErr[self.mid_idx:]
-            IminusErr = I - self.IErr[self.mid_idx:]
-        for v in V:
-            in_window = np.logical_and(V >= v - window_size/2, V <= v + window_size/2)
-            if in_window.any():
-                new_score = np.max(I[in_window]) - np.min(I[in_window])
-                if new_score > score:
-                    score = new_score
-                    high_err = np.max(IplusErr[in_window]) - np.min(IminusErr[in_window])
-                    low_err = np.max(IminusErr[in_window]) - np.min(IplusErr[in_window])
-        return score, high_err-score, score-low_err
-
-
     def calc_number_of_jumps(self):
         _,_,_,_, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(self.I, self.IErr)
         return len(Vjumps1) + len(Vjumps2)
@@ -532,7 +508,7 @@ class SingleResultsProcessor:
                 n = n[self.V >= 0]
                 nErr = self.nErr[self.V >= 0].reshape(n.shape)
                 if by_path_occupation and self.path_dict is not None:
-                    current_ax = add_subplot_axes(fig, ax1, [0, 0.1, 0.3r., 0.35])
+                    current_ax = add_subplot_axes(fig, ax1, [0, 0.1, 0.3, 0.35])
                     current_ax.yaxis.set_label_position("right")
                     current_ax.yaxis.tick_right()
                     current_ax.set_ylabel("$\\sum\\left<n'\\right>$")
@@ -639,9 +615,8 @@ class SingleResultsProcessor:
         _, _, _, _, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(self.I, self.IErr)
         return Vjumps1, Vjumps2
 
-    def calc_jumps_scores(self):
-        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(self.I, self.IErr,
-                                                                                      absolute_threshold=0.1)
+    def calc_jumps_scores(self, I, IErr, V, mid_idx):
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(I, IErr, V=V, mid_idx=mid_idx)
         self.jumpScores = dict()
         self.jumpScores['jumpSeparationUp'] = (np.average(diffV1), np.std(diffV1), np.std(diffV1)) if diffV1.size > 0 else (0,0,0)
         self.jumpScores['jumpSeparationDown'] = (-np.average(diffV2), -np.std(diffV2), -np.std(diffV2)) if diffV2.size > 0 else (0,0,0)
@@ -664,9 +639,9 @@ class SingleResultsProcessor:
             self.jumpScores['jumpSeparationUpDown'] = (0, 0, 0)
             self.jumpScores['firstJumpV'] = (0,0,0)
 
-    def calc_small_v_scores(self):
+    def calc_small_v_scores(self, I, IErr, V, mid_idx):
         self.smallVScores = dict()
-        paramsUp, covUp, paramsDown, covDown = self.power_law_fit()
+        paramsUp, covUp, paramsDown, covDown = self.power_law_fit(I, IErr, V, mid_idx)
         self.smallVScores['smallVPowerUp'] = paramsUp[1], covUp[1], covUp[1]
         self.smallVScores['smallVPowerDown'] = paramsDown[1], covDown[1], covDown[1]
         self.smallVScores['smallVCoefficientUp'] = paramsUp[0], covUp[0], covUp[0]
@@ -745,23 +720,56 @@ class SingleResultsProcessor:
             score += (enter/exit) / (C[i] + C[i + 1]+ Cup[i] + Cdown[i])**2
         return score
 
-    def calc_score(self, scoreName):
+    def calc_score(self, scoreName, I=None, IErr=None, V=None, mid_idx=None, re_calculate=False):
+        if I is None:
+            I = self.I
+        if IErr is None:
+            IErr = self.IErr
+        if V is None:
+            V = self.V
+        if mid_idx is None:
+             mid_idx = self.mid_idx
         if 'jump' in scoreName or 'Jump' in scoreName:
-            if self.jumpScores is None:
-                self.calc_jumps_scores()
+            if self.jumpScores is None or re_calculate:
+                self.calc_jumps_scores(I, IErr, V, mid_idx)
             return self.jumpScores[scoreName]
         if 'smallV' in scoreName:
-            if self.smallVScores is None:
-                self.calc_small_v_scores()
+            if self.smallVScores is None or re_calculate:
+                self.calc_small_v_scores(I, IErr, V, mid_idx)
             return self.smallVScores[scoreName]
         elif scoreName == "hysteresisArea":
-            return self.calc_hysteresis_score()
+            return self.calc_hysteresis_score(I, IErr, V, mid_idx)
         elif scoreName == 'thresholdVoltageUp':
-            return self.calc_threshold_voltage_up()
+            return self.calc_threshold_voltage_up(I, IErr, V, mid_idx)
         elif scoreName == 'thresholdVoltageDown':
-            return self.calc_threshold_voltage_down()
+            return self.calc_threshold_voltage_down(I, IErr, V, mid_idx)
         else:
             raise NotImplementedError
+
+    def calc_score_for_paths(self, score_name):
+        if self.path_dict is None:
+            self.path_dict = self.calc_paths()
+        path_scores = dict()
+        for path in self.path_dict:
+            V = np.array(self.path_dict[path][0])
+            I = np.array(self.path_dict[path][1])
+            IErr = np.zeros((len(I),))
+            mid_idx = np.argmax(V)
+            path_scores[path] = self.calc_score(score_name,I=I, IErr=IErr, V=V, mid_idx=mid_idx, re_calculate=True)
+        return path_scores
+
+    def print_scores(self, for_paths=False):
+        print("Scores for file %s, from dir %s" % (self.fileName, self.directory))
+        for score in SCORE_NAMES:
+            score_val, high, low = self.calc_score(score)
+            print("%s: %f (%f, %f)" % (score, score_val, score_val - low, score_val + high))
+        if for_paths:
+            for score in SCORE_NAMES:
+                path_scores = self.calc_score_for_paths(score)
+                for path in path_scores:
+                    score_val, low, high = path_scores[path]
+                    print("For path %s score %s is %f (%f, %f)" % (path, score, score_val,
+                                                                   score_val - low, score_val + high))
 
     def plot_array_params(self, parameter,ax=None, fig=None, island_colors=None):
         M = self.runningParams["M"]
@@ -957,30 +965,33 @@ class SingleResultsProcessor:
         plt.xlabel("V")
 
 
-    def plot_IV(self, label, err=True, alternative=False, errorevery=10,
+    def plot_IV(self, ax=None, fig=None, err=True, alternative=False, errorevery=10,
                 Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current', shift=0, fmt_up='r.', fmt_down='b.'):
+        if ax is None:
+            fig, ax = plt.subplots()
         if err:
-            plt.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt=fmt_up,
+            ax.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt=fmt_up,
                          yerr=self.IErr[:self.mid_idx]/Inorm,
-                         errorevery=errorevery, label=label + " up")
-            plt.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt=fmt_down,
+                         errorevery=errorevery)
+            ax.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt=fmt_down,
                          yerr=self.IErr[self.mid_idx:]/Inorm,
-                         errorevery=errorevery, label=label + " down")
+                         errorevery=errorevery)
         else:
-            plt.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt_up , label=label + " up")
-            plt.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt_down , label=label + " down")
+            ax.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt_up)
+            ax.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt_down)
         if alternative and self.alternativeV is not None:
-            plt.errorbar(self.alternativeV[:self.alternative_mid_idx]/Vnorm,
+            ax.errorbar(self.alternativeV[:self.alternative_mid_idx]/Vnorm,
                          self.alternativeI[:self.alternative_mid_idx]/Inorm + shift,
                          fmt='m.', yerr=self.alternativeIErr[:self.alternative_mid_idx]/Inorm,
-                         errorevery=errorevery, label=label + " alterntive up")
-            plt.errorbar(self.alternativeV[self.alternative_mid_idx:]/Vnorm ,
+                         errorevery=errorevery)
+            ax.errorbar(self.alternativeV[self.alternative_mid_idx:]/Vnorm ,
                          self.alternativeI[self.alternative_mid_idx:]/Inorm + shift,
                          fmt='c.', yerr=self.alternativeIErr[self.alternative_mid_idx:]/Inorm,
-                         errorevery=errorevery, label=label + " alterntive down")
+                         errorevery=errorevery)
 
-        plt.xlabel(Vlabel)
-        plt.ylabel(Ilabel)
+        ax.set_xlabel(Vlabel)
+        ax.set_ylabel(Ilabel)
+        return ax, fig
 
     def plot_RT(self, ax, err=True, errorevery=10, fit=True, shift=0, color='green', label=""):
         V = self.get_running_param("Vmin") * self.calc_param_average("C")*2
@@ -1065,22 +1076,22 @@ class SingleResultsProcessor:
                     plt.xlabel('Voltage')
                     plt.ylabel('Current')
 
-    def power_law_fit(self, err=True, errorevery=10, Vlabel='Voltage', Ilabel='Current', shift=0,
+    def power_law_fit(self, I, IErr, V, mid_idx, err=True, errorevery=10, Vlabel='Voltage', Ilabel='Current', shift=0,
                         fmt_up='r.', fmt_down='b.', plot=False):
-        VthresholdDown = self.calc_threshold_voltage_down()[0]
-        VthresholdUp = self.calc_threshold_voltage_up()[0]
+        VthresholdDown = self.calc_threshold_voltage_down(I, IErr, V, mid_idx)[0]
+        VthresholdUp = self.calc_threshold_voltage_up(I, IErr, V, mid_idx)[0]
         if VthresholdUp == 0 or VthresholdDown == 0:
             return [0,0],[0,0],[0,0],[0,0]
-        VUp = self.V[:self.mid_idx]
-        IUp = self.I[:self.mid_idx]
-        IErrUp = self.IErr[:self.mid_idx]
+        VUp = V[:mid_idx]
+        IUp = I[:mid_idx]
+        IErrUp = IErr[:mid_idx]
 
         IUp = IUp[VUp > VthresholdUp]
         IErrUp = IErrUp[VUp > VthresholdUp]
         VUp = (VUp[VUp > VthresholdUp] - VthresholdUp) / VthresholdUp
-        VDown = self.V[self.mid_idx:]
-        IDown = self.I[self.mid_idx:]
-        IErrDown = self.IErr[self.mid_idx:]
+        VDown = V[mid_idx:]
+        IDown = I[mid_idx:]
+        IErrDown = IErr[mid_idx:]
 
         IDown = IDown[VDown > VthresholdDown]
         IErrDown = IErrDown[VDown > VthresholdDown]
@@ -1236,6 +1247,7 @@ class MultiResultAnalyzer:
                 self.scores[score][SCORE_VAL].append(val)
                 self.scores[score][SCORE_HIGH_ERR].append(high)
                 self.scores[score][SCORE_LOW_ERROR].append(low)
+
 
             if load_params:
                 for p in self.arrayParams:
@@ -2289,6 +2301,40 @@ if __name__ == "__main__":
         plt.legend(["Increasing voltage", "Decreasing voltage"])
         plt.show()
 
+    elif action == 'IV_path_compare':
+        vertical_directory = '/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_vertical_arrays/'
+        single_directory = '/home/kasirershahar/University/Research/simulation_results/single_island/single_island_for_vertical_arrays/'
+        vertical_files = ['array_2_1_custome_r_c_disorder_cg_1_run_1', 'array_2_1_custome_r_c_disorder_cg_5_run_1',
+                          'array_3_1_custome_r_c_disorder_cg_10_run_1', 'array_3_1_custome_r_c_disorder_cg_50_run_1']
+        single_files = [['array_2_1_cg_1_row_0','array_2_1_cg_1_row_1'],['array_2_1_cg_5_row_0','array_2_1_cg_5_row_1'],
+                        ['array_3_1_cg_10_row_0','array_3_1_cg_10_row_1','array_3_1_cg_10_row_2'],
+                        ['array_3_1_cg_50_row_0','array_3_1_cg_50_row_1','array_3_1_cg_50_row_2']]
+        fmt_list = ['g--','r--','g--','r--','b--','r--','y--','b--','y--','r--']
+        fmt_idx = 0
+        cg_list = [1,5,10,50]
+        cg_idx = 0
+        ax_idx = 0
+        fig, axes = plt.subplots(2, 2, figsize=FIGSIZE)
+        for vertical_file,single_files_list in zip(vertical_files, single_files):
+            ax = axes[ax_idx//2,ax_idx%2]
+            p = SingleResultsProcessor(vertical_directory, vertical_file, reAnalyze=False, graph=False, fullOutput=True)
+            p.plot_current_by_paths(fig, ax)
+            for file in single_files_list:
+                ps = SingleResultsProcessor(single_directory, file, reAnalyze=False, graph=True, fullOutput=True)
+                ps.plot_IV(ax, fig, Inorm=0.1, fmt_up=fmt_list[fmt_idx], fmt_down=fmt_list[fmt_idx])
+                fmt_idx += 1
+            if ax_idx < 2:
+                ax.set_xlabel("")
+                ax.set_xticklabels([])
+            else:
+                ax.set_xlabel("$V\\frac{\\left<C\\right>}{e}$")
+            ax.set_ylabel("$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$")
+            ax.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = %d$" % cg_list[cg_idx],position=(0.5, 0.8))
+            cg_idx += 1
+            ax_idx += 1
+        fig.savefig(os.path.join(options.output_folder,  'vertical_single_compare.png'), bbox_inches='tight')
+
+
     elif action == 'plot_small_v_fit':
         for directory, names in zip(directories, file_names):
             full = True
@@ -2317,6 +2363,14 @@ if __name__ == "__main__":
                  # s.plot_voltage()
                  # s.plot_IV("IV",err=False, errorevery=10, alternative=True)
                  plt.show()
+
+    elif action == 'print_scores':
+         full = True
+         for directory, names in zip(directories, file_names):
+             for name in names:
+                 s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, reAnalyze=True)
+                 if filter(s):
+                    s.print_scores(for_paths=True)
 
     else:
         print("Unknown action")
