@@ -1476,7 +1476,7 @@ if __name__ == "__main__":
         plt.show()
     elif action == 'average_IV':
         directory = "bgu_2d_arrays_different_cg"
-        names = ["array_10_10_disorder_c_std_0.9_r_std_9.5_cg_" + str(cg) + "_run_" + str(run) for run in range(1,11) for cg in [1]]
+        names = ["array_10_10_disorder_c_std_0.9_r_std_9.5_cg_" + str(cg) + "_run_" + str(run) for run in range(1,11) for cg in [1,2]]
         full = True
         m = MultiResultAnalyzer([directory]*len(names),names,full=full, reAnalyze=False)
         m.plot_average_IV("average IV",err=False, errorevery=10, fit=True)
