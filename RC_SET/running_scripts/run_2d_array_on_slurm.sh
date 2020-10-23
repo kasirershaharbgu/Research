@@ -22,7 +22,7 @@ dist="exp"
 graph=""
 currentmap="--current-map"
 full="--full"
-resume=""
+resume="--resume"
 vSym=""
 leaping=""
 efermi=""
@@ -36,7 +36,7 @@ custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 T=0
-vmax=10
+vmax=4
 efermi=""
 f="super_conducting_array_different_temperatures"
 input="super_conducting_array_different_temperatures/runningParameters_array_10_10_disorder_c_std_0.1_r_std_9_run_1.txt"
@@ -52,7 +52,7 @@ c_std=0.1
 r_std=9
 rows=10
 columns=10
-for T in 0.001 0.001 0.005 0.007 0.01 0.015 0.02 
+for T in 0.001 0.002 0.005 0.007 0.01 0.015 0.02 
 do
 
 	name="sc_array_${rows}_${columns}_T_${T}"
