@@ -897,6 +897,9 @@ class SingleResultsProcessor:
         """
         Ch = np.array(self.get_array_param("Ch"))
         Cv = np.array(self.get_array_param("Cv"))
+        if Cv.size == 0:
+            self.invC = np.array([[1/np.sum(Ch)]])
+            return True
         Cv = np.pad(Cv,((1,0),(0,0)))
         diagonal = Ch[:,:-1] + Ch[:,1:] + Cv + np.roll(Cv, -1, axis=0)
         second_diagonal = np.copy(Ch[:,1:])
@@ -1175,7 +1178,7 @@ class SingleResultsProcessor:
         if ax is None:
             ax = fig.add_subplot(111)
         colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, len(self.path_dict.keys())))
-        for idx, path in enumerate(self.path_dict):
+        for idx, path in enumerate(sorted(self.path_dict.keys())):
             v = np.array(self.path_dict[path][0])
             i = np.array(self.path_dict[path][1])
             mid_idx = np.argmax(v)
@@ -2309,7 +2312,7 @@ if __name__ == "__main__":
         single_files = [['array_2_1_cg_1_row_0','array_2_1_cg_1_row_1'],['array_2_1_cg_5_row_0','array_2_1_cg_5_row_1'],
                         ['array_3_1_cg_10_row_0','array_3_1_cg_10_row_1','array_3_1_cg_10_row_2'],
                         ['array_3_1_cg_50_row_0','array_3_1_cg_50_row_1','array_3_1_cg_50_row_2']]
-        fmt_list = ['g--','r--','g--','r--','b--','r--','y--','b--','y--','r--']
+        fmt_list = ['r--','m--','r--','m--','r--','g--','m--','r--','g--','m--']
         fmt_idx = 0
         cg_list = [1,5,10,50]
         cg_idx = 0
@@ -2319,19 +2322,33 @@ if __name__ == "__main__":
             ax = axes[ax_idx//2,ax_idx%2]
             p = SingleResultsProcessor(vertical_directory, vertical_file, reAnalyze=False, graph=False, fullOutput=True)
             p.plot_current_by_paths(fig, ax)
-            for file in single_files_list:
-                ps = SingleResultsProcessor(single_directory, file, reAnalyze=False, graph=True, fullOutput=True)
-                ps.plot_IV(ax, fig, Inorm=0.1, fmt_up=fmt_list[fmt_idx], fmt_down=fmt_list[fmt_idx])
+            p.createCapacitanceMatrix()
+            vert_invC = p.invC
+            for row, file in enumerate(single_files_list):
+                ps = SingleResultsProcessor(single_directory, file, reAnalyze=False, graph=False, fullOutput=True)
+                ps.createCapacitanceMatrix()
+                single_invC = ps.invC
+                c_factor = 1/(2*vert_invC[row, row])
+                ps.plot_IV(ax, fig, Inorm=c_factor, Vnorm=c_factor, fmt_up=fmt_list[fmt_idx], fmt_down=fmt_list[fmt_idx])
                 fmt_idx += 1
+
             if ax_idx < 2:
                 ax.set_xlabel("")
                 ax.set_xticklabels([])
             else:
+                ax.set_xticklabels([0,0.25,0.5,0.75,1,1.25,1.5,1.75])
                 ax.set_xlabel("$V\\frac{\\left<C\\right>}{e}$")
-            ax.set_ylabel("$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$")
+            if ax_idx%2 > 0:
+                ax.set_ylabel("")
+                ax.set_yticklabels([])
+            else:
+                ax.set_ylabel("$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$")
             ax.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = %d$" % cg_list[cg_idx],position=(0.5, 0.8))
+            ax.set_xlim(0,2)
+            ax.set_ylim(-0.05,1)
             cg_idx += 1
             ax_idx += 1
+        plt.subplots_adjust(wspace=0, hspace=0)
         fig.savefig(os.path.join(options.output_folder,  'vertical_single_compare.png'), bbox_inches='tight')
 
 
