@@ -159,7 +159,8 @@ class TunnelingRateCalculator:
             f.write("writing")
 
     def freeWritingLock(self):
-        os.remove(os.path.join(self.dirName, "writing.txt"))
+        if self.isWriting():
+            os.remove(os.path.join(self.dirName, "writing.txt"))
 
     def set_results(self):
         can_load = False
