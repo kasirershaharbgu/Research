@@ -311,6 +311,8 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
       <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.single dot run" />
@@ -321,6 +323,9 @@
       <item itemvalue="Python.dynamics_simulation" />
       <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.single dot run" />
+      <item itemvalue="Python.thermalArray" />
+      <item itemvalue="Python.toy model" />
     </list>
     <recent_temporary>
       <list>
@@ -481,12 +486,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1899</line>
+          <line>1900</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1904</line>
+          <line>1905</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -536,7 +541,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2197</line>
+          <line>2148</line>
           <option name="timeStamp" value="477" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -706,6 +711,8 @@
           <url>file://$PROJECT_DIR$/results_processor.py</url>
           <line>769</line>
           <option name="timeStamp" value="707" />
+          <line>1118</line>
+          <option name="timeStamp" value="562" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
