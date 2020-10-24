@@ -25,7 +25,8 @@ EPS = 1e-6
 FIGSIZE=(30,16)
 SCORE_NAMES=['hysteresisArea', 'jumpSeparationUp', 'jumpSeparationDown', 'jumpSeparationUpDown', 'jumpHeightUp',
              'jumpHeightDown', 'thresholdVoltageUp', 'thresholdVoltageDown', 'jumpNumUp', 'jumpNumDown', 'firstJumpV',
-             'smallVPowerUp', 'smallVPowerDown', 'smallVCoefficientUp', 'smallVCoefficientDown', 'maxJumpHeight']
+             'smallVPowerUp', 'smallVPowerDown', 'smallVCoefficientUp', 'smallVCoefficientDown', 'maxJumpHeight',
+             'pathNum']
 ACTIONS = ['plot_results', 'plot_score_by_parameter', 'plot_score_by_disorder',
            'plot_score_by_average', 'plot_scores_together', 'plot_RT', 'plot_jumps', 'plot_current_by_path',
            'IV_different_temperatures', 'perpendicular_current', 'plot_small_v_fit']
@@ -743,8 +744,17 @@ class SingleResultsProcessor:
             return self.calc_threshold_voltage_up(I, IErr, V, mid_idx)
         elif scoreName == 'thresholdVoltageDown':
             return self.calc_threshold_voltage_down(I, IErr, V, mid_idx)
+        elif scoreName == 'pathNum':
+            return self.calc_path_num()
         else:
             raise NotImplementedError
+
+    def calc_path_num(self):
+        if self.Imaps is None:
+            return 0,0,0
+        if self.path_dict is None:
+            self.path_dict = self.calc_paths()
+        return len(self.path_dict),0,0
 
     def calc_score_for_paths(self, score_name):
         if self.path_dict is None:
@@ -1155,11 +1165,14 @@ class SingleResultsProcessor:
                     path_dict[path_tup] = [[],[]]
                 path_dict[path_tup][0].append(v)
                 path_dict[path_tup][1].append(current)
+        return self.filter_paths(path_dict, 1)
+
+    def filter_paths(self, path_dict, percentage_threshold):
         currents = []
         if len(path_dict) > 0:
             for path in path_dict:
                 currents.append(np.max(path_dict[path][1]))
-            eps = np.max(currents) / 100
+            eps = percentage_threshold * np.max(currents) / 100
             if len(currents) > 5:
                 eps = max(sorted(currents)[-5], eps)
             to_delete = []
@@ -1360,9 +1373,9 @@ class MultiResultAnalyzer:
         plt.ylabel(ylabel)
         plt.xlabel(xlabel)
 
-    def plot_scores_together(self, score1, score2, average_results=True,  fig=None, title="title", window_size=0.01):
-        if fig is None:
-            fig = plt.figure(figsize=FIGSIZE)
+    def plot_scores_together(self, score1, score2, average_results=True,  fig=None, ax=None, window_size=0.01):
+        if ax is None:
+            fig,ax = plt.subplots(figsize=FIGSIZE)
         x, x_high_err, x_low_err = self.get_relevant_scores(score1)
         y, y_high_err, y_low_err = self.get_relevant_scores(score2)
         yerror = np.zeros((2, len(y)))
@@ -1380,12 +1393,7 @@ class MultiResultAnalyzer:
         y = y[relevant]
         if average_results:
             x, y, yerror = self.running_average(x, y, yerror, window_size=window_size)
-
-
-        plt.errorbar(x, y, yerr=yerror, fmt='.')
-        # plt.plot(x, y, '.')
-        plt.xlabel(score1)
-        plt.ylabel(score2)
+        ax.errorbar(x, y, yerr=yerror, fmt='.')
         if self.outDir is not None:
             plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
             plt.close(fig)
