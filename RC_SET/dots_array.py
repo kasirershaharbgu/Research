@@ -143,6 +143,8 @@ class TunnelingRateCalculator:
         self.vals = None
         self.set_results()
         self.set_approx()
+        self.plot_rate()
+        plt.show()
 
     def isWriting(self):
         return os.path.exists(os.path.join(self.dirName, "writing.txt"))
@@ -785,13 +787,13 @@ class DotArray:
 
 class JJArray(DotArray):
     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                 temperature, temperature_gradient, scGap, fastRelaxation=False, tauLeaping=False, modifyR=False):
+                 temperature, temperature_gradient, gap, fastRelaxation=False, tauLeaping=False, modifyR=False):
         DotArray.__init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
                           temperature, temperature_gradient, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
-        self.gap = scGap
+        self.gap = gap
         self.Ej = self.getEj()
         self.Ec = 1/(2*np.mean(CG))
-        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, scGap,
+        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, gap,
                                                           "quasi_particles_rate")
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
