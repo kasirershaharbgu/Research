@@ -17,7 +17,7 @@ from time import sleep
 from multiprocessing import Pool
 from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
-from mpmath import quad, exp, sqrt, fabs, re, inf, ninf
+from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
 from scipy.interpolate import interp1d
 from scipy.stats import norm
 from ast import literal_eval
@@ -119,10 +119,12 @@ def qp_tunneling_single(deltaE, Ec, gap, T):
     # upper1 = 20*T
     # lower2 = -20*(T + deltaE)
     # upper2 = 20*(T + deltaE)
+    mp.dps = 30
     part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
     part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
     part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap-deltaE])
     part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap-deltaE, inf])
+    mp.dps = 15
     return re(part1 + part2 + part3 + part4)
 
 def qp_tunneling(deltaE, Ec, gap, T):
@@ -900,6 +902,7 @@ class JJArray(DotArray):
             mid = self.rates.size // 2
             self.rates[:mid] = self.qp_rate_calculator.get_tunnling_rates(-qp_work) / self.R
             self.rates[mid:] = self.cp_rate_calculator.get_tunnling_rates(-cp_work) / (self.R**2)
+            self.rates[np.abs(self.rates) < EPS] = 0
         return self.rates
 
     def executeAction(self, ind, charge=1):
