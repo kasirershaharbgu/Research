@@ -6,7 +6,7 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 import matplotlib
-matplotlib.use("Agg")
+# matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 #from mayavi import mlab
@@ -15,7 +15,7 @@ import re as regex
 from time import sleep
 from multiprocessing import Pool
 from scipy.integrate import cumtrapz
-from mpmath import quad, exp, sqrt, fabs, re, inf, ninf
+from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
 from scipy.interpolate import interp1d
 from mpl_toolkits.mplot3d import Axes3D
 from ast import literal_eval
@@ -106,18 +106,23 @@ def cp_tunneling(x, Ec, Ej, T):
 
 def qp_integrand(deltaE, Ec, gap, T):
     def f(x1, x2):
-        return qp_density_of_states(x1, gap)*qp_density_of_states(x2 + deltaE, gap)*fermi_dirac_dist(x1, T)\
-               *(1-fermi_dirac_dist(x2 + deltaE, T))*high_impadance_p(x1 - x2, Ec, T, 1)
+        return qp_density_of_states(x1, gap)*qp_density_of_states(x2, gap)*fermi_dirac_dist(x1, T)\
+               *(1-fermi_dirac_dist(x2, T))*high_impadance_p(x1 - x2 + deltaE, Ec, T, 1)
+    return f
+
+def qp_integrand_big_energies(deltaE, Ec, T):
+    def f(x1):
+        return (x1/(1-exp(-x1/T)))*high_impadance_p(x1 - deltaE, Ec, T, 1)
     return f
 
 
-
 def qp_tunneling_single(deltaE, Ec, gap, T):
-
+    mp.dps = 50
     part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
     part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
     part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap-deltaE])
     part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap-deltaE, inf])
+    mp.dps = 15
     return re(part1 + part2 + part3 + part4)
 
 def qp_tunneling(deltaE, Ec, gap, T):
@@ -160,30 +165,31 @@ class TunnelingRateCalculator:
             os.remove(os.path.join(self.dirName, "writing.txt"))
 
     def set_results(self):
-        can_load = False
-        deltaEmin = None
-        deltaEmax = None
-        deltaEstep = None
         if os.path.isdir(self.dirName):
+            desireddeltaEmin = self.deltaEmin
+            desireddeltaEmax = self.deltaEmax
             self.getWritingLock()
-            deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
-            deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
-            deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))
-            can_load = deltaEmin <= self.deltaEmin and deltaEmax >= self.deltaEmax and deltaEstep <= self.deltaEstep
+            self.deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
+            self.deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
+            self.deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))
+            self.deltaEvals = np.arange(self.deltaEmin, self.deltaEmax, self.deltaEstep)
+            self.vals = np.load(os.path.join(self.dirName, "vals.npy"))
+            self.freeWritingLock()
+            while self.deltaEmin - desireddeltaEmin >= -self.deltaEstep:
+                self.getWritingLock()
+                self.decrease_low_limit()
+                self.freeWritingLock()
+            while self.deltaEmax - desireddeltaEmax <= self.deltaEstep:
+                self.getWritingLock()
+                self.increase_high_limit()
+                self.freeWritingLock()
         else:
             os.mkdir(self.dirName)
             self.getWritingLock()
-        if can_load:
-            self.deltaEstep = deltaEstep
-            self.deltaEmax = deltaEmax
-            self.deltaEmin = deltaEmin
-            self.deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
-            self.vals = np.load(os.path.join(self.dirName, "vals.npy"))
-        else:
             self.deltaEvals = np.arange(self.deltaEmin, self.deltaEmax, self.deltaEstep)
             self.vals = self.rateFunc(self.deltaEvals, self.Ec, self.otherParam, self.T)
             self.saveVals()
-        self.freeWritingLock()
+            self.freeWritingLock()
         return True
 
     def saveVals(self):
@@ -242,6 +248,18 @@ class TunnelingRateCalculator:
             self.increase_high_limit()
             self.freeWritingLock()
         return self.approx(deltaE)
+
+    def expand_range(self, deltaE):
+        if self.deltaEmin - np.min(deltaE) >= -self.deltaEstep or self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
+            self.update_rates()
+        while self.deltaEmin - np.min(deltaE) >= -self.deltaEstep:
+            self.getWritingLock()
+            self.decrease_low_limit()
+            self.freeWritingLock()
+        while self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
+            self.getWritingLock()
+            self.increase_high_limit()
+            self.freeWritingLock()
 
     def plot_rate(self):
         fig = plt.figure()
@@ -841,6 +859,7 @@ class JJArray(DotArray):
             mid = self.rates.size // 2
             self.rates[:mid] = self.qp_rate_calculator.get_tunnling_rates(-qp_work) / self.R
             self.rates[mid:] = self.cp_rate_calculator.get_tunnling_rates(-cp_work) / (self.R**2)
+            self.rates[np.abs(self.rates) < EPS] = 0
         return self.rates
 
     def executeAction(self, ind, charge=1):

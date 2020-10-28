@@ -4,7 +4,7 @@ import glob
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'sans-serif',
-        'weight' : 'bold',
+        'weight' : 'normal',
         'size' : 22}
 matplotlib.rc('font', **font)
 matplotlib.rc('text', usetex=True)
@@ -982,12 +982,14 @@ class SingleResultsProcessor:
 
     def plot_IV(self, ax=None, fig=None, err=True, alternative=False, errorevery=10,
                 Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current', shift=0, fmt_up='r.', fmt_down='b.'):
+
         if ax is None:
             fig, ax = plt.subplots()
         if err:
             ax.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt=fmt_up,
                          yerr=self.IErr[:self.mid_idx]/Inorm,
                          errorevery=errorevery)
+
             ax.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt=fmt_down,
                          yerr=self.IErr[self.mid_idx:]/Inorm,
                          errorevery=errorevery)
@@ -2100,36 +2102,57 @@ if __name__ == "__main__":
 
     ####### Manual actions ########
     elif action == "compareIV": # compares methods
-        output_dir = 'graph_results'
+        output_dir = '/home/kasirershahar/University/Research/Thesis/Figures/'
         directory_graph = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        directory_gillespie = "single_island_different_temperature"
+        directory_gillespie = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_different_temperature"
         resultNames= ["big_CG_big_R2","big_CG_small_R2","small_CG_big_R2","small_CG_small_R2"]
         namesGraph = ["large_R2_large_CG", "small_R2_large_CG",
                       "large_R2_small_CG", "small_R2_small_CG"]
         namesGillespie = ["array_1_1_big_cg_big_r2_T_", "array_1_1_big_cg_small_r2_T_",
                           "array_1_1_small_cg_big_r2_T_", "array_1_1_small_cg_small_r2_T_"]
+        fig, axes = plt.subplots(2,2,figsize=FIGSIZE)
+        plot_idx = 0
         for nameGraph, nameGillespie, resultName in zip(namesGraph, namesGillespie, resultNames):
+            ax = axes[plot_idx//2, plot_idx%2]
             pGraph = SingleResultsProcessor(directory_graph, nameGraph, fullOutput=False, vertCurrent=False,
                                                reAnalyze=False, graph=True)
             psGillespie = [SingleResultsProcessor(directory_gillespie, nameGillespie + str(T), fullOutput=False, vertCurrent=False,
                                                 reAnalyze=True) for T in [0, 0.001, 0.01, 0.1]]
-            fig = plt.figure(figsize=FIGSIZE)
             shift = 0
             psGillespie[0].plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
-                      Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", shift=shift)
+                      Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
             shift += 1
             pGraph.plot_IV("Graph method", err=False, alternative=False,
-                           Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", fmt_up='c*', fmt_down='m*')
+                           Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", fmt_up='c*', fmt_down='m*', ax=ax, fig=fig)
             for p in psGillespie[1:]:
                 p.plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
-                               Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", shift=shift)
+                               Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
                 shift += 1
+            plot_idx += 1
 
-            plt.legend(['Dynamical method (increasing voltage)', 'Dynamical method (decreasing voltage)',
-                        'Graph method (increasing voltage)','Graph method (decreasing voltage)'])
-            # plt.show()
-            plt.savefig(os.path.join(output_dir, resultName+".png"))
-            plt.close(fig)
+        axes[0,0].set_xlabel('')
+        axes[0, 0].set_xticks([])
+        axes[0,1].set_xlabel('')
+        axes[0, 1].set_xticks([])
+        axes[0, 1].set_ylabel('')
+        axes[0, 1].set_yticks([])
+        axes[1, 1].set_ylabel('')
+        axes[1, 1].set_yticks([])
+        plt.subplots_adjust(wspace=0, hspace=0)
+        axes[0,0].legend(['Dynamical method (increasing voltage)', 'Dynamical method (decreasing voltage)',
+                    'Graph method (increasing voltage)','Graph method (decreasing voltage)'],loc='upper center',
+                         bbox_to_anchor=(1, 1.2), ncol=2, fancybox=True, shadow=True)
+        axes[0,0].set_zorder(4)
+        axes[0,0].text(-0.2,5.8,"a",fontsize=30)
+        axes[0,1].set_zorder(3)
+        axes[0,1].text(-0.2,5.8,"b",fontsize=30)
+        axes[1,0].set_zorder(2)
+        axes[1,0].text(-0.2,5.8,"c",fontsize=30)
+        axes[1,1].set_zorder(1)
+        axes[1,1].text(-0.2,5.8,"d",fontsize=30)
+        # plt.show()
+        plt.savefig(os.path.join(output_dir, "IV_examples_single_island.png"), bbox_inches = 'tight', pad_inches = 0.01)
+        plt.close(fig)
 
     elif action == "jumps_separation_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
