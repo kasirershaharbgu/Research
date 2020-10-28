@@ -6,7 +6,7 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 import matplotlib
-# matplotlib.use("Agg")
+matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
@@ -119,13 +119,18 @@ def qp_integrand_big_energies(deltaE, Ec, T):
 
 
 def qp_tunneling_single(deltaE, Ec, gap, T):
-    mp.dps = 50
-    part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
-    part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
-    part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap-deltaE])
-    part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap-deltaE, inf])
-    mp.dps = 15
-    return re(part1 + part2 + part3 + part4)
+    if fabs(deltaE) < 6*gap:
+        mp.dps = 50
+        part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
+        part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
+        part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap-deltaE])
+        part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap-deltaE, inf])
+        mp.dps = 15
+        return re(part1 + part2 + part3 + part4)
+    elif deltaE > 0:
+        return deltaE - Ec
+    else:
+        return 0
 
 def qp_tunneling(deltaE, Ec, gap, T):
         res = np.zeros(deltaE.shape)
