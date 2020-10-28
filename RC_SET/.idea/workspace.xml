@@ -8,9 +8,6 @@
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -504,7 +501,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>971</line>
+          <line>972</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -519,7 +516,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1012</line>
+          <line>1013</line>
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -560,7 +557,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1143</line>
+          <line>1144</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -585,32 +582,32 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1348</line>
+          <line>1349</line>
           <option name="timeStamp" value="547" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1375</line>
+          <line>1376</line>
           <option name="timeStamp" value="549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>951</line>
+          <line>952</line>
           <option name="timeStamp" value="552" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1206</line>
+          <line>1207</line>
           <option name="timeStamp" value="553" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1363</line>
+          <line>1364</line>
           <option name="timeStamp" value="555" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1119</line>
+          <line>1120</line>
           <option name="timeStamp" value="557" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -621,22 +618,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2440</line>
+          <line>2465</line>
           <option name="timeStamp" value="708" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2406</line>
+          <line>2431</line>
           <option name="timeStamp" value="711" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2467</line>
+          <line>2492</line>
           <option name="timeStamp" value="713" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2475</line>
+          <line>2500</line>
           <option name="timeStamp" value="714" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -646,7 +643,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1267</line>
+          <line>1268</line>
           <option name="timeStamp" value="720" />
         </line-breakpoint>
       </breakpoints>
