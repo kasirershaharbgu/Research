@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'sans-serif',
         'weight' : 'normal',
-        'size' : 22}
+        'size' : 30}
 matplotlib.rc('font', **font)
 matplotlib.rc('text', usetex=True)
 from optparse import OptionParser
@@ -413,7 +413,7 @@ class SingleResultsProcessor:
         else:
             plt.close(fig)
 
-    def plot_jumps_freq(self, by_occupation=False, by_path_occupation=False):
+    def plot_jumps_freq(self, by_occupation=False, by_path_occupation=False, ax1=None, fig=None):
         V = self.V[self.V>=0]
         I = self.I[self.V>=0]
         IErr = self.IErr[self.V>=0]
@@ -422,7 +422,8 @@ class SingleResultsProcessor:
         IV_diffV1, IV_diffV2, IV_diff1, IV_diff2, IV_Vjumps1, IV_Vjumps2, IV_freq1, IV_freq2, IV_fou1, IV_fou2 =\
             self.calc_jumps_freq(I[V >= thresholdV], IErr[V>=thresholdV], V=V[V>=thresholdV], mid_idx=np.argmax(V[V>=thresholdV]),
                                  threshold_factor=2)
-        fig, ax1 = plt.subplots(figsize=FIGSIZE)
+        if ax1 is None:
+            fig, ax1 = plt.subplots(figsize=FIGSIZE)
         fig2 = None
         fig3 = None
         island_colors = None
@@ -1036,8 +1037,8 @@ class SingleResultsProcessor:
                 Rinf_err = Rinf * G_err
                 Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                 T0,T0_err = significant_figures(T0, T0_err)
-                ax.text(np.max(T)-0.31, 1.8 * shift * (V / I[-1]),
-                        "$\\frac{R_{\\infty}}{R_1+R_2} = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
+                ax.text(np.max(T)-0.37, 1.9 * shift * (V / I[-1]),
+                        "$R_{\\infty}/\\left(R_1+R_2\\right) = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
                             str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                 fit_result = arrhenius(T, *fit_param)
             else:
@@ -1052,7 +1053,7 @@ class SingleResultsProcessor:
                 Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                 T0, T0_err = significant_figures(T0, T0_err)
                 R0, R0_err = significant_figures(R0, R0_err)
-                ax.text(np.max(T)-0.31,1.9*shift*(V/I[-1]),"$\\frac{R_{0}}{R_1+R_2} = %s \\pm %s$, $\\frac{R_{\\infty}}{R_1+R_2}= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
+                ax.text(np.max(T)-0.45,1.9*shift*(V/I[-1]),"$R_{0}/\\left(R_1+R_2\\right) = %s \\pm %s$, $R_{\\infty}/\\left(R_1+R_2\\right)= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
                 str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                 fit_result = shifted_arrhenius(T, *fit_param)
             ax.plot(T, (1/fit_result) * shift, color=color,label=label)
@@ -1972,25 +1973,49 @@ if __name__ == "__main__":
                 if filter(s):
                     s.plot_resistance(out=os.path.join(directory,name))
     elif action == "plot_RT":
-        fig, ax = plt.subplots()
+        directory = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_IT"
+        files = [["array_1_1_cg_1_v_0.1","array_1_1_cg_1_v_0.1_r_disorder","array_1_1_cg_10_v_0.1",
+                  "array_1_1_cg_10_v_0.1_r_disorder"],
+                 ["array_1_1_cg_1_v_0.5", "array_1_1_cg_1_v_0.5_r_disorder", "array_1_1_cg_10_v_0.5",
+                  "array_1_1_cg_10_v_0.5_r_disorder"],
+                 ["array_1_1_cg_1_v_1", "array_1_1_cg_1_v_1_r_disorder", "array_1_1_cg_10_v_1",
+                  "array_1_1_cg_10_v_1_r_disorder"]]
+        fig, ax = plt.subplots(3,1, figsize=FIGSIZE)
         shift = 1
-        index = 0
+        shift_factor = [700,700,100]
         labels =["$\\frac{C_G}{C_1+C_2} = 1$ $\\frac{R_2}{R_1}=1$", "$\\frac{C_G}{C_1+C_2} = 1$ $\\frac{R_2}{R_1}=9$", "$\\frac{C_G}{C_1+C_2} = 10$ $\\frac{R_2}{R_1}=1$",
                  "$\\frac{C_G}{C_1+C_2} = 10$ $\\frac{R_2}{R_1}=9$"]
-        for directory,names in zip(directories, file_names):
-            colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, len(names)))
-            for name in names:
+        colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, 4))
+        for index in range(3):
+            for i,name in enumerate(files[index]):
                 s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=False, graph=False,
                                            reAnalyze=options.re_analyze, IT=True)
                 if filter(s):
-                    v=s.plot_RT(ax, shift=shift, err=True, color=colors[index], label=labels[index])
-                    shift *= 100
-                    index += 1
-                ax.set_title("$V\\frac{C_1+C_2}{e} = %1.1f$" %v, position=(0.5, 0.8))
-                ax.set_xlabel("$T\\frac{C_1+C_2}{e^2}$")
-                ax.set_ylabel("$\\frac{R}{R_1+R_2}$")
-                plt.legend()
-        plt.show()
+                    v = s.plot_RT(ax[index], shift=shift, err=True, color=colors[i])
+                    shift *= shift_factor[index]
+                ax[index].set_title("$V\\frac{C_1+C_2}{e} = %1.1f$" %v, position=(0.5, 0.75))
+                ax[index].set_xlabel("$T\\frac{C_1+C_2}{e^2}$")
+                ax[index].set_ylabel("$\\frac{R}{R_1+R_2}$")
+            index += 1
+            shift=1
+        ax[0].set_xlabel('')
+        ax[0].set_xticks([])
+        ax[0].set_xlim(0,0.3)
+        ax[0].set_ylim(1,1e15)
+        ax[1].set_xlabel('')
+        ax[1].set_xticks([])
+        ax[1].set_xlim(-0.003, 0.3)
+        ax[1].set_ylim(1,1e15)
+        ax[2].set_ylim(1,1e10)
+        ax[2].set_xlim(0, 0.3)
+        plt.subplots_adjust(wspace=0, hspace=0)
+        ax[0].legend(labels, loc='upper center', bbox_to_anchor=(0.5, 1.2), ncol=4, fancybox=True, shadow=True)
+        ax[0].text(0.001, 5*1e13, "a", fontsize=30)
+        ax[1].text(-0.0015, 1e13, "b", fontsize=30)
+        ax[2].text(0.001, 1e9, "c", fontsize=30)
+        # plt.show()
+        plt.savefig(os.path.join(options.output_folder,'single_island_RT.png'), bbox_inches='tight', pad_inches=0.1)
+        plt.close(fig)
     elif action == "plot_jumps":
         full = options.full
         for directory,names in zip(directories, file_names):
@@ -2528,7 +2553,19 @@ if __name__ == "__main__":
                 s = SingleResultsProcessor(directory, name, vertCurrent=False, reAnalyze=False)
                 s.plot_current_by_paths(fig=fig)
                 plt.show()
-
+    elif action == 'plot_jumps_for_2d_arrays':
+        directory = ''
+        names = []
+        for name in names:
+            s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False, graph=False,
+                                       reAnalyze=options.re_analyze)
+            fig, _,_ = s.plot_jumps_freq(by_occupation=options.by_occupation,
+                                                by_path_occupation=options.by_path_occupation)
+            if options.output_folder:
+                fig.savefig(os.path.join(options.output_folder, name + '_jumps.png'), bbox_inches='tight')
+                plt.close(fig)
+            else:
+                plt.show()
 
     elif action == 'plot_results':
          full = True
