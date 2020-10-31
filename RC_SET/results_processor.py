@@ -4,8 +4,8 @@ import glob
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'sans-serif',
-        'weight' : 'bold',
-        'size' : 22}
+        'weight' : 'normal',
+        'size' : 30}
 matplotlib.rc('font', **font)
 matplotlib.rc('text', usetex=True)
 from optparse import OptionParser
@@ -25,7 +25,8 @@ EPS = 1e-6
 FIGSIZE=(30,16)
 SCORE_NAMES=['hysteresisArea', 'jumpSeparationUp', 'jumpSeparationDown', 'jumpSeparationUpDown', 'jumpHeightUp',
              'jumpHeightDown', 'thresholdVoltageUp', 'thresholdVoltageDown', 'jumpNumUp', 'jumpNumDown', 'firstJumpV',
-             'smallVPowerUp', 'smallVPowerDown', 'smallVCoefficientUp', 'smallVCoefficientDown', 'maxJumpHeight']
+             'smallVPowerUp', 'smallVPowerDown', 'smallVCoefficientUp', 'smallVCoefficientDown', 'maxJumpHeight',
+             'pathNum']
 ACTIONS = ['plot_results', 'plot_score_by_parameter', 'plot_score_by_disorder',
            'plot_score_by_average', 'plot_scores_together', 'plot_RT', 'plot_jumps', 'plot_current_by_path',
            'IV_different_temperatures', 'perpendicular_current', 'plot_small_v_fit']
@@ -130,8 +131,8 @@ class SingleResultsProcessor:
         self.alternativeIErr = []
         self.alternativeV = []
         for i in range(len(full_I)):
-            min_idx = max(0, i-2)
-            max_idx = min(len(full_I)-1, i+2)
+            min_idx = max(0, i-3)
+            max_idx = min(len(full_I)-1, i+3)
             point = np.hstack([full_I[j] for j in range(min_idx, max_idx)])
             bins = bistabilityAnalysis(point)
             # bins = [point]
@@ -301,8 +302,6 @@ class SingleResultsProcessor:
         return self.n + (flattenToColumn(VL).dot(left_part_n_prime) + flattenToColumn(VR).dot(right_part_n_prime)).reshape(self.n.shape)
 
     def calc_hysteresis_score(self, I, IErr, V, mid_idx):
-        if self.jumpScores is None:
-            self.calc_jumps_scores(I, IErr, V, mid_idx)
         IplusErr = np.copy(I)
         IplusErr[:mid_idx] -= IErr[:mid_idx]
         IplusErr[mid_idx:] += IErr[mid_idx:]
@@ -312,7 +311,7 @@ class SingleResultsProcessor:
         score = -integrate.trapz(I, V)
         low_err = -integrate.trapz(IplusErr, V)
         high_err = -integrate.trapz(IminusErr, V)
-        return score, (high_err-score), (score-low_err)
+        return score, high_err-score, score-low_err
 
     def calc_threshold_voltage_up(self, I, IErr, V, mid_idx):
         I = np.array(I[:mid_idx])
@@ -414,15 +413,17 @@ class SingleResultsProcessor:
         else:
             plt.close(fig)
 
-    def plot_jumps_freq(self, by_occupation=False, by_path_occupation=False):
+    def plot_jumps_freq(self, by_occupation=False, by_path_occupation=False, ax1=None, fig=None):
         V = self.V[self.V>=0]
         I = self.I[self.V>=0]
         IErr = self.IErr[self.V>=0]
         mid_idx = np.argmax(V)
         thresholdV = np.min(V[I>EPS])
         IV_diffV1, IV_diffV2, IV_diff1, IV_diff2, IV_Vjumps1, IV_Vjumps2, IV_freq1, IV_freq2, IV_fou1, IV_fou2 =\
-            self.calc_jumps_freq(I[V >= thresholdV], IErr[V>=thresholdV], V=V[V>=thresholdV], mid_idx=np.argmax(V[V>=thresholdV]))
-        fig, ax1 = plt.subplots(figsize=FIGSIZE)
+            self.calc_jumps_freq(I[V >= thresholdV], IErr[V>=thresholdV], V=V[V>=thresholdV], mid_idx=np.argmax(V[V>=thresholdV]),
+                                 threshold_factor=2)
+        if ax1 is None:
+            fig, ax1 = plt.subplots(figsize=FIGSIZE)
         fig2 = None
         fig3 = None
         island_colors = None
@@ -438,7 +439,7 @@ class SingleResultsProcessor:
         if self.Imaps is not None and self.path_dict is None:
             self.path_dict = self.calc_paths()
             colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, len(self.path_dict.keys())))
-        if self.n is None and self.Imaps is None:
+        if (self.n is None and self.Imaps is None) or not self.full:
             for v, diff in zip(IV_Vjumps1, IV_diff1):
                 i = I[V == v][0]
                 ax1.arrow(v, i, 0, diff, fc='r',ec='r', head_length=diff/3, head_width=arrow_head_width)
@@ -616,13 +617,16 @@ class SingleResultsProcessor:
         return Vjumps1, Vjumps2
 
     def calc_jumps_scores(self, I, IErr, V, mid_idx):
-        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(I, IErr, V=V, mid_idx=mid_idx)
+        diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(I, IErr, V=V, mid_idx=mid_idx,
+                                                                                      window_size_factor=1,
+                                                                                      threshold_factor=1,
+                                                                                      absolute_threshold=0.001)
         self.jumpScores = dict()
         self.jumpScores['jumpSeparationUp'] = (np.average(diffV1), np.std(diffV1), np.std(diffV1)) if diffV1.size > 0 else (0,0,0)
         self.jumpScores['jumpSeparationDown'] = (-np.average(diffV2), -np.std(diffV2), -np.std(diffV2)) if diffV2.size > 0 else (0,0,0)
         self.jumpScores['jumpHeightUp'] = (np.average(diff1), np.std(diff1), np.std(diff1)) if diff1.size > 0 else (0,0,0)
         self.jumpScores['maxJumpHeight'] = (diff1[0], 0,0) if diff1.size > 0 else (0,0,0)
-        self.jumpScores['jumpHeightDown'] = (-np.average(diff2), -np.std(diff2), -np.std(diff2)) if diff2.size > 0 else (0,0,0)
+        self.jumpScores['jumpHeightDown'] = (np.average(diff2), np.std(diff2), np.std(diff2)) if diff2.size > 0 else (0,0,0)
         self.jumpScores['jumpNumUp'] = (Vjumps1.size, 0, 0)
         self.jumpScores['jumpNumDown'] = (Vjumps2.size, 0, 0)
         if len(Vjumps2) > 0 and len(Vjumps1)> 0:
@@ -743,8 +747,17 @@ class SingleResultsProcessor:
             return self.calc_threshold_voltage_up(I, IErr, V, mid_idx)
         elif scoreName == 'thresholdVoltageDown':
             return self.calc_threshold_voltage_down(I, IErr, V, mid_idx)
+        elif scoreName == 'pathNum':
+            return self.calc_path_num()
         else:
             raise NotImplementedError
+
+    def calc_path_num(self):
+        if self.Imaps is None:
+            return 0,0,0
+        if self.path_dict is None:
+            self.path_dict = self.calc_paths()
+        return len(self.path_dict.keys()),0,0
 
     def calc_score_for_paths(self, score_name):
         if self.path_dict is None:
@@ -897,6 +910,9 @@ class SingleResultsProcessor:
         """
         Ch = np.array(self.get_array_param("Ch"))
         Cv = np.array(self.get_array_param("Cv"))
+        if Cv.size == 0:
+            self.invC = np.array([[1/np.sum(Ch)]])
+            return True
         Cv = np.pad(Cv,((1,0),(0,0)))
         diagonal = Ch[:,:-1] + Ch[:,1:] + Cv + np.roll(Cv, -1, axis=0)
         second_diagonal = np.copy(Ch[:,1:])
@@ -967,12 +983,14 @@ class SingleResultsProcessor:
 
     def plot_IV(self, ax=None, fig=None, err=True, alternative=False, errorevery=10,
                 Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current', shift=0, fmt_up='r.', fmt_down='b.'):
+
         if ax is None:
             fig, ax = plt.subplots()
         if err:
             ax.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt=fmt_up,
                          yerr=self.IErr[:self.mid_idx]/Inorm,
                          errorevery=errorevery)
+
             ax.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt=fmt_down,
                          yerr=self.IErr[self.mid_idx:]/Inorm,
                          errorevery=errorevery)
@@ -1019,8 +1037,8 @@ class SingleResultsProcessor:
                 Rinf_err = Rinf * G_err
                 Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                 T0,T0_err = significant_figures(T0, T0_err)
-                ax.text(np.max(T)-0.31, 1.8 * shift * (V / I[-1]),
-                        "$\\frac{R_{\\infty}}{R_1+R_2} = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
+                ax.text(np.max(T)-0.37, 1.9 * shift * (V / I[-1]),
+                        "$R_{\\infty}/\\left(R_1+R_2\\right) = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
                             str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                 fit_result = arrhenius(T, *fit_param)
             else:
@@ -1035,7 +1053,7 @@ class SingleResultsProcessor:
                 Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                 T0, T0_err = significant_figures(T0, T0_err)
                 R0, R0_err = significant_figures(R0, R0_err)
-                ax.text(np.max(T)-0.31,1.9*shift*(V/I[-1]),"$\\frac{R_{0}}{R_1+R_2} = %s \\pm %s$, $\\frac{R_{\\infty}}{R_1+R_2}= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
+                ax.text(np.max(T)-0.45,1.9*shift*(V/I[-1]),"$R_{0}/\\left(R_1+R_2\\right) = %s \\pm %s$, $R_{\\infty}/\\left(R_1+R_2\\right)= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
                 str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                 fit_result = shifted_arrhenius(T, *fit_param)
             ax.plot(T, (1/fit_result) * shift, color=color,label=label)
@@ -1076,8 +1094,16 @@ class SingleResultsProcessor:
                     plt.xlabel('Voltage')
                     plt.ylabel('Current')
 
-    def power_law_fit(self, I, IErr, V, mid_idx, err=True, errorevery=10, Vlabel='Voltage', Ilabel='Current', shift=0,
+    def power_law_fit(self, I=None, IErr=None, V=None, mid_idx=None, err=True, errorevery=10, Vlabel='Voltage', Ilabel='Current', shift=0,
                         fmt_up='r.', fmt_down='b.', plot=False):
+        if I is None:
+            I = self.I
+        if IErr is None:
+            IErr = self.IErr
+        if V is None:
+            V = self.V
+        if mid_idx is None:
+            mid_idx = self.mid_idx
         VthresholdDown = self.calc_threshold_voltage_down(I, IErr, V, mid_idx)[0]
         VthresholdUp = self.calc_threshold_voltage_up(I, IErr, V, mid_idx)[0]
         if VthresholdUp == 0 or VthresholdDown == 0:
@@ -1096,7 +1122,7 @@ class SingleResultsProcessor:
         IDown = IDown[VDown > VthresholdDown]
         IErrDown = IErrDown[VDown > VthresholdDown]
         VDown = (VDown[VDown > VthresholdDown] - VthresholdDown) / VthresholdDown
-        if VDown.size < 50 or VUp.size < 50:
+        if VDown.size < 30 or VUp.size < 30:
             return [0,0],[0,0],[0,0],[0,0]
         VUp_for_fit = VUp[:50]
         VDown_for_fit = VDown[-50:]
@@ -1152,13 +1178,14 @@ class SingleResultsProcessor:
                     path_dict[path_tup] = [[],[]]
                 path_dict[path_tup][0].append(v)
                 path_dict[path_tup][1].append(current)
+        return self.filter_paths(path_dict, 10)
+
+    def filter_paths(self, path_dict, percentage_threshold):
         currents = []
         if len(path_dict) > 0:
             for path in path_dict:
                 currents.append(np.max(path_dict[path][1]))
-            eps = np.max(currents) / 100
-            if len(currents) > 5:
-                eps = max(sorted(currents)[-5], eps)
+            eps = percentage_threshold * np.max(currents) / 100
             to_delete = []
             for path in path_dict:
                 if np.max(path_dict[path][1]) < eps:
@@ -1175,7 +1202,7 @@ class SingleResultsProcessor:
         if ax is None:
             ax = fig.add_subplot(111)
         colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, len(self.path_dict.keys())))
-        for idx, path in enumerate(self.path_dict):
+        for idx, path in enumerate(sorted(self.path_dict.keys())):
             v = np.array(self.path_dict[path][0])
             i = np.array(self.path_dict[path][1])
             mid_idx = np.argmax(v)
@@ -1357,9 +1384,10 @@ class MultiResultAnalyzer:
         plt.ylabel(ylabel)
         plt.xlabel(xlabel)
 
-    def plot_scores_together(self, score1, score2, average_results=True,  fig=None, title="title", window_size=0.01):
-        if fig is None:
-            fig = plt.figure(figsize=FIGSIZE)
+    def plot_scores_together(self, score1, score2, average_results=True,  fig=None, ax=None, window_size=0.01,
+                             fmt='.'):
+        if ax is None:
+            fig,ax = plt.subplots(figsize=FIGSIZE)
         x, x_high_err, x_low_err = self.get_relevant_scores(score1)
         y, y_high_err, y_low_err = self.get_relevant_scores(score2)
         yerror = np.zeros((2, len(y)))
@@ -1377,31 +1405,20 @@ class MultiResultAnalyzer:
         y = y[relevant]
         if average_results:
             x, y, yerror = self.running_average(x, y, yerror, window_size=window_size)
+        ax.errorbar(x, y, yerr=yerror, fmt=fmt)
+        return ax, fig
 
-
-        plt.errorbar(x, y, yerr=yerror, fmt='.')
-        # plt.plot(x, y, '.')
-        plt.xlabel(score1)
-        plt.ylabel(score2)
-        if self.outDir is not None:
-            plt.savefig(os.path.join(self.outDir, title.replace(' ', '_') + '.png'))
-            plt.close(fig)
-            np.save(os.path.join(self.outDir, title + "parameter"), np.array(x))
-            np.save(os.path.join(self.outDir, title + "score"), np.array(y))
-            np.save(os.path.join(self.outDir, title + "score_high_err"), np.array(y_high_err))
-            np.save(os.path.join(self.outDir, title + "score_low_err"), np.array(y_low_err))
-
-    def plot_score_by_parameter(self, score_name, parameter_names, title, runningParam=True, outputDir=None,
-                                average_results=True, normalizing_parameter_names=None, fig=None):
+    def plot_score_by_parameter(self, score_name, parameter_names, runningParam=True,
+                                average_results=True, normalizing_parameter_names=None, fig=None, ax=None):
         """
         Plots score as a function of given parameter
         :param score_name: relevant score name (hysteresis, jump, blockade)
         :param parameter_name: relevant parameter
         """
         self.print_max_score_file(score_name)
-        if fig is None:
-            fig = plt.figure(figsize=FIGSIZE)
         if len(parameter_names) == 1:
+            if ax is None:
+                fig, ax = plt.subplots(figsize=FIGSIZE)
             parameter_name = parameter_names[0]
             y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
             if runningParam:
@@ -1423,14 +1440,10 @@ class MultiResultAnalyzer:
             x = x[y > 0]
             y = y[y > 0]
             plt.errorbar(x, y, yerr=yerror, fmt='.',)
-            if outputDir is not None:
-                plt.savefig(os.path.join(outputDir, title.replace(' ', '_') + '.png'))
-                plt.close(fig)
-                np.save(os.path.join(outputDir, title + "parameter"), np.array(x))
-                np.save(os.path.join(outputDir, title + "score"), np.array(y))
-                np.save(os.path.join(outputDir, title + "score_high_err"), np.array(y_high_err))
-                np.save(os.path.join(outputDir, title + "score_low_err"), np.array(y_low_err))
         elif len(parameter_names) == 2:
+            if ax is None:
+                fig = plt.figure(figsize=FIGSIZE)
+                ax = fig.add_subplot(111, projection="3d")
             z, z_high_err, z_low_err = self.get_relevant_scores(score_name)
             if runningParam:
                 x = np.array(self.runningParams[parameter_names[0]])
@@ -1451,19 +1464,15 @@ class MultiResultAnalyzer:
             y = y[z>0]
             zerror = zerror[:,z>0]
             z = z[z>0]
-            ax = fig.add_subplot(111, projection='3d')
-            ax.scatter(x, y, z)
-            plt.title(title)
             plt.xlabel(parameter_names[0])
             plt.ylabel(parameter_names[1])
-            if outputDir is not None:
-                plt.savefig(os.path.join(outputDir, title.replace(' ', '_') + '.png'))
-                plt.close(fig)
+
         else:
             raise NotImplementedError
+        return ax, fig
 
-    def plot_results_by_disorder(self, parameters, scores, plot3D=False, fig=None, average=True,
-                                 window_size=None):
+    def plot_results_by_disorder(self, parameters, scores, plot3D=False, fig=None, ax=None, average=True,
+                                 window_size=None,fmt='.'):
         for score in scores:
             self.print_max_score_file(score)
         norm = []
@@ -1477,7 +1486,8 @@ class MultiResultAnalyzer:
         if fig is None:
             fig = plt.figure(figsize=FIGSIZE)
         if plot3D and len(parameters) ==2:
-            ax = fig.add_subplot(111, projection='3d')
+            if ax is None:
+                ax = fig.add_subplot(111, projection='3d')
             for score in scores:
                 x = np.array(self.disorders[parameters[0]]) / norm[0]
                 y = np.array(self.disorders[parameters[1]]) / norm[1]
@@ -1498,6 +1508,8 @@ class MultiResultAnalyzer:
                 ax.set_ylim(0,1.2)
                 ax.set_xlim(0,0.4)
         else:
+            if ax is None:
+                ax = fig.add_subplot(111)
             for param, normalization in zip(parameters,norm):
                 for score in scores:
                     x = np.array(self.disorders[param])/normalization
@@ -1513,10 +1525,12 @@ class MultiResultAnalyzer:
                         if window_size is None:
                             window_size = 0
                         x, y, yerror = self.running_average(x, y, yerror, window_size)
-                    plt.errorbar(x,y, yerr=yerror, fmt='.')
 
-    def plot_results_by_average(self, parameters, scores, plot3D=False, fig=None, average=True,
-                                window_size=None):
+                    ax.errorbar(x,y, yerr=yerror, fmt=fmt)
+        return ax, fig
+
+    def plot_results_by_average(self, parameters, scores, plot3D=False, fig=None, ax=None, average=True,
+                                window_size=None, fmt='.'):
         for score in scores:
             self.print_max_score_file(score)
         norm = []
@@ -1528,6 +1542,8 @@ class MultiResultAnalyzer:
         if fig is None:
             fig = plt.figure(figsize=FIGSIZE)
         if plot3D and len(parameters) ==2:
+            if ax is None:
+                ax = fig.add_subplot(111, projection='3d')
             for score in scores:
                 x = np.array(self.averages[parameters[0]])/norm[0]
                 y = np.array(self.averages[parameters[1]])/norm[1]
@@ -1544,11 +1560,10 @@ class MultiResultAnalyzer:
                     if window_size is None:
                         window_size = (0,0)
                     x,y,z,zerror = self.running_average_3d(x,y,z,zerror,window_size)
-                ax = fig.add_subplot(111, projection='3d')
                 ax.scatter(x, y, z)
-                if self.outDir is not None:
-                    plt.savefig(os.path.join(self.outDir, score + "_" + parameters[0] + '_' + parameters[1] + '_' 'disorder.png'))
         else:
+            if ax is None:
+                ax = fig.add_subplot(111)
             for param,normalization in zip(parameters, norm):
                 for score in scores:
                     x = np.array(self.averages[param])/normalization
@@ -1564,9 +1579,8 @@ class MultiResultAnalyzer:
                         if window_size is None:
                             window_size = 0
                         x, y, yerror = self.running_average(x,y,yerror,window_size)
-                    plt.errorbar(x,y, yerr=yerror, fmt='.')
-                    if self.outDir is not None:
-                        plt.savefig(os.path.join(self.outDir, score+"_"+ param +'_'+'average.png'))
+                    ax.errorbar(x,y, yerr=yerror, fmt=fmt)
+        return ax, fig
 
     def print_max_score_file(self, score):
         index = np.argmax(self.scores[score]["score"])
@@ -1595,6 +1609,8 @@ class MultiResultAnalyzer:
         return new_x, new_y, new_y_high_err, new_y_low_err
 
     def running_average(self, x, y, yErr, window_size=0):
+        if x.size ==0:
+            return x, y, yErr
         yErr = np.max(yErr, axis=0)
         x_min = np.min(x)
         x_max = np.max(x)
@@ -1608,7 +1624,7 @@ class MultiResultAnalyzer:
         if (yErr == 0).any():
             while high <= x_max:
                 relevant = np.logical_and(x >= low, x <= high)
-                if relevant.any():
+                if x[relevant].size > 0:
                     new_xs.append(np.average(x[relevant]))
                     new_ys.append(np.average(y[relevant]))
                     new_ysErr.append(np.std(y[relevant]))
@@ -1617,7 +1633,7 @@ class MultiResultAnalyzer:
         else:
             while high <= x_max:
                 relevant = np.logical_and(x>=low,x<=high)
-                if relevant.any():
+                if x[relevant].size > 0:
                     new_xs.append(np.average(x[relevant]))
                     new_y_variance = 1/np.sum(1/yErr[relevant]**2)
                     new_ys.append(new_y_variance*np.sum(y[relevant]/yErr[relevant]**2))
@@ -1957,25 +1973,49 @@ if __name__ == "__main__":
                 if filter(s):
                     s.plot_resistance(out=os.path.join(directory,name))
     elif action == "plot_RT":
-        fig, ax = plt.subplots()
+        directory = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_IT"
+        files = [["array_1_1_cg_1_v_0.1","array_1_1_cg_1_v_0.1_r_disorder","array_1_1_cg_10_v_0.1",
+                  "array_1_1_cg_10_v_0.1_r_disorder"],
+                 ["array_1_1_cg_1_v_0.5", "array_1_1_cg_1_v_0.5_r_disorder", "array_1_1_cg_10_v_0.5",
+                  "array_1_1_cg_10_v_0.5_r_disorder"],
+                 ["array_1_1_cg_1_v_1", "array_1_1_cg_1_v_1_r_disorder", "array_1_1_cg_10_v_1",
+                  "array_1_1_cg_10_v_1_r_disorder"]]
+        fig, ax = plt.subplots(3,1, figsize=FIGSIZE)
         shift = 1
-        index = 0
+        shift_factor = [700,700,100]
         labels =["$\\frac{C_G}{C_1+C_2} = 1$ $\\frac{R_2}{R_1}=1$", "$\\frac{C_G}{C_1+C_2} = 1$ $\\frac{R_2}{R_1}=9$", "$\\frac{C_G}{C_1+C_2} = 10$ $\\frac{R_2}{R_1}=1$",
                  "$\\frac{C_G}{C_1+C_2} = 10$ $\\frac{R_2}{R_1}=9$"]
-        for directory,names in zip(directories, file_names):
-            colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, len(names)))
-            for name in names:
+        colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, 4))
+        for index in range(3):
+            for i,name in enumerate(files[index]):
                 s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=False, graph=False,
                                            reAnalyze=options.re_analyze, IT=True)
                 if filter(s):
-                    v=s.plot_RT(ax, shift=shift, err=True, color=colors[index], label=labels[index])
-                    shift *= 100
-                    index += 1
-                ax.set_title("$V\\frac{C_1+C_2}{e} = %1.1f$" %v, position=(0.5, 0.8))
-                ax.set_xlabel("$T\\frac{C_1+C_2}{e^2}$")
-                ax.set_ylabel("$\\frac{R}{R_1+R_2}$")
-                plt.legend()
-        plt.show()
+                    v = s.plot_RT(ax[index], shift=shift, err=True, color=colors[i])
+                    shift *= shift_factor[index]
+                ax[index].set_title("$V\\frac{C_1+C_2}{e} = %1.1f$" %v, position=(0.5, 0.75))
+                ax[index].set_xlabel("$T\\frac{C_1+C_2}{e^2}$")
+                ax[index].set_ylabel("$\\frac{R}{R_1+R_2}$")
+            index += 1
+            shift=1
+        ax[0].set_xlabel('')
+        ax[0].set_xticks([])
+        ax[0].set_xlim(0,0.3)
+        ax[0].set_ylim(1,1e15)
+        ax[1].set_xlabel('')
+        ax[1].set_xticks([])
+        ax[1].set_xlim(-0.003, 0.3)
+        ax[1].set_ylim(1,1e15)
+        ax[2].set_ylim(1,1e10)
+        ax[2].set_xlim(0, 0.3)
+        plt.subplots_adjust(wspace=0, hspace=0)
+        ax[0].legend(labels, loc='upper center', bbox_to_anchor=(0.5, 1.2), ncol=4, fancybox=True, shadow=True)
+        ax[0].text(0.001, 5*1e13, "a", fontsize=30)
+        ax[1].text(-0.0015, 1e13, "b", fontsize=30)
+        ax[2].text(0.001, 1e9, "c", fontsize=30)
+        # plt.show()
+        plt.savefig(os.path.join(options.output_folder,'single_island_RT.png'), bbox_inches='tight', pad_inches=0.1)
+        plt.close(fig)
     elif action == "plot_jumps":
         full = options.full
         for directory,names in zip(directories, file_names):
@@ -2075,7 +2115,10 @@ if __name__ == "__main__":
                                 relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
                                 relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std"],
                                 filter=filter)
-        m.plot_scores_together(options.scores[0], options.scores[1], average_results=options.average, window_size=options.window)
+        fig, ax = plt.subplots()
+        for score in options.scores[1:]:
+            m.plot_scores_together(options.scores[0], score, average_results=options.average,
+                                   window_size=options.window, fig=fig, ax=ax)
         plt.xlabel(options.xlabel)
         plt.ylabel(options.ylabel)
         if options.plot3d:
@@ -2084,36 +2127,57 @@ if __name__ == "__main__":
 
     ####### Manual actions ########
     elif action == "compareIV": # compares methods
-        output_dir = 'graph_results'
+        output_dir = '/home/kasirershahar/University/Research/Thesis/Figures/'
         directory_graph = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        directory_gillespie = "single_island_different_temperature"
+        directory_gillespie = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_different_temperature"
         resultNames= ["big_CG_big_R2","big_CG_small_R2","small_CG_big_R2","small_CG_small_R2"]
         namesGraph = ["large_R2_large_CG", "small_R2_large_CG",
                       "large_R2_small_CG", "small_R2_small_CG"]
         namesGillespie = ["array_1_1_big_cg_big_r2_T_", "array_1_1_big_cg_small_r2_T_",
                           "array_1_1_small_cg_big_r2_T_", "array_1_1_small_cg_small_r2_T_"]
+        fig, axes = plt.subplots(2,2,figsize=FIGSIZE)
+        plot_idx = 0
         for nameGraph, nameGillespie, resultName in zip(namesGraph, namesGillespie, resultNames):
+            ax = axes[plot_idx//2, plot_idx%2]
             pGraph = SingleResultsProcessor(directory_graph, nameGraph, fullOutput=False, vertCurrent=False,
                                                reAnalyze=False, graph=True)
             psGillespie = [SingleResultsProcessor(directory_gillespie, nameGillespie + str(T), fullOutput=False, vertCurrent=False,
                                                 reAnalyze=True) for T in [0, 0.001, 0.01, 0.1]]
-            fig = plt.figure(figsize=FIGSIZE)
             shift = 0
             psGillespie[0].plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
-                      Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", shift=shift)
+                      Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
             shift += 1
             pGraph.plot_IV("Graph method", err=False, alternative=False,
-                           Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", fmt_up='c*', fmt_down='m*')
+                           Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", fmt_up='c*', fmt_down='m*', ax=ax, fig=fig)
             for p in psGillespie[1:]:
                 p.plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
-                               Vlabel="V(C1+C2)/e", Ilabel="I(C1+C2)(R1+R2)/e", shift=shift)
+                               Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
                 shift += 1
+            plot_idx += 1
 
-            plt.legend(['Dynamical method (increasing voltage)', 'Dynamical method (decreasing voltage)',
-                        'Graph method (increasing voltage)','Graph method (decreasing voltage)'])
-            # plt.show()
-            plt.savefig(os.path.join(output_dir, resultName+".png"))
-            plt.close(fig)
+        axes[0,0].set_xlabel('')
+        axes[0, 0].set_xticks([])
+        axes[0,1].set_xlabel('')
+        axes[0, 1].set_xticks([])
+        axes[0, 1].set_ylabel('')
+        axes[0, 1].set_yticks([])
+        axes[1, 1].set_ylabel('')
+        axes[1, 1].set_yticks([])
+        plt.subplots_adjust(wspace=0, hspace=0)
+        axes[0,0].legend(['Dynamical method (increasing voltage)', 'Dynamical method (decreasing voltage)',
+                    'Graph method (increasing voltage)','Graph method (decreasing voltage)'],loc='upper center',
+                         bbox_to_anchor=(1, 1.2), ncol=2, fancybox=True, shadow=True)
+        axes[0,0].set_zorder(4)
+        axes[0,0].text(-0.2,5.8,"a",fontsize=30)
+        axes[0,1].set_zorder(3)
+        axes[0,1].text(-0.2,5.8,"b",fontsize=30)
+        axes[1,0].set_zorder(2)
+        axes[1,0].text(-0.2,5.8,"c",fontsize=30)
+        axes[1,1].set_zorder(1)
+        axes[1,1].text(-0.2,5.8,"d",fontsize=30)
+        # plt.show()
+        plt.savefig(os.path.join(output_dir, "IV_examples_single_island.png"), bbox_inches = 'tight', pad_inches = 0.01)
+        plt.close(fig)
 
     elif action == "jumps_separation_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
@@ -2301,6 +2365,103 @@ if __name__ == "__main__":
         plt.legend(["Increasing voltage", "Decreasing voltage"])
         plt.show()
 
+    elif action == 'score_by_cg':
+        directories_list = []
+        for directory, names in zip(directories, file_names):
+            directories_list += [directory] * len(names)
+        names = [name for files in file_names for name in files]
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,reAnalyze=options.re_analyze,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
+                                                         "M", "N"],
+                                filter=filter)
+
+        fig, ax1 = plt.subplots()
+        m.plot_results_by_average(["CG"], ["jumpSeparationUp"], plot3D=options.plot3d, average=options.average,
+                                  window_size=options.window, fmt='.b', fig=fig, ax=ax1)
+        m.plot_results_by_average(["CG"], ["jumpSeparationDown"], plot3D=options.plot3d, average=options.average,
+                                  window_size=options.window, fmt='*b', fig=fig, ax=ax1)
+        ax1.set_xlabel("$\\frac{C_G}{\\left<C\\right>}$")
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue')
+        ax1.tick_params(axis='y', labelcolor='blue')
+        ax2 = ax1.twinx()
+        m.plot_results_by_average(["CG"], ["jumpHeightUp"], plot3D=options.plot3d, average=options.average,
+                                  window_size=options.window, fmt='.r', fig=fig, ax=ax2)
+        m.plot_results_by_average(["CG"], ["jumpHeightDown"], plot3D=options.plot3d, average=options.average,
+                                  window_size=options.window, fmt='*r', fig=fig, ax=ax2)
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red')
+        ax2.tick_params(axis='y', labelcolor='red')
+        ax3 = ax1.twinx()
+        m.plot_results_by_average(["CG"], ["hysteresisArea"], plot3D=options.plot3d, average=options.average,
+                                  window_size=options.window, fmt='om', fig=fig, ax=ax3)
+        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        ax3.tick_params(axis='y', labelcolor='m')
+        ax3.spines['right'].set_position(('outward', 90))
+        fig.tight_layout()
+        plt.show()
+
+    elif action == 'score_by_disorder':
+        c_window=0.1
+        r_window=0.1
+        directories_list = []
+        for directory, names in zip(directories, file_names):
+            directories_list += [directory] * len(names)
+        names = [name for files in file_names for name in files]
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,reAnalyze=options.re_analyze,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
+                                                         "M", "N"],
+                                filter=filter)
+
+        fig, axes = plt.subplots(3,2,figsize=FIGSIZE)
+        ax1 = axes[0,0]
+        m.plot_results_by_disorder(["C"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+                                  window_size=c_window, fmt='^b', fig=fig, ax=ax1)
+        m.plot_results_by_disorder(["C"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+                                  window_size=c_window, fmt='vb', fig=fig, ax=ax1)
+
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue')
+        ax1.tick_params(axis='y', labelcolor='blue')
+        ax2 = axes[1,0]
+        m.plot_results_by_disorder(["C"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+                                  window_size=c_window, fmt='^r', fig=fig, ax=ax2)
+        m.plot_results_by_disorder(["C"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+                                  window_size=c_window, fmt='vr', fig=fig, ax=ax2)
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red')
+        ax2.tick_params(axis='y', labelcolor='red')
+        ax3 = axes[2,0]
+        m.plot_results_by_disorder(["C"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                  window_size=c_window, fmt='om', fig=fig, ax=ax3)
+        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        ax3.tick_params(axis='y', labelcolor='m')
+        ax3.set_xlabel("$\\sigma_C/\\left<C\\right>$")
+        ax1.set_xticklabels([])
+        ax2.set_xticklabels([])
+        ax4 = axes[0,1]
+        m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+                                   window_size=r_window, fmt='^b', fig=fig, ax=ax4)
+        m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+                                   window_size=r_window, fmt='vb', fig=fig, ax=ax4)
+
+
+        ax4.tick_params(axis='y', labelcolor='blue')
+        ax5 = axes[1,1]
+        m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+                                   window_size=r_window, fmt='^r', fig=fig, ax=ax5)
+        m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+                                   window_size=r_window, fmt='vr', fig=fig, ax=ax5)
+        ax5.tick_params(axis='y', labelcolor='red')
+        ax6 = axes[2,1]
+        m.plot_results_by_disorder(["R"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                   window_size=r_window, fmt='om', fig=fig, ax=ax6)
+        ax6.tick_params(axis='y', labelcolor='m')
+        ax6.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+        ax4.set_xticklabels([])
+        ax5.set_xticklabels([])
+        plt.subplots_adjust(wspace=0.13, hspace=0)
+        # fig.savefig(os.path.join(options.output_folder,  'jump_and_hyst_by_disorder_finite_T.png'), bbox_inches='tight')
+        plt.show()
+
     elif action == 'IV_path_compare':
         vertical_directory = '/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_vertical_arrays/'
         single_directory = '/home/kasirershahar/University/Research/simulation_results/single_island/single_island_for_vertical_arrays/'
@@ -2309,7 +2470,7 @@ if __name__ == "__main__":
         single_files = [['array_2_1_cg_1_row_0','array_2_1_cg_1_row_1'],['array_2_1_cg_5_row_0','array_2_1_cg_5_row_1'],
                         ['array_3_1_cg_10_row_0','array_3_1_cg_10_row_1','array_3_1_cg_10_row_2'],
                         ['array_3_1_cg_50_row_0','array_3_1_cg_50_row_1','array_3_1_cg_50_row_2']]
-        fmt_list = ['g--','r--','g--','r--','b--','r--','y--','b--','y--','r--']
+        fmt_list = ['r--','m--','r--','m--','r--','g--','m--','r--','g--','m--']
         fmt_idx = 0
         cg_list = [1,5,10,50]
         cg_idx = 0
@@ -2319,21 +2480,64 @@ if __name__ == "__main__":
             ax = axes[ax_idx//2,ax_idx%2]
             p = SingleResultsProcessor(vertical_directory, vertical_file, reAnalyze=False, graph=False, fullOutput=True)
             p.plot_current_by_paths(fig, ax)
-            for file in single_files_list:
-                ps = SingleResultsProcessor(single_directory, file, reAnalyze=False, graph=True, fullOutput=True)
-                ps.plot_IV(ax, fig, Inorm=0.1, fmt_up=fmt_list[fmt_idx], fmt_down=fmt_list[fmt_idx])
+            p.createCapacitanceMatrix()
+            vert_invC = p.invC
+            for row, file in enumerate(single_files_list):
+                ps = SingleResultsProcessor(single_directory, file, reAnalyze=False, graph=False, fullOutput=True)
+                ps.createCapacitanceMatrix()
+                single_invC = ps.invC
+                c_factor = 1/(2*vert_invC[row, row])
+                ps.plot_IV(ax, fig, Inorm=c_factor, Vnorm=c_factor, fmt_up=fmt_list[fmt_idx], fmt_down=fmt_list[fmt_idx])
                 fmt_idx += 1
+
             if ax_idx < 2:
                 ax.set_xlabel("")
                 ax.set_xticklabels([])
             else:
+                ax.set_xticklabels([0,0.25,0.5,0.75,1,1.25,1.5,1.75])
                 ax.set_xlabel("$V\\frac{\\left<C\\right>}{e}$")
-            ax.set_ylabel("$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$")
+            if ax_idx%2 > 0:
+                ax.set_ylabel("")
+                ax.set_yticklabels([])
+            else:
+                ax.set_ylabel("$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$")
             ax.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = %d$" % cg_list[cg_idx],position=(0.5, 0.8))
+            ax.set_xlim(0,2)
+            ax.set_ylim(-0.05,1)
             cg_idx += 1
             ax_idx += 1
+        plt.subplots_adjust(wspace=0, hspace=0)
         fig.savefig(os.path.join(options.output_folder,  'vertical_single_compare.png'), bbox_inches='tight')
 
+    elif action == 'plot_scores_with_threshold_voltage':
+        fig, ax = plt.subplots(2, 2, figsize=FIGSIZE)
+        directory_index=0
+        windows = [0.02, 0.05]
+        for directory in directories:
+            names = file_names[directory_index]
+            directories_list = [directory] *len(names)
+            m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,reAnalyze=options.re_analyze,
+                                    relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                    relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std"],
+                                    filter=filter)
+
+            m.plot_scores_together(options.scores[0], options.scores[1], average_results=options.average,
+                                       window_size=windows[directory_index], fig=fig, ax=ax[0,directory_index],fmt='.b')
+            m.plot_scores_together(options.scores[0], options.scores[2], average_results=options.average,
+                                     window_size=windows[directory_index], fig=fig, ax=ax[1,directory_index],fmt='.m')
+            directory_index += 1
+        ax[1,0].set_xlabel("$V^{th}\\frac{\\left<C\\right>}{e}$")
+        ax[1, 1].set_xlabel("$V^{th}\\frac{\\left<C\\right>}{e}$")
+        ax[0,0].set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='b')
+        ax[1, 0].set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        ax[0,0].tick_params(axis='y', labelcolor='b')
+        ax[0, 1].tick_params(axis='y', labelcolor='b')
+        ax[1,0].tick_params(axis='y', labelcolor='m')
+        ax[1, 1].tick_params(axis='y', labelcolor='m')
+        ax[0,0].set_xticklabels([])
+        ax[0, 1].set_xticklabels([])
+        plt.subplots_adjust(wspace=0.13, hspace=0)
+        plt.show()
 
     elif action == 'plot_small_v_fit':
         for directory, names in zip(directories, file_names):
@@ -2349,7 +2553,19 @@ if __name__ == "__main__":
                 s = SingleResultsProcessor(directory, name, vertCurrent=False, reAnalyze=False)
                 s.plot_current_by_paths(fig=fig)
                 plt.show()
-
+    elif action == 'plot_jumps_for_2d_arrays':
+        directory = ''
+        names = []
+        for name in names:
+            s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False, graph=False,
+                                       reAnalyze=options.re_analyze)
+            fig, _,_ = s.plot_jumps_freq(by_occupation=options.by_occupation,
+                                                by_path_occupation=options.by_path_occupation)
+            if options.output_folder:
+                fig.savefig(os.path.join(options.output_folder, name + '_jumps.png'), bbox_inches='tight')
+                plt.close(fig)
+            else:
+                plt.show()
 
     elif action == 'plot_results':
          full = True
