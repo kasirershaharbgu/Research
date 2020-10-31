@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'sans-serif',
         'weight' : 'normal',
-        'size' : 30}
+        'size' : 20}
 matplotlib.rc('font', **font)
 matplotlib.rc('text', usetex=True)
 from optparse import OptionParser
@@ -429,27 +429,26 @@ class SingleResultsProcessor:
         island_colors = None
         ax1.set_xlabel('$V\\frac{\\left<C\\right>}{e}$')
         ax1.set_ylabel('$I\\frac{\\left<C\\right>\\left<R\\right>}{e}$')
-        ax1.plot(V[:mid_idx], I[:mid_idx], 'r*')
-        ax1.plot(V[mid_idx:], I[mid_idx:], 'b*')
-        if not self.graph:
-            ax1.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = " +
-                          str(np.round(self.calc_param_average("CG")/self.calc_param_average("C")*100)/100) + "$")
-        arrow_length = np.max(I)/100
-        arrow_head_width = np.max(V)/50
+        ax1.plot(V[:mid_idx], I[:mid_idx], 'r*', zorder=1)
+        ax1.plot(V[mid_idx:], I[mid_idx:], 'b*', zorder=2)
+        # if not self.graph:
+            # ax1.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = " +
+            #               str(np.round(self.calc_param_average("CG")/self.calc_param_average("C")*100)/100) + "$",
+            #               position=(0.5,0.9))
+        arrow_length = np.max(I)/60
+        arrow_head_width = np.max(V)/40
         if self.Imaps is not None and self.path_dict is None:
             self.path_dict = self.calc_paths()
             colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, len(self.path_dict.keys())))
         if (self.n is None and self.Imaps is None) or not self.full:
             for v, diff in zip(IV_Vjumps1, IV_diff1):
                 i = I[V == v][0]
-                ax1.arrow(v, i, 0, diff, fc='r',ec='r', head_length=diff/3, head_width=arrow_head_width)
+                ax1.arrow(v, i, 0, diff, fc='r',ec='r', head_length=arrow_head_width, head_width=arrow_head_width, zorder=3)
             for v, diff in zip(IV_Vjumps2, IV_diff2):
                 i = I[V == v][-1]
-                ax1.arrow(v, i, 0, -diff,fc='b',ec='b', head_length=diff/3, head_width=arrow_head_width)
+                ax1.arrow(v, i, 0, -diff,fc='b',ec='b', head_length=arrow_head_width, head_width=arrow_head_width, zorder=3)
         else:
-            ax2 = add_subplot_axes(fig, ax1, [0.7,0.05,0.3,0.35])
-            ax2.yaxis.set_label_position("right")
-            ax2.yaxis.tick_right()
+            ax2 = add_subplot_axes(fig, ax1, [0.7,0.1,0.3,0.4])
             fig3, fou_ax = plt.subplots(1, 2, figsize=FIGSIZE)
             for ax in fou_ax:
                 ax.set_xlabel("Frequency [$\\frac{e}{V\\left<C\\right>}$]")
@@ -459,7 +458,9 @@ class SingleResultsProcessor:
             fou_ax[0].plot(IV_freq1, IV_fou1)
             fou_ax[1].plot(IV_freq2, IV_fou2)
             if not by_occupation and self.Imaps is not None:
-                ax2.set_ylabel("$I\\frac{\\left<C\\right>\\left<R\\right>}{e}$")
+                ax2.set_ylabel("$I\\frac{\\left<C\\right>\\left<R\\right>}{e}$", fontsize=20)
+                ax2.yaxis.set_label_position("right")
+                ax2.yaxis.tick_right()
                 if len(self.path_dict.keys()) > 0:
                     fig2, hist_axes = plt.subplots(4, len(self.path_dict.keys())+1, figsize=FIGSIZE)
                     hist_axes[0][0].hist(IV_diff1)
@@ -477,42 +478,42 @@ class SingleResultsProcessor:
                     color = colors[index]
                     diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2, freq1, freq2, fou1, fou2 =\
                     self.calc_jumps_freq(x, xerr, V=V_path, mid_idx=mid_idx_path,threshold_factor=10,
-                                         window_size_factor=1, absolute_threshold=0.001)
+                                         window_size_factor=1, absolute_threshold=0.003)
                     hist_axes[0][index+1].hist(diff1, color=color)
                     hist_axes[1][index+1].hist(diff2, color=color)
                     hist_axes[2][index+1].hist(diffV1, color=color)
                     hist_axes[3][index+1].hist(diffV2, color=color)
                     fou_ax[0].plot(freq1, fou1, color=color)
                     fou_ax[1].plot(freq2, fou2, color=color)
-                    ax2.scatter(V_path[:mid_idx_path], x[:mid_idx_path], color=color, marker='.')
+                    ax2.plot(V_path[:mid_idx_path], x[:mid_idx_path], color=color, linestyle='dashed',zorder=1)
                     v_open_index, = np.where(V == V_path[0])
                     if v_open_index[0] > 0:
                         ax1.arrow(V[v_open_index[0]-1], I[v_open_index[0]-1], 0,x[0],
-                                  fc=color, ec=color, head_length=2*arrow_length, head_width=2*arrow_head_width)
+                                  fc=color, ec=color, head_length=2*arrow_length, head_width=2*arrow_head_width,zorder=3)
                     ax1.arrow(V_path[-1], I[V == V_path[-1]][-1], 0, -x[-1], fc=color, ec=color,
                               head_length=2 * arrow_length,
-                              head_width=2*arrow_head_width)
+                              head_width=2*arrow_head_width, zorder=3)
                     for v, diff in zip(Vjumps1, diff1):
                         i = I[V == v][0]
                         ax1.arrow(v, i, 0, diff, fc=color, ec=color, head_length=arrow_length,
-                                  head_width=arrow_head_width)
-                    ax2.scatter(V_path[mid_idx_path:], x[mid_idx_path:], color=color, marker='*')
+                                  head_width=arrow_head_width, zorder=3)
+                    ax2.plot(V_path[mid_idx_path:], x[mid_idx_path:], color=color, linestyle='dotted',zorder=2)
                     for v, diff in zip(Vjumps2, diff2):
                         i = I[V == v][-1]
                         ax1.arrow(v, i, 0, -diff, fc=color, ec=color, head_length=arrow_length,
-                                  head_width=arrow_head_width)
+                                  head_width=arrow_head_width, zorder=3)
 
-            if self.n is not None and (by_occupation or by_path_occupation) :
+            if self.n is not None and (by_occupation or by_path_occupation):
                 VL = self.V / 2 if self.symmetricV else self.V
                 VR = -self.V / 2 if self.symmetricV else np.zeros(self.V.shape)
                 n = self.getNprime(VL, VR).reshape((self.n.shape[0], self.n.shape[1] * self.n.shape[2]))
                 n = n[self.V >= 0]
                 nErr = self.nErr[self.V >= 0].reshape(n.shape)
                 if by_path_occupation and self.path_dict is not None:
-                    current_ax = add_subplot_axes(fig, ax1, [0, 0.1, 0.3, 0.35])
+                    current_ax = add_subplot_axes(fig, ax1, [0, 0.12, 0.25, 0.3])
                     current_ax.yaxis.set_label_position("right")
                     current_ax.yaxis.tick_right()
-                    current_ax.set_ylabel("$\\sum\\left<n'\\right>$")
+                    current_ax.set_ylabel("$\\sum\\left<n'\\right>$",fontsize=20)
                     path_n = np.zeros((n.shape[0],len(self.path_dict)))
                     for index,path in enumerate(sorted(self.path_dict.keys())):
                         for i,j in path:
@@ -532,8 +533,8 @@ class SingleResultsProcessor:
                     diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2, freq1, freq2, fou1, fou2 = \
                         self.calc_jumps_freq(x, xerr, V=V,mid_idx=mid_idx, up_and_down=True, threshold_factor=10,
                                              window_size_factor=1, absolute_threshold=0.01)
-                    current_ax.plot(V[:mid_idx], x[:mid_idx], color=color, marker='.')
-                    current_ax.plot(V[mid_idx:], x[mid_idx:], color=color, marker='*')
+                    current_ax.plot(V[:mid_idx], x[:mid_idx], color=color, linestyle='dashed')
+                    current_ax.plot(V[mid_idx:], x[mid_idx:], color=color, linestyle='dotted')
                     fou1 *= np.max(IV_fou1)/np.max(fou1)
                     fou2 *= np.max(IV_fou2)/np.max(fou2)
                     fou_ax[0].plot(freq1, fou1, color=color)
@@ -541,14 +542,15 @@ class SingleResultsProcessor:
                     if by_occupation:
                         for v, diff in zip(Vjumps1, diff1):
                             i = I[V==v][0]
-                            ax1.arrow(v, i, 0, diff/100, fc=color, ec=color, head_length=arrow_length,
+                            ax1.arrow(v, i, 0, diff/50, fc=color, ec=color, head_length=arrow_length,
                                       head_width=arrow_head_width)
                         for v, diff in zip(Vjumps2, diff2):
                             i = I[V==v][-1]
-                            ax1.arrow(v, i, 0, -diff/100, fc=color, ec=color,
+                            ax1.arrow(v, i, 0, -diff/50, fc=color, ec=color,
                                       head_length=arrow_length, head_width=arrow_head_width)
                         island_colors = colors
-            ax3 = add_subplot_axes(fig, ax1, [0.02,0.5,0.5,0.5])
+            ax3_location = [0.05,0.6,0.5,0.2] if self.rows < 3 else [0.05,0.5,0.6,0.5]
+            ax3 = add_subplot_axes(fig, ax1, ax3_location)
             self.plot_array_params("RC", ax3, fig, island_colors=island_colors)
             if self.Imaps is not None and not by_occupation:
                 plot_paths(sorted(self.path_dict.keys()), ax3, colors)
@@ -888,17 +890,21 @@ class SingleResultsProcessor:
             im2 = ax.imshow(np.ma.masked_array(connection2, connection2_mask), vmin=np.min(connection2),
                             vmax=np.max(connection2), cmap=cmap2, aspect='equal')
             cb = fig.colorbar(im1, cax=cax)
-            cax2 = divider.append_axes("right", size="5%", pad=0.9)
+            cax2 = divider.append_axes("right", size="5%", pad=0.7)
             cb2 = fig.colorbar(im2, cax=cax2)
-            cb.set_label("$R/\\left<R\\right>$")
-            cb2.set_label("$C/\\left<C\\right>$")
+            cb.set_label("$R/\\left<R\\right>$", fontsize=15)
+            cb2.set_label("$C/\\left<C\\right>$", fontsize=15)
         else:
             cb = fig.colorbar(im1, cax=cax)
             norm_parameter = "C" if parameter in ["C","CG"] else "R"
             cb.set_label("$" + parameter + "/\\left<" + norm_parameter + "\\right>$")
         y_label_list = ['row ' + str(row) for row in range(self.rows)]
-        x_label_list = ['col ' + str(col) for col in range(self.columns)]
-        ax.set_xticks(cols[::2])
+        if self.columns > 3:
+            x_label_list = ['col ' + str(col) for col in range(0,self.columns,2)]
+            ax.set_xticks(cols[::4])
+        else:
+            x_label_list = ['col ' + str(col) for col in range(self.columns)]
+            ax.set_xticks(cols[::2])
         ax.set_yticks(rows[::2])
         ax.set_xticklabels(x_label_list)
         ax.set_yticklabels(y_label_list)
@@ -1169,6 +1175,8 @@ class SingleResultsProcessor:
             print("Imaps wasn't loaded")
             return False
         path_dict = dict()
+        if len(self.Imaps.shape) < 3:
+            self.Imaps = self.Imaps.reshape((1,1,self.Imaps.size))
         for v,Imap in zip(self.V, self.Imaps):
             paths, paths_current = findPaths(Imap, self.rows, self.columns)
             for path, path_current in zip(paths, paths_current):
@@ -1206,8 +1214,8 @@ class SingleResultsProcessor:
             v = np.array(self.path_dict[path][0])
             i = np.array(self.path_dict[path][1])
             mid_idx = np.argmax(v)
-            ax.scatter(v[:mid_idx], i[:mid_idx], marker='.', color=colors[idx])
-            ax.scatter(v[mid_idx:], i[mid_idx:], marker='*', color=colors[idx])
+            ax.plot(v[:mid_idx], i[:mid_idx], linestyle='dotted', color=colors[idx])
+            ax.plot(v[mid_idx:], i[mid_idx:], linestyle='dotted', color=colors[idx])
         return fig, ax
 
 class MultiResultAnalyzer:
@@ -1763,16 +1771,16 @@ def plot_paths(paths, ax, colors):
     shift = 0
     for path_idx,path in enumerate(paths):
         i_start = path[0][0]
-        ax.arrow(6*shift, 6 * (i_start + shift), 4 , 0,
-                 head_width=0.2, head_length=0.1, color=colors[path_idx])
+        ax.arrow(6*shift, 6 * (i_start + shift), 4, 0,
+                 head_width=1, head_length=0.5, color=colors[path_idx], width=0.1)
         for idx in range(len(path)-1):
             i1 = path[idx][0]
             j1 = path[idx][1]
             i2 = path[idx+1][0]
             j2 = path[idx+1][1]
             ax.arrow(4+6*(j1+ shift), 6*(i1+shift), 6*(j2-j1), 6*(i2-i1),
-                     head_width=0.2, head_length=0.1, color=colors[path_idx])
-        shift += 0.01
+                     head_width=1, head_length=0.5, color=colors[path_idx], width=0.1)
+        shift += 0.02
     return ax
 
 def average_diff(x, window_size=5):
@@ -2501,12 +2509,16 @@ if __name__ == "__main__":
                 ax.set_yticklabels([])
             else:
                 ax.set_ylabel("$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$")
-            ax.set_title("$\\frac{\\left<C_G\\right>}{\\left<C\\right>} = %d$" % cg_list[cg_idx],position=(0.5, 0.8))
+            ax.set_title("$\\frac{C_G}{\\left<C\\right>} = %d$" % cg_list[cg_idx],position=(0.5, 0.8))
             ax.set_xlim(0,2)
             ax.set_ylim(-0.05,1)
             cg_idx += 1
             ax_idx += 1
         plt.subplots_adjust(wspace=0, hspace=0)
+        axes[0, 0].text(0.01, 0.92, "a", fontsize=50)
+        axes[0, 1].text(0.01, 0.92, "b", fontsize=50)
+        axes[1, 0].text(0.01, 0.92, "c", fontsize=50)
+        axes[1, 1].text(0.01, 0.92, "d", fontsize=50)
         fig.savefig(os.path.join(options.output_folder,  'vertical_single_compare.png'), bbox_inches='tight')
 
     elif action == 'plot_scores_with_threshold_voltage':
@@ -2553,20 +2565,85 @@ if __name__ == "__main__":
                 s = SingleResultsProcessor(directory, name, vertCurrent=False, reAnalyze=False)
                 s.plot_current_by_paths(fig=fig)
                 plt.show()
-    elif action == 'plot_jumps_for_2d_arrays':
-        directory = ''
-        names = []
-        for name in names:
+    elif action == 'plot_jumps_for_2d_vertical_arrays':
+        fig, axes = plt.subplots(2,2,figsize=FIGSIZE)
+        plt.subplots_adjust(wspace=0, hspace=0)
+        directory = '/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_vertical_arrays/'
+        names = ['array_2_1_custome_r_c_disorder_cg_1_run_1','array_2_1_custome_r_c_disorder_cg_5_run_1',
+                 'array_3_1_custome_r_c_disorder_cg_10_run_1','array_3_1_custome_r_c_disorder_cg_50_run_1']
+        for index,name in enumerate(names):
+            ax = axes[index//2,index%2]
             s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False, graph=False,
                                        reAnalyze=options.re_analyze)
-            fig, _,_ = s.plot_jumps_freq(by_occupation=options.by_occupation,
-                                                by_path_occupation=options.by_path_occupation)
-            if options.output_folder:
-                fig.savefig(os.path.join(options.output_folder, name + '_jumps.png'), bbox_inches='tight')
-                plt.close(fig)
-            else:
-                plt.show()
+            fig, fig2, fig3 = s.plot_jumps_freq(by_occupation=options.by_occupation,
+                              by_path_occupation=options.by_path_occupation, ax1=ax, fig=fig)
+            plt.close(fig2)
+            plt.close(fig3)
+        axes[0, 0].set_xlabel("")
+        axes[0, 0].set_xticklabels([])
+        axes[0, 1].set_xlabel("")
+        axes[0, 1].set_xticklabels([])
+        axes[0, 1].set_ylabel("")
+        axes[0, 1].set_yticklabels([])
+        axes[1, 1].set_ylabel("")
+        axes[1, 1].set_yticklabels([])
+        axes[0, 0].text(-0.08, 1.5, "a", fontsize=30)
+        axes[0, 1].text(-0.08, 1.5, "b", fontsize=30)
+        axes[1, 0].text(-0.08, 2.3, "c", fontsize=30)
+        axes[1, 1].text(-0.08, 2.3, "d", fontsize=30)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'jumps_1d_vertical_array.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+    elif action == 'plot_jumps_for_resistance_effect':
+        fig, axes = plt.subplots(3,2,figsize=FIGSIZE)
+        plt.subplots_adjust(wspace=0, hspace=0)
+        directories = ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_horizontal_arrays']*3+\
+                      ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_jumps_check']*3
+        names = ['array_1_2_no_disorder_cg_5', 'array_1_2_lambda_shape_cg_10', 'array_1_2_u_shape_cg_10',
+                 'array_5_5_const_r_c_disorder_cg_10_run_3', 'array_5_5_const_r_c_disorder_cg_10_run_3_v1',
+                 'array_5_5_const_r_c_disorder_cg_10_run_3_v3']
+        index=0
+        for directory,name in zip(directories,names):
+            ax = axes[index%3,index//3]
+            s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False, graph=False,
+                                       reAnalyze=options.re_analyze)
 
+            fig, fig2, fig3 = s.plot_jumps_freq(by_occupation=index<3,
+                              by_path_occupation=index >= 3, ax1=ax, fig=fig)
+            plt.close(fig2)
+            plt.close(fig3)
+            index += 1
+        axes[0, 0].set_xlabel("")
+        axes[0, 0].set_xticklabels([])
+        axes[0, 1].set_xlabel("")
+        axes[0, 1].set_xticklabels([])
+        axes[1, 0].set_xlabel("")
+        axes[1, 0].set_xticklabels([])
+        axes[1, 1].set_xlabel("")
+        axes[1, 1].set_xticklabels([])
+        axes[0, 1].set_ylabel("")
+        axes[0, 1].set_yticklabels([])
+        axes[1, 1].set_ylabel("")
+        axes[1, 1].set_yticklabels([])
+        axes[2, 1].set_ylabel("")
+        axes[2, 1].set_yticklabels([])
+        axes[0, 0].text(-0.08, 0.35, "a", fontsize=30)
+        axes[1, 0].text(-0.08, 0.35, "b", fontsize=30)
+        axes[2, 0].text(-0.08, 0.35, "c", fontsize=30)
+        axes[0, 1].text(0.32, 0.35, "d", fontsize=30)
+        axes[1, 1].text(0.32, 0.35, "e", fontsize=30)
+        axes[2, 1].text(0.32, 0.35, "f", fontsize=30)
+        for ax in axes.flatten():
+            ax.set_ylim(-0.01,0.39)
+        for ax in axes[:,1]:
+            ax.set_xlim(0.3,3.51)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'resistance_effect.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
     elif action == 'plot_results':
          full = True
          for directory, names in zip(directories, file_names):
