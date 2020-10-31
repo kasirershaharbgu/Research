@@ -6,283 +6,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_I.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_IErr.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Q.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Qs.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_QsErr.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_current_map.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_n.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_ns.npy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_nsErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/IV_examples_single_island.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_2_cg_5_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_c_disorder_cg_5_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_0_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_Imap.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_Imap_binary.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_10_run_1_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_0_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_1_run_1_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_0_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_50_run_1_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_0_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_custome_r_c_disorder_cg_5_run_1_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_lambda_shape_cg_10_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_10_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_1_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_no_disorder_cg_5_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_graph_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_2_cg_5_smaller_v_step_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_1_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_1_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_r_disorder_cg_5_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_1_2_u_shape_cg_10_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/array_3_2_no_disorder_cg_10_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_c_disorder_2_cg_5.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_c_disorder_cg_5.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_10_run_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_10_run_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_1_run_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_1_run_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_50_run_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_50_run_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_5_run_0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_custome_r_c_disorder_cg_5_run_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_lambda_shape_cg_10.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_no_disorder_cg_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_no_disorder_cg_10.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_no_disorder_cg_5.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_r_disorder_2_cg_5.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_r_disorder_2_cg_5_graph.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_r_disorder_2_cg_5_smaller_v_step.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_r_disorder_cg_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_r_disorder_cg_5.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_r_disorder_cg_5_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_1_2_u_shape_cg_10.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_1d_horizontal_arrays/runningParameters_array_3_2_no_disorder_cg_10.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001.out" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IV.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Imap.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_QErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_nErr.npy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -300,6 +48,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectId" id="1RAIKJDy91B0GCzJhB20izvg6q8" />
@@ -586,16 +339,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
-      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>
@@ -619,6 +372,28 @@
       <option name="presentableId" value="Default" />
       <updated>1554818916059</updated>
     </task>
+    <task id="LOCAL-00001" summary="Updating scrip">
+      <created>1603893571725</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1603893571725</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Updating result processing script">
+      <created>1603893602485</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1603893602485</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Updating tunneling rates for quasi particles">
+      <created>1603893760961</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1603893760961</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -646,6 +421,12 @@
     <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
       <collection />
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updating scrip" />
+    <MESSAGE value="Updating result processing script" />
+    <MESSAGE value="Updating tunneling rates for quasi particles" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating tunneling rates for quasi particles" />
   </component>
   <component name="WindowStateProjectService">
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603916342625">
@@ -727,12 +508,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1915</line>
+          <line>1914</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1920</line>
+          <line>1919</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -767,12 +548,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>415</line>
+          <line>414</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>125</line>
+          <line>123</line>
           <option name="timeStamp" value="457" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -869,7 +650,7 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="VL-VR&gt;0.75" language="Python" />
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1133</line>
+          <line>1132</line>
           <option name="timeStamp" value="562" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -894,7 +675,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>153</line>
+          <line>152</line>
           <option name="timeStamp" value="719" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
