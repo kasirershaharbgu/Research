@@ -6,7 +6,7 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 import matplotlib
-matplotlib.use("Agg")
+# matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
