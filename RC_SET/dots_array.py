@@ -119,10 +119,10 @@ def qp_integrand_big_energies(deltaE, Ec, T):
 def qp_tunneling_single(deltaE, Ec, gap, T):
     if fabs(deltaE) < 5*gap:
         mp.dps = 50
-        part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
-        part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
-        part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap-deltaE])
-        part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap-deltaE, inf])
+        part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap])
+        part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap, inf])
+        part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap])
+        part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap, inf])
         mp.dps = 15
         return re(part1 + part2 + part3 + part4)
     elif deltaE > 0:
@@ -207,7 +207,7 @@ class TunnelingRateCalculator:
         self.approx = interp1d(self.deltaEvals, self.vals, assume_sorted=True)
 
     def increase_high_limit(self):
-        print("Increasing high limit")
+        print("Increasing high limit", flush=True)
         new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
         new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
         new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
@@ -216,10 +216,10 @@ class TunnelingRateCalculator:
         self.vals = np.hstack((self.vals, new_vals))
         self.saveVals()
         self.set_approx()
-        print("High limit increased, Emax= " + str(self.deltaEmax))
+        print("High limit increased, Emax= " + str(self.deltaEmax), flush=True)
 
     def decrease_low_limit(self):
-        print("Decreasing low limit")
+        print("Decreasing low limit", flush=True)
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
         new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
         new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
@@ -228,7 +228,7 @@ class TunnelingRateCalculator:
         self.vals = np.hstack((new_vals, self.vals))
         self.saveVals()
         self.set_approx()
-        print("Low limit dencreased, Emin= " + str(self.deltaEmin))
+        print("Low limit decreased, Emin= " + str(self.deltaEmin), flush=True)
 
 
     def update_rates(self):
