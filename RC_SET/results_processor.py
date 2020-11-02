@@ -35,6 +35,13 @@ SCORE_HIGH_ERR = 'high_err'
 SCORE_LOW_ERROR = 'low_err'
 
 
+def add_text_upper_left_corner(ax, text):
+    x_min,x_max,y_min,y_max = ax.axis()
+    x = x_min + (x_max-x_min)/100
+    y = y_max - (y_max-y_min)/9
+    ax.text(x, y, text, fontsize=30)
+    return ax
+
 def add_subplot_axes(fig, ax,rect):
     box = ax.get_position()
     width = box.width
@@ -45,7 +52,7 @@ def add_subplot_axes(fig, ax,rect):
     x = infig_position[0]
     y = infig_position[1]
     width *= rect[2]
-    height *= rect[3]  # <= Typo was here
+    height *= rect[3]
     subax = fig.add_axes([x,y,width,height])
     x_labelsize = subax.get_xticklabels()[0].get_size()
     y_labelsize = subax.get_yticklabels()[0].get_size()
@@ -131,8 +138,8 @@ class SingleResultsProcessor:
         self.alternativeIErr = []
         self.alternativeV = []
         for i in range(len(full_I)):
-            min_idx = max(0, i-3)
-            max_idx = min(len(full_I)-1, i+3)
+            min_idx = max(0, i-10)
+            max_idx = min(len(full_I)-1, i+10)
             point = np.hstack([full_I[j] for j in range(min_idx, max_idx)])
             bins = bistabilityAnalysis(point)
             # bins = [point]
@@ -173,6 +180,9 @@ class SingleResultsProcessor:
         self.alternativeI = np.array(self.alternativeI)
         self.alternativeV = np.array(self.alternativeV)
         self.alternativeIErr = np.array(self.alternativeIErr)
+        if self.Imaps is not None:
+            kernel = np.ones((1000,))
+            self.Imaps = np.apply_along_axis(lambda m: np.convolve(m, kernel, mode='same'), axis=0, arr=self.Imaps)
         return True
 
 
@@ -1186,7 +1196,7 @@ class SingleResultsProcessor:
                     path_dict[path_tup] = [[],[]]
                 path_dict[path_tup][0].append(v)
                 path_dict[path_tup][1].append(current)
-        return self.filter_paths(path_dict, 10)
+        return self.filter_paths(path_dict, 30)
 
     def filter_paths(self, path_dict, percentage_threshold):
         currents = []
@@ -1534,7 +1544,7 @@ class MultiResultAnalyzer:
                             window_size = 0
                         x, y, yerror = self.running_average(x, y, yerror, window_size)
 
-                    ax.errorbar(x,y, yerr=yerror, fmt=fmt)
+                    ax.errorbar(x,y, yerr=yerror, fmt=fmt, markersize=14)
         return ax, fig
 
     def plot_results_by_average(self, parameters, scores, plot3D=False, fig=None, ax=None, average=True,
@@ -1619,7 +1629,6 @@ class MultiResultAnalyzer:
     def running_average(self, x, y, yErr, window_size=0):
         if x.size ==0:
             return x, y, yErr
-        yErr = np.max(yErr, axis=0)
         x_min = np.min(x)
         x_max = np.max(x)
         if window_size == 0:
@@ -1629,25 +1638,14 @@ class MultiResultAnalyzer:
         new_xs = []
         new_ys = []
         new_ysErr = []
-        if (yErr == 0).any():
-            while high <= x_max:
-                relevant = np.logical_and(x >= low, x <= high)
-                if x[relevant].size > 0:
-                    new_xs.append(np.average(x[relevant]))
-                    new_ys.append(np.average(y[relevant]))
-                    new_ysErr.append(np.std(y[relevant]))
-                low += window_size
-                high += window_size
-        else:
-            while high <= x_max:
-                relevant = np.logical_and(x>=low,x<=high)
-                if x[relevant].size > 0:
-                    new_xs.append(np.average(x[relevant]))
-                    new_y_variance = 1/np.sum(1/yErr[relevant]**2)
-                    new_ys.append(new_y_variance*np.sum(y[relevant]/yErr[relevant]**2))
-                    new_ysErr.append(np.sqrt(new_y_variance/len(x[relevant])))
-                low += window_size
-                high += window_size
+        while high <= x_max:
+            relevant = np.logical_and(x >= low, x <= high)
+            if x[relevant].size > 3:
+                new_xs.append(np.average(x[relevant]))
+                new_ys.append(np.average(y[relevant]))
+                new_ysErr.append(np.std(y[relevant]/len(y[relevant])))
+            low += window_size
+            high += window_size
         return np.array(new_xs), np.array(new_ys), np.array(new_ysErr)
 
     def running_average_3d(self, x, y, z, zErr, window_size=(0,0)):
@@ -2408,14 +2406,14 @@ if __name__ == "__main__":
         fig.tight_layout()
         plt.show()
 
-    elif action == 'score_by_disorder':
-        c_window=0.1
-        r_window=0.1
+    elif action == 'score_by_disorder_zero_T':
+        c_window=0.05
+        r_window=0.2
         directories_list = []
         for directory, names in zip(directories, file_names):
             directories_list += [directory] * len(names)
         names = [name for files in file_names for name in files]
-        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,reAnalyze=options.re_analyze,
+        m = MultiResultAnalyzer([directories[1]]*len(file_names[1]), file_names[1], out_directory=None, graph=False,reAnalyze=options.re_analyze,
                                 relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
                                 relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
                                                          "M", "N"],
@@ -2445,6 +2443,12 @@ if __name__ == "__main__":
         ax3.set_xlabel("$\\sigma_C/\\left<C\\right>$")
         ax1.set_xticklabels([])
         ax2.set_xticklabels([])
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,
+                                reAnalyze=options.re_analyze,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "T",
+                                                         "M", "N"],
+                                filter=filter)
         ax4 = axes[0,1]
         m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
                                    window_size=r_window, fmt='^b', fig=fig, ax=ax4)
@@ -2466,9 +2470,114 @@ if __name__ == "__main__":
         ax6.set_xlabel("$\\sigma_R/\\left<R\\right>$")
         ax4.set_xticklabels([])
         ax5.set_xticklabels([])
+        axes[0, 0].text(0.04, 0.21, "a", fontsize=30)
+        axes[1, 0].text(0.04, 0.0061, "b", fontsize=30)
+        axes[2, 0].text(0.04, 0.0012, "c", fontsize=30)
+        axes[0, 1].text(0.08, 0.215, "d", fontsize=30)
+        axes[1, 1].text(0.08, 0.53, "e", fontsize=30)
+        axes[2, 1].text(0.08, 0.255, "f", fontsize=30)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder,  'hysteresis_and_jumps_by_disorders_zero_T.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == 'score_by_r_disorder':
+        zero_temp_window=0.2
+        finite_temp_window=0.1
+        m = MultiResultAnalyzer([directories[0]]*len(file_names[0]) + [directories[1]]*len(file_names[1]) ,
+                                file_names[0] + file_names[1],
+                                out_directory=None, graph=False,reAnalyze=options.re_analyze,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
+                                                         "M", "N"],
+                                filter=filter)
+
+        fig, axes = plt.subplots(4,2,figsize=FIGSIZE)
+        ax1 = axes[0,0]
+        m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+                                  window_size=zero_temp_window, fmt='^b', fig=fig, ax=ax1)
+        m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+                                  window_size=zero_temp_window, fmt='vb', fig=fig, ax=ax1)
+
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue')
+        ax1.tick_params(axis='y', labelcolor='blue')
+        ax2 = axes[1,0]
+        m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+                                  window_size=zero_temp_window, fmt='^r', fig=fig, ax=ax2)
+        m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+                                  window_size=zero_temp_window, fmt='vr', fig=fig, ax=ax2)
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red')
+        ax2.tick_params(axis='y', labelcolor='red')
+        ax3 = axes[2,0]
+        m.plot_results_by_disorder(["R"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                  window_size=zero_temp_window, fmt='om', fig=fig, ax=ax3)
+        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        ax3.tick_params(axis='y', labelcolor='m')
+        ax3.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+        ax4 = axes[3, 0]
+        m.plot_results_by_disorder(["R"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
+                                   window_size=zero_temp_window, fmt='^g', fig=fig, ax=ax4)
+        m.plot_results_by_disorder(["R"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
+                                   window_size=zero_temp_window, fmt='vg', fig=fig, ax=ax4)
+        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g')
+        ax4.tick_params(axis='y', labelcolor='g')
+        ax4.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+        ax1.set_xticklabels([])
+        ax2.set_xticklabels([])
+        ax3.set_xticklabels([])
+        m = MultiResultAnalyzer([directories[2]]*len(file_names[2]), file_names[2], out_directory=None, graph=False,
+                                reAnalyze=options.re_analyze,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "T",
+                                                         "M", "N"],
+                                filter=filter)
+        ax5 = axes[0,1]
+        m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+                                   window_size=finite_temp_window, fmt='^b', fig=fig, ax=ax5)
+        m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+                                   window_size=finite_temp_window, fmt='vb', fig=fig, ax=ax5)
+
+
+        ax5.tick_params(axis='y', labelcolor='blue')
+        ax6 = axes[1,1]
+        m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+                                   window_size=finite_temp_window, fmt='^r', fig=fig, ax=ax6)
+        m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+                                   window_size=finite_temp_window, fmt='vr', fig=fig, ax=ax6)
+        ax6.tick_params(axis='y', labelcolor='red')
+        ax7 = axes[2,1]
+        m.plot_results_by_disorder(["R"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                   window_size=finite_temp_window, fmt='om', fig=fig, ax=ax7)
+        ax7.tick_params(axis='y', labelcolor='m')
+        ax7.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+        ax8 = axes[3, 1]
+        m.plot_results_by_disorder(["R"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
+                                   window_size=finite_temp_window, fmt='^g', fig=fig, ax=ax8)
+        m.plot_results_by_disorder(["R"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
+                                   window_size=finite_temp_window, fmt='vg', fig=fig, ax=ax8)
+        ax8.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g')
+        ax8.tick_params(axis='y', labelcolor='g')
+        ax8.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+        ax5.set_xticklabels([])
+        ax6.set_xticklabels([])
+        ax7.set_xticklabels([])
+        xmin, xmax, _, _ = axes[1, 1].axis()
+        axes[0, 1].set_xlim(xmin, xmax)
         plt.subplots_adjust(wspace=0.13, hspace=0)
-        # fig.savefig(os.path.join(options.output_folder,  'jump_and_hyst_by_disorder_finite_T.png'), bbox_inches='tight')
-        plt.show()
+        add_text_upper_left_corner(axes[0, 0], "a")
+        add_text_upper_left_corner(axes[1, 0], "b")
+        add_text_upper_left_corner(axes[2, 0], "c")
+        add_text_upper_left_corner(axes[3, 0], "d")
+        add_text_upper_left_corner(axes[0, 1], "e")
+        add_text_upper_left_corner(axes[1, 1], "f")
+        add_text_upper_left_corner(axes[2, 1], "g")
+        add_text_upper_left_corner(axes[3, 1], "h")
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder,  'hysteresis_and_jumps_by_r_disorders.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == 'IV_path_compare':
         vertical_directory = '/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_vertical_arrays/'
@@ -2548,8 +2657,16 @@ if __name__ == "__main__":
         ax[1, 1].tick_params(axis='y', labelcolor='m')
         ax[0,0].set_xticklabels([])
         ax[0, 1].set_xticklabels([])
+        ax[0, 0].text(0.88, 0.025, "a", fontsize=30)
+        ax[1, 0].text(0.88, 0.00052, "b", fontsize=30)
+        ax[0, 1].text(0.415, 0.66, "c", fontsize=30)
+        ax[1, 1].text(0.415, 0.42, "d", fontsize=30)
         plt.subplots_adjust(wspace=0.13, hspace=0)
-        plt.show()
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'jumps_and_hysteresis_by_threshold.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == 'plot_small_v_fit':
         for directory, names in zip(directories, file_names):
