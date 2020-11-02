@@ -119,7 +119,7 @@ def qp_integrand_big_energies(deltaE, Ec, T):
 
 
 def qp_tunneling_single(deltaE, Ec, gap, T):
-    if fabs(deltaE) < 6*gap:
+    if fabs(deltaE) < 5*gap:
         mp.dps = 50
         part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
         part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
