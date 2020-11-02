@@ -6,31 +6,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Qs.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_QsErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_current_map.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_ns.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_nsErr.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001.out" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IV.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Imap.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_QErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_nErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jump_and_hyst_by_disorder.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +244,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="--action plot_jumps_for_resistance_effect" />
+      <option name="PARAMETERS" value="--action score_by_cg  -i $USER_HOME$/University/Research/simulation_results/zero_temperature" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -339,16 +317,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>
@@ -429,37 +407,38 @@
     <option name="LAST_COMMIT_MESSAGE" value="Updating tunneling rates for quasi particles" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603916342625">
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604232736449">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1603916342625" />
+    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604232736449" />
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598452692383" />
-    <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl" timestamp="1597329223318">
+    <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl" timestamp="1604149940173">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
+    <state x="694" y="203" key="FileChooserDialogImpl/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604149940173" />
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="1825" height="266" key="GridCell.Tab.0.bottom" timestamp="1603916539862">
+    <state width="1825" height="266" key="GridCell.Tab.0.bottom" timestamp="1604232738782">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="266" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1603916539862" />
+    <state width="1825" height="266" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604232738782" />
     <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="266" key="GridCell.Tab.0.center" timestamp="1603916539862">
+    <state width="1825" height="266" key="GridCell.Tab.0.center" timestamp="1604232738782">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="266" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1603916539862" />
+    <state width="1825" height="266" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604232738782" />
     <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="266" key="GridCell.Tab.0.left" timestamp="1603916539862">
+    <state width="1825" height="266" key="GridCell.Tab.0.left" timestamp="1604232738781">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1897" height="266" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1603643210954" />
-    <state width="1825" height="266" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1603916539862" />
+    <state width="1825" height="266" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604232738781" />
     <state width="1825" height="275" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1602925299847" />
     <state width="1825" height="266" key="GridCell.Tab.0.left/72.27.3768.1053@72.27.3768.1053" timestamp="1602924307895" />
-    <state width="1825" height="266" key="GridCell.Tab.0.right" timestamp="1603916539862">
+    <state width="1825" height="266" key="GridCell.Tab.0.right" timestamp="1604232738782">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1897" height="266" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1603643210954" />
-    <state width="1825" height="266" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1603916539862" />
+    <state width="1825" height="266" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604232738782" />
     <state width="1825" height="275" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1602925299848" />
     <state width="1825" height="266" key="GridCell.Tab.0.right/72.27.3768.1053@72.27.3768.1053" timestamp="1602924307898" />
     <state width="1825" height="266" key="GridCell.Tab.1.bottom" timestamp="1601200584737">
@@ -543,7 +522,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>978</line>
+          <line>988</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -573,13 +552,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>391</line>
+          <line>401</line>
           <option name="timeStamp" value="485" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>229</line>
-          <option name="timeStamp" value="495" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
@@ -594,7 +568,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1150</line>
+          <line>1160</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -619,32 +593,32 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1357</line>
+          <line>1367</line>
           <option name="timeStamp" value="547" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1384</line>
+          <line>1394</line>
           <option name="timeStamp" value="549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>958</line>
+          <line>968</line>
           <option name="timeStamp" value="552" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1215</line>
+          <line>1225</line>
           <option name="timeStamp" value="553" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1372</line>
+          <line>1382</line>
           <option name="timeStamp" value="555" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1126</line>
+          <line>1136</line>
           <option name="timeStamp" value="557" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -655,22 +629,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2473</line>
+          <line>2582</line>
           <option name="timeStamp" value="708" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2439</line>
+          <line>2437</line>
           <option name="timeStamp" value="711" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2500</line>
+          <line>2609</line>
           <option name="timeStamp" value="713" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2508</line>
+          <line>2617</line>
           <option name="timeStamp" value="714" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -680,8 +654,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1276</line>
-          <option name="timeStamp" value="720" />
+          <line>429</line>
+          <option name="timeStamp" value="721" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>2415</line>
+          <option name="timeStamp" value="726" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
