@@ -209,7 +209,7 @@ class TunnelingRateCalculator:
         self.approx = interp1d(self.deltaEvals, self.vals, assume_sorted=True)
 
     def increase_high_limit(self):
-        print("Increasing high limit")
+        print("Increasing high limit", flush=True)
         new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
         new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
         new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
@@ -218,10 +218,10 @@ class TunnelingRateCalculator:
         self.vals = np.hstack((self.vals, new_vals))
         self.saveVals()
         self.set_approx()
-        print("High limit increased, Emax= " + str(self.deltaEmax))
+        print("High limit increased, Emax= " + str(self.deltaEmax), flush=True)
 
     def decrease_low_limit(self):
-        print("Decreasing low limit")
+        print("Decreasing low limit", flush=True)
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
         new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
         new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
@@ -230,7 +230,7 @@ class TunnelingRateCalculator:
         self.vals = np.hstack((new_vals, self.vals))
         self.saveVals()
         self.set_approx()
-        print("Low limit dencreased, Emin= " + str(self.deltaEmin))
+        print("Low limit decreased, Emin= " + str(self.deltaEmin), flush=True)
 
 
     def update_rates(self):
