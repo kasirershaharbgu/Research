@@ -1719,13 +1719,21 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         pool = Pool(processes=repeats)
         results = []
         for repeat in range(repeats):
-            res = pool.apply_async(runSingleSimulation,
+            try:
+                res = pool.apply_async(runSingleSimulation,
                                     (repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                      printState, useGraph, currentMap,basePath, resume, constQ, double_time,
                                      double_loop, calcIT))
+            except Exception as e:
+                print(e, flush=True)
+                continue
             results.append(res)
         for res in results:
-            result = res.get()
+            try:
+                result = res.get()
+            except Exception as e:
+                print(e, flush=True)
+                continue
             I = result[0]
             IErr = result[1]
             if fullOutput:
