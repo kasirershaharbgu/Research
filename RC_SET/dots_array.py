@@ -1105,6 +1105,7 @@ class Simulator:
 
     def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
+        print("Loading %d" % self.index, flush=True)
         if not os.path.isfile(baseName + "_I.npy"):
             return None
         I = np.load(baseName + "_I.npy")
@@ -1127,13 +1128,14 @@ class Simulator:
                 nsErr = nsErr[loadLen, :, :]
             QsErr = np.load(baseName + "_QsErr.npy")
             if len(QsErr) > loadLen:
-                QsErr = QsErr[:, loadLen, :, :]
+                QsErr = QsErr[loadLen, :, :]
             res = res + (ns, Qs,nsErr, QsErr)
         if currentMap:
             Imaps = np.load(baseName + "_current_map.npy")
             if len(Imaps) > loadLen:
                 Imaps = Imaps[:, loadLen, :, :]
             res = res + (Imaps,)
+        print("Loading over %d" % self.index, flush=True)
         return res
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False,
