@@ -6,7 +6,7 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
 import matplotlib
-matplotlib.use("Agg")
+# matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 #from mayavi import mlab
@@ -117,7 +117,7 @@ def qp_integrand_big_energies(deltaE, Ec, T):
 
 
 def qp_tunneling_single(deltaE, Ec, gap, T):
-    if fabs(deltaE) < 5*gap:
+    if fabs(deltaE) < 10*gap:
         mp.dps = 50
         part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap])
         part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap, inf])
@@ -821,6 +821,11 @@ class JJArray(DotArray):
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
         print("Rates were calculated")
+        if tauLeaping:
+            self.right_cp = np.zeros((self.rows, self.columns + 1))
+            self.left_cp = np.zeros((self.rows, self.columns + 1))
+            self.down_cp = np.zeros((self.rows - 1, self.columns))
+            self.up_cp = np.zeros((self.rows - 1, self.columns))
 
     def __copy__(self):
         copy_array = super().__copy__()
@@ -829,6 +834,11 @@ class JJArray(DotArray):
         copy_array.Ec = self.Ec
         copy_array.qp_rate_calculator = self.qp_rate_calculator
         copy_array.cp_rate_calculator = self.cp_rate_calculator
+        if self.tauLeaping:
+            copy_array.right_cp = np.copy(self.right_cp)
+            copy_array.left_cp = np.copy(self.left_cp)
+            copy_array.up_cp = np.copy(self.up_cp)
+            copy_array.down_cp = np.copy(self.down_cp)
         return copy_array
 
     def getEj(self):
@@ -852,6 +862,14 @@ class JJArray(DotArray):
         cp_work = 2*self.variableWork + self.constWorkCp
         return qp_work, cp_work
 
+    def getCurrentFromRates(self):
+        mid = self.rates.size // 2
+        current = np.sum(self.rates[:self.variableRightWorkLen]) -\
+                  np.sum(self.rates[self.variableRightWorkLen:2*self.variableRightWorkLen]) + \
+                  2* np.sum(self.rates[mid:mid+self.variableRightWorkLen]) - \
+                  2*np.sum(self.rates[mid+self.variableRightWorkLen:mid+2 * self.variableRightWorkLen])
+        return current/(self.columns+1)
+
     def getRates(self):
         """
         Returns the tunnelling rate between neighboring dots
@@ -867,6 +885,46 @@ class JJArray(DotArray):
             self.rates[np.abs(self.rates) < EPS] = 0
         return self.rates
 
+    def getLeapingTimeInterval(self):
+        mid = self.rates.size // 2
+        rates = self.getRates()
+        if (rates <= EPS).all():
+            self.no_tunneling_next_time = True
+            return self.default_dt
+        horzSize = self.rows * (self.columns + 1)
+        vertSize = (self.rows - 1) * self.columns
+        self.right[:,:] = rates[:horzSize].reshape(self.right.shape)
+        self.left[:,:] = rates[horzSize:2*horzSize].reshape(self.left.shape)
+        self.down[:,:] = rates[2*horzSize:2*horzSize + vertSize].reshape(self.up.shape)
+        self.up[:,:] = rates[2*horzSize + vertSize:mid].reshape(self.down.shape)
+        self.right_cp[:, :] = 2*rates[mid:mid+horzSize].reshape(self.right.shape)
+        self.left_cp[:, :] = 2*rates[mid+horzSize:mid+2 * horzSize].reshape(self.left.shape)
+        self.down_cp[:, :] = 2*rates[mid+2 * horzSize:mid+2 * horzSize + vertSize].reshape(self.up.shape)
+        self.up_cp[:, :] = 2*rates[mid+2 * horzSize + vertSize:].reshape(self.down.shape)
+        tunnelingTo = self.right[:,:-1] + self.left[:,1:] + self.right_cp[:,:-1] + self.left_cp[:,1:]
+        tunnelingTo[1:,:] += self.down + self.down_cp
+        tunnelingTo[:-1,:] += self.up + self.up_cp
+        tunnelingFrom = self.right[:,1:] + self.left[:,:-1] + self.right_cp[:,1:] + self.left_cp[:,:-1]
+        tunnelingFrom[1:,:] += self.up + self.up_cp
+        tunnelingFrom[:-1,:] += self.down + self.down_cp
+        changeAvg = np.abs(tunnelingTo - tunnelingFrom)
+        changeVar = tunnelingTo + tunnelingFrom
+        smallestChange = TAU_EPS*np.abs(self.getOccupation())
+        smallestChange[smallestChange < 1] = 1
+        tau = 0
+        if (changeAvg > 0).any():
+            tau = np.min(smallestChange[changeAvg > 0] / changeAvg[changeAvg > 0])
+        if (changeVar > 0).any():
+            tau2 = np.min(smallestChange[changeVar > 0]**2/changeVar[changeVar > 0])
+            if tau > 0:
+                tau = min(tau, tau2)
+            else:
+                tau = tau2
+        if tau <= 0:
+            tau = self.default_dt
+            self.no_tunneling_next_time = True
+        return tau
+
     def executeAction(self, ind, charge=1):
         horzSize = self.rows*(self.columns+1)
         vertSize = (self.rows - 1)*self.columns
@@ -876,6 +934,44 @@ class JJArray(DotArray):
             ind = ind - 2*(horzSize + vertSize)
             fromDot, toDot = super().executeAction(ind, charge=2)
         return fromDot, toDot
+
+    def executeMultipleActions(self, actionVec, charge=1):
+        mid = self.rates.size // 2
+        super().executeMultipleActions(actionVec[:mid], charge=1)
+        super().executeMultipleActions(actionVec[mid:], charge=2)
+
+
+
+        horzSize = self.rows * (self.columns + 1)
+        vertSize = (self.rows - 1) * self.columns
+        self.right[:,:] = actionVec[:horzSize].reshape(self.right.shape)*charge
+        self.left[:,:] = actionVec[horzSize:2 * horzSize].reshape(self.left.shape)*charge
+        self.down[:,:] = actionVec[2 * horzSize:2 * horzSize + vertSize].reshape(self.down.shape)*charge
+        self.up[:,:] = actionVec[2 * horzSize + vertSize:].reshape(self.up.shape)*charge
+        self.totalAction[:,:] = 0
+        self.totalAction += self.left[:,1:] - self.left[:,:-1] + self.right[:,:-1] - self.right[:,1:]
+        self.totalAction[1:,:] += self.down - self.up
+        self.totalAction[:-1,:] += self.up - self.down
+        self.n += flattenToColumn(self.totalAction)
+
+
+    def getCurrentMap(self):
+        mid = self.rates.size // 2
+        qp_rates = self.rates[:mid]
+        cp_rates = self.rates[mid:]
+        Ih = qp_rates[:self.variableRightWorkLen] - \
+             qp_rates[self.variableRightWorkLen:2 * self.variableRightWorkLen] + \
+             2*cp_rates[:self.variableRightWorkLen] - \
+             2*cp_rates[self.variableRightWorkLen:2 * self.variableRightWorkLen]
+        Iv = qp_rates[2 * self.variableRightWorkLen:(2 * self.variableRightWorkLen + self.variableDownWorkLen)] - \
+             qp_rates[(2 * self.variableRightWorkLen + self.variableDownWorkLen):] + \
+             2*cp_rates[2 * self.variableRightWorkLen:(2 * self.variableRightWorkLen + self.variableDownWorkLen)] - \
+             2*cp_rates[(2 * self.variableRightWorkLen + self.variableDownWorkLen):]
+        map = np.zeros((self.rows*2 - 1, self.columns+1))
+        map[::2,:] = Ih.reshape((self.rows, self.columns+1))
+        if Iv.size:
+            map[1::2,:-1] = Iv.reshape((self.rows - 1, self.columns))
+        return map
 
 class Simulator:
     """
@@ -1719,21 +1815,13 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         pool = Pool(processes=repeats)
         results = []
         for repeat in range(repeats):
-            try:
-                res = pool.apply_async(runSingleSimulation,
+            res = pool.apply_async(runSingleSimulation,
                                     (repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                      printState, useGraph, currentMap,basePath, resume, constQ, double_time,
                                      double_loop, calcIT))
-            except Exception as e:
-                print(e, flush=True)
-                continue
             results.append(res)
         for res in results:
-            try:
-                result = res.get()
-            except Exception as e:
-                print(e, flush=True)
-                continue
+            result = res.get()
             I = result[0]
             IErr = result[1]
             if fullOutput:

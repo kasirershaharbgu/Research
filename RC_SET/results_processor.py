@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 font = {'family' : 'sans-serif',
         'weight' : 'normal',
-        'size' : 20}
+        'size' : 40}
 matplotlib.rc('font', **font)
 matplotlib.rc('text', usetex=True)
 from optparse import OptionParser
@@ -1080,7 +1080,7 @@ class SingleResultsProcessor:
 
     def plot_results(self):
         plt.figure(figsize=FIGSIZE)
-        self.plot_IV(self.directory, err=True, alternative=True)
+        self.plot_IV(err=True, alternative=True)
         if self.full:
             VL = self.V/2 if self.symmetricV else self.V
             VR = -self.V/2 if self.symmetricV else np.zeros(self.V.shape)
@@ -2359,19 +2359,30 @@ if __name__ == "__main__":
         plt.show()
 
     elif action == 'IV_different_temperatures':
-        directory = "/home/kasirershahar/University/Research/old_results/same_array_different_temperature"
+        directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature"
         Ts = [0.001, 0.002, 0.005, 0.007, 0.01, 0.015, 0.02]
         names = ["array_10_10_T_" + str(T) for T in Ts]
         shift=0
+        fig, ax = plt.subplots(1, figsize=FIGSIZE)
         for T,name in zip(Ts,names):
-            p = SingleResultsProcessor(directory, name, reAnalyze=True, graph=False, fullOutput=True)
-            p.plot_IV("T = " + str(T), Vnorm=1/2, Inorm=1/20, shift=shift, err=True, errorevery=5,alternative=False,
-                      Ilabel="I(<R><C>)/e",Vlabel="V<C>/e")
-            shift+=0.3
-        plt.xlim(1,2)
-        plt.ylim(-0.1,2.5)
-        plt.legend(["Increasing voltage", "Decreasing voltage"])
-        plt.show()
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax, fig, Vnorm=1/2, Inorm=1/20, shift=shift, err=True, errorevery=5,alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$",Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            shift+=2
+        ax.set_xlim(2,4.5)
+        ax.text(2.1, 0.3,"0.5")
+        ax.text(2.1, 2.3,"1")
+        ax.text(2.1, 4.3,"2.5")
+        ax.text(2.1,6.5,"3.5")
+        ax.text(2.1,9.5,"5")
+        ax.text(2.1, 14.1, "7.5")
+        ax.text(2.1, 18, "10")
+        plt.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_temperatures.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == 'score_by_cg':
         directories_list = []
@@ -2409,7 +2420,7 @@ if __name__ == "__main__":
         plt.show()
     elif action == 'score_by_c_disorder':
         zero_temp_window = 0.05
-        finite_temp_window = 0.02
+        finite_temp_window = 0.1
         m = MultiResultAnalyzer([directories[0]] * len(file_names[0]),
                                 file_names[0],
                                 out_directory=None, graph=False, reAnalyze=options.re_analyze,
@@ -2789,12 +2800,10 @@ if __name__ == "__main__":
          for directory, names in zip(directories, file_names):
              for name in names:
                  s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, reAnalyze=True)
-                 # s.plot_jumps_freq("I")
                  s.plot_results()
                  s.plot_array_params("R")
                  s.plot_array_params("C")
-                 # s.plot_voltage()
-                 # s.plot_IV("IV",err=False, errorevery=10, alternative=True)
+                 #s.plot_IV(err=False, errorevery=10, alternative=True)
                  plt.show()
 
     elif action == 'print_scores':
