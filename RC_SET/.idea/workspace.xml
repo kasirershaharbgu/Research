@@ -10,8 +10,16 @@
       <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEstep.npy" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/running_scripts/run_small_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_small_2d_array_on_slurm.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Qs.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Qs.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_QsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_QsErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_current_map.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_current_map.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_ns.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_ns.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_nsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_nsErr.npy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -339,11 +347,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.ising1d" />
         <item itemvalue="Python.dynamics_simulation" />
         <item itemvalue="Python.dots_array_new" />
-        <item itemvalue="Python.dots_array" />
       </list>
     </recent_temporary>
   </component>
@@ -387,7 +395,28 @@
       <option name="project" value="LOCAL" />
       <updated>1604304953971</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Forcing prints to show while running">
+      <created>1604308531820</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1604308531820</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Adding script for small arrays with different cg">
+      <created>1604308550416</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1604308550416</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Updating workspace">
+      <created>1604308573415</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1604308573415</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -420,6 +449,8 @@
     <MESSAGE value="Updating scrip" />
     <MESSAGE value="Updating result processing script" />
     <MESSAGE value="Updating tunneling rates for quasi particles" />
+    <MESSAGE value="Forcing prints to show while running" />
+    <MESSAGE value="Adding script for small arrays with different cg" />
     <MESSAGE value="Updating workspace" />
     <option name="LAST_COMMIT_MESSAGE" value="Updating workspace" />
   </component>
@@ -438,25 +469,25 @@
     </state>
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604308260438" />
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="1825" height="275" key="GridCell.Tab.0.bottom" timestamp="1604305133763">
+    <state width="1825" height="473" key="GridCell.Tab.0.bottom" timestamp="1604322367402">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="275" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604305133763" />
+    <state width="1825" height="473" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604322367402" />
     <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="275" key="GridCell.Tab.0.center" timestamp="1604305133763">
+    <state width="1825" height="473" key="GridCell.Tab.0.center" timestamp="1604322367402">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="275" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604305133763" />
+    <state width="1825" height="473" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604322367402" />
     <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="275" key="GridCell.Tab.0.left" timestamp="1604305133763">
+    <state width="1825" height="473" key="GridCell.Tab.0.left" timestamp="1604322367402">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="275" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604305133763" />
+    <state width="1825" height="473" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604322367402" />
     <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="275" key="GridCell.Tab.0.right" timestamp="1604305133763">
+    <state width="1825" height="473" key="GridCell.Tab.0.right" timestamp="1604322367402">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="275" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604305133763" />
+    <state width="1825" height="473" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604322367402" />
     <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
     <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1598260905019">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -482,10 +513,14 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="252" y="117" width="1478" height="879" key="MergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604308011704" />
-    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1603893796225">
+    <state x="739" y="237" width="504" height="640" key="RollbackChangesDialog" timestamp="1604308562935">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1603893796225" />
+    <state x="739" y="237" width="504" height="640" key="RollbackChangesDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604308562935" />
+    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1604309455025">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604309455025" />
     <state x="721" y="247" width="539" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1604307988450">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
