@@ -8,18 +8,16 @@ import scipy.ndimage.morphology as morphology
 import matplotlib
 # matplotlib.use("Agg")
 from matplotlib import pyplot as plt
-# from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
-# from mayavi import mlab
+#from mayavi import mlab
 from optparse import OptionParser
 import re as regex
 from time import sleep
 from multiprocessing import Pool
-from scipy.linalg import null_space
 from scipy.integrate import cumtrapz
 from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
 from scipy.interpolate import interp1d
-from scipy.stats import norm
+from mpl_toolkits.mplot3d import Axes3D
 from ast import literal_eval
 from copy import copy
 
@@ -36,7 +34,7 @@ INV_DOS = 0.01
 TAU_EPS = 0.03
 # Lyaponuv Constants
 DQ = 0.1
-Q_SHIFT = 10
+Q_SHIFT = 1
 GRAD_REP = 100
 INI_LR = 0.001
 
@@ -119,7 +117,7 @@ def qp_integrand_big_energies(deltaE, Ec, T):
 
 
 def qp_tunneling_single(deltaE, Ec, gap, T):
-    if fabs(deltaE) < 6*gap:
+    if fabs(deltaE) < 10*gap:
         mp.dps = 50
         part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap])
         part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap, inf])
@@ -318,21 +316,13 @@ class DotArray:
         self.temperature = temperature if temperature_gradient==0 else self.getTemperatureArray(temperature, temperature_gradient)
         self.variableRightWorkLen = (self.columns + 1) * self.rows
         self.variableDownWorkLen = self.columns * (self.rows - 1)
-        self.totalChargePassedRight = 0
-        self.totalChargePassedLeft = 0
         self.no_tunneling_next_time = False
         self.createCapacitanceMatrix()
         self.setDiagonalizedJ()
         self.setConstWork()
         self.setConstMatrix()
         self.setConstNprimePart()
-        self.saveCurrentMap = False
-        self.Ih = np.zeros(self.Rh.shape)
-        self.Iv = np.zeros(self.Rv.shape)
         self.use_modifyR=modifyR
-        # for std calculations
-        # self.I_left_sqr_avg = 0
-        # self.I_right_sqr_avg = 0
 
         # for variable R calculation
         if self.use_modifyR:
@@ -367,8 +357,6 @@ class DotArray:
         copy_array.temperature = self.temperature
         copy_array.variableRightWorkLen = self.variableRightWorkLen
         copy_array.variableDownWorkLen = self.variableDownWorkLen
-        copy_array.totalChargePassedRight = self.totalChargePassedLeft
-        copy_array.totalChargePassedLeft = self.totalChargePassedRight
         copy_array.no_tunneling_next_time = self.no_tunneling_next_time
         copy_array.invC = self.invC
         copy_array.invCeq = self.invCeq
@@ -390,11 +378,6 @@ class DotArray:
         copy_array.verticalMatrix = self.verticalMatrix
         copy_array._left_part_n_prime = self._left_part_n_prime
         copy_array._right_part_n_prime = self._right_part_n_prime
-        copy_array.saveCurrentMap = self.saveCurrentMap
-        copy_array.Ih = np.copy(self.Ih)
-        copy_array.Iv = np.copy(self.Iv)
-        # copy_array.I_left_sqr_avg = self.I_left_sqr_avg
-        # copy_array.I_right_sqr_avg = self.I_right_sqr_avg
         copy_array.tauLeaping = self.tauLeaping
         copy_array.use_modifyR = self.use_modifyR
         copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
@@ -425,18 +408,11 @@ class DotArray:
         Tv = (Th[1:,:-1] + Th[1:,1:])/2
         return np.hstack((Th.flatten(), Th.flatten(), Tv.flatten(), Tv.flatten()))
 
-    def resetCharge(self):
-        """
-        Reset the counter for total charge passed
-        """
-        self.totalChargePassedRight = 0
-        self.totalChargePassedLeft = 0
-        # self.I_left_sqr_avg = 0
-        # self.I_right_sqr_avg = 0
-        if self.saveCurrentMap:
-            self.Ih[:,:]= 0
-            self.Iv[:,:] = 0
-        return True
+    def setTemperature(self, temperature):
+        self.temperature = temperature
+
+    def getTemperature(self):
+        return self.temperature
 
     def changeVext(self, newVL, newVR):
         self.VL = newVL
@@ -457,30 +433,20 @@ class DotArray:
         self.Q = flattenToColumn(Q)
         self._Q_eigenbasis = self._JeigenVectorsInv.dot(self.Q)
 
-    def getCharge(self):
-        return self.totalChargePassedRight, self.totalChargePassedLeft
-
-    # def getIsqr(self):
-    #     return self.I_right_sqr_avg, self.I_left_sqr_avg
-
     def getTimeStep(self):
         return self.timeStep
 
     def getCurrentMap(self):
-        if self.saveCurrentMap:
-            map = np.zeros((self.rows*2 - 1, self.columns+1))
-            map[::2,:] = np.copy(self.Ih)
-            if self.Iv.size:
-                map[1::2,:-1] = np.copy(self.Iv)
-            return map
-        else:
-            raise NotImplementedError
+        Ih = self.rates[:self.variableRightWorkLen] - \
+                       self.rates[self.variableRightWorkLen:2 * self.variableRightWorkLen]
+        Iv = self.rates[2 * self.variableRightWorkLen:(2 * self.variableRightWorkLen + self.variableDownWorkLen)] - \
+                      self.rates[(2 * self.variableRightWorkLen + self.variableDownWorkLen):]
+        map = np.zeros((self.rows*2 - 1, self.columns+1))
+        map[::2,:] = Ih.reshape((self.rows, self.columns+1))
+        if Iv.size:
+            map[1::2,:-1] = Iv.reshape((self.rows - 1, self.columns))
+        return map
 
-    def currentMapOn(self):
-        self.saveCurrentMap = True
-
-    def currentMapOff(self):
-        self.saveCurrentMap = False
 
     def createCapacitanceMatrix(self):
         """
@@ -532,8 +498,7 @@ class DotArray:
         self._JeigenValues, self._JeigenVectors = np.linalg.eig(self.getJmatrix())
         self._JeigenValues = flattenToColumn(self._JeigenValues)
         self._JeigenVectorsInv = np.linalg.inv(self._JeigenVectors)
-        # print(-1/self._JeigenValues)
-        self.timeStep = -1/np.max(self._JeigenValues)
+        self.timeStep = -2/np.max(self._JeigenValues)
         self.default_dt = -0.1/np.min(self._JeigenValues)
         invMat = np.linalg.inv(self.invC + np.diagflat(1/self.CG))
         self._constQnPart = invMat.dot(self.VG)
@@ -563,10 +528,10 @@ class DotArray:
         invCDiagMat = np.diag(np.copy(self.invC)).reshape((self.rows,self.columns))
         lowerCDiag = np.pad(np.diag(np.copy(self.invC),k=-1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         lowerCDiag[:,-1] = 0
-        lowerCDiag  = np.pad(lowerCDiag,((0,0),(1,0)),mode='constant')
+        lowerCDiag = np.pad(lowerCDiag,((0,0),(1,0)),mode='constant')
         upperCDiag = np.pad(np.diag(np.copy(self.invC),k=1),((0,1),),mode='constant').reshape((self.rows,self.columns))
         upperCDiag[:,-1] = 0
-        upperCDiag  = np.pad(upperCDiag,((0,0),(1,0)),mode='constant')
+        upperCDiag = np.pad(upperCDiag,((0,0),(1,0)),mode='constant')
         self.commonHorz = np.pad(invCDiagMat,((0,0),(1,0)),mode='constant') + np.pad(invCDiagMat,((0,0),(0,1)),mode='constant')\
                         - lowerCDiag - upperCDiag
 
@@ -777,17 +742,9 @@ class DotArray:
         self.executeMultipleActions(actionVec)
 
     def tunnel(self, fromDot, toDot, charge=1):
-        if fromDot[1] == self.columns:
-            self.totalChargePassedRight -= charge
-        elif fromDot[1] == -1:
-            self.totalChargePassedLeft -= charge
-        else:
+        if (0 <= fromDot[1] < self.columns) and (0 <= fromDot[0] < self.rows):
             self.n[fromDot[0]*self.columns + fromDot[1],0] -= charge
-        if toDot[1] == self.columns:
-            self.totalChargePassedRight += charge
-        elif toDot[1] == -1:
-            self.totalChargePassedLeft += charge
-        else:
+        if (0 <= toDot[1] < self.columns) and (0 <= toDot[0] < self.rows):
             self.n[toDot[0]*self.columns + toDot[1],0] += charge
         if self.constQ:
             self.updateWorkForConstQ(fromDot, toDot)
@@ -822,18 +779,11 @@ class DotArray:
         self.left[:,:] = actionVec[horzSize:2 * horzSize].reshape(self.left.shape)*charge
         self.down[:,:] = actionVec[2 * horzSize:2 * horzSize + vertSize].reshape(self.down.shape)*charge
         self.up[:,:] = actionVec[2 * horzSize + vertSize:].reshape(self.up.shape)*charge
-        total_passed_right = np.sum(self.right[:,-1] - self.left[:,-1])
-        total_passed_left = np.sum(self.left[:,0] - self.right[:,0])
-        self.totalChargePassedRight += total_passed_right
-        self.totalChargePassedLeft += total_passed_left
         self.totalAction[:,:] = 0
         self.totalAction += self.left[:,1:] - self.left[:,:-1] + self.right[:,:-1] - self.right[:,1:]
         self.totalAction[1:,:] += self.down - self.up
         self.totalAction[:-1,:] += self.up - self.down
         self.n += flattenToColumn(self.totalAction)
-        if self.saveCurrentMap:
-            self.Ih += self.right - self.left
-            self.Iv += self.down - self.up
 
     def executeAction(self, ind, charge=1):
         horzSize = self.rows*(self.columns+1)
@@ -841,26 +791,18 @@ class DotArray:
         if ind < horzSize: # tunnel right:
             fromDot = (ind//(self.columns+1), (ind%(self.columns+1))-1)
             toDot = (fromDot[0], fromDot[1] + 1)
-            if self.saveCurrentMap:
-                self.Ih[toDot] += charge
         elif ind < horzSize*2: # tunnel left
             ind -= horzSize
             fromDot = (ind//(self.columns+1), ind%(self.columns+1))
             toDot = (fromDot[0], fromDot[1] - 1)
-            if self.saveCurrentMap:
-                self.Ih[fromDot] -= charge
         elif ind < horzSize*2 + vertSize: # tunnel down
             ind -= horzSize*2
             fromDot = (ind//self.columns, ind%self.columns)
             toDot = (fromDot[0] + 1, fromDot[1])
-            if self.saveCurrentMap:
-                self.Iv[fromDot] += charge
         else: # tunnel up
             ind -= (horzSize*2 + vertSize)
             fromDot = ((ind//self.columns) + 1, ind%self.columns)
             toDot = (fromDot[0] - 1, fromDot[1])
-            if self.saveCurrentMap:
-                self.Iv[toDot] -= charge
         self.tunnel(fromDot, toDot, charge=charge)
         if self.constQ:
             self.updateWorkForConstQ(fromDot, toDot)
@@ -868,17 +810,22 @@ class DotArray:
 
 class JJArray(DotArray):
     def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                 temperature, scGap, fastRelaxation=False, tauLeaping=False, modifyR=False):
+                 temperature, temperature_gradient, gap, fastRelaxation=False, tauLeaping=False, modifyR=False):
         DotArray.__init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                          temperature, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
-        self.gap = scGap
+                          temperature, temperature_gradient, fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
+        self.gap = gap
         self.Ej = self.getEj()
         self.Ec = 1/(2*np.mean(CG))
-        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, scGap,
+        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, gap,
                                                           "quasi_particles_rate")
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
         print("Rates were calculated")
+        if tauLeaping:
+            self.right_cp = np.zeros((self.rows, self.columns + 1))
+            self.left_cp = np.zeros((self.rows, self.columns + 1))
+            self.down_cp = np.zeros((self.rows - 1, self.columns))
+            self.up_cp = np.zeros((self.rows - 1, self.columns))
 
     def __copy__(self):
         copy_array = super().__copy__()
@@ -887,6 +834,11 @@ class JJArray(DotArray):
         copy_array.Ec = self.Ec
         copy_array.qp_rate_calculator = self.qp_rate_calculator
         copy_array.cp_rate_calculator = self.cp_rate_calculator
+        if self.tauLeaping:
+            copy_array.right_cp = np.copy(self.right_cp)
+            copy_array.left_cp = np.copy(self.left_cp)
+            copy_array.up_cp = np.copy(self.up_cp)
+            copy_array.down_cp = np.copy(self.down_cp)
         return copy_array
 
     def getEj(self):
@@ -910,6 +862,14 @@ class JJArray(DotArray):
         cp_work = 2*self.variableWork + self.constWorkCp
         return qp_work, cp_work
 
+    def getCurrentFromRates(self):
+        mid = self.rates.size // 2
+        current = np.sum(self.rates[:self.variableRightWorkLen]) -\
+                  np.sum(self.rates[self.variableRightWorkLen:2*self.variableRightWorkLen]) + \
+                  2* np.sum(self.rates[mid:mid+self.variableRightWorkLen]) - \
+                  2*np.sum(self.rates[mid+self.variableRightWorkLen:mid+2 * self.variableRightWorkLen])
+        return current/(self.columns+1)
+
     def getRates(self):
         """
         Returns the tunnelling rate between neighboring dots
@@ -925,6 +885,46 @@ class JJArray(DotArray):
             self.rates[np.abs(self.rates) < EPS] = 0
         return self.rates
 
+    def getLeapingTimeInterval(self):
+        mid = self.rates.size // 2
+        rates = self.getRates()
+        if (rates <= EPS).all():
+            self.no_tunneling_next_time = True
+            return self.default_dt
+        horzSize = self.rows * (self.columns + 1)
+        vertSize = (self.rows - 1) * self.columns
+        self.right[:,:] = rates[:horzSize].reshape(self.right.shape)
+        self.left[:,:] = rates[horzSize:2*horzSize].reshape(self.left.shape)
+        self.down[:,:] = rates[2*horzSize:2*horzSize + vertSize].reshape(self.up.shape)
+        self.up[:,:] = rates[2*horzSize + vertSize:mid].reshape(self.down.shape)
+        self.right_cp[:, :] = 2*rates[mid:mid+horzSize].reshape(self.right.shape)
+        self.left_cp[:, :] = 2*rates[mid+horzSize:mid+2 * horzSize].reshape(self.left.shape)
+        self.down_cp[:, :] = 2*rates[mid+2 * horzSize:mid+2 * horzSize + vertSize].reshape(self.up.shape)
+        self.up_cp[:, :] = 2*rates[mid+2 * horzSize + vertSize:].reshape(self.down.shape)
+        tunnelingTo = self.right[:,:-1] + self.left[:,1:] + self.right_cp[:,:-1] + self.left_cp[:,1:]
+        tunnelingTo[1:,:] += self.down + self.down_cp
+        tunnelingTo[:-1,:] += self.up + self.up_cp
+        tunnelingFrom = self.right[:,1:] + self.left[:,:-1] + self.right_cp[:,1:] + self.left_cp[:,:-1]
+        tunnelingFrom[1:,:] += self.up + self.up_cp
+        tunnelingFrom[:-1,:] += self.down + self.down_cp
+        changeAvg = np.abs(tunnelingTo - tunnelingFrom)
+        changeVar = tunnelingTo + tunnelingFrom
+        smallestChange = TAU_EPS*np.abs(self.getOccupation())
+        smallestChange[smallestChange < 1] = 1
+        tau = 0
+        if (changeAvg > 0).any():
+            tau = np.min(smallestChange[changeAvg > 0] / changeAvg[changeAvg > 0])
+        if (changeVar > 0).any():
+            tau2 = np.min(smallestChange[changeVar > 0]**2/changeVar[changeVar > 0])
+            if tau > 0:
+                tau = min(tau, tau2)
+            else:
+                tau = tau2
+        if tau <= 0:
+            tau = self.default_dt
+            self.no_tunneling_next_time = True
+        return tau
+
     def executeAction(self, ind, charge=1):
         horzSize = self.rows*(self.columns+1)
         vertSize = (self.rows - 1)*self.columns
@@ -934,6 +934,44 @@ class JJArray(DotArray):
             ind = ind - 2*(horzSize + vertSize)
             fromDot, toDot = super().executeAction(ind, charge=2)
         return fromDot, toDot
+
+    def executeMultipleActions(self, actionVec, charge=1):
+        mid = self.rates.size // 2
+        super().executeMultipleActions(actionVec[:mid], charge=1)
+        super().executeMultipleActions(actionVec[mid:], charge=2)
+
+
+
+        horzSize = self.rows * (self.columns + 1)
+        vertSize = (self.rows - 1) * self.columns
+        self.right[:,:] = actionVec[:horzSize].reshape(self.right.shape)*charge
+        self.left[:,:] = actionVec[horzSize:2 * horzSize].reshape(self.left.shape)*charge
+        self.down[:,:] = actionVec[2 * horzSize:2 * horzSize + vertSize].reshape(self.down.shape)*charge
+        self.up[:,:] = actionVec[2 * horzSize + vertSize:].reshape(self.up.shape)*charge
+        self.totalAction[:,:] = 0
+        self.totalAction += self.left[:,1:] - self.left[:,:-1] + self.right[:,:-1] - self.right[:,1:]
+        self.totalAction[1:,:] += self.down - self.up
+        self.totalAction[:-1,:] += self.up - self.down
+        self.n += flattenToColumn(self.totalAction)
+
+
+    def getCurrentMap(self):
+        mid = self.rates.size // 2
+        qp_rates = self.rates[:mid]
+        cp_rates = self.rates[mid:]
+        Ih = qp_rates[:self.variableRightWorkLen] - \
+             qp_rates[self.variableRightWorkLen:2 * self.variableRightWorkLen] + \
+             2*cp_rates[:self.variableRightWorkLen] - \
+             2*cp_rates[self.variableRightWorkLen:2 * self.variableRightWorkLen]
+        Iv = qp_rates[2 * self.variableRightWorkLen:(2 * self.variableRightWorkLen + self.variableDownWorkLen)] - \
+             qp_rates[(2 * self.variableRightWorkLen + self.variableDownWorkLen):] + \
+             2*cp_rates[2 * self.variableRightWorkLen:(2 * self.variableRightWorkLen + self.variableDownWorkLen)] - \
+             2*cp_rates[(2 * self.variableRightWorkLen + self.variableDownWorkLen):]
+        map = np.zeros((self.rows*2 - 1, self.columns+1))
+        map[::2,:] = Ih.reshape((self.rows, self.columns+1))
+        if Iv.size:
+            map[1::2,:-1] = Iv.reshape((self.rows - 1, self.columns))
+        return map
 
 class Simulator:
     """
@@ -956,19 +994,6 @@ class Simulator:
             self.n = n0
             self.Q = Q0
 
-
-        # for debug
-    #     self.randomGen = self.getRandom()
-    #
-    # def getRandom(self):
-    #     numbers = [0.01,0.001,0.001,0.76,0.002]
-    #     idx = -1
-    #     while True:
-    #         idx += 1
-    #         if idx == len(numbers):
-    #             idx = 0
-    #         yield numbers[idx]
-
     def getArrayParameters(self):
         return str(self.dotArray)
 
@@ -981,8 +1006,6 @@ class Simulator:
 
     def executeStep(self, printState=False):
         r = self.randomGenerator.rand(2)
-        # for debug
-        # r = next(self.randomGen)
         dt, intervals = self.dotArray.getTimeInterval(r[0])
         self.dotArray.nextStep(dt,r[1])
         if printState:
@@ -990,14 +1013,11 @@ class Simulator:
         return dt + intervals*self.dotArray.default_dt
 
     def calcCurrent(self,print_stats=False, fullOutput=False, currentMap=False, double_time=False):
-        if currentMap:
-            self.dotArray.currentMapOn()
         if self.constQ:
             self.find_next_QG_using_gradient_descent()
             self.dotArray.setOccupation(self.n)
             self.dotArray.setGroundCharge(self.Q)
             self.dotArray.getWork()
-        self.dotArray.resetCharge()
         final_t = self.dotArray.timeStep
         if double_time:
             final_t = 2 * final_t
@@ -1010,10 +1030,10 @@ class Simulator:
             n_var = np.zeros(n_avg.shape)
             Q_avg = np.zeros((self.dotArray.getRows(), self.dotArray.getColumns()))
             Q_var = np.zeros(Q_avg.shape)
+        if currentMap:
+            map_avg = np.zeros((self.dotArray.getRows()*2 - 1, self.dotArray.getColumns() + 1))
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
-        # err = 2*ALLOWED_ERR
-        # errors = []
         while curr_t < final_t or steps < MIN_STEPS:
             if self.tauLeaping:
                 dt = self.executeLeapingStep(printState=print_stats)
@@ -1023,25 +1043,20 @@ class Simulator:
             curr_I = self.dotArray.getCurrentFromRates()
             I_avg, I_var = self.update_statistics(curr_I, I_avg, I_var,
                                                   curr_t, dt)
-            # TODO: trying something new, remove before run
-            # power = I_avg * (self.dotArray.VL - self.dotArray.VR)
-            # heat_balance = 0.1*(self.dotArray.temperature**6 - 0.001**6)
-            # self.dotArray.temperature += dt*(power - heat_balance)
-            # end of addition
-
             if fullOutput:
                 n_avg, n_var = self.update_statistics(curr_n, n_avg, n_var, curr_t, dt)
                 Q_avg, Q_var = self.update_statistics(curr_Q, Q_avg, Q_var, curr_t, dt)
                 curr_n = self.dotArray.getOccupation()
                 curr_Q = self.dotArray.getGroundCharge()
+            if currentMap:
+                map_avg += self.dotArray.getCurrentMap()*dt
             curr_t += dt
         err = self.get_err(I_var, steps, curr_t)
         res = (I_avg, err)
         if fullOutput:
             res = res + (n_avg, Q_avg, self.get_err(n_var, steps, curr_t), self.get_err(Q_var, steps, curr_t))
         if currentMap:
-            res = res + (self.dotArray.getCurrentMap()/curr_t,)
-            self.dotArray.currentMapOff()
+            res = res + (map_avg/curr_t,)
         return res
 
     def calcAverageNForGivenQ(self, Q, n0, calcVoltages=False):
@@ -1091,7 +1106,7 @@ class Simulator:
         if flag: #if gradient descent did not converge skipping the point
             self.Q = res
         else:
-            print("gradient descent didn't convarge")
+            print("Gradient descent didn't convarge")
 
     def plotAverageVoltages(self):
         # Plottting voltage
@@ -1106,15 +1121,11 @@ class Simulator:
         ax = fig.gca(projection='3d')
         ax.plot_surface(X, Y, Z)
         ax.plot_surface(X, Y, Z2)
-        # print(self.dotArray.getNprime() + flattenToColumn(self.dotArray.getGroundCharge()))
         plt.show()
 
     def getToSteadyState(self):
         n_avg = np.zeros(
             (self.dotArray.getRows(), self.dotArray.getColumns()))
-        n_var = np.zeros(n_avg.shape)
-        Q_avg = np.zeros(n_avg.shape)
-        Q_var = np.zeros(n_avg.shape)
         curr_n = self.dotArray.getOccupation()
         curr_Q = self.dotArray.getGroundCharge()
         allowed_err = ALLOWED_ERR / (self.dotArray.getRows())
@@ -1190,6 +1201,9 @@ class Simulator:
 
     def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
+        print("Loading %d" % self.index, flush=True)
+        if not os.path.isfile(baseName + "_I.npy"):
+            return None
         I = np.load(baseName + "_I.npy")
         loadLen = len(I)
         IErr = np.load(baseName + "_IErr.npy")
@@ -1210,13 +1224,14 @@ class Simulator:
                 nsErr = nsErr[loadLen, :, :]
             QsErr = np.load(baseName + "_QsErr.npy")
             if len(QsErr) > loadLen:
-                QsErr = QsErr[:, loadLen, :, :]
+                QsErr = QsErr[loadLen, :, :]
             res = res + (ns, Qs,nsErr, QsErr)
         if currentMap:
             Imaps = np.load(baseName + "_current_map.npy")
             if len(Imaps) > loadLen:
                 Imaps = Imaps[:, loadLen, :, :]
             res = res + (Imaps,)
+        print("Loading over %d" % self.index, flush=True)
         return res
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False,
@@ -1246,20 +1261,21 @@ class Simulator:
         VR_res = np.copy(VR_vec)
         if resume:
             resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
-            I = list(resumeParams[0])
-            IErr = list(resumeParams[1])
-            Vind = len(I)
-            VL_vec = VL_vec[Vind:]
-            VR_vec = VR_vec[Vind:]
-            self.dotArray.setOccupation(resumeParams[2])
-            self.dotArray.setGroundCharge(resumeParams[3])
-            if fullOutput:
-                ns = list(resumeParams[4])
-                Qs = list(resumeParams[5])
-                nsErr = list(resumeParams[6])
-                QsErr = list(resumeParams[7])
-            if currentMap:
-                Imaps = list(resumeParams[8])
+            if resumeParams is not None:
+                I = list(resumeParams[0])
+                IErr = list(resumeParams[1])
+                Vind = len(I)
+                VL_vec = VL_vec[Vind:]
+                VR_vec = VR_vec[Vind:]
+                self.dotArray.setOccupation(resumeParams[2])
+                self.dotArray.setGroundCharge(resumeParams[3])
+                if fullOutput:
+                    ns = list(resumeParams[4])
+                    Qs = list(resumeParams[5])
+                    nsErr = list(resumeParams[6])
+                    QsErr = list(resumeParams[7])
+                if currentMap:
+                    Imaps = list(resumeParams[-1])
         for VL,VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR)
             # running once to get to steady state
@@ -1280,10 +1296,66 @@ class Simulator:
             I.append(current)
             IErr.append(currentErr)
             if self.index == 0:
-                print(VL - VR, end=',', flush=True)
+                print("%.3f" % float(VL - VR), end=',', flush=True)
             self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps, fullOutput=fullOutput,
                            currentMap=currentMap, basePath=basePath)
         res = (np.array(I), np.array(IErr), VL_res - VR_res)
+        if fullOutput:
+            res = res + (np.array(ns), np.array(Qs), np.array(nsErr), np.array(QsErr))
+        if currentMap:
+            res = res + (np.array(Imaps),)
+        return res
+
+    def calcIT(self, Tmax, Tstep, fullOutput=False, print_stats=False,
+               currentMap=False, basePath="", resume=False):
+        I = []
+        IErr = []
+        ns = []
+        Qs = []
+        nsErr = []
+        QsErr = []
+        Imaps = []
+        T_vec = np.arange(self.dotArray.getTemperature(), Tmax, Tstep)
+        T_res = np.copy(T_vec)
+        if resume:
+            resumeParams = self.loadState(fullOutput=fullOutput, currentMap=currentMap, basePath=basePath)
+            if resumeParams is not None:
+                I = list(resumeParams[0])
+                IErr = list(resumeParams[1])
+                Tind = len(I)
+                T_vec = T_vec[Tind:]
+                self.dotArray.setOccupation(resumeParams[2])
+                self.dotArray.setGroundCharge(resumeParams[3])
+                if fullOutput:
+                    ns = list(resumeParams[4])
+                    Qs = list(resumeParams[5])
+                    nsErr = list(resumeParams[6])
+                    QsErr = list(resumeParams[7])
+                if currentMap:
+                    Imaps = list(resumeParams[-1])
+        for T in T_vec:
+            self.dotArray.setTemperature(T)
+            # running once to get to steady state
+            if not self.constQ:
+                self.getToSteadyState()
+            # now we are in steady state calculate current
+            stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            current = stepRes[0]
+            currentErr = stepRes[1]
+            if fullOutput:
+                ns.append(stepRes[2])
+                Qs.append(stepRes[3])
+                nsErr.append(stepRes[4])
+                QsErr.append(stepRes[5])
+            if currentMap:
+                Imaps.append(stepRes[-1])
+            I.append(current)
+            IErr.append(currentErr)
+            if self.index == 0:
+                print("%.3f" % float(T), end=',', flush=True)
+            self.saveState(I, IErr, ns, Qs, nsErr, QsErr, Imaps=Imaps, fullOutput=fullOutput,
+                           currentMap=currentMap, basePath=basePath)
+        res = (np.array(I), np.array(IErr), T_res)
         if fullOutput:
             res = res + (np.array(ns), np.array(Qs), np.array(nsErr), np.array(QsErr))
         if currentMap:
@@ -1341,6 +1413,8 @@ class GraphSimulator:
         self.lyaponuv = None
         self.rates_diff_left = None
         self.rates_diff_right = None
+        self.rows = dotArray.rows
+        self.columns = dotArray.columns
 
     def reshape_to_array(self,a):
         return a.reshape((self.dotArray.getRows(), self.dotArray.getColumns()))
@@ -1413,7 +1487,7 @@ class GraphSimulator:
         Q_copy = self.dotArray.getGroundCharge()
         n = self.get_average_state(Q)
         self.dotArray.setOccupation(n)
-        self.dotArray.setOccupation(Q)
+        self.dotArray.setGroundCharge(Q)
         v = self.dotArray.getVoltages()
         self.dotArray.setOccupation(n_copy)
         self.dotArray.setGroundCharge(Q_copy)
@@ -1469,16 +1543,22 @@ class GraphSimulator:
         return Q.flatten() - self.dotArray.get_steady_Q_for_n().flatten()
 
     def plot_average_voltages(self, Qmin, Qmax):
-        from mayavi import mlab
         Q_grid, voltages = self.calc_on_grid(Qmin, Qmax, self.get_average_voltages, res_len=Qmin.size)
         _, voltages_from_ground = self.calc_on_grid(Qmin, Qmax, self.get_voltages_from_ground, res_len=Qmin.size)
-        fig1 = mlab.figure()
-        surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages[0], colormap='Blues')
-        surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages_from_ground[0], colormap='Oranges')
-        fig1 = mlab.figure()
-        surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages[1], colormap='Blues')
-        surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages_from_ground[1], colormap='Oranges')
-        mlab.show()
+        if Qmin.size == 2:
+            fig1 = mlab.figure()
+            surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages[0], colormap='Blues')
+            surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1],voltages_from_ground[0], colormap='Oranges')
+            fig1 = mlab.figure()
+            surf1 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages[1], colormap='Blues')
+            surf2 = mlab.surf(Q_grid[:, :, 0], Q_grid[:, :, 1], voltages_from_ground[1], colormap='Oranges')
+            mlab.show()
+        elif Qmin.size == 1:
+            fig1 = plt.figure()
+            plt.plot(Q_grid[:,0], voltages[0], Q_grid[:,0], voltages_from_ground[0])
+            plt.show()
+        else:
+            pass
 
     def find_next_QG_using_lyaponuv(self, basePath):
         q_shift = Q_SHIFT
@@ -1489,20 +1569,6 @@ class GraphSimulator:
             peaks = detect_local_minima(self.lyaponuv)
         Qind = np.argmin(np.sum((self.Q_grid[peaks] - self.QG)**2,axis=1))
         self.QG = self.Q_grid[peaks][Qind]
-        # dbg
-        self.set_lyaponuv(self.QG - Q_SHIFT, self.QG + Q_SHIFT)
-        fig = plt.figure()
-        plt.plot(np.arange(self.QG - Q_SHIFT, self.QG + Q_SHIFT,DQ),self.lyaponuv)
-        plt.show()
-        # ax = fig.gca(projection='3d')
-        # ax.plot_surface(self.Q_grid[:,:,0],self.Q_grid[:,:,1],self.lyaponuv)
-        # x = np.searchsorted(self.Q_grid[:,0,0], self.QG[0,0])
-        # y = np.searchsorted(self.Q_grid[0,:,1], self.QG[0,1])
-        # ax.scatter3D(self.QG[0,0], self.QG[0,1], self.lyaponuv[x,y], marker='o',color='red')
-        # str_ind = "0"*(4-len(str(self.counter))) + str(self.counter)
-        # plt.savefig(basePath + "Lyaponuv_" + str_ind)
-        # plt.close(fig)
-        # self.counter += 1
 
     def find_next_QG_using_gradient_descent(self):
         flag = False
@@ -1520,9 +1586,8 @@ class GraphSimulator:
     def calcCurrent(self, fullOutput=False, basePath=""):
         self.find_next_QG_using_gradient_descent()
         #dbg
-        # self.find_next_QG_using_lyaponuv(basePath)
-        # print(self.QG)
-        # self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
+        print(self.QG)
+        self.plot_average_voltages(self.QG-Q_SHIFT, self.QG+Q_SHIFT)
         #dbg
         n_avg = self.reshape_to_array(self.get_average_state(self.QG))
         self.n0 = np.floor(n_avg)
@@ -1566,7 +1631,6 @@ class GraphSimulator:
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False, currentMap=False,
                basePath="", resume=False, double_time=False, double_loop=False):
-        # TODO: add error calculation
         I = []
         ns = []
         Qs = []
@@ -1594,9 +1658,9 @@ class GraphSimulator:
             if fullOutput:
                 ns = list(resumeParams[3])
                 Qs = list(resumeParams[4])
-
         for VL,VR in zip(VL_vec,VR_vec):
-            print(VL-VR,end=',')
+            if self.index == 0:
+                print("%.3f" % float(VL-VR),end=',', flush=True)
             self.dotArray.changeVext(VL, VR)
             res = self.calcCurrent(fullOutput=fullOutput, basePath=basePath)
             rightCurrent = res[0]
@@ -1610,19 +1674,24 @@ class GraphSimulator:
             self.saveState(I, ns, Qs, fullOutput=fullOutput, basePath=basePath)
         result = (np.array(I), np.zeros((len(I),)), VL_res - VR_res)
         if fullOutput:
-            result = result + (ns, Qs, np.zeros((len(ns),)), np.zeros((len(Qs),)))
+            result = result + (ns, Qs, np.zeros(np.array(ns).shape), np.zeros(np.array(Qs).shape))
         return result
 
 def runSingleSimulation(index, VL0, VR0, vSym, Q0, n0,Vmax, Vstep, dotArray,
                         fullOutput=False, printState=False, useGraph=False, currentMap=False,
-                        basePath="", resume=False, constQ=False, double_time=False, double_loop=False):
+                        basePath="", resume=False, constQ=False, double_time=False, double_loop=False,
+                        calcIT=False):
     if useGraph:
         simulator = GraphSimulator(index, VL0, VR0, Q0, n0, dotArray)
     else:
         simulator = Simulator(index, VL0, VR0, Q0, n0, dotArray, constQ)
-    out = simulator.calcIV(Vmax, Vstep, vSym, fullOutput=fullOutput, print_stats=printState,
-                           currentMap=currentMap, basePath=basePath, resume=resume, double_time=double_time,
-                           double_loop=double_loop)
+    if calcIT:
+        out = simulator.calcIT(Vmax, Vstep, fullOutput=fullOutput, print_stats=printState,
+                               currentMap=currentMap, basePath=basePath, resume=resume)
+    else:
+        out = simulator.calcIV(Vmax, Vstep, vSym, fullOutput=fullOutput, print_stats=printState,
+                               currentMap=currentMap, basePath=basePath, resume=resume, double_time=double_time,
+                               double_loop=double_loop)
     array_params = simulator.getArrayParameters()
     return out + (array_params,)
 
@@ -1641,6 +1710,8 @@ def saveRandomParams(VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,basePath):
 
 def loadRandomParams(basePath):
     baseName = basePath + "_temp_"
+    if not os.path.isfile(baseName + "VG.npy"):
+        return None
     VG0 = np.load(baseName + "VG.npy")
     Q0 = np.load(baseName + "Q0.npy")
     n0 = np.load(baseName + "n0.npy")
@@ -1670,11 +1741,12 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                       printState=False, checkSteadyState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False,
                       superconducting=False, gap=0, leaping=False, modifyR=False, plotVoltages=False,
-                      constQ=False, frame_norm=False, double_time=False, double_loop=False):
+                      constQ=False, frame_norm=False, double_time=False, double_loop=False, calcIT=False):
     basePath = os.path.join(savePath, fileName)
     if useGraph:
         dbg = True
         repeats = 1
+        currentMap = False
     if plotCurrentMaps or plotBinaryCurrentMaps:
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
@@ -1683,21 +1755,29 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         if fullOutput:
             n = np.load(basePath + "_n.npy")
         saveCurrentMaps(avgImaps, V, basePath + "_Imap",full=fullOutput,
-                        n=n, binary=plotBinaryCurrentMaps, frame_norm=frame_norm)
+                        n=n, binary=plotBinaryCurrentMaps, frame_norm=frame_norm, calcIT=calcIT)
         exit(0)
-    if not resume:
+    load = False
+    if resume:
+        print("Loading array parameters")
+        loaded = loadRandomParams(basePath)
+        if loaded is not None:
+            VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loaded
+            load = True
+        else:
+            print("Couldn't load parameters, generating new parameters")
+    if not load:
         print("Saving array parameters")
         saveRandomParams(np.array(VG0),
                          np.array(Q0), np.array(n0), np.array(CG),
                          np.array(RG), np.array(Ch), np.array(Cv),
                          np.array(Rh), np.array(Rv), basePath)
-    else:
-        print("Loading array parameters")
-        VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv = loadRandomParams(basePath)
+
     if superconducting:
         prototypeArray = JJArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
                                  np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                 temperature, gap, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
+                                 temperature, temperature_gradient=temperature_gradient, gap=gap,
+                                 fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
         print("Superconducting prototype array was created")
     else:
         prototypeArray = DotArray(rows, columns, VL0, VR0, np.array(VG0), np.array(Q0), np.array(n0), np.array(CG),
@@ -1714,6 +1794,15 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         simulator.checkSteadyState(repeats)
         exit(0)
 
+    if plotVoltages:
+        print("Plotting voltages")
+        points_num = 100
+        Q0 = np.array([[1,1,0.1]])
+        dQ = np.array([[0,0,0.01]])
+        VL0 = 1
+        simulator = Simulator(0, VL0, VR0, Q0, n0, prototypeArray)
+        simulator.plotAverageVoltages(Q0,dQ,n0,points_num)
+        exit(0)
     Is = []
     IsErr = []
     ns = []
@@ -1728,13 +1817,13 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         for repeat in range(repeats):
             res = pool.apply_async(runSingleSimulation,
                                     (repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
-                                     printState, useGraph, currentMap,basePath, resume, constQ, double_time, double_loop))
+                                     printState, useGraph, currentMap,basePath, resume, constQ, double_time,
+                                     double_loop, calcIT))
             results.append(res)
         for res in results:
             result = res.get()
             I = result[0]
             IErr = result[1]
-            currentMapInd = 3
             if fullOutput:
                 n = result[3]
                 Q = result[4]
@@ -1744,9 +1833,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                 Qs.append(Q)
                 nsErr.append(nErr)
                 QsErr.append(QErr)
-                currentMapInd = 7
             if currentMap:
-                Imaps.append(result[currentMapInd])
+                Imaps.append(result[-2])
             Is.append(I)
             IsErr.append(IErr)
         V = result[2]
@@ -1756,10 +1844,10 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         print("Starting serial run")
         for repeat in range(repeats):
             result = runSingleSimulation(repeat, VL0, VR0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
-                                         printState, useGraph, currentMap,basePath, resume, constQ, double_time, double_loop)
+                                         printState, useGraph, currentMap,basePath, resume, constQ, double_time,
+                                         double_loop, calcIT)
             I = result[0]
             IErr = result[1]
-            currentMapInd = 3
             if fullOutput:
                 n = result[3]
                 Q = result[4]
@@ -1769,9 +1857,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                 Qs.append(Q)
                 nsErr.append(nErr)
                 QsErr.append(QErr)
-                currentMapInd = 7
             if currentMap:
-                Imaps.append(result[currentMapInd])
+                Imaps.append(result[-2])
             Is.append(I)
             IsErr.append(IErr)
         V = result[2]
@@ -1797,7 +1884,14 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     fig = plt.figure()
     IplusErr = avgI + avgIErr
     IminusErr = avgI - avgIErr
-    if double_loop:
+    if calcIT:
+        plt.plot(V, avgI, 'g-', V, IplusErr, 'g--',
+                 V, IminusErr, 'g--')
+        plt.xlabel('Temperature')
+        plt.ylabel('Current from left to right')
+        plt.savefig(basePath + "_IT.png")
+        np.save(basePath + "_T", V)
+    elif double_loop:
         plt.plot(V[:V.size // 4], avgI[:V.size // 4], 'b-',
                  V[:V.size // 4], IplusErr[:V.size // 4], 'b--',
                  V[:V.size // 4], IminusErr[:V.size // 4], 'b--',
@@ -1811,19 +1905,25 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                  V[3 * V.size // 4 :], IplusErr[3 * V.size // 4 :], 'm--',
                  V[3 * V.size // 4 :], IminusErr[3 * V.size // 4 :], 'm--',
                  )
+        plt.xlabel('Voltage')
+        plt.ylabel('Current from left to right')
+        plt.savefig(basePath + "_IV.png")
+        np.save(basePath + "_V", V)
     else:
-        plt.plot(V[:V.size//2], avgI[:V.size//2], 'b-',
-                 V[:V.size//2], IplusErr[:V.size//2], 'b--',
-                 V[:V.size//2], IminusErr[:V.size//2], 'b--',
-                 V[V.size//2:], avgI[V.size//2:], 'r-',
-                 V[V.size//2:], IplusErr[V.size//2:], 'r--',
-                 V[V.size//2:], IminusErr[V.size//2:], 'r--'
-                 )
-    plt.savefig(basePath + "_IV.png")
+        plt.plot(V[:V.size // 2], avgI[:V.size // 2], 'b-', V[:V.size // 2], IplusErr[:V.size // 2], 'b--',
+                 V[:V.size // 2], IminusErr[:V.size // 2], 'b--',
+                 V[V.size // 2:], avgI[V.size // 2:], 'r-', V[V.size // 2:], IplusErr[V.size // 2:], 'r--',
+                 V[V.size // 2:], IminusErr[V.size // 2:], 'r--')
+        plt.xlabel('Voltage')
+        plt.ylabel('Current from left to right')
+        plt.savefig(basePath + "_IV.png")
+        np.save(basePath + "_V", V)
+    plt.close(fig)
+    fig = plt.figure()
+    plt.close(fig)
     np.save(basePath + "_I", avgI)
     np.save(basePath + "_IErr", avgIErr)
-    np.save(basePath + "_V", V)
-    plt.close(fig)
+
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
@@ -1845,11 +1945,11 @@ def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=Fa
         if not graph:
             os.remove(baseName + "_nsErr.npy")
             os.remove(baseName + "_QsErr.npy")
-    if currentMap:
+    if currentMap and not graph:
         os.remove(baseName + "_current_map.npy")
     return True
 
-def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm=False):
+def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm=False, calcIT=False):
     if binary:
         Imaps[Imaps>0] = 1
         Imaps[Imaps<0] = -1
@@ -1864,7 +1964,7 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
     M,N = Imaps[0].shape
     im = ax.imshow(np.zeros(((M // 2) * 3 + 1, N * 3)), vmin=Imin,
                     vmax=Imax, animated=True, cmap='PuOr', aspect='equal')
-    text = ax.text(1, 1, 'Vext = 0')
+    text = ax.text(1, 1, 'T = 0') if calcIT else ax.text(1, 1, 'Vext = 0')
     cb1 = plt.colorbar(im, shrink=0.25)
     cb1.set_label('Current')
     if full:
@@ -1877,20 +1977,21 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
         cb2.set_label('Occupation')
         frames = [(Imaps[i], V[i], n[i]) for i in range(len(V))]
         im_ani = animation.FuncAnimation(fig,
-                                         plotCurrentMaps(im, text, M, N, full=True, im2=im2, frame_norm=frame_norm),
+                                         plotCurrentMaps(im, text, M, N, full=True, im2=im2, frame_norm=frame_norm,
+                                                         calcIT=calcIT),
                                          frames=frames, interval=100,
                                          repeat_delay=1000,
                                          blit=True)
     else:
         frames = [(Imaps[i], V[i]) for i in range(len(V))]
-        im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N, frame_norm=frame_norm),
+        im_ani = animation.FuncAnimation(fig, plotCurrentMaps(im, text, M, N, frame_norm=frame_norm, calcIT=calcIT),
                                         frames=frames, interval=100,
                                          repeat_delay=1000,
                                         blit=True)
     im_ani.save(path + '.mp4', writer=writer)
     plt.close(fig)
 
-def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False):
+def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False, calcIT=False):
     '''
     updating the plot to current currents map
     :return: image for animation
@@ -1930,7 +2031,10 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False):
         J[np.ix_(vertRows, vertCols)] = np.repeat(I[1:M:2,:],2,axis=0)
         J_masked = np.ma.masked_array(J,Jmask)
         im.set_array(J_masked)
-        text.set_text('Vext = ' + str(Vext))
+        if calcIT:
+            text.set_text('T = %.3f' % float(Vext))
+        else:
+            text.set_text('Vext = %.3f' % float(Vext))
         if full:
             dots_im[np.ix_(dot_rows, dot_cols)] = n
             dots_im_masked = np.ma.masked_array(dots_im, dots_im_mask)
@@ -1939,6 +2043,48 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False):
         else:
             return im,text
     return updateCurrent
+
+def findPaths(Imap, rows, columns, eps=1e-5):
+    paths = []
+    paths_current = []
+    def array_DFS(i ,j , path, path_current):
+        if j == columns:
+            path_copy = copy(path)
+            path_current_copy = copy(path_current)
+            path_copy.append((i,j))
+            paths.append(path_copy)
+            paths_current.append(path_current_copy)
+            return True
+        elif (i,j) in path or i < 0 or j < 0 or i == rows:
+            return False
+        else:
+            path.append((i,j))
+            if Imap[i*2,j+1] > eps:
+                path_current.append(Imap[i*2, j + 1])
+                array_DFS(i, j + 1, path, path_current)
+                del path_current[-1]
+            if Imap[i*2,j] < -eps:
+                path_current.append(Imap[i*2 , j ])
+                array_DFS(i,j-1,path, path_current)
+                del path_current[-1]
+            if Imap[i*2-1,j] < -eps:
+                path_current.append(Imap[i*2 - 1, j ])
+                array_DFS(i - 1, j, path, path_current)
+                del path_current[-1]
+            if Imap[i*2 + 1,j] > eps:
+                path_current.append(Imap[i*2 + 1, j + 1])
+                array_DFS(i+1, j, path, path_current)
+                del path_current[-1]
+        del path[-1]
+        return True
+    for i in range(rows):
+        if Imap[i*2, 0] > eps:
+            path = []
+            path_current = [Imap[i*2, 0]]
+            array_DFS(i, 0, path, path_current)
+    return paths, paths_current
+
+
 
 def getOptions():
     parser = OptionParser(usage= "usage: %prog [options]")
@@ -2026,6 +2172,11 @@ def getOptions():
                       default=False, action='store_true')
     parser.add_option("--double-loop", dest="double_loop",
                       help="if true the voltage would be raised and lowered twice"
+                           " [Default:%default]",
+                      default=False, action='store_true')
+    parser.add_option("--calc-it", dest="calcIT",
+                      help="Instead of calculating IV curve calculates current as a function of the temperature,"
+                           " in this case Vmax, Vstep would be used as Tmax, Tstep instead"
                            " [Default:%default]",
                       default=False, action='store_true')
     parser.add_option("-o", "--output-folder", dest="output_folder",
@@ -2180,6 +2331,7 @@ if __name__ == "__main__":
     options, args = getOptions()
     params_file = options.params_path
     if params_file:
+        print("Loading parameters from file " + params_file)
         runningParams, arrayParams = load_params_from_file(params_file)
         rows = runningParams['M']
         columns = runningParams['N']
@@ -2264,7 +2416,8 @@ if __name__ == "__main__":
                                      dbg=dbg, plotCurrentMaps=plot_current_map, plotBinaryCurrentMaps=plot_binary_current_map, resume=resume,
                                      checkSteadyState=False, superconducting=sc, gap=gap, leaping=leaping,
                                      modifyR=modifyR, constQ=constQ, frame_norm=frame_norm,
-                                     double_time=options.double_time, double_loop=options.double_loop)
+                                     double_time=options.double_time, double_loop=options.double_loop,
+                                     calcIT=options.calcIT)
     saveParameters(savePath, fileName, options, array_params)
 
     if dbg:
