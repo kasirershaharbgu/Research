@@ -5,22 +5,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEstep.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Qs.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_Qs.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_QsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_QsErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_current_map.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_current_map.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_ns.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_ns.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_nsErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_0_nsErr.npy" afterDir="false" />
-    </list>
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -334,16 +319,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
-      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>
