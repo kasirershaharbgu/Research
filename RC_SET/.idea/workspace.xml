@@ -5,7 +5,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updaing main script.">
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updaing tunneling rates for superconducting arrays.">
       <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -321,24 +321,24 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.ising1d" />
         <item itemvalue="Python.dynamics_simulation" />
         <item itemvalue="Python.dots_array_new" />
+        <item itemvalue="Python.dots_array" />
       </list>
     </recent_temporary>
   </component>
@@ -417,7 +417,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604563080790</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Updaing tunneling rates for superconducting arrays.">
+      <created>1604563457692</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1604563457692</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -455,7 +462,8 @@
     <MESSAGE value="Updating workspace" />
     <MESSAGE value="Updaing results processor." />
     <MESSAGE value="Updaing main script." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updaing main script." />
+    <MESSAGE value="Updaing tunneling rates for superconducting arrays." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updaing tunneling rates for superconducting arrays." />
   </component>
   <component name="WindowStateProjectService">
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604304989604">
