@@ -15,6 +15,7 @@ from ast import literal_eval
 import os, sys
 import re
 from sklearn.mixture import GaussianMixture
+from scipy.interpolate import interp1d
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
@@ -33,7 +34,7 @@ ACTIONS = ['plot_results', 'plot_score_by_parameter', 'plot_score_by_disorder',
 SCORE_VAL = 'score'
 SCORE_HIGH_ERR = 'high_err'
 SCORE_LOW_ERROR = 'low_err'
-
+ERR_VAL=-99
 
 def add_text_upper_left_corner(ax, text):
     x_min,x_max,y_min,y_max = ax.axis()
@@ -381,7 +382,91 @@ class SingleResultsProcessor:
         plt.xlabel('Voltage')
         plt.ylabel('Power')
 
-    def plot_resistance(self, out=None, show=False):
+    def plot_electrons_temperature(self, ax=None, fig=None, el_temp=None, el_temp_vert=None):
+        if el_temp is None:
+            print("Missing electrons temperature approximation.")
+            exit(1)
+        if ax is None:
+            fig, ax = plt.subplots(figsize=FIGSIZE)
+
+        ax.set_yscale("log", nonposy='clip')
+        Vup = self.V[:self.mid_idx]
+        Iup = self.I[:self.mid_idx]
+        IupErr = self.I[:self.mid_idx]
+        Vup = Vup[Iup > 0]
+        IUpErr = IupErr[Iup > 0]
+        Iup = Iup[Iup > 0]
+        resistance_up = Vup / Iup
+        resistance_up_err = Vup*IUpErr/resistance_up
+        TelUp = el_temp(resistance_up)
+        TelUpHighErr = el_temp(resistance_up + resistance_up_err)
+        TelUpLowErr = el_temp(resistance_up - resistance_up_err)
+        TelUpErr = np.abs(np.vstack((TelUpLowErr - TelUp, TelUpHighErr - TelUp)))
+        Vdown = self.V[self.mid_idx:]
+        Idown = self.I[self.mid_idx:]
+        IdownErr = self.IErr[self.mid_idx:]
+        Vdown = Vdown[Idown > 0]
+        IdownErr = IdownErr[Idown > 0]
+        Idown = Idown[Idown > 0]
+        resistance_down = Vdown / Idown
+        resistance_down_err = Vdown*IdownErr/resistance_down
+        TelDown = el_temp(resistance_down)
+        TelDownHighErr = el_temp(resistance_down + resistance_down_err)
+        TelDownLowErr = el_temp(resistance_down - resistance_down_err)
+        TelDownErr = np.abs(np.vstack((TelDownLowErr - TelDown, TelDownHighErr - TelDown)))
+        up_valid = np.logical_and(np.logical_and(TelUp!=ERR_VAL, TelUpHighErr!=ERR_VAL), TelUpLowErr!=ERR_VAL)
+        ax.errorbar(Vup[up_valid], TelUp[up_valid], yerr=TelUpErr[:,up_valid], fmt='r.',
+                    label="horizontal increasing v")
+        down_valid = np.logical_and(np.logical_and(TelDown != ERR_VAL, TelDownHighErr != ERR_VAL), TelDownLowErr != ERR_VAL)
+        ax.errorbar(Vdown[down_valid], TelDown[down_valid], yerr=TelDownErr[:,down_valid], fmt='b.',
+                label="horizontal decreasing v")
+
+        if self.vert:
+            if el_temp_vert is None:
+                print("Missing vertical electrons temperature approximation.")
+                exit(1)
+            vertV = np.abs(self.get_running_param("VU") - self.get_running_param("VD"))
+            vertIup = self.vertI[:self.mid_idx]
+            Vup = self.V[:self.mid_idx]
+            vertIupErr = self.vertIErr[:self.mid_idx]
+            Vup = Vup[vertIup > 0]
+            vertIupErr = vertIupErr[vertIup > 0]
+            vertIup = vertIup[vertIup > 0]
+            resistance_up = vertV / vertIup
+            resistance_up_err = vertV*vertIupErr/resistance_up
+            TelUp_vert = el_temp_vert(resistance_up)
+            TelUpHighErr_vert = el_temp(resistance_up + resistance_up_err)
+            TelUpLowErr_vert = el_temp(resistance_up - resistance_up_err)
+            TelUpErr_vert = np.abs(np.vstack((TelUpLowErr_vert - TelUp_vert, TelUpHighErr_vert - TelUp_vert)))
+            vertIdown = self.vertI[self.mid_idx:]
+            Vdown = self.V[self.mid_idx:]
+            vertIDownErr = self.vertIErr[:self.mid_idx]
+            Vdown = Vdown[vertIdown > 0]
+            vertIDownErr = vertIDownErr[vertIdown > 0]
+            vertIdown = vertIdown[vertIdown > 0]
+            resistance_down = vertV / vertIdown
+            resistance_down_err = vertV*vertIDownErr/resistance_down
+            TelDown_vert = el_temp_vert(resistance_down)
+            TelDownHighErr_vert = el_temp(resistance_down + resistance_down_err)
+            TelDownLowErr_vert = el_temp(resistance_down - resistance_down_err)
+            TelDownErr_vert = np.abs(np.vstack((TelDownLowErr_vert - TelDown_vert, TelDownHighErr_vert - TelDown_vert)))
+            up_valid = np.logical_and(np.logical_and(TelUp_vert != ERR_VAL, TelUpHighErr_vert != ERR_VAL),
+                                      TelUpLowErr_vert != ERR_VAL)
+            ax.errorbar(Vup[up_valid], TelUp_vert[up_valid],
+                        yerr=TelUpErr_vert[:,up_valid],
+                        fmt='m.', label="vertical increasing v")
+            down_valid = np.logical_and(np.logical_and(TelDown_vert != ERR_VAL, TelDownHighErr_vert != ERR_VAL),
+                                      TelDownLowErr_vert != ERR_VAL)
+            ax.errorbar(Vdown[down_valid], TelDown_vert[down_valid],
+                    yerr=TelDownErr_vert[:,down_valid],
+                    fmt='g.', label="vertical decreasing v")
+            ax.legend()
+        ax.set_xlabel('$V\\frac{\\left<C\\right>}{e}$')
+        ax.set_ylabel('$k_BT_{el}\\frac{\\left<C\\right>}{e^2}$')
+
+    def plot_resistance(self, ax=None, fig=None):
+        if ax is None:
+            fig, ax = plt.subplots(figsize=FIGSIZE)
         Vup = self.V[:self.mid_idx]
         Iup = self.I[:self.mid_idx]
         Vup = Vup[Iup != 0]
@@ -394,12 +479,11 @@ class SingleResultsProcessor:
         Idown = Idown[Idown != 0]
         resistance_down = Vdown / Idown
 
-        fig = plt.figure(figsize=FIGSIZE)
-        plt.semilogy(Vup, resistance_up, 'r.',label="horizontal resistance increasing v")
-        plt.semilogy(Vdown, resistance_down, 'b.', label="horizontal resistance decreasing v")
+        ax.semilogy(Vup, resistance_up, 'r.',label="horizontal resistance increasing v")
+        ax.semilogy(Vdown, resistance_down, 'b.', label="horizontal resistance decreasing v")
 
         if self.vert:
-            vertV = 0.2
+            vertV = np.abs(self.get_running_param("VU") - self.get_running_param("VD"))
             vertIup = self.vertI[:self.mid_idx]
             Vup = self.V[:self.mid_idx]
             Vup = Vup[vertIup != 0]
@@ -411,17 +495,14 @@ class SingleResultsProcessor:
             vertIdown = vertIdown[vertIdown != 0]
             resistance_down = vertV / vertIdown
 
-            plt.semilogy(Vup, resistance_up, 'm.', label="vertical resistance increasing v")
-            plt.semilogy(Vdown, resistance_down, 'g.', label="vertical resistance dencreasing v")
-            plt.legend()
-        plt.xlabel('Voltage')
-        plt.ylabel('Resistance')
-        if out is not None:
-            plt.savefig(out + "_log_resistance.png")
-        if show:
-            plt.show()
-        else:
-            plt.close(fig)
+            ax.semilogy(Vup, resistance_up, 'm.', label="vertical resistance increasing v")
+            ax.semilogy(Vdown, resistance_down, 'g.', label="vertical resistance dencreasing v")
+            ax.legend()
+        ax.set_xlabel('Voltage')
+        ax.set_ylabel('Resistance')
+
+
+
 
     def plot_jumps_freq(self, by_occupation=False, by_path_occupation=False, ax1=None, fig=None):
         V = self.V[self.V>=0]
@@ -1027,54 +1108,86 @@ class SingleResultsProcessor:
         ax.set_ylabel(Ilabel)
         return ax, fig
 
-    def plot_RT(self, ax, err=True, errorevery=10, fit=True, shift=0, color='green', label=""):
-        V = self.get_running_param("Vmin") * self.calc_param_average("C")*2
-        T = self.T *2
-        I = self.I*4
-        IErr = self.IErr*4
+    def get_electron_temperature_approx(self):
+        if self.T is None:
+            print("No temperature data where loaded")
+            exit(1)
+        V = self.get_running_param("Vmin") * self.calc_param_average("C")
+        I = self.I[self.I > 0]
+        T = self.T[self.I > 0]
+        # IErr = self.IErr[self.I > 0]
+        # IErr[IErr < EPS] = EPS
+        R = V/I
+        if self.vert:
+            vertV = np.abs(self.get_running_param("VU") - self.get_running_param("VD"))
+            vertI = self.vertI[self.vertI > 0]
+            vertR = vertV / vertI
+            return interp1d(R, T, assume_sorted=False, fill_value=ERR_VAL, bounds_error=False),\
+                   interp1d(vertR, T, assume_sorted=False, fill_value=ERR_VAL, bounds_error=False)
+        else:
+            return interp1d(R, T, assume_sorted=False)
+
+    def plot_RT(self, ax=None, err=True, errorevery=10, fit=True, shift=1, color='green', label=""):
+        if self.T is None:
+            print("No temperature data where loaded")
+            exit(1)
+        if ax is None:
+            fig, ax = plt.subplots(figsize=FIGSIZE)
+        def plot_RT_helper(V, T, I, IErr):
+            if err:
+                ax.errorbar(T[I>0], (V/I[I>0]) * shift, color=color, marker='.',linestyle="",
+                             yerr=IErr[I>0]*V/I[I>0], errorevery=errorevery)
+            else:
+                ax.plot(T[I>0], (V/I[I>0])* shift, color=color, marker='.',linestyle="")
+            if fit:
+                def arrhenius(T, a, b):
+                    return a*np.exp(-b/T)
+                def shifted_arrhenius(T, a, b, c):
+                    return a * np.exp(-b / T) + c
+                if I[0] == 0:
+                    fit_param, fit_cov = curve_fit(arrhenius, T, I / V, p0=((I[-1] - I[0]) / V, 0.1),
+                                                   bounds=(0, np.inf), sigma=IErr)
+                    G, T0 = fit_param
+                    G_err, T0_err = np.sqrt(np.diag(fit_cov))
+                    Rinf = 1 / G
+                    Rinf_err = Rinf * G_err
+                    Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
+                    T0,T0_err = significant_figures(T0, T0_err)
+                    ax.text(np.max(T)-0.37, 1.9 * shift * (V / I[-1]),
+                            "$R_{\\infty}/\\left(R_1+R_2\\right) = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
+                                str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
+                    fit_result = arrhenius(T, *fit_param)
+                else:
+                    fit_param, fit_cov = curve_fit(shifted_arrhenius, T, I/V, p0=((I[-1]-I[0])/V, 2,I[3]/V), bounds=(0,np.inf),
+                                                   sigma=IErr)
+                    G, T0, G0 = fit_param
+                    G_err, T0_err, G0_err = np.sqrt(np.diag(fit_cov))
+                    Rinf = 1 / (G + G0)
+                    Rinf_err = Rinf * np.sqrt(G_err ** 2 + G0_err ** 2)
+                    R0 = 1 / G0
+                    R0_err = R0 * G0_err
+                    Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
+                    T0, T0_err = significant_figures(T0, T0_err)
+                    R0, R0_err = significant_figures(R0, R0_err)
+                    ax.text(np.max(T)-0.45,1.9*shift*(V/I[-1]),"$R_{0}/\\left(R_1+R_2\\right) = %s \\pm %s$, $R_{\\infty}/\\left(R_1+R_2\\right)= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
+                    str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
+                    fit_result = shifted_arrhenius(T, *fit_param)
+                ax.plot(T, (1/fit_result) * shift, color=color,label=label)
+            ax.set_ylim(1, np.max(V/I[I>0] *shift)*2000)
+            ax.set_xlim(0, max(ax.get_xlim()[1], np.max(T) + 0.01))
+            return True
+        V = self.get_running_param("Vmin") * self.calc_param_average("C")
+        T = self.T
+        I = self.I
+        IErr = self.IErr
         IErr[IErr < EPS] = EPS
         ax.set_yscale("log", nonposy='clip')
-        if err:
-            ax.errorbar(T[I>0], (V/I[I>0]) * shift, color=color, marker='.',linestyle="",
-                         yerr=IErr[I>0]*V/I[I>0], errorevery=errorevery)
-        else:
-            ax.plot(T[I>0], (V/I[I>0])* shift, color=color, marker='.',linestyle="")
-        if fit:
-            def arrhenius(T, a, b):
-                return a*np.exp(-b/T)
-            def shifted_arrhenius(T, a, b, c):
-                return a * np.exp(-b / T) + c
-            if I[0] == 0:
-                fit_param, fit_cov = curve_fit(arrhenius, T, I / V, p0=((I[-1] - I[0]) / V, 0.1),
-                                               bounds=(0, np.inf), sigma=IErr)
-                G, T0 = fit_param
-                G_err, T0_err = np.sqrt(np.diag(fit_cov))
-                Rinf = 1 / G
-                Rinf_err = Rinf * G_err
-                Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
-                T0,T0_err = significant_figures(T0, T0_err)
-                ax.text(np.max(T)-0.37, 1.9 * shift * (V / I[-1]),
-                        "$R_{\\infty}/\\left(R_1+R_2\\right) = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
-                            str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
-                fit_result = arrhenius(T, *fit_param)
-            else:
-                fit_param, fit_cov = curve_fit(shifted_arrhenius, T, I/V, p0=((I[-1]-I[0])/V, 2,I[3]/V), bounds=(0,np.inf),
-                                               sigma=IErr)
-                G, T0, G0 = fit_param
-                G_err, T0_err, G0_err = np.sqrt(np.diag(fit_cov))
-                Rinf = 1 / (G + G0)
-                Rinf_err = Rinf * np.sqrt(G_err ** 2 + G0_err ** 2)
-                R0 = 1 / G0
-                R0_err = R0 * G0_err
-                Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
-                T0, T0_err = significant_figures(T0, T0_err)
-                R0, R0_err = significant_figures(R0, R0_err)
-                ax.text(np.max(T)-0.45,1.9*shift*(V/I[-1]),"$R_{0}/\\left(R_1+R_2\\right) = %s \\pm %s$, $R_{\\infty}/\\left(R_1+R_2\\right)= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
-                str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
-                fit_result = shifted_arrhenius(T, *fit_param)
-            ax.plot(T, (1/fit_result) * shift, color=color,label=label)
-        ax.set_ylim(1, np.max(V/I[I>0] *shift)*2000)
-        ax.set_xlim(0, max(ax.get_xlim()[1], np.max(T) + 0.01))
+        plot_RT_helper(V, T, I, IErr)
+        if self.vert:
+            V = np.abs(self.get_running_param("VU") - self.get_running_param("VL"))  * self.calc_param_average("C")
+            I = self.vertI
+            IErr = self.vertIErr
+            plot_RT_helper(V, T, I, IErr)
         return V
 
 
@@ -1899,6 +2012,9 @@ def getOptions():
     parser.add_option("-i", "--input", dest="directories", action="append",
                       help="input directory, can give more than one",
                       default=[])
+    parser.add_option("--it-directory", dest="it_directory",
+                      help="directory with results for current vs. temperature. Used to calculate the electron "
+                           "temperature from resistance.", default="")
     parser.add_option("--file", dest="file_names", action="append", default=[],
                       help="List of input file names [default: all files in input directory]")
     parser.add_option("--action", dest="action", help="The processing action, one of: " + str(ACTIONS))
@@ -1923,6 +2039,8 @@ def getOptions():
                            " otherwise by paths current.")
     parser.add_option("--re-analyze", dest="re_analyze", action="store_true", default=False,
                       help="If true performs multigaussian reanalysis result for the IV curve")
+    parser.add_option("--perpendicular", dest="perp", action="store_true", default=False,
+                      help="If true perpendicular current would be used too.")
     parser.add_option("--save-re-analysis", dest="save_re_analysis", action="store_true", default=False,
                       help="If true saves the multigaussian reanalysis result for the IV curve")
     parser.add_option("--window-size", dest="window", type=float, default=0,
@@ -1968,19 +2086,43 @@ if __name__ == "__main__":
         file_names = [options.file_names]
     else:
         if action == "plot_RT":
-            file_names = [[name.replace("_IT.png", "") for name in os.listdir(directory) if "_IT.png" in name] for
-                          directory in directories]
+            file_names = [[name.replace("_IT.png", "") for name in os.listdir(directory) if (("_IT.png" in name) and
+                                                                                            ("vert" not in name))]
+                          for directory in directories]
         else:
-            file_names = [[name.replace("_IV.png","") for name in os.listdir(directory) if "_IV.png" in name] for directory in directories]
+            file_names = [[name.replace("_IV.png","") for name in os.listdir(directory) if (("_IV.png" in name) and
+                                                                                            ("vert" not in name))]
+                          for directory in directories]
     filter = get_filter(options.filter_param, options.filter_val, options.filter_score, options.min_score_val)
     if action == "perpendicular_current":
-        full = True
         for directory, names in zip(directories, file_names):
             for name in names:
-                s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=True)
+                s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=True)
                 if filter(s):
-                    s.plot_resistance(out=os.path.join(directory,name))
+                    s.plot_resistance()
+                    plt.show()
+
+
+    elif action =="perpendicular_electron_temperature":
+        for directory, names in zip(directories, file_names):
+            for name in names:
+                s_iv = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=True)
+                s_it = SingleResultsProcessor(options.it_directory, name, fullOutput=options.full, vertCurrent=True,
+                                              IT=True)
+                if filter(s_iv):
+                    el_temp_approx, el_temp_vert_approx = s_it.get_electron_temperature_approx()
+                    s_iv.plot_electrons_temperature(el_temp=el_temp_approx, el_temp_vert=el_temp_vert_approx)
+                    plt.show()
+
     elif action == "plot_RT":
+        for directory, names in zip(directories, file_names):
+            for name in names:
+                s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=options.perp,
+                                           graph=False, reAnalyze=options.re_analyze, IT=True)
+                if filter(s):
+                    v = s.plot_RT(err=True)
+                    plt.show()
+    elif action == "plot_RT_dingle_island":
         directory = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_IT"
         files = [["array_1_1_cg_1_v_0.1","array_1_1_cg_1_v_0.1_r_disorder","array_1_1_cg_10_v_0.1",
                   "array_1_1_cg_10_v_0.1_r_disorder"],

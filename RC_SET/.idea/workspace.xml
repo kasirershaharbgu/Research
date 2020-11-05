@@ -8,21 +8,10 @@
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/deltaEmax.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/writing.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmin.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/vals.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_array_different_cg.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_2d_array_different_cg.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_CG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_Ch.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_Cv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_Q0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_RG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_Rh.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_Rv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_VG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_temp_n0.npy" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +127,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 2 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o super_conducting_array_different_temperatures -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001.txt --full --current-map --superconducting" />
+      <option name="PARAMETERS" value="python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 5 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o super_conducting_array_different_temperatures -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001.txt --full --current-map --superconducting" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -427,10 +416,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Updating tunneling rates for quasi particles" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604416915429">
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604479571327">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604416915429" />
+    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604479571327" />
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598452692383" />
     <state x="247" y="121" width="1478" height="879" key="DiffContextDialog" timestamp="1604304939896">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -480,18 +469,18 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596370832608" />
-    <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1604322647577">
+    <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1604478550584">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="247" y="121" width="1478" height="879" key="MergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604322647577" />
-    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog" timestamp="1604322647578">
+    <state x="247" y="121" width="1478" height="879" key="MergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604478550584" />
+    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog" timestamp="1604478556014">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604322647578" />
-    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1603893796225">
+    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604478556014" />
+    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1604478566309">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1603893796225" />
+    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604478566309" />
     <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1596971197249">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -517,12 +506,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2012</line>
+          <line>2007</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2017</line>
+          <line>2012</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -552,12 +541,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>988</line>
+          <line>1069</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>414</line>
+          <line>416</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -582,7 +571,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>401</line>
+          <line>485</line>
           <option name="timeStamp" value="485" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -598,7 +587,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1160</line>
+          <line>1273</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -623,32 +612,32 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1369</line>
+          <line>1482</line>
           <option name="timeStamp" value="547" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1396</line>
+          <line>1509</line>
           <option name="timeStamp" value="549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>968</line>
+          <line>1049</line>
           <option name="timeStamp" value="552" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1226</line>
+          <line>1339</line>
           <option name="timeStamp" value="553" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1384</line>
+          <line>1497</line>
           <option name="timeStamp" value="555" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1136</line>
+          <line>1249</line>
           <option name="timeStamp" value="557" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -659,32 +648,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2609</line>
+          <line>2751</line>
           <option name="timeStamp" value="708" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2638</line>
+          <line>2780</line>
           <option name="timeStamp" value="713" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2646</line>
+          <line>2788</line>
           <option name="timeStamp" value="714" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>429</line>
+          <line>510</line>
           <option name="timeStamp" value="721" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>441</line>
-          <option name="timeStamp" value="727" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2798</line>
+          <line>2940</line>
           <option name="timeStamp" value="729" />
         </line-breakpoint>
       </breakpoints>
