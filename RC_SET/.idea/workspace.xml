@@ -7,11 +7,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/deltaEmax.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/cooper_pairs_rate/tunneling_rate_0.001_0.0125/vals.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -326,16 +322,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
-      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>

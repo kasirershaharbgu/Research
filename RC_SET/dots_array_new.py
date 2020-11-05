@@ -1171,21 +1171,21 @@ class Simulator:
             if fullOutput:
                 ns = np.load(baseName + "_ns.npy")
                 if len(ns) > loadLen:
-                    ns = ns[loadLen, :, :]
+                    ns = ns[:loadLen, :, :]
                 Qs = np.load(baseName + "_Qs.npy")
                 if len(Qs) > loadLen:
-                    Qs = Qs[loadLen, :, :]
+                    Qs = Qs[:loadLen, :, :]
                 nsErr = np.load(baseName + "_nsErr.npy")
                 if len(nsErr) > loadLen:
-                    nsErr = nsErr[loadLen, :, :]
+                    nsErr = nsErr[:loadLen, :, :]
                 QsErr = np.load(baseName + "_QsErr.npy")
                 if len(QsErr) > loadLen:
-                    QsErr = QsErr[:, loadLen, :, :]
+                    QsErr = QsErr[:loadLen, :, :]
                 res = res + (ns, Qs,nsErr, QsErr)
             if currentMap:
                 Imaps = np.load(baseName + "_current_map.npy")
                 if len(Imaps) > loadLen:
-                    Imaps = Imaps[:, loadLen, :, :]
+                    Imaps = Imaps[:loadLen, :, :]
                 res = res + (Imaps,)
             return res
         except ValueError:
