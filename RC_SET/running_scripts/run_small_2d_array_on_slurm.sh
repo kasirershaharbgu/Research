@@ -47,7 +47,6 @@ if [ ! -d "$f" ]; then
 fi
 rows=3
 columns=3
-
 cg_avg=4
 
 for run in 8 9

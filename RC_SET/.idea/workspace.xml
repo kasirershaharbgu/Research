@@ -6,7 +6,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updaing tunneling rates for superconducting arrays.">
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/running_scripts/run_RC_SET.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_RC_SET.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/running_scripts/run_RC_SET_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_RC_SET_on_slurm.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/running_scripts/run_small_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_small_2d_array_on_slurm.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -321,16 +324,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
+      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
-      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>
@@ -471,10 +474,10 @@
     </state>
     <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604304989604" />
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598452692383" />
-    <state x="247" y="121" width="1478" height="879" key="DiffContextDialog" timestamp="1604563328809">
+    <state x="150" y="51" width="720" height="879" key="DiffContextDialog" timestamp="1605023368476">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="247" y="121" width="1478" height="879" key="DiffContextDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604563328809" />
+    <state x="150" y="51" width="720" height="879" key="DiffContextDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605023368476" />
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl" timestamp="1604308260438">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -516,10 +519,6 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1825" height="345" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598260905019" />
-    <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog" timestamp="1596370832608">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596370832608" />
     <state x="252" y="117" width="1478" height="879" key="MergeDialog" timestamp="1604308011704">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
