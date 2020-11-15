@@ -148,8 +148,8 @@ class SingleResultsProcessor:
             if i > 0 and len(bins) > 1 and len(bins[0]) > 2 and len(bins[1]) > 2:
                 avg1 = np.average(bins[0])
                 avg2 = np.average(bins[1])
-                # if np.abs(avg1 - self.I[i-1]) < np.abs(avg2 - self.I[i-1]):
-                if len(bins[0]) > len(bins[1]):
+                if np.abs(avg1 - self.I[i-1]) < np.abs(avg2 - self.I[i-1]):
+                # if len(bins[0]) > len(bins[1]):
                     self.I[i] = avg1
                     self.IErr[i] = np.std(bins[0])
                     self.alternativeI.append(avg2)

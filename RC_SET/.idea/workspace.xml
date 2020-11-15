@@ -5,15 +5,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Perpendicular current results.">
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertIErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertIErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertIErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertIErr.npy" afterDir="false" />
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Fixing normalization.">
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -403,7 +396,14 @@
       <option name="project" value="LOCAL" />
       <updated>1605430557403</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Fixing normalization.">
+      <created>1605431002143</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1605431002143</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -439,7 +439,8 @@
     <MESSAGE value="Fixing it calculation so it will match IV one." />
     <MESSAGE value="Fixing typos." />
     <MESSAGE value="Perpendicular current results." />
-    <option name="LAST_COMMIT_MESSAGE" value="Perpendicular current results." />
+    <MESSAGE value="Fixing normalization." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixing normalization." />
   </component>
   <component name="WindowStateProjectService">
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605427780936">
