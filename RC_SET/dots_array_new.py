@@ -1254,8 +1254,8 @@ class Simulator:
             stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
             current = (stepRes1[0] + stepRes2[0])/2
             currentErr = (stepRes1[1] + stepRes2[1])/2
-            vert_current = np.sqrt(stepRes1[2]**2 + stepRes2[2]**2)/2
-            vert_currentErr = np.sqrt(stepRes1[3]**2 + stepRes2[3]**2)/2
+            vert_current = np.sqrt((stepRes1[2]**2 + stepRes2[2]**2)/2)
+            vert_currentErr = np.sqrt((stepRes1[3]**2 + stepRes2[3]**2)/2)
             if fullOutput:
                 ns.append((stepRes1[4] + stepRes2[4])/2)
                 Qs.append((stepRes1[5] + stepRes1[5])/2)
@@ -1311,22 +1311,29 @@ class Simulator:
                     Imaps = list(resumeParams[-1])
         for T in T_vec:
             self.dotArray.setTemperature(T)
+            self.dotArray.changeVext(self.VL, self.VR, self.VU, self.VD)
             # running once to get to steady state
             if not self.constQ:
                 self.getToSteadyState()
             # now we are in steady state calculate current
-            stepRes = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
-            current = stepRes[0]
-            currentErr = stepRes[1]
-            vert_current = stepRes[2]
-            vert_currentErr = stepRes[3]
+            stepRes1 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            self.dotArray.changeVext(self.VL, self.VR, self.VD, self.VU)
+            # running once to get to steady state
+            if not self.constQ:
+                self.getToSteadyState()
+            # now we are in steady state calculate current
+            stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            current = (stepRes1[0] + stepRes2[0]) / 2
+            currentErr = (stepRes1[1] + stepRes2[1]) / 2
+            vert_current = np.sqrt((stepRes1[2] ** 2 + stepRes2[2] ** 2) / 2)
+            vert_currentErr = np.sqrt((stepRes1[3] ** 2 + stepRes2[3] ** 2) / 2)
             if fullOutput:
-                ns.append(stepRes[4])
-                Qs.append(stepRes[5])
-                nsErr.append(stepRes[6])
-                QsErr.append(stepRes[7])
+                ns.append((stepRes1[4] + stepRes2[4]) / 2)
+                Qs.append((stepRes1[5] + stepRes1[5]) / 2)
+                nsErr.append((stepRes1[6] + stepRes2[6]) / 2)
+                QsErr.append((stepRes1[7] + stepRes2[7]) / 2)
             if currentMap:
-                Imaps.append(stepRes[-1])
+                Imaps.append((stepRes1[-1] + stepRes2[-1]))
             I.append(current)
             IErr.append(currentErr)
             vertI.append(vert_current)
@@ -1787,6 +1794,7 @@ def runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh,
         pool = Pool(processes=repeats)
         results = []
         for repeat in range(repeats):
+
             res = pool.apply_async(runSingleSimulation,
                                     (repeat, VL0, VR0, VU0, VD0, vSym, Q0, n0, Vmax, Vstep, prototypeArray, fullOutput,
                                      printState, useGraph, currentMap,basePath, resume, constQ, double_time,
@@ -2387,8 +2395,13 @@ if __name__ == "__main__":
     else:
         rows = options.M
         columns = options.N
-    VR0 = options.VR
-    VL0 = VR0 + options.Vmin
+    vSym = options.vSym
+    if vSym:
+        VR0 = options.VR - options.Vmin/2
+        VL0 = options.VR + options.Vmin/2
+    else:
+        VR0 = options.VR
+        VL0 = VR0 + options.Vmin
     VU0 = options.VU
     VD0 = options.VD
     dist = options.dist
@@ -2402,7 +2415,7 @@ if __name__ == "__main__":
     n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist, False)
     Vmax = options.Vmax
     Vstep = options.vStep
-    vSym = options.vSym
+
     repeats = options.repeats
     savePath = options.output_folder
     fileName = options.fileName
