@@ -5,28 +5,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace">
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Fixing it calculation so it will match IV one.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_IT.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_T.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_vertI.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_vertIErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_vert_IT.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_array_with_perp.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_2d_array_with_perp.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +124,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 5 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0.1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o super_conducting_array_different_temperatures -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001.txt --full --current-map --superconducting" />
+      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 0 --vmax 5.5 --vstep 0.01 --vr 0 --vd -0.1 --vu 0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_5_15_r_std_9_run_4 -o 2d_long_array_bgu_with_perp_point_contact --full --current-map --resume --symmetric-v -i 2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -163,7 +145,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_new.py" />
-      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 0 --vmax 0.01 --vstep 0.001 --vr 0 --vd -5 --vu 5 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 1 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --left-electrode &quot;[0,0,0,0,0]&quot; --right-electrode &quot;[0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_5_15_r_std_9_run_2_vertical -o 2d_long_array_bgu_with_perp_point_contact_IT --full -i 2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_2.txt --calc-it --current-map --symmetric-v --dbg" />
+      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 0 --vmax 10 --vstep 0.01 --vr 0 --vd -0.1 --vu 0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_5_15_r_std_9_run_4 -o 2d_long_array_bgu_with_perp_point_contact --full --current-map --resume --symmetric-v -i 2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -268,7 +250,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="--action threshold_voltage_compare" />
+      <option name="PARAMETERS" value="python3 results_processor.py --action perpendicular_electron_temperature -i 2d_long_array_bgu_with_perp_point_contact --it-directory 2d_long_array_bgu_with_perp_point_contact_it --file array_5_15_r_std_9_run_2" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -355,10 +337,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.results_processor" />
+        <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.ising1d" />
         <item itemvalue="Python.dynamics_simulation" />
-        <item itemvalue="Python.dots_array_new" />
       </list>
     </recent_temporary>
   </component>
@@ -395,7 +377,14 @@
       <option name="project" value="LOCAL" />
       <updated>1603893760961</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fixing it calculation so it will match IV one.">
+      <created>1605429425213</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1605429425213</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -428,13 +417,14 @@
     <MESSAGE value="Updating scrip" />
     <MESSAGE value="Updating result processing script" />
     <MESSAGE value="Updating tunneling rates for quasi particles" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updating tunneling rates for quasi particles" />
+    <MESSAGE value="Fixing it calculation so it will match IV one." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixing it calculation so it will match IV one." />
   </component>
   <component name="WindowStateProjectService">
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605008628140">
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605427780936">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605008628140" />
+    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427780936" />
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598452692383" />
     <state x="247" y="121" width="1478" height="879" key="DiffContextDialog" timestamp="1604304939896">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -444,25 +434,25 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="901" height="266" key="GridCell.Tab.0.bottom" timestamp="1605008651384">
+    <state width="1825" height="212" key="GridCell.Tab.0.bottom" timestamp="1605427806114">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="266" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605008651384" />
+    <state width="1825" height="212" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
     <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="901" height="266" key="GridCell.Tab.0.center" timestamp="1605008651384">
+    <state width="1825" height="212" key="GridCell.Tab.0.center" timestamp="1605427806114">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="266" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605008651384" />
+    <state width="1825" height="212" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
     <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="901" height="266" key="GridCell.Tab.0.left" timestamp="1605008651384">
+    <state width="1825" height="212" key="GridCell.Tab.0.left" timestamp="1605427806114">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="266" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605008651384" />
+    <state width="1825" height="212" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
     <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="901" height="266" key="GridCell.Tab.0.right" timestamp="1605008651384">
+    <state width="1825" height="212" key="GridCell.Tab.0.right" timestamp="1605427806114">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="901" height="266" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605008651384" />
+    <state width="1825" height="212" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
     <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
     <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1598260905019">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -480,10 +470,6 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1825" height="345" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598260905019" />
-    <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog" timestamp="1596370832608">
-      <screen x="72" y="27" width="1848" height="1053" />
-    </state>
-    <state x="579" y="299" width="824" height="515" key="IDE.errors.dialog/72.27.1848.1053@72.27.1848.1053" timestamp="1596370832608" />
     <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1604478550584">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -496,10 +482,10 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604478566309" />
-    <state width="462" height="526" key="XDebugger.FullValuePopup" timestamp="1604572739966">
+    <state width="462" height="526" key="XDebugger.FullValuePopup" timestamp="1605426771512">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="462" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604572739966" />
+    <state width="462" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605426771512" />
     <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1596971197249">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -510,7 +496,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1948</line>
+          <line>1956</line>
           <option name="timeStamp" value="313" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -525,12 +511,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2007</line>
+          <line>2008</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2012</line>
+          <line>2013</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -560,7 +546,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1071</line>
+          <line>1073</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -590,7 +576,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>486</line>
+          <line>487</line>
           <option name="timeStamp" value="485" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -606,18 +592,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1275</line>
+          <line>1277</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1659</line>
+          <line>1666</line>
           <option name="timeStamp" value="520" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1195</line>
-          <option name="timeStamp" value="523" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
@@ -631,68 +612,38 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1491</line>
-          <option name="timeStamp" value="547" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1518</line>
+          <line>1527</line>
           <option name="timeStamp" value="549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1051</line>
+          <line>1053</line>
           <option name="timeStamp" value="552" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1341</line>
+          <line>1343</line>
           <option name="timeStamp" value="553" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1506</line>
-          <option name="timeStamp" value="555" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1251</line>
+          <line>1253</line>
           <option name="timeStamp" value="557" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="VL-VR&gt;0.75" language="Python" />
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1229</line>
+          <line>1230</line>
           <option name="timeStamp" value="562" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2941</line>
+          <line>3130</line>
           <option name="timeStamp" value="708" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2970</line>
-          <option name="timeStamp" value="713" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2978</line>
-          <option name="timeStamp" value="714" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1801</line>
-          <option name="timeStamp" value="730" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1825</line>
-          <option name="timeStamp" value="735" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2368</line>
+          <line>2454</line>
           <option name="timeStamp" value="736" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -702,8 +653,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1752</line>
+          <line>1760</line>
           <option name="timeStamp" value="739" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
+          <line>1805</line>
+          <option name="timeStamp" value="740" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

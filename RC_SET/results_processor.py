@@ -2175,12 +2175,11 @@ if __name__ == "__main__":
                     s.plot_resistance()
                     plt.show()
 
-
     elif action =="perpendicular_electron_temperature":
         for directory, names in zip(directories, file_names):
             for name in names:
                 s_iv = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=True)
-                s_it = SingleResultsProcessor(options.it_directory, name, fullOutput=options.full, vertCurrent=True,
+                s_it = SingleResultsProcessor(options.it_directory, name + "_it", fullOutput=options.full, vertCurrent=True,
                                               IT=True)
                 if filter(s_iv):
                     el_temp_approx, el_temp_vert_approx = s_it.get_electron_temperature_approx()
@@ -2195,7 +2194,7 @@ if __name__ == "__main__":
                 if filter(s):
                     v = s.plot_RT(err=True)
                     plt.show()
-    elif action == "plot_RT_dingle_island":
+    elif action == "plot_RT_single_island":
         directory = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_IT"
         files = [["array_1_1_cg_1_v_0.1","array_1_1_cg_1_v_0.1_r_disorder","array_1_1_cg_10_v_0.1",
                   "array_1_1_cg_10_v_0.1_r_disorder"],
