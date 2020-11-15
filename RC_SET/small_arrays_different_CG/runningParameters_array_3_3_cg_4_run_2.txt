@@ -1,0 +1,90 @@
+-------Running parameters--------
+T = 0.0
+temperature_gradient = 0.0
+gap = 0.0
+M = 3
+N = 3
+VR = 0.0
+Vmin = 0.0
+Vmax = 2.0
+vStep = 0.01
+vSym = True
+repeats = 20
+fileName = array_3_3_cg_4_run_2
+dist = exp
+fullOutput = True
+use_graph = False
+current_map = True
+plot_current_map = False
+plot_binary_current_map = False
+frame_norm = False
+dbg = False
+resume = False
+sc = False
+leaping = False
+constQ = False
+modifyR = False
+double_time = False
+double_loop = False
+calcIT = False
+output_folder = small_arrays_different_CG
+params_path = 
+VG_avg = 0.0
+VG_std = 0.0
+C_avg = 1.0
+C_std = 0.9
+CG_avg = 4.0
+CG_std = 0.0
+R_avg = 1.0
+R_std = 2.0
+custom_rh = ""
+custom_rv = ""
+custom_ch = ""
+custom_cv = ""
+RG_avg = 1000.0
+RG_std = 0.0
+n0_avg = 0.0
+n0_std = 0.0
+Q0_avg = 0.0
+Q0_std = 0.0
+----Array Parameters-----
+Rows: 3
+Columns: 3
+VG: [[0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]
+ [0.]]
+CG: [[4.]
+ [4.]
+ [4.]
+ [4.]
+ [4.]
+ [4.]
+ [4.]
+ [4.]
+ [4.]]
+RG: [[1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]
+ [1000.]]
+Ch: [[0.23309714 0.20287156 1.82853712 0.23250103]
+ [1.31512771 0.35366547 0.17780206 0.67761953]
+ [0.94256164 0.39495456 0.16740759 0.39304844]]
+Cv: [[0.         0.         0.        ]
+ [0.22924894 0.46130638 0.1831976 ]
+ [0.70905042 0.80846047 0.31409668]]
+Rh: [[0.77498141 1.22200542 1.57372626 0.05014157]
+ [0.01172871 0.09414564 0.502532   0.52991732]
+ [0.03687265 0.05700342 0.80476197 0.78219772]]
+Rv: [[2.02519731 0.06923862 0.57250174]
+ [0.90809802 0.25005233 2.03674503]]

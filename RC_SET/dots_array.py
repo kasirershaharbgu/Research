@@ -1201,7 +1201,6 @@ class Simulator:
 
     def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
-        print("Loading %d" % self.index, flush=True)
         if not os.path.isfile(baseName + "_I.npy"):
             return None
         I = np.load(baseName + "_I.npy")
