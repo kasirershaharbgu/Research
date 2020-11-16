@@ -2387,8 +2387,13 @@ if __name__ == "__main__":
     else:
         rows = options.M
         columns = options.N
-    VR0 = options.VR
-    VL0 = VR0 + options.Vmin
+    vSym = options.vSym
+    if vSym:
+        VR0 = options.VR - options.Vmin
+        VL0 = options.VR + options.Vmin
+    else:
+        VR0 = options.VR
+        VL0 = VR0 + options.Vmin
     VU0 = options.VU
     VD0 = options.VD
     dist = options.dist
@@ -2402,7 +2407,6 @@ if __name__ == "__main__":
     n0 = create_random_array(rows, columns, options.n0_avg, options.n0_std, dist, False)
     Vmax = options.Vmax
     Vstep = options.vStep
-    vSym = options.vSym
     repeats = options.repeats
     savePath = options.output_folder
     fileName = options.fileName
