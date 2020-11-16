@@ -5,10 +5,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Prepering IT run for slurm.">
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Fixing symmetric voltage bug for it calculation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -323,16 +321,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dynamics_simulation" />
+      <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.results_processor" />
     </list>
     <recent_temporary>
       <list>
@@ -433,7 +431,14 @@
       <option name="project" value="LOCAL" />
       <updated>1605023411373</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Fixing symmetric voltage bug for it calculation.">
+      <created>1605520054196</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1605520054196</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -473,7 +478,8 @@
     <MESSAGE value="Updaing main script." />
     <MESSAGE value="Updaing tunneling rates for superconducting arrays." />
     <MESSAGE value="Prepering IT run for slurm." />
-    <option name="LAST_COMMIT_MESSAGE" value="Prepering IT run for slurm." />
+    <MESSAGE value="Fixing symmetric voltage bug for it calculation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixing symmetric voltage bug for it calculation." />
   </component>
   <component name="WindowStateProjectService">
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604304989604">
@@ -534,10 +540,10 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="739" y="237" width="504" height="640" key="RollbackChangesDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604308562935" />
-    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1605023419276">
+    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1605520061816">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605023419276" />
+    <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605520061816" />
     <state x="721" y="247" width="539" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1604307988450">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
