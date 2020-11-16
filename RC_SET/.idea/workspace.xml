@@ -6,6 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Fixing normalization.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +69,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.results_processor">
+  <component name="RunManager" selected="Python.dots_array_new">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -143,7 +144,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_new.py" />
-      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 0 --vmax 10 --vstep 0.01 --vr 0 --vd -0.1 --vu 0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_5_15_r_std_9_run_4 -o 2d_long_array_bgu_with_perp_point_contact --full --current-map --resume --symmetric-v -i 2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" />
+      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 5 --vmax 0.1 --vstep 0.001 --vr 0 --vd -0.1 --vu 0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg --full --current-map --dbg --symmetric-v --calc-it -i 2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -334,8 +335,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array_new" />
+        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.ising1d" />
         <item itemvalue="Python.dynamics_simulation" />
@@ -443,10 +444,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Fixing normalization." />
   </component>
   <component name="WindowStateProjectService">
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605427780936">
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605519097042">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427780936" />
+    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519097042" />
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598452692383" />
     <state x="247" y="121" width="1478" height="879" key="DiffContextDialog" timestamp="1604304939896">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -456,25 +457,25 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="1825" height="212" key="GridCell.Tab.0.bottom" timestamp="1605427806114">
+    <state width="1825" height="266" key="GridCell.Tab.0.bottom" timestamp="1605519098262">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="212" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
+    <state width="1825" height="266" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
     <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="212" key="GridCell.Tab.0.center" timestamp="1605427806114">
+    <state width="1825" height="266" key="GridCell.Tab.0.center" timestamp="1605519098262">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="212" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
+    <state width="1825" height="266" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
     <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="212" key="GridCell.Tab.0.left" timestamp="1605427806114">
+    <state width="1825" height="266" key="GridCell.Tab.0.left" timestamp="1605519098262">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="212" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
+    <state width="1825" height="266" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
     <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="212" key="GridCell.Tab.0.right" timestamp="1605427806114">
+    <state width="1825" height="266" key="GridCell.Tab.0.right" timestamp="1605519098262">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="212" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605427806114" />
+    <state width="1825" height="266" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
     <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
     <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1598260905019">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -492,14 +493,18 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state width="1825" height="345" key="GridCell.Tab.1.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598260905019" />
-    <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1604478550584">
+    <state x="247" y="121" width="1478" height="879" key="MergeDialog" timestamp="1605431814561">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="247" y="121" width="1478" height="879" key="MergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604478550584" />
-    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog" timestamp="1604478556014">
+    <state x="247" y="121" width="1478" height="879" key="MergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605431814561" />
+    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog" timestamp="1605431828712">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604478556014" />
+    <state x="627" y="316" width="728" height="482" key="MultipleFileMergeDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605431828712" />
+    <state x="681" y="322" width="600" height="484" key="Vcs.Multiple.Commit.Info.Dialog.Key" timestamp="1605431802344">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="681" y="322" width="600" height="484" key="Vcs.Multiple.Commit.Info.Dialog.Key/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605431802344" />
     <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1604478566309">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -518,7 +523,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1956</line>
+          <line>1944</line>
           <option name="timeStamp" value="313" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -533,12 +538,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2008</line>
+          <line>2007</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2013</line>
+          <line>2012</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -618,21 +623,6 @@
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1666</line>
-          <option name="timeStamp" value="520" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1100</line>
-          <option name="timeStamp" value="527" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>717</line>
-          <option name="timeStamp" value="530" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
           <line>1527</line>
           <option name="timeStamp" value="549" />
@@ -655,12 +645,12 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="VL-VR&gt;0.75" language="Python" />
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1230</line>
+          <line>1229</line>
           <option name="timeStamp" value="562" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>3130</line>
+          <line>3186</line>
           <option name="timeStamp" value="708" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -682,6 +672,11 @@
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
           <line>1805</line>
           <option name="timeStamp" value="740" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dots_array_new.py</url>
+          <line>1337</line>
+          <option name="timeStamp" value="746" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

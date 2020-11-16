@@ -512,7 +512,7 @@ class SingleResultsProcessor:
         mid_idx = np.argmax(V)
         IV_diffV1, IV_diffV2, IV_diff1, IV_diff2, IV_Vjumps1, IV_Vjumps2, IV_freq1, IV_freq2, IV_fou1, IV_fou2 =\
             self.calc_jumps_freq(I, IErr, V=V, mid_idx=np.argmax(V),
-                                 threshold_factor=1, window_size_factor=1, absolute_threshold=0.05)
+                                 threshold_factor=10, window_size_factor=1, absolute_threshold=0.01)
         if ax1 is None:
             fig, ax1 = plt.subplots(figsize=FIGSIZE)
         fig2 = None
@@ -713,7 +713,7 @@ class SingleResultsProcessor:
         diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(I, IErr, V=V, mid_idx=mid_idx,
                                                                                       window_size_factor=1,
                                                                                       threshold_factor=1,
-                                                                                      absolute_threshold=0.05)
+                                                                                      absolute_threshold=0.001)
         self.jumpScores = dict()
         self.jumpScores['jumpSeparationUp'] = (np.average(diffV1), np.std(diffV1), np.std(diffV1)) if diffV1.size > 0 else (0,0,0)
         self.jumpScores['jumpSeparationDown'] = (-np.average(diffV2), -np.std(diffV2), -np.std(diffV2)) if diffV2.size > 0 else (0,0,0)
@@ -1763,7 +1763,7 @@ class MultiResultAnalyzer:
         new_ysErr = []
         while low <= x_max:
             relevant = np.logical_and(x >= low, x <= high)
-            if x[relevant].size > 0:
+            if x[relevant].size > 3:
                 new_xs.append(np.average(x[relevant]))
                 new_ys.append(np.average(y[relevant]))
                 new_ysErr.append(np.std(y[relevant]/len(y[relevant])))
@@ -2243,7 +2243,7 @@ if __name__ == "__main__":
         for directory,names in zip(directories, file_names):
             for name in names:
                 try:
-                    s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, graph=True,
+                    s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, graph=False,
                                                reAnalyze=options.re_analyze)
                     if filter(s):
                         print("Plotting file: " + name + " from directory " + directory)
@@ -2714,41 +2714,97 @@ if __name__ == "__main__":
         else:
             plt.show()
 
-    elif action == 'score_by_cg':
-        directories_list = []
-        for directory, names in zip(directories, file_names):
-            directories_list += [directory] * len(names)
-        names = [name for files in file_names for name in files]
+    elif action == 'score_by_cg_and_c':
+        fig = plt.figure(constrained_layout=False, figsize=FIGSIZE)
+        gs = fig.add_gridspec(nrows=4, ncols=2, left=0.18, right=0.95, wspace=0.2, hspace=0)
+        ax1 = fig.add_subplot(gs[0, 0])
+        ax2 = fig.add_subplot(gs[1, 0])
+        ax3 = fig.add_subplot(gs[2, 0])
+        ax4 = fig.add_subplot(gs[3, 0])
+        # Plotting different CG statistics
+        cg_window=0.1
+        names = [name for name in file_names[0]]
+        directories_list = [directories[0]] * len(names)
         m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,reAnalyze=options.re_analyze,
                                 relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
                                 relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
                                                          "M", "N"],
                                 filter=filter)
-
-        fig, ax1 = plt.subplots()
-        m.plot_results_by_average(["CG"], ["jumpSeparationUp"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='.b', fig=fig, ax=ax1)
-        m.plot_results_by_average(["CG"], ["jumpSeparationDown"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='*b', fig=fig, ax=ax1)
-        ax1.set_xlabel("$\\frac{C_G}{\\left<C\\right>}$")
-        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue')
+        m.plot_results_by_disorder(["C"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^b', fig=fig, ax=ax1)
+        m.plot_results_by_disorder(["C"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vb', fig=fig, ax=ax1)
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue', fontsize=30, rotation=0, labelpad=40)
         ax1.tick_params(axis='y', labelcolor='blue')
-        ax2 = ax1.twinx()
-        m.plot_results_by_average(["CG"], ["jumpHeightUp"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='.r', fig=fig, ax=ax2)
-        m.plot_results_by_average(["CG"], ["jumpHeightDown"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='*r', fig=fig, ax=ax2)
-        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red')
+        m.plot_results_by_disorder(["C"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^r', fig=fig, ax=ax2)
+        m.plot_results_by_disorder(["C"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vr', fig=fig, ax=ax2)
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red', fontsize=30, rotation=0,
+                       labelpad=50)
         ax2.tick_params(axis='y', labelcolor='red')
-        ax3 = ax1.twinx()
-        m.plot_results_by_average(["CG"], ["hysteresisArea"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='om', fig=fig, ax=ax3)
-        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        m.plot_results_by_disorder(["C"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='om', fig=fig, ax=ax3)
+        ax3.set_ylabel("Hysteresis area \n$\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m',
+                       fontsize=30, rotation=0, labelpad=80)
         ax3.tick_params(axis='y', labelcolor='m')
+        m.plot_results_by_disorder(["C"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^g', fig=fig, ax=ax4)
+        m.plot_results_by_disorder(["C"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vg', fig=fig, ax=ax4)
+        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g', fontsize=30, rotation=0, labelpad=40)
+        ax4.tick_params(axis='y', labelcolor='g')
+        ax4.set_xlabel("$\\sigma_C/\\left<C\\right>$")
+        ax1.set_xticklabels([])
+        # ax2.set_yticklabels(["","","0.2","0.3"])
+        ax2.set_xticklabels([])
         ax3.set_xticklabels([])
-        ax3.spines['right'].set_position(('outward', 90))
-        fig.tight_layout()
-        plt.show()
+
+        ax5 = fig.add_subplot(gs[:2, 1])
+        ax6 = fig.add_subplot(gs[2:, 1])
+        # Plotting IV for different CG
+        directory = directories[1]
+        names1 = ["array_10_10_disorder_c_std_0_run_3_cg_10", "array_10_10_disorder_c_std_0_run_3_cg_1"]
+        names2 = ["array_10_10_disorder_c_std_1_run_1_cg_10", "array_10_10_disorder_c_std_1_run_1_cg_1"]
+        cg_vals1 = []
+        cg_vals2 = []
+        shift = 0
+        for name in names1:
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax5, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals1.append(p.calc_param_average("CG")/p.calc_param_average("C"))
+            shift += 0.1
+        shift = 0
+        for name in names2:
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax6, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals2.append(p.calc_param_average("CG") / p.calc_param_average("C"))
+            shift += 0.1
+        ax5.set_xlim(0.7, 2.2)
+        ax6.set_xlim(0.7, 2.2)
+
+
+        ax5.text(1, 0.015, str(cg_vals1[0]), fontsize=30)
+        ax5.text(1, 0.19, str(cg_vals1[1]), fontsize=30)
+        ax6.text(1, 0.015, str(np.round(100*cg_vals2[0])/100), fontsize=30)
+        ax6.text(1, 0.18, str(np.round(100*cg_vals2[1])/100), fontsize=30)
+        ax5.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.7])
+
+        add_text_upper_left_corner(ax1, "a")
+        add_text_upper_left_corner(ax2, "b")
+        add_text_upper_left_corner(ax3, "c")
+        add_text_upper_left_corner(ax4, "d")
+        add_text_upper_left_corner(ax5, "e")
+        add_text_upper_left_corner(ax6, "f")
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_cg.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+
     elif action == 'score_by_c_disorder':
         zero_temp_window = 0.05
         finite_temp_window = 0.1
