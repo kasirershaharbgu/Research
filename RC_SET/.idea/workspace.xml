@@ -5,9 +5,116 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Fixing normalization.">
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Perpendicular current it results.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it.out" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IT.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Imap.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_QErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_nErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertIErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vert_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vert_IT.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it.out" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IT.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Imap.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_QErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_nErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertIErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vert_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vert_IT.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_vertI.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_1_it.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_1_it.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_2_it.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_2_it.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_array_different_cg.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_superconducting_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_2d_superconducting_array.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_Imap.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_dbg.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_10_10_T_0.001.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_10_10_T_0.002.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Imap.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Q.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_QErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_V.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_I.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_IErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_n.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_nErr.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_CG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Ch.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Cv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Q0.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_RG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Rh.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Rv.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_VG.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_n0.npy" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +176,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.dots_array_new">
+  <component name="RunManager" selected="Python.results_processor">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -123,7 +230,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
-      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 0 --vmax 5.5 --vstep 0.01 --vr 0 --vd -0.1 --vu 0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_5_15_r_std_9_run_4 -o 2d_long_array_bgu_with_perp_point_contact --full --current-map --resume --symmetric-v -i 2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" />
+      <option name="PARAMETERS" value="-M 5 -N 5 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name sc_array_5_5_T_0.001_dbg -o dbg -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001.txt --full --current-map --resume --symmetric-v --superconducting --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -144,7 +251,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_new.py" />
-      <option name="PARAMETERS" value="-M 5 -N 15 --vmin 5 --vmax 0.1 --vstep 0.001 --vr 0 --vd -0.1 --vu 0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --up-electrode &quot;[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name dbg -o dbg --full --current-map --dbg --symmetric-v --calc-it -i 2d_long_array_bgu_with_perp_point_contact/runningParameters_array_5_15_r_std_9_run_4.txt" />
+      <option name="PARAMETERS" value="-M 2 -N 3 --vmin 0 --vmax 1 --vstep 0.1 --vr 0 --vd -0.1 --vu 0.1 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --distribution exp --down-electrode &quot;[0,1,0]&quot; --up-electrode &quot;[0,1,0]&quot; --custom-rh &quot;&quot; --custom-rv &quot;&quot; --custom-ch &quot;&quot; --custom-cv &quot;&quot; --file-name array_2_3_dbg -o dbg --full --current-map --symmetric-v --dbg" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -166,27 +273,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array_reduced.py" />
       <option name="PARAMETERS" value="-M 100 -N 100 --vmin 0 --vmax 2 --vstep 0.1 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 1 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0 --distribution exp --file-name dbg_reduced -o dbg dbg --dbg" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="dynamics_simulation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="numerical_exercises" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/University/Second Year Courses/Selected Topics 2/numerical_exercises/dynamics_simulation.py" />
-      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -249,7 +335,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="python3 results_processor.py --action perpendicular_electron_temperature -i 2d_long_array_bgu_with_perp_point_contact --it-directory 2d_long_array_bgu_with_perp_point_contact_it --file array_5_15_r_std_9_run_2" />
+      <option name="PARAMETERS" value="--action plot_small_v_fit_vs_temperature -i $USER_HOME$/University/Research/simulation_results/finite_temperature/same_array_different_temperature/ --file array_10_10_T_0.002" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -271,6 +357,27 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dots_array.py" />
       <option name="PARAMETERS" value="-M 1 -N 10 --vmin 0.0 --vmax 6.0 --vstep 0.1 --tstep 100.0 --repeats 10 --dt 0.01 --file-name all_disorder_N_10 --output-folder one_dimension_array_first_run_dbg --vg-avg 0.0 --vg-std 10.0 --c-avg 1.0 --c-std 1 --cg-avg 1.0 --cg-std 10.0 --r-avg 1.0 --r-std 10.0 --rg-avg 1000.0 --rg-std 100.0 --n-avg 0.0 --n-std 0.0 --q-avg 0.0 --q-std 0.0" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="temp" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="RC_SET" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -322,24 +429,24 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.dynamics_simulation" />
-      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.temp" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.results_processor" />
+        <item itemvalue="Python.temp" />
         <item itemvalue="Python.dots_array" />
+        <item itemvalue="Python.dots_array_new" />
         <item itemvalue="Python.ising1d" />
-        <item itemvalue="Python.dynamics_simulation" />
       </list>
     </recent_temporary>
   </component>
@@ -404,7 +511,14 @@
       <option name="project" value="LOCAL" />
       <updated>1605431002143</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Perpendicular current it results.">
+      <created>1605530562130</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1605530562130</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -441,13 +555,14 @@
     <MESSAGE value="Fixing typos." />
     <MESSAGE value="Perpendicular current results." />
     <MESSAGE value="Fixing normalization." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing normalization." />
+    <MESSAGE value="Perpendicular current it results." />
+    <option name="LAST_COMMIT_MESSAGE" value="Perpendicular current it results." />
   </component>
   <component name="WindowStateProjectService">
-    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605519097042">
+    <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606231726914">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519097042" />
+    <state x="793" y="258" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1606231726914" />
     <state x="793" y="258" width="753" height="684" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1598452692383" />
     <state x="247" y="121" width="1478" height="879" key="DiffContextDialog" timestamp="1604304939896">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -457,25 +572,25 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="694" y="203" width="424" height="491" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1597329223318" />
-    <state width="1825" height="266" key="GridCell.Tab.0.bottom" timestamp="1605519098262">
+    <state width="1825" height="266" key="GridCell.Tab.0.bottom" timestamp="1606231948777">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="266" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
+    <state width="1825" height="266" key="GridCell.Tab.0.bottom/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1606231948777" />
     <state width="1825" height="249" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="266" key="GridCell.Tab.0.center" timestamp="1605519098262">
+    <state width="1825" height="266" key="GridCell.Tab.0.center" timestamp="1606231948777">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="266" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
+    <state width="1825" height="266" key="GridCell.Tab.0.center/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1606231948777" />
     <state width="1825" height="249" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="266" key="GridCell.Tab.0.left" timestamp="1605519098262">
+    <state width="1825" height="266" key="GridCell.Tab.0.left" timestamp="1606231948777">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="266" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
+    <state width="1825" height="266" key="GridCell.Tab.0.left/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1606231948777" />
     <state width="1825" height="249" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
-    <state width="1825" height="266" key="GridCell.Tab.0.right" timestamp="1605519098262">
+    <state width="1825" height="266" key="GridCell.Tab.0.right" timestamp="1606231948777">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="1825" height="266" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605519098262" />
+    <state width="1825" height="266" key="GridCell.Tab.0.right/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1606231948777" />
     <state width="1825" height="249" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1598509549954" />
     <state width="1825" height="345" key="GridCell.Tab.1.bottom" timestamp="1598260905019">
       <screen x="72" y="27" width="1848" height="1053" />
@@ -509,10 +624,14 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="591" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1604478566309" />
-    <state width="462" height="526" key="XDebugger.FullValuePopup" timestamp="1605426771512">
+    <state width="462" height="526" key="XDebugger.FullValuePopup" timestamp="1605700018815">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state width="462" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605426771512" />
+    <state width="462" height="526" key="XDebugger.FullValuePopup/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605700018815" />
+    <state x="532" y="265" width="917" height="583" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1605703355297">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="532" y="265" width="917" height="583" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/72.27.1848.1053/1920.0.1920.1080@72.27.1848.1053" timestamp="1605703355297" />
     <state x="590" y="253" width="811" height="818" key="search.everywhere.popup" timestamp="1596971197249">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -523,7 +642,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1944</line>
+          <line>2071</line>
           <option name="timeStamp" value="313" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -538,12 +657,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2007</line>
+          <line>2013</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>2012</line>
+          <line>2018</line>
           <option name="timeStamp" value="382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -573,17 +692,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1073</line>
+          <line>1151</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>416</line>
+          <line>422</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>123</line>
+          <line>129</line>
           <option name="timeStamp" value="457" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -603,80 +722,106 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>487</line>
+          <line>521</line>
           <option name="timeStamp" value="485" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>906</line>
+          <line>1030</line>
           <option name="timeStamp" value="498" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="fromDot == (-1,0)" language="Python" />
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>780</line>
+          <line>904</line>
           <option name="timeStamp" value="505" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1277</line>
+          <line>1394</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1527</line>
+          <line>1645</line>
           <option name="timeStamp" value="549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1053</line>
+          <line>1131</line>
           <option name="timeStamp" value="552" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1343</line>
-          <option name="timeStamp" value="553" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1253</line>
-          <option name="timeStamp" value="557" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="VL-VR&gt;0.75" language="Python" />
           <url>file://$PROJECT_DIR$/dots_array.py</url>
-          <line>1229</line>
+          <line>1235</line>
           <option name="timeStamp" value="562" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>3186</line>
+          <line>3617</line>
           <option name="timeStamp" value="708" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2454</line>
+          <line>2735</line>
           <option name="timeStamp" value="736" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>548</line>
-          <option name="timeStamp" value="738" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1760</line>
+          <line>1881</line>
           <option name="timeStamp" value="739" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1805</line>
+          <line>1932</line>
           <option name="timeStamp" value="740" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dots_array_new.py</url>
-          <line>1337</line>
+          <line>1461</line>
           <option name="timeStamp" value="746" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>483</line>
+          <option name="timeStamp" value="760" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1754</line>
+          <option name="timeStamp" value="761" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="v == np.max(self.V)" language="Python" />
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1424</line>
+          <option name="timeStamp" value="789" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>3686</line>
+          <option name="timeStamp" value="791" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>872</line>
+          <option name="timeStamp" value="792" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>1386</line>
+          <option name="timeStamp" value="793" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>98</line>
+          <option name="timeStamp" value="795" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>130</line>
+          <option name="timeStamp" value="796" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

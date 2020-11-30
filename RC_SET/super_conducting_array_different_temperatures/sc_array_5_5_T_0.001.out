@@ -1,8 +1,0 @@
-
-python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 4 --vstep 0.01 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 500 --rg-std 0 --repeats 25 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.1 --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name sc_array_5_5_T_0.001 -o super_conducting_array_different_temperatures -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001.txt --full --current-map  --resume --symmetric-v      --superconducting
-
-Loading array parameters
-Rates were calculated
-Superconducting prototype array was created
-Starting parallel run
-Saving results
