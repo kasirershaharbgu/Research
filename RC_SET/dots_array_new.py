@@ -1,26 +1,35 @@
-__author__ = 'shahar'
+__author__ = 'Shahar Kasirer'
 
+# Distributed under GNU GENERAL PUBLIC LICENSE version 2.0, see LICENSE
+
+# Environment imports
 import os
-os.environ["OPENBLAS_NUM_THREADS"] = "5"
+os.environ["OPENBLAS_NUM_THREADS"] = "5"  # Number of threads used for EACH simulation instance.
+from time import sleep
+from multiprocessing import Pool
+from copy import copy
+
+# Mathematical tools
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
+from scipy.integrate import cumtrapz
+from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
+from scipy.interpolate import interp1d
+
+# Graphical tools
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use("Agg")  # To avoid showing plots during a run on server.
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
+from mpl_toolkits.mplot3d import Axes3D
+
+# Parsing tools
 from optparse import OptionParser
 import re as regex
-from time import sleep
-from multiprocessing import Pool
-from scipy.integrate import cumtrapz
-from mpmath import quad, exp, sqrt, fabs, re, inf, ninf
-from scipy.interpolate import interp1d
-from mpl_toolkits.mplot3d import Axes3D
 from ast import literal_eval
-from copy import copy
 
-
+### Constants ###
 EPS = 0.0001
 # Gillespie Constants
 MIN_STEPS = 10
@@ -28,37 +37,58 @@ STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-3
 STEADY_STATE_REP = 100
 INV_DOS = 0.01
-
 # Tau Leaping Constants
 TAU_EPS = 0.03
-# Lyaponuv Constants
+# Graph Constants
 DQ = 0.1
 Q_SHIFT = 10
 GRAD_REP = 100
 INI_LR = 0.001
 
+### Helping Methods ###
 
 def flattenToColumn(a):
+    """
+    Returns the given array, reshaped into a column array.
+    :param a: (N,M) numpy array.
+    :return: (N*M,1) numpy array.
+    """
     return a.reshape((a.size, 1))
 
 def flattenToRow(a):
+    """
+    Returns the given array, reshaped into a row array.
+    :param a: (N,M) numpy array.
+    :return: (1,N*M) numpy array.
+    """
     return a.reshape((1, a.size))
 
-def local_min_func(input):
-    mid = len(input)//2
-    return (input[mid] <= input).all()
-
 def detect_local_minima(arr):
-    # https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
+    # From https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
     """
     Takes an array and detects the troughs using the local minimum filter.
     Returns a boolean mask of the troughs (i.e. 1 when
     the pixel's value is the neighborhood minimum, 0 otherwise)
     """
+    def local_min_func(input):
+        mid = len(input) // 2
+        return (input[mid] <= input).all()
     neighborhood = morphology.generate_binary_structure(len(arr.shape),2)
     return np.where(filters.generic_filter(arr, local_min_func, footprint=neighborhood,
                                            mode='constant', cval=np.min(arr)-1))
+
 def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-3, max_iter=1000000, plot_lc=True):
+    """
+    Performs a gradient descent for a given function to detect the nearest local minima.
+    :param grad: A method that gets an array with the same shape as x0 and calculates the gradient in this point.
+    :param x0: Initial point.
+    :param eps: A point will be considered a local minima if the gradient in this point is smaller than eps.
+    :param lr: Learning rate. At each step x -> x - lr*grad(x)
+    :param max_iter: Maximum iterations
+    :param plot_lc: If true, the learning curve will be plotted (gradient vs. iteration number).
+    :return: x, success_flag. x - Detected local minima (or location in last iteration if max_iteration has been reached)
+     success_flag - True if run terminated successfully.
+    """
     x=x0.flatten()
     curr_grad = grad(x)
     if plot_lc:
@@ -77,14 +107,29 @@ def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-3, max_iter=1000000, plot_l
         plt.show()
     return x, iter < max_iter
 
-# Methods for calculating superconducting related tunneling rates
+## Methods for calculating superconducting related tunneling rates ##
+# see https://doi.org/10.1007/978-1-4757-2166-9_2
 
 def high_impadance_p(x,Ec,T,kappa):
+    """
+    P- function for high impedance.
+    :param x: function input (energy).
+    :param Ec: Electrostatic energy of environment.
+    :param T: Temperature.
+    :param kappa: Carrier charge in units of e.
+    :return: P(x)
+    """
     sigma = 2*(kappa**2)*Ec*T
     mu = kappa**2*Ec
     return exp(-(x-mu)**2/(2*sigma))/sqrt(2*np.pi*sigma)
 
 def fermi_dirac_dist(x,T):
+    """
+    Fermi-dirac distribution function.
+    :param x: Energy.
+    :param T: Temperature (energy units).
+    :return: f(x).
+    """
     exp_arg = x/T
     if exp_arg > 20:
         return 0
@@ -92,42 +137,78 @@ def fermi_dirac_dist(x,T):
         return 1/(1 + exp(x/T))
 
 def qp_density_of_states(x,energy_gap):
+    """
+    Normalized Quasi-particles density of states (BCS)
+    :param x: energy.
+    :param energy_gap: Superconducting gap.
+    :return: Ns(x)/N0(x).
+    """
     arg = x**2-energy_gap**2
-    # if arg < EPS:
-    #     arg = EPS
     return fabs(x) / sqrt(arg)
 
 def cp_tunneling(x, Ec, Ej, T):
+    """
+    Cooper-pairs tunneling rates for high impedance.
+    :param x: tunneling energy differences array (before - after).
+    :param Ec: Electrostatic energy of environment.
+    :param Ej: Josephson energy.
+    :param T: Temperature.
+    :return: Array with same shape as x.
+    """
     res = np.zeros(x.shape)
     for ind, val in enumerate(x):
         res[ind] = (np.pi*Ej)**2 * high_impadance_p(val, Ec, T, 2)
     return res
 
-def qp_integrand(deltaE, Ec, gap, T):
-    def f(x1, x2):
-        return qp_density_of_states(x1, gap)*qp_density_of_states(x2 + deltaE, gap)*fermi_dirac_dist(x1, T)\
-               *(1-fermi_dirac_dist(x2 + deltaE, T))*high_impadance_p(x1 - x2, Ec, T, 1)
-    return f
-
-
-
-def qp_tunneling_single(deltaE, Ec, gap, T):
-
-    part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap-deltaE])
-    part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap-deltaE, inf])
-    part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap-deltaE])
-    part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap-deltaE, inf])
-    return re(part1 + part2 + part3 + part4)
-
 def qp_tunneling(deltaE, Ec, gap, T):
-        res = np.zeros(deltaE.shape)
-        for ind,val in enumerate(deltaE):
-            res[ind] = qp_tunneling_single(val, Ec, gap, T)
-        res[res < 0] = 0
-        return res
+    """
+    Quasi-particles tunneling rates for high impedance.
+    :param x: tunneling energy differences array (before - after).
+    :param Ec: Electrostatic energy of environment.
+    :param gap: Superconducting gap.
+    :param T: Temperature.
+    :return: Array with same shape as x.
+    """
+    def qp_integrand(dE):
+        def f(x1, x2):
+            return qp_density_of_states(x1, gap) * qp_density_of_states(x2, gap) * fermi_dirac_dist(x1, T) \
+                   * (1 - fermi_dirac_dist(x2, T)) * high_impadance_p(x1 - x2 + deltaE, Ec, T, 1)
+        return f
+
+    def qp_tunneling_single(dE):
+        if fabs(deltaE) < 10 * gap:
+            mp.dps = 50
+            part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap])
+            part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap, inf])
+            part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap])
+            part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap, inf])
+            mp.dps = 15
+            return re(part1 + part2 + part3 + part4)
+        elif deltaE > 0:
+            return deltaE - Ec
+        else:
+            return 0
+
+    res = np.zeros(deltaE.shape)
+    for ind,val in enumerate(deltaE):
+        res[ind] = qp_tunneling_single(val)
+    res[res < 0] = 0
+    return res
 
 class TunnelingRateCalculator:
+    """
+    Calculates tunneling rates and saves them for later use (or loads existing rates).
+    """
     def __init__(self, deltaEmin, deltaEmax, deltaEstep, rateFunc, Ec, T, otherParam, dirPath):
+        """
+        :param deltaEmin, deltaEmax, deltaEstep: Rates are calculated for energy differences between given minimum
+         and maximum with the given steps (and interpolated in between).
+        :param rateFunc: Function for calculating tunneling rates, with signature f(deltaE, Ec, otherParameter, T).
+        :param Ec: Electrostatic energy of environment.
+        :param T: Temperature.
+        :param otherParam: Superconducting gap (for quasi-particles) or Josephson energy (for Cooper-pairs).
+        :param dirPath: Path to directory where rates will be saved (or loaded from).
+        """
         self.T = T
         self.otherParam = otherParam
         self.Ec = Ec
@@ -144,38 +225,53 @@ class TunnelingRateCalculator:
         self.set_approx()
 
     def isWriting(self):
+        """
+        Checking of writing "mutex" is occupied
+        """
         return os.path.exists(os.path.join(self.dirName, "writing.txt"))
 
     def getWritingLock(self):
+        """
+        Getting writing "mutex".
+        """
         while self.isWriting():
             sleep(60)
         with open(os.path.join(self.dirName, "writing.txt"), "w") as f:
             f.write("writing")
 
     def freeWritingLock(self):
+        """
+        Freeing writing "mutex".
+        :return:
+        """
         os.remove(os.path.join(self.dirName, "writing.txt"))
 
     def set_results(self):
-        can_load = False
+        """
+        Setting initial state
+        """
+        can_load = False  # are prior results exist.
         deltaEmin = None
         deltaEmax = None
         deltaEstep = None
         if os.path.isdir(self.dirName):
+            # Loading prior results and checking they satisfy required limits.
             self.getWritingLock()
             deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
             deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
             deltaEstep = np.load(os.path.join(self.dirName, "deltaEstep.npy"))
             can_load = deltaEmin <= self.deltaEmin and deltaEmax >= self.deltaEmax and deltaEstep <= self.deltaEstep
         else:
+            # If no results exist, creating directory for future results.
             os.mkdir(self.dirName)
             self.getWritingLock()
-        if can_load:
+        if can_load:  # loading results
             self.deltaEstep = deltaEstep
             self.deltaEmax = deltaEmax
             self.deltaEmin = deltaEmin
             self.deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
             self.vals = np.load(os.path.join(self.dirName, "vals.npy"))
-        else:
+        else:  # calculating results
             self.deltaEvals = np.arange(self.deltaEmin, self.deltaEmax, self.deltaEstep)
             self.vals = self.rateFunc(self.deltaEvals, self.Ec, self.otherParam, self.T)
             self.saveVals()
@@ -183,15 +279,24 @@ class TunnelingRateCalculator:
         return True
 
     def saveVals(self):
+        """
+        Saving calculated rates
+        """
         np.save(os.path.join(self.dirName, "deltaEmin"), self.deltaEmin)
         np.save(os.path.join(self.dirName, "deltaEmax"), self.deltaEmax)
         np.save(os.path.join(self.dirName, "deltaEstep"), self.deltaEstep)
         np.save(os.path.join(self.dirName, "vals"), self.vals)
 
     def set_approx(self):
+        """
+        Setting interpolation for calculated rates.
+        """
         self.approx = interp1d(self.deltaEvals, self.vals, assume_sorted=True)
 
     def increase_high_limit(self):
+        """
+        Calculating rates for higher energy differences than the ones currently exist.
+        """
         print("Increasing high limit")
         new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
         new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
@@ -204,6 +309,9 @@ class TunnelingRateCalculator:
         print("High limit increased, Emax= " + str(self.deltaEmax))
 
     def decrease_low_limit(self):
+        """
+        Calculating rates for lower energy differences than the ones currently exist.
+        """
         print("Decreasing low limit")
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
         new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
@@ -217,6 +325,9 @@ class TunnelingRateCalculator:
 
 
     def update_rates(self):
+        """
+        Updating rates by loading existing results.
+        """
         self.getWritingLock()
         self.deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
         self.deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
@@ -227,6 +338,11 @@ class TunnelingRateCalculator:
         self.freeWritingLock()
 
     def get_tunnling_rates(self, deltaE):
+        """
+        Returns tunneling rates for the given energy differences (before - after).
+        :param deltaE: 1D numpy array.
+        :return: Numpy array with same size as deltaE.
+        """
         if self.deltaEmin - np.min(deltaE) >= -self.deltaEstep or self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
             self.update_rates()
         while self.deltaEmin - np.min(deltaE) >= -self.deltaEstep:
@@ -240,12 +356,13 @@ class TunnelingRateCalculator:
         return self.approx(deltaE)
 
     def plot_rate(self):
+        """
+        Plotting the calculated rates (for dbg).
+        :return:
+        """
         fig = plt.figure()
         plt.plot(self.deltaEvals, self.vals, '.')
         return fig
-
-class NoElectronsOnDot(RuntimeError):
-    pass
 
 class DotArray:
     """
@@ -641,11 +758,18 @@ class DotArray:
         return self.rates
 
     def getCurrentFromRates(self):
-        rightCurrent = np.sum(self.rates[:self.variableRightWorkLen]) -\
-                      np.sum(self.rates[self.variableRightWorkLen:2*self.variableRightWorkLen])
-        downCurrent = np.sum(self.rates[2*self.variableRightWorkLen:(2*self.variableRightWorkLen + self.variableDownWorkLen)]) -\
-                      np.sum(self.rates[(2*self.variableRightWorkLen + self.variableDownWorkLen):])
-        return rightCurrent/(self.columns+1), downCurrent/(self.rows+1)
+        rightCurrent = np.sum(self.rates[0:self.variableRightWorkLen:self.columns+1] +\
+                              self.rates[self.columns:self.variableRightWorkLen:self.columns+1]) -\
+                      np.sum(self.rates[self.variableRightWorkLen:2*self.variableRightWorkLen:self.columns+1] +\
+                             self.rates[self.variableRightWorkLen + self.columns:
+                                        2*self.variableRightWorkLen:self.columns+1])
+        downCurrent = np.sum(self.rates[2*self.variableRightWorkLen:2*self.variableRightWorkLen + self.columns] +\
+                             self.rates[2*self.variableRightWorkLen + self.variableDownWorkLen - self.columns:
+                                        2*self.variableRightWorkLen + self.variableDownWorkLen]) -\
+                      np.sum(self.rates[2*self.variableRightWorkLen + self.variableDownWorkLen:
+                                        2*self.variableRightWorkLen + self.variableDownWorkLen + self.columns]+\
+                             self.rates[2*self.variableRightWorkLen + 2*self.variableDownWorkLen - self.columns:])
+        return rightCurrent/2, downCurrent/2
 
     def updateWorkForConstQ(self, fromDot, toDot):
         row1 = fromDot[0]*self.columns + fromDot[1] if 0 <= fromDot[1] < self.columns else None
@@ -1251,7 +1375,7 @@ class Simulator:
             if not self.constQ:
                 self.getToSteadyState()
             # now we are in steady state calculate current
-            stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=False)
             current = (stepRes1[0] + stepRes2[0])/2
             currentErr = (stepRes1[1] + stepRes2[1])/2
             vert_current = np.sqrt((stepRes1[2]**2 + stepRes2[2]**2)/2)
@@ -1262,7 +1386,7 @@ class Simulator:
                 nsErr.append((stepRes1[6] + stepRes2[6])/2)
                 QsErr.append((stepRes1[7] + stepRes2[7])/2)
             if currentMap:
-                Imaps.append((stepRes1[-1] + stepRes2[-1]))
+                Imaps.append(stepRes1[-1])
             I.append(current)
             IErr.append(currentErr)
             vertI.append(vert_current)
@@ -1322,7 +1446,7 @@ class Simulator:
             if not self.constQ:
                 self.getToSteadyState()
             # now we are in steady state calculate current
-            stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap)
+            stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=False)
             current = (stepRes1[0] + stepRes2[0]) / 2
             currentErr = (stepRes1[1] + stepRes2[1]) / 2
             vert_current = np.sqrt((stepRes1[2] ** 2 + stepRes2[2] ** 2) / 2)
@@ -1333,7 +1457,7 @@ class Simulator:
                 nsErr.append((stepRes1[6] + stepRes2[6]) / 2)
                 QsErr.append((stepRes1[7] + stepRes2[7]) / 2)
             if currentMap:
-                Imaps.append((stepRes1[-1] + stepRes2[-1]))
+                Imaps.append(stepRes1[-1])
             I.append(current)
             IErr.append(currentErr)
             vertI.append(vert_current)
@@ -1727,7 +1851,10 @@ def runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh,
     if plotCurrentMaps or plotBinaryCurrentMaps:
         print("Plotting Current Maps")
         avgImaps = np.load(basePath + "_Imap.npy")
-        V = np.load(basePath + "_V.npy")
+        if calcIT:
+            V = np.load(basePath + "_T.npy")
+        else:
+            V = np.load(basePath + "_V.npy")
         n=None
         if fullOutput:
             n = np.load(basePath + "_n.npy")
@@ -2003,7 +2130,7 @@ def saveCurrentMaps(Imaps, V, path, full=False, n=None, binary=False, frame_norm
     if full:
         nmax = 1 if frame_norm else np.max(n)
         nmin = -1 if frame_norm else np.min(n)
-        im2 = ax.imshow(np.zeros(((M // 2) * 3, N * 3)),
+        im2 = ax.imshow(np.zeros(((M // 2) * 3 + 2, N * 3)),
                         vmin=nmin, vmax=nmax, animated=True, cmap='RdBu',
                         aspect='equal')
         cb2 = plt.colorbar(im2, shrink=0.25)
@@ -2029,8 +2156,8 @@ def plotCurrentMaps(im, text, M, N, full=False, im2=None, frame_norm=False, calc
     updating the plot to current currents map
     :return: image for animation
     '''
-    J = np.zeros(((M//2)*3+1,N*3))
-    horzRows = np.arange(2,(M//2)*3+1,3)
+    J = np.zeros(((M//2)*3+2,N*3))
+    horzRows = np.arange(2,(M//2)*3+2,3)
     horzCols = np.repeat(np.arange(0,3*N,3),2)
     horzCols[1::2] += 1
     vertRows = np.repeat(np.arange(0, (M//2)*3+1, 3),2)

@@ -1,23 +1,29 @@
-__author__ = 'shahar'
+__author__ = 'Shahar_Kasirer'
 
+# Environment imports
 import os
-os.environ["OPENBLAS_NUM_THREADS"] = "5"
+os.environ["OPENBLAS_NUM_THREADS"] = "5"  # Number of threads used for EACH simulation instance.
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
+from scipy.integrate import cumtrapz
+from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
+from scipy.interpolate import interp1d
+
+
 import matplotlib
-# matplotlib.use("Agg")
+matplotlib.use("Agg")  # To avoid showing plots during a run on server.
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
+from mpl_toolkits.mplot3d import Axes3D
 #from mayavi import mlab
+
 from optparse import OptionParser
 import re as regex
 from time import sleep
 from multiprocessing import Pool
-from scipy.integrate import cumtrapz
-from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
-from scipy.interpolate import interp1d
-from mpl_toolkits.mplot3d import Axes3D
+
+
 from ast import literal_eval
 from copy import copy
 
@@ -1925,9 +1931,9 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
-    for index in range(repeats):
-        removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
-    removeRandomParams(basePath)
+    # for index in range(repeats):
+    #     removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
+    # removeRandomParams(basePath)
     return params
 
 def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=False):
