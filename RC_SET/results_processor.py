@@ -23,6 +23,7 @@ from scipy.interpolate import interp1d
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
+from scipy.stats import moment
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
@@ -429,7 +430,7 @@ class SingleResultsProcessor:
             fig, ax = plt.subplots(figsize=FIGSIZE)
         def plot_el_temp_helper(resistance_V, plot_V, I, IErr, el_temp, label, fmt_up, fmt_down):
             Iup = I[:self.mid_idx]
-            IupErr = I[:self.mid_idx]
+            IupErr = IErr[:self.mid_idx]
             valid_up = Iup > EPS
             IupErr[~valid_up] = 0
             Iup[~valid_up] = 0
@@ -1430,7 +1431,7 @@ class SingleResultsProcessor:
                     path_dict[path_tup] = [[],[]]
                 path_dict[path_tup][0].append(v)
                 path_dict[path_tup][1].append(np.abs(current))
-        return self.filter_paths(path_dict, 5)
+        return self.filter_paths(path_dict, 10)
 
     def filter_paths(self, path_dict, percentage_threshold):
         currents = []
@@ -1936,32 +1937,48 @@ class MultiResultAnalyzer:
                 CG = self.averages["CG"][idx] / self.averages["C"][idx]
                 c_disorder = self.disorders["C"][idx]/self.averages["C"][idx]
                 r_disorder = self.disorders["R"][idx]/self.averages["R"][idx]
-                if CG > 10 or r_disorder > 1.1 or c_disorder > 1 or r_disorder < 0.5:
+                if CG > 10 or CG < 5 or r_disorder > 1.1 or c_disorder > 1 or r_disorder < 0.5:
                     continue
                 if N not in res:
                     res[N] = {SCORE_VAL:[], "CG":[]}
                 res[N][SCORE_VAL].append(self.scores[score][SCORE_VAL][idx])
                 res[N]["CG"].append(CG)
         normalized_avareges = []
+        normalized_avareges_err = []
         normalized_std = []
+        normalized_std_err = []
         Ns = np.array(sorted(res.keys()))
+        valid_Ns = []
         for N in Ns:
             thresholds = np.array(res[N][SCORE_VAL])
-            print("For N=%d there are %d results." %(N, thresholds.size))
+            n = thresholds.size
+            if n < 3:
+                continue
+            print("For N=%d there are %d results." %(N, n))
+            valid_Ns.append(N)
             CG = np.array(res[N]["CG"])
             normalized_avareges.append(np.average(thresholds*CG)/N)
+            normalized_avareges_err.append(np.std(thresholds*CG/(N*n)))
             normalized_std.append(np.std(thresholds)/np.average(thresholds))
+            normalized_std_err.append(np.sqrt(((moment(thresholds, 4) - ((n-3)/(n-1))*np.var(thresholds)**2)/n)/
+                                      (4*np.var(thresholds)*np.average(thresholds)**2) +
+                                              np.var(thresholds)**2/np.average(thresholds)**4))
+        valid_Ns = np.array(valid_Ns)
         normalized_avareges = np.array(normalized_avareges)
+        normalized_avareges_err = np.array(normalized_avareges_err)
         normalized_std = np.array(normalized_std)
+        normalized_std_err = np.array(normalized_std_err)
         avg_color = 'magenta'
         std_color = 'green'
-        ax.plot(Ns, normalized_avareges, marker=avg_marker, color=avg_color, linestyle='', ms=30)
+        ax.errorbar(valid_Ns, normalized_avareges, yerr=normalized_avareges_err,
+                    marker=avg_marker, color=avg_color, linestyle='', ms=30)
         ax.set_xlabel("$N$")
         ax.set_ylabel("$\\left<V^{th}\\right>\\frac{C_G}{eN}$", color=avg_color)
         ax.tick_params(axis='y', labelcolor=avg_color)
         if ax2 is None:
             ax2 = ax.twinx()
-        ax2.plot(Ns, normalized_std, marker=std_marker, color=std_color, linestyle='', ms=30)
+        ax2.errorbar(valid_Ns, normalized_std, yerr=normalized_std_err,
+                     marker=std_marker, color=std_color, linestyle='', ms=30)
         ax2.set_ylabel("$\\frac{\\sigma_{V^{th}}}{\\left<V^{th}\\right>}$", color=std_color)
         ax2.tick_params(axis='y', labelcolor=std_color)
         if fit:
@@ -1973,9 +1990,11 @@ class MultiResultAnalyzer:
                 return a/x + b
             avg_func = MW_func if dimensions ==2 else constfunc
             std_func = MW_func if dimensions ==2 else one_over
-            params_avg, cov_avg = curve_fit(f=avg_func, xdata=Ns, ydata=normalized_avareges,
-                                            p0=[-1, 0], bounds=(-np.inf, np.inf))
-            params_std, cov_std = curve_fit(f=std_func, xdata=Ns, ydata=normalized_std,
+            params_avg, cov_avg = curve_fit(f=avg_func, xdata=valid_Ns, ydata=normalized_avareges,
+                                            p0=[-1, 0], bounds=(-np.inf, np.inf),
+                                            sigma=normalized_avareges_err)
+            params_std, cov_std = curve_fit(f=std_func, xdata=valid_Ns, ydata=normalized_std,
+                                            sigma=normalized_std_err,
                                             p0=[-1, 0], bounds=(-np.inf, np.inf))
             print("Average fit params: alpha=%f +- %f, c=%f +- %f" %(params_avg[0], np.sqrt(cov_avg[0,0]),
                                                                      params_avg[1], cov_avg[1, 1]))
@@ -3665,8 +3684,11 @@ if __name__ == "__main__":
                                   ax=ax5, fmt='r^')
         m.plot_score_by_parameter("smallVPowerDown", ["T"], runningParam=True, average_results=options.average, fig=fig,
                                   ax=ax5, fmt='bv')
+        xs = np.linspace(0,0.1,1000)
+        ys = (5/3)*np.ones(xs.shape)
+        ax5.plot(xs,ys,color="orange",linestyle='dotted')
         ax5.set_xlabel("$k_B T \\frac{\\left<C\\right>}{e^2}$")
-        ax5.set_ylabel("Power low exponent")
+        ax5.set_ylabel("Power-law exponent")
         add_text_upper_left_corner(ax5, "c")
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'threshold_voltage_power_law.png'), bbox_inches='tight')

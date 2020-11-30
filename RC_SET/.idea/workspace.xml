@@ -7,114 +7,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Perpendicular current it results.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_1_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_2_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_3_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact/array_5_15_r_std_9_run_4_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it.out" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_IT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Imap.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_QErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_full_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_nErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vertIErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vert_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_1_it_vert_IT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it.out" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_IT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Imap.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_Q.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_QErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_full_IErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_n.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_nErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertIErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vertIErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vert_IT.png" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_2_it_vert_IT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_vertI.npy" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/array_5_15_r_std_9_run_3_it_vertI.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_1_it.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_1_it.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_2_it.txt" beforeDir="false" afterPath="$PROJECT_DIR$/2d_long_array_bgu_with_perp_point_contact_it/runningParameters_array_5_15_r_std_9_run_2_it.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/deltaEmax.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" beforeDir="false" afterPath="$PROJECT_DIR$/quasi_particles_rate/tunneling_rate_0.001_0.1/vals.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_array_different_cg.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_superconducting_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_2d_superconducting_array.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_Imap.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/dbg_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_dbg.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_10_10_T_0.001.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_10_10_T_0.002.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.002_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_IV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Imap.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_Q.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_QErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_I.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_full_IErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_n.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_nErr.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_CG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Ch.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Cv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Q0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_RG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Rh.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_Rv.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_VG.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_temp_n0.npy" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -429,16 +322,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.thermalArray" />
-      <item itemvalue="Python.toy model" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dots_array_reduced" />
       <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.temp" />
+      <item itemvalue="Python.thermalArray" />
+      <item itemvalue="Python.toy model" />
     </list>
     <recent_temporary>
       <list>
@@ -692,7 +585,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1151</line>
+          <line>1152</line>
           <option name="timeStamp" value="442" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -722,7 +615,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>521</line>
+          <line>522</line>
           <option name="timeStamp" value="485" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -738,17 +631,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1394</line>
+          <line>1395</line>
           <option name="timeStamp" value="517" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1645</line>
+          <line>1646</line>
           <option name="timeStamp" value="549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1131</line>
+          <line>1132</line>
           <option name="timeStamp" value="552" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -759,17 +652,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>3617</line>
+          <line>3636</line>
           <option name="timeStamp" value="708" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>2735</line>
+          <line>2754</line>
           <option name="timeStamp" value="736" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1881</line>
+          <line>1882</line>
           <option name="timeStamp" value="739" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -784,44 +677,49 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>483</line>
+          <line>484</line>
           <option name="timeStamp" value="760" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1754</line>
+          <line>1755</line>
           <option name="timeStamp" value="761" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="v == np.max(self.V)" language="Python" />
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1424</line>
+          <line>1425</line>
           <option name="timeStamp" value="789" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>3686</line>
+          <line>3708</line>
           <option name="timeStamp" value="791" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>872</line>
+          <line>873</line>
           <option name="timeStamp" value="792" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>1386</line>
+          <line>1387</line>
           <option name="timeStamp" value="793" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>98</line>
+          <line>99</line>
           <option name="timeStamp" value="795" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/results_processor.py</url>
-          <line>130</line>
+          <line>131</line>
           <option name="timeStamp" value="796" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/results_processor.py</url>
+          <line>450</line>
+          <option name="timeStamp" value="797" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
