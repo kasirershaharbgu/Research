@@ -3015,12 +3015,12 @@ if __name__ == "__main__":
             plt.show()
 
     elif action == 'score_by_cg':
-        fig = plt.figure(constrained_layout=False, figsize=FIGSIZE)
-        gs = fig.add_gridspec(nrows=4, ncols=2, left=0.18, right=0.95, wspace=0.2, hspace=0)
-        ax1 = fig.add_subplot(gs[0, 0])
-        ax2 = fig.add_subplot(gs[1, 0])
-        ax3 = fig.add_subplot(gs[2, 0])
-        ax4 = fig.add_subplot(gs[3, 0])
+        fig, axes = plt.subplots(4, 1, figsize=FIGSIZE)
+        plt.subplots_adjust(hspace=0)
+        ax1 = axes[0]
+        ax2 = axes[1]
+        ax3 = axes[2]
+        ax4 = axes[3]
         # Plotting different CG statistics
         cg_window=1
         names = [name for name in file_names[0]]
@@ -3059,44 +3059,10 @@ if __name__ == "__main__":
         ax2.set_xticklabels([])
         ax3.set_xticklabels([])
 
-        ax5 = fig.add_subplot(gs[:2, 1])
-        ax6 = fig.add_subplot(gs[2:, 1])
-        # Plotting IV for different CG
-        directory = directories[1]
-        names1 = ["array_10_10_disorder_c_std_0_run_3_cg_10", "array_10_10_disorder_c_std_0_run_3_cg_1"]
-        names2 = ["array_10_10_disorder_c_std_1_run_1_cg_10", "array_10_10_disorder_c_std_1_run_1_cg_1"]
-        cg_vals1 = []
-        cg_vals2 = []
-        shift = 0
-        for name in names1:
-            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
-            p.plot_IV(ax5, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
-                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
-            cg_vals1.append(p.calc_param_average("CG")/p.calc_param_average("C"))
-            shift += 0.1
-        shift = 0
-        for name in names2:
-            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
-            p.plot_IV(ax6, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
-                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
-            cg_vals2.append(p.calc_param_average("CG") / p.calc_param_average("C"))
-            shift += 0.1
-        ax5.set_xlim(0.7, 2.2)
-        ax6.set_xlim(0.7, 2.2)
-
-
-        ax5.text(1, 0.015, str(cg_vals1[0]), fontsize=30)
-        ax5.text(1, 0.19, str(cg_vals1[1]), fontsize=30)
-        ax6.text(1, 0.015, str(np.round(100*cg_vals2[0])/100), fontsize=30)
-        ax6.text(1, 0.18, str(np.round(100*cg_vals2[1])/100), fontsize=30)
-        ax5.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.7])
-
         add_text_upper_left_corner(ax1, "a")
         add_text_upper_left_corner(ax2, "b")
         add_text_upper_left_corner(ax3, "c")
         add_text_upper_left_corner(ax4, "d")
-        add_text_upper_left_corner(ax5, "e")
-        add_text_upper_left_corner(ax6, "f")
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'hysteresis_and_jumps_by_cg.png'), bbox_inches='tight')
             plt.close(fig)
