@@ -1838,7 +1838,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                 nsErr.append(nErr)
                 QsErr.append(QErr)
             if currentMap:
-                Imaps.append(result[-2])
+                Imap = result[-2]
+                Imaps.append(Imap)
             Is.append(I)
             IsErr.append(IErr)
         V = result[2]
