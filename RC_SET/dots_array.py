@@ -12,7 +12,7 @@ from scipy.interpolate import interp1d
 
 
 import matplotlib
-matplotlib.use("Agg")  # To avoid showing plots during a run on server.
+#matplotlib.use("Agg")  # To avoid showing plots during a run on server.
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
@@ -160,7 +160,6 @@ class TunnelingRateCalculator:
         self.set_results()
         self.set_approx()
         self.plot_rate()
-        plt.show()
 
     def isWriting(self):
         return os.path.exists(os.path.join(self.dirName, "writing.txt"))
@@ -273,9 +272,7 @@ class TunnelingRateCalculator:
             self.freeWritingLock()
 
     def plot_rate(self):
-        fig = plt.figure()
         plt.plot(self.deltaEvals, self.vals, '.')
-        return fig
 
 class NoElectronsOnDot(RuntimeError):
     pass
@@ -826,6 +823,7 @@ class JJArray(DotArray):
                                                           "quasi_particles_rate")
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
+        plt.show()
         print("Rates were calculated")
         if tauLeaping:
             self.right_cp = np.zeros((self.rows, self.columns + 1))
