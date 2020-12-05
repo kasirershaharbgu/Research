@@ -5,4 +5,4 @@ Loading parameters from file bgu_it/runningParameters_array_10_10_disorder_c_std
 Loading array parameters
 Normal prototype array was created
 Starting parallel run
-0.007,0.008,0.009,0.010,0.011,0.012,
+0.007,0.008,0.009,0.010,0.011,0.012,0.013,slurmstepd: error: *** JOB 1433358 ON node010 CANCELLED AT 2020-12-04T20:58:04 DUE TO TIME LIMIT ***
