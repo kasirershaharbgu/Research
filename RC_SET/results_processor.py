@@ -1241,6 +1241,7 @@ class SingleResultsProcessor:
         if ax is None:
             fig, ax = plt.subplots(figsize=FIGSIZE)
         def plot_RT_helper(V, T, I, IErr, label="", fit_label="", color=""):
+            I[I<0] = 0
             R = V / I[I > EPS]
             RErr = (IErr[I > EPS] * R) / I[I > EPS]
             if err:
@@ -1253,7 +1254,7 @@ class SingleResultsProcessor:
                     return a*np.exp(-b/T)
                 def shifted_arrhenius(T, a, b, c):
                     return a * np.exp(-b / T) + c
-                if I[0] == 0:
+                if I[0] < EPS:
                     fit_param, fit_cov = curve_fit(arrhenius, T, I/V, p0=(I[-1] / V, 0.1),
                                                    bounds=(0, np.inf), sigma=IErr/V)
                     G, T0 = fit_param
@@ -1262,7 +1263,7 @@ class SingleResultsProcessor:
                     Rinf_err = (Rinf * G_err) / G
                     Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                     T0,T0_err = significant_figures(T0, T0_err)
-                    ax.text(np.max(T)-0.37, 1.9 * shift * R[-1],
+                    ax.text(np.min(T) + 0.04, np.min(R)*shift*10,
                             "$R_{\\infty}/\\left(R_1+R_2\\right) = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
                                 str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                     fit_result = arrhenius(T, *fit_param)
@@ -1278,8 +1279,9 @@ class SingleResultsProcessor:
                     Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                     T0, T0_err = significant_figures(T0, T0_err)
                     R0, R0_err = significant_figures(R0, R0_err)
-                    ax.text(np.max(T)-0.47,1.9*shift*(V/I[-1]),"$R_{0}/\\left(R_1+R_2\\right) = %s \\pm %s$, $R_{\\infty}/\\left(R_1+R_2\\right)= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
-                    str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
+                    ax.text(np.min(T) + 0.013, np.min(R)*shift*4,
+                            "$R_{0}/\\left(R_1+R_2\\right) = %s \\pm %s$, $R_{\\infty}/\\left(R_1+R_2\\right)= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
+                          str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                     fit_result = shifted_arrhenius(T, *fit_param)
                 ax.plot(T, (1/fit_result) * shift, color=color,label=fit_label)
             # ax.set_ylim(1, np.max(R *shift))
@@ -2535,6 +2537,53 @@ if __name__ == "__main__":
         ax[2].text(0.001, 1e9, "c", fontsize=30)
         if options.output_folder:
             plt.savefig(os.path.join(options.output_folder,'single_island_RT.png'), bbox_inches='tight', pad_inches=0.2)
+            plt.close(fig)
+        else:
+            plt.show()
+    elif action == "plot_RT_arrays":
+        directory = directories[0]
+        files = [["array_10_10_it_v_0.2_cg_%d"%i for i in [1, 5, 10]],
+                 ["array_10_10_it_v_0.6_cg_%d"%i for i in [1, 5, 10]],
+                 ["array_10_10_it_v_0.8_cg_%d"%i for i in [1, 5, 10]]]
+        fig, ax = plt.subplots(3, 1, figsize=FIGSIZE)
+        shift = 1
+        shift_factor = [1000, 50, 50]
+        labels = ["$\\frac{C_G}{\\left<C\\right>} = 0.5$", "$\\frac{C_G}{\\left<C\\right>} = 2.5$",
+                  "$\\frac{C_G}{\\left<C\\right>} = 5$"]
+        colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, 3))
+        for index in range(3):
+            for i, name in enumerate(files[index]):
+                s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=False, graph=False,
+                                           reAnalyze=options.re_analyze, IT=True, single=True)
+                if filter(s):
+                    v = s.plot_RT(ax[index], shift=shift, err=True, color=colors[i])
+                    shift *= shift_factor[index]
+                ax[index].set_title("$V\\frac{\\left<C\\right>}{e} = %1.1f$" % v, position=(0.7, 0.75))
+                ax[index].set_xlabel("$T\\frac{\\left<C\\right>}{e^2}$")
+                ax[index].set_ylabel("$\\frac{R_{tot}}{\\left<R\\right>}$")
+            index += 1
+            shift = 1
+        ax[0].set_xlabel('')
+        ax[0].set_xticks([])
+        ax[0].set_xlim(0, 0.1)
+        ax[0].set_ylim(1, 1e13)
+        ax[1].set_xlabel('')
+        ax[1].set_xticks([])
+        ax[1].set_xlim(0, 0.1)
+        ax[1].set_ylim(1, 5e7)
+        ax[2].set_xlabel('')
+        ax[2].set_xticks([])
+        ax[2].set_ylim(1, 1e7)
+        ax[2].set_xlim(0, 0.1)
+        plt.subplots_adjust(hspace=0)
+        ax[0].legend(labels, loc='upper center', bbox_to_anchor=(0.5, 1.4), ncol=3, fancybox=True, shadow=True)
+        add_text_upper_left_corner(ax[0], "a", shift=-6e12)
+        add_text_upper_left_corner(ax[1], "b", shift=-3e7)
+        add_text_upper_left_corner(ax[2], "c", shift=-5e6)
+
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, 'array_RT.png'), bbox_inches='tight',
+                        pad_inches=0.1)
             plt.close(fig)
         else:
             plt.show()

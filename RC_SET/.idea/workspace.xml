@@ -5,7 +5,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="it results" />
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="it results">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -66,7 +69,7 @@
       <recent name="C:\Users\shahar\Research\" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.dots_array">
+  <component name="RunManager" selected="Python.results_processor">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -225,7 +228,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="--action plot_small_v_fit_vs_temperature -i $USER_HOME$/University/Research/simulation_results/finite_temperature/same_array_different_temperature/ --file array_10_10_T_0.002" />
+      <option name="PARAMETERS" value="--action plot_RT_arrays -i bgu_it/" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -332,9 +335,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.dots_array" />
         <item itemvalue="Python.temp" />
-        <item itemvalue="Python.results_processor" />
         <item itemvalue="Python.ising1d" />
         <item itemvalue="Python.dots_array_new" />
       </list>
@@ -436,7 +439,14 @@
       <option name="project" value="LOCAL" />
       <updated>1605520054196</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="it results">
+      <created>1607499502252</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1607499502252</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
