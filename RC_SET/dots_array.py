@@ -1,23 +1,29 @@
-__author__ = 'shahar'
+__author__ = 'Shahar_Kasirer'
 
+# Environment imports
 import os
-os.environ["OPENBLAS_NUM_THREADS"] = "5"
+os.environ["OPENBLAS_NUM_THREADS"] = "5"  # Number of threads used for EACH simulation instance.
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
+from scipy.integrate import cumtrapz
+from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
+from scipy.interpolate import interp1d
+
+
 import matplotlib
-# matplotlib.use("Agg")
+#matplotlib.use("Agg")  # To avoid showing plots during a run on server.
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
+from mpl_toolkits.mplot3d import Axes3D
 #from mayavi import mlab
+
 from optparse import OptionParser
 import re as regex
 from time import sleep
 from multiprocessing import Pool
-from scipy.integrate import cumtrapz
-from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
-from scipy.interpolate import interp1d
-from mpl_toolkits.mplot3d import Axes3D
+
+
 from ast import literal_eval
 from copy import copy
 
@@ -154,7 +160,6 @@ class TunnelingRateCalculator:
         self.set_results()
         self.set_approx()
         self.plot_rate()
-        plt.show()
 
     def isWriting(self):
         return os.path.exists(os.path.join(self.dirName, "writing.txt"))
@@ -267,9 +272,7 @@ class TunnelingRateCalculator:
             self.freeWritingLock()
 
     def plot_rate(self):
-        fig = plt.figure()
         plt.plot(self.deltaEvals, self.vals, '.')
-        return fig
 
 class NoElectronsOnDot(RuntimeError):
     pass
@@ -820,6 +823,7 @@ class JJArray(DotArray):
                                                           "quasi_particles_rate")
         self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
+        plt.show()
         print("Rates were calculated")
         if tauLeaping:
             self.right_cp = np.zeros((self.rows, self.columns + 1))
@@ -1832,7 +1836,8 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
                 nsErr.append(nErr)
                 QsErr.append(QErr)
             if currentMap:
-                Imaps.append(result[-2])
+                Imap = result[-2]
+                Imaps.append(Imap)
             Is.append(I)
             IsErr.append(IErr)
         V = result[2]
@@ -1925,9 +1930,9 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
-    for index in range(repeats):
-        removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
-    removeRandomParams(basePath)
+    # for index in range(repeats):
+    #     removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
+    # removeRandomParams(basePath)
     return params
 
 def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=False):
