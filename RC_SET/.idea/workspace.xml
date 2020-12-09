@@ -5,36 +5,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="it results">
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_IT.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_Imap.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_nErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_IT.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_Imap.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_T.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_1_cg_10_nErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bgu_it/runningParameters_array_10_10_it_v_0.8_cg_10.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.2_cg_5_T.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10_T.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10.out" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_10.out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_1_temp_41_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_it/array_10_10_it_v_0.8_cg_1_temp_41_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_array_10_10_disorder_c_std_0.1_r_std_9_run_1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bgu_it/runningParameters_array_10_10_it_v_1_cg_10.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_10_10_T_0.001.txt" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_10_10_T_0.001.txt" afterDir="false" />
-    </list>
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="it results" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -348,16 +319,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.temp" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.temp" />
     </list>
     <recent_temporary>
       <list>
