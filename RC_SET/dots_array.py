@@ -12,7 +12,7 @@ from scipy.interpolate import interp1d
 
 
 import matplotlib
-#matplotlib.use("Agg")  # To avoid showing plots during a run on server.
+matplotlib.use("Agg")  # To avoid showing plots during a run on server.
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
@@ -28,7 +28,7 @@ from ast import literal_eval
 from copy import copy
 
 
-EPS = 0.0001
+EPS = 1e-6
 # Gillespie Constants
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
@@ -376,7 +376,7 @@ class DotArray:
         copy_array.leftConstWork = self.leftConstWork
         copy_array.rightConstWork = self.rightConstWork
         copy_array.vertConstWork = self.vertConstWork
-        copy_array.variableWork = np.copy(self.variableWork)
+        copy_array.work = np.copy(self.work)
         copy_array.horizontalMatrix = self.horizontalMatrix
         copy_array.verticalMatrix = self.verticalMatrix
         copy_array._left_part_n_prime = self._left_part_n_prime
@@ -551,9 +551,9 @@ class DotArray:
         self.rightConstWork = (0.5*self.commonHorz + additionalRight).flatten()
 
         self.vertConstWork = (0.5*self.commonVert).flatten()
-        self.variableWork = np.zeros((4*self.rows*self.columns + 2*(self.rows - self.columns),))
-        self.rates = np.zeros(self.variableWork.shape)
-        self.cumRates = np.zeros(self.variableWork.shape)
+        self.work = np.zeros((4*self.rows*self.columns + 2*(self.rows - self.columns),))
+        self.rates = np.zeros(self.work.shape)
+        self.cumRates = np.zeros(self.work.shape)
         return True
 
     def setConstMatrix(self):
@@ -577,11 +577,11 @@ class DotArray:
         variableDownWork = (self.verticalMatrix.dot(q)).flatten()
         variableRightWorkLen = variableRightWork.size
         variableDownWorkLen = variableDownWork.size
-        self.variableWork[:variableRightWorkLen] = variableRightWork + self.rightConstWork
-        self.variableWork[variableRightWorkLen:2*variableRightWorkLen] = -variableRightWork + self.leftConstWork
-        self.variableWork[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] = variableDownWork + self.vertConstWork
-        self.variableWork[2 * variableRightWorkLen + variableDownWorkLen:] = -variableDownWork + self.vertConstWork
-        return self.variableWork
+        self.work[:variableRightWorkLen] = variableRightWork + self.rightConstWork
+        self.work[variableRightWorkLen:2*variableRightWorkLen] = -variableRightWork + self.leftConstWork
+        self.work[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] = variableDownWork + self.vertConstWork
+        self.work[2 * variableRightWorkLen + variableDownWorkLen:] = -variableDownWork + self.vertConstWork
+        return self.work
 
     def getRates(self):
         """
@@ -590,7 +590,7 @@ class DotArray:
         """
         if not self.constQ:
             self.getWork()
-        work = np.copy(self.variableWork)
+        work = np.copy(self.work)
         if hasattr(self.temperature, "__len__"):
             zero_temp = (self.temperature == 0).all()
         else:
@@ -631,11 +631,11 @@ class DotArray:
         deltaLeftWork = -deltaRightWork
 
         deltaUpWork = -deltaDownWork
-        self.variableWork[:variableRightWorkLen] += deltaRightWork
-        self.variableWork[variableRightWorkLen:2 * variableRightWorkLen] += deltaLeftWork
-        self.variableWork[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] += deltaDownWork
-        self.variableWork[2 * variableRightWorkLen + variableDownWorkLen:] += deltaUpWork
-        return self.variableWork
+        self.work[:variableRightWorkLen] += deltaRightWork
+        self.work[variableRightWorkLen:2 * variableRightWorkLen] += deltaLeftWork
+        self.work[2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] += deltaDownWork
+        self.work[2 * variableRightWorkLen + variableDownWorkLen:] += deltaUpWork
+        return self.work
 
     def modifyR(self):
         nExponent = np.exp(-INV_DOS*self.n).reshape((self.rows, self.columns))
@@ -838,6 +838,8 @@ class JJArray(DotArray):
         copy_array.Ec = self.Ec
         copy_array.qp_rate_calculator = self.qp_rate_calculator
         copy_array.cp_rate_calculator = self.cp_rate_calculator
+        copy_array.constWorkCp = self.constWorkCp
+        copy_array.constWorkQp = self.constWorkQp
         if self.tauLeaping:
             copy_array.right_cp = np.copy(self.right_cp)
             copy_array.left_cp = np.copy(self.left_cp)
@@ -858,12 +860,24 @@ class JJArray(DotArray):
         vertConstWorkCp = (2*self.commonVert).flatten()
 
         self.constWorkCp = np.hstack((rightConstWorkCp, leftConstWorkCp, vertConstWorkCp, vertConstWorkCp))
-        self.rates = np.zeros((2*self.variableWork.size,))
-        self.cumRates = np.zeros((2*self.variableWork.size,))
+        self.constWorkQp = np.hstack((self.rightConstWork, self.leftConstWork, self.vertConstWork, self.vertConstWork))
+        self.rates = np.zeros((2*self.work.size,))
+        self.cumRates = np.zeros((2*self.work.size,))
 
     def getWork(self):
-        qp_work = super().getWork()
-        cp_work = 2*self.variableWork + self.constWorkCp
+        q = self.getNprime() + self.Q
+        variableRightWork = (self.horizontalMatrix.dot(q)).flatten()
+        variableDownWork = (self.verticalMatrix.dot(q)).flatten()
+        variableRightWorkLen = variableRightWork.size
+        variableDownWorkLen = variableDownWork.size
+        variableWork = self.work
+        variableWork[:variableRightWorkLen] = variableRightWork
+        variableWork[variableRightWorkLen:2 * variableRightWorkLen] = -variableRightWork
+        variableWork[
+        2 * variableRightWorkLen:2 * variableRightWorkLen + variableDownWorkLen] = variableDownWork
+        variableWork[2 * variableRightWorkLen + variableDownWorkLen:] = -variableDownWork
+        qp_work = variableWork+ self.constWorkQp
+        cp_work = 2*variableWork + self.constWorkCp
         return qp_work, cp_work
 
     def getCurrentFromRates(self):
@@ -1930,9 +1944,9 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
         np.save(basePath + "_Imap", avgImaps)
-    # for index in range(repeats):
-    #     removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
-    # removeRandomParams(basePath)
+    for index in range(repeats):
+        removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
+    removeRandomParams(basePath)
     return params
 
 def removeState(index, fullOutput=False, basePath='', currentMap=False, graph=False):
