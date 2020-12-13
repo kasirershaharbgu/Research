@@ -5,108 +5,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Fixing SC work calculation bug.">
-      <change afterPath="$PROJECT_DIR$/dbg/runningParameters_sc_dbg_2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/runningParameters_sc_dbg_3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_IV.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_Imap.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_V.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_IV.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_Imap.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_V.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_3_nErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_IV.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_Imap.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_V.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dbg/sc_dbg_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001_cg_10_run_1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001_cg_10_run_2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001_cg_10_run_3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_IV.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_Imap.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_Imap.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_Imap_binary.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_V.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_nErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_IV.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_Imap.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_Imap_binary.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_V.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_full_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_2_nErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_IV.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_Imap.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_Imap_binary.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_QErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_V.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_full_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_nErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_I.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_IErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_Q.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_Qs.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_QsErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_current_map.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_n.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_ns.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_3_nsErr.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_CG.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_Ch.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_Cv.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_Q0.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_RG.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_Rh.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_Rv.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_VG.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_3_temp_n0.npy" afterDir="false" />
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/graph_results/gillespie_2_2_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/graph_results/gillespie_2_2_I.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_2d_array_on_slurm.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/runningParameters_sc_array_10_10_T_0.001_cg_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_V.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.005_cg_1_temp_22_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/dbg/sc_dbg_2_nErr.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.005_cg_1_temp_22_IErr.npy" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,6 +45,7 @@
     <property name="FullScreen" value="false" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="ToolWindowEvent Log.ShowToolbar" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/running_scripts/run_small_2d_array.sh" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -542,7 +443,35 @@
       <option name="project" value="LOCAL" />
       <updated>1607499502252</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Fixing SC work calculation bug.">
+      <created>1607612619486</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1607612619486</updated>
+    </task>
+    <task id="LOCAL-00015" summary="SC script for slurm.">
+      <created>1607612634221</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1607612634221</updated>
+    </task>
+    <task id="LOCAL-00016" summary="SC results.">
+      <created>1607612647167</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1607612647167</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Updating workspace.">
+      <created>1607612656704</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1607612656704</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -585,7 +514,10 @@
     <MESSAGE value="Fixing symmetric voltage bug for it calculation." />
     <MESSAGE value="it results" />
     <MESSAGE value="Fixing SC work calculation bug." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing SC work calculation bug." />
+    <MESSAGE value="SC script for slurm." />
+    <MESSAGE value="SC results." />
+    <MESSAGE value="Updating workspace." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating workspace." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
