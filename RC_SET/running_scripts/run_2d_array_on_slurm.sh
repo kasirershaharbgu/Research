@@ -36,7 +36,7 @@ custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 T=0.001
-vmax=2.5
+vmax=4.5
 efermi=""
 f="super_conducting_array_different_temperatures"
 if [ ! -d "$f" ]; then
