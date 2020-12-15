@@ -5,9 +5,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace.">
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="script for sc arrays with different gap">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_array_on_slurm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_2d_array_on_slurm.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -478,7 +478,21 @@
       <option name="project" value="LOCAL" />
       <updated>1607931895482</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Updating workspace.">
+      <created>1608017930505</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1608017930505</updated>
+    </task>
+    <task id="LOCAL-00020" summary="script for sc arrays with different gap">
+      <created>1608017949716</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1608017949716</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -524,7 +538,8 @@
     <MESSAGE value="Updating script." />
     <MESSAGE value="new script for 5x5 sc arrays." />
     <MESSAGE value="Updating workspace." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updating workspace." />
+    <MESSAGE value="script for sc arrays with different gap" />
+    <option name="LAST_COMMIT_MESSAGE" value="script for sc arrays with different gap" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
