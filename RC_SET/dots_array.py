@@ -162,13 +162,37 @@ class TunnelingRateCalculator:
         self.plot_rate()
 
     def isWriting(self):
-        return os.path.exists(os.path.join(self.dirName, "writing.txt"))
+        if os.path.exists(os.path.join(self.dirName, "writing.txt")):
+            writing_process_still_alive = False
+            with open(os.path.join(self.dirName, "writing.txt"), "r") as f:
+                lines = f.readlines()
+                for line in lines:
+                    pid = int(line)
+                    try:
+                        os.kill(pid,0)
+                    except OSError:
+                        continue
+                    else:
+                        writing_process_still_alive = True
+            return writing_process_still_alive
+        else:
+            return False
 
     def getWritingLock(self):
         while self.isWriting():
             sleep(60)
-        with open(os.path.join(self.dirName, "writing.txt"), "w") as f:
-            f.write("writing")
+        got_it=False
+        while not got_it:
+            with open(os.path.join(self.dirName, "writing.txt"), "w") as f:
+                f.write(str(os.getpid())+"\n")
+            got_it=True
+            with open(os.path.join(self.dirName, "writing.txt"), "r") as f:
+                lines = f.readlines()
+                for line in lines:
+                    pid = int(line)
+                    if pid < os.getpid():
+                        got_it = False
+                        sleep(60)
 
     def freeWritingLock(self):
         if self.isWriting():
