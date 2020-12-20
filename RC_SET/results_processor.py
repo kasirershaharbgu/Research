@@ -2695,7 +2695,25 @@ if __name__ == "__main__":
         if options.plot3d:
             plt.zlabel(options.zlabel)
         plt.show()
-
+    elif action == "plot_array_params":
+        for directory,names in zip(directories, file_names):
+            for name in names:
+                try:
+                    s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=False, graph=False,
+                                               reAnalyze=options.re_analyze)
+                    if filter(s):
+                        print("Plotting file: " + name + " from directory " + directory)
+                        fig, ax = plt.subplots(figsize=FIGSIZE)
+                        s.plot_array_params("RC", ax=ax, fig=fig)
+                        fig.canvas.set_window_title(name.replace("_", " "))
+                        if options.output_folder:
+                            fig.savefig(os.path.join(options.output_folder, name + '_params.png'), bbox_inches='tight')
+                            plt.close(fig)
+                        else:
+                            plt.show()
+                except MissingFilesException:
+                    print("Missig file for plotting " + name)
+                    continue
     ####### Manual actions ########
     elif action == "compareIV": # compares methods
         directory_graph = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
