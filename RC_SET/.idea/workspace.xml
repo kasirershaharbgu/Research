@@ -5,9 +5,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating workspace">
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Updating process synchronization schema">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -320,16 +319,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array" />
-      <item itemvalue="Python.dots_array_new" />
       <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.ising1d" />
       <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.results_processor" />
       <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.temp" />
       <item itemvalue="Python.thermalArray" />
       <item itemvalue="Python.toy model" />
+      <item itemvalue="Python.dots_array" />
+      <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.temp" />
     </list>
     <recent_temporary>
       <list>
@@ -472,7 +471,21 @@
       <option name="project" value="LOCAL" />
       <updated>1607612656704</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Updating process synchronization schema">
+      <created>1608102736629</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1608102736629</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Updating process synchronization schema">
+      <created>1608106429102</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1608106429102</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -518,7 +531,8 @@
     <MESSAGE value="SC script for slurm." />
     <MESSAGE value="SC results." />
     <MESSAGE value="Updating workspace." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updating workspace." />
+    <MESSAGE value="Updating process synchronization schema" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updating process synchronization schema" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
