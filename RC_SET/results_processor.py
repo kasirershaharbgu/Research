@@ -46,7 +46,7 @@ def add_text_upper_left_corner(ax, text, shift=0):
     x_min,x_max,y_min,y_max = ax.axis()
     x = x_min + (x_max-x_min)/100
     y = y_max - (y_max-y_min)/9 + shift
-    ax.text(x, y, text, fontsize=30)
+    ax.text(x, y, text, fontsize=60)
     return ax
 
 def add_subplot_axes(fig, ax,rect):
@@ -3748,6 +3748,45 @@ if __name__ == "__main__":
         plt.tight_layout()
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'power_law_vs_temperature.png'))
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == "IV_by_gap":
+        fig, axes = plt.subplots(1, 2, figsize=FIGSIZE)
+        ax1 = axes[0]
+        ax2 = axes[1]
+        directory = directories[0]
+        names1 = ["sc_array_5_5_T_0.001_cg_10_run_1_gap_0.001", "sc_array_5_5_T_0.001_cg_10_run_1"]
+        names2 = ["sc_array_5_5_T_0.001_cg_10_run_2_gap_0.001", "sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1"]
+        gaps=[0.001,0.1]
+        gap_vals1 = []
+        gap_vals2 = []
+        shift = 0
+        for index,name in enumerate(names1):
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            gap_vals1.append( gaps[index]*p.calc_param_average("C"))
+            shift += 0.4
+        shift = 0
+        for index,name in enumerate(names2):
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax2, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            gap_vals2.append(gaps[index]*p.calc_param_average("C"))
+            shift += 0.4
+
+        ax1.text(0.01, 0.01, "$\\Delta \\left<C\\right>/e^2 = " + str(np.round(10000 * gap_vals1[0]) / 10000) + "$", fontsize=30)
+        ax1.text(0.01,0.41, "$\\Delta \\left<C\\right>/e^2 = " + str(np.round(100 * gap_vals1[1]) / 100) + "$", fontsize=30)
+        ax2.text(0.01, 0.01, "$\\Delta \\left<C\\right>/e^2 = " + str(np.round(10000 * gap_vals2[0]) / 10000) + "$", fontsize=30)
+        ax2.text(0.01, 0.41, "$\\Delta \\left<C\\right>/e^2 = " + str(np.round(100* gap_vals2[1]) / 100) + "$", fontsize=30)
+        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.8])
+        ax2.set_ylabel("")
+        add_text_upper_left_corner(ax1, "Realization A", shift=0.04)
+        add_text_upper_left_corner(ax2, "Realization B", shift=0.04)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_sc_gap.png'), bbox_inches='tight')
             plt.close(fig)
         else:
             plt.show()
