@@ -3791,6 +3791,46 @@ if __name__ == "__main__":
         else:
             plt.show()
 
+    elif action =='plot_sc_rates':
+        fig, ax = plt.subplots(figsize=FIGSIZE)
+        cp_directories = ["cooper_pairs_rate/tunneling_rate_0.001_5.776464465750122e-05",
+                          "cooper_pairs_rate/tunneling_rate_0.001_0.0125"]
+        qp_directories = ["quasi_particles_rate/tunneling_rate_0.001_0.001",
+                          "quasi_particles_rate/tunneling_rate_0.001_0.1"]
+        colors = ["red", "blue"]
+        gaps=["0.004", "0.4"]
+        def load_rates(direcory):
+            deltaEmin = np.load(os.path.join(direcory, "deltaEmin.npy"))
+            deltaEmax = np.load(os.path.join(direcory, "deltaEmax.npy"))
+            deltaEstep = np.load(os.path.join(direcory, "deltaEstep.npy"))
+            deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
+            vals = np.load(os.path.join(direcory, "vals.npy"))
+            return 4*deltaEvals, 4*vals
+        for cp_dir, qp_dir, color, gap in zip(cp_directories, qp_directories, colors, gaps):
+            cp_deltaE, cp_rates = load_rates(cp_dir)
+            qp_deltaE, qp_rates = load_rates(qp_dir)
+            cp_label = "$\\Gamma_{cp}$ for $\\Delta=%se^2/\\left<C\\right>$" % gap
+            qp_label = "$\\Gamma_{qp}$ for $\\Delta=%se^2/\\left<C\\right>$" % gap
+            ax.plot(cp_deltaE, (1/20)*cp_rates, linestyle='-', color=color, label=cp_label)
+            ax.plot(qp_deltaE, qp_rates, linestyle='--', color=color, label=qp_label)
+            ax2 = add_subplot_axes(fig, ax, [0.1,0.47,0.5,0.5])
+            ax2.plot(cp_deltaE, (1/20)*cp_rates, linestyle='-', color=color)
+            ax2.plot(qp_deltaE, qp_rates, linestyle='--', color=color)
+        ax.set_ylim(-0.04, 0.5)
+        ax.set_xlim(-0.02, 1.25)
+        ax2.set_ylim(-0.00005,0.008)
+        ax2.set_xlim(0.17, 1.1)
+        rect = Rectangle((0.17, 0), 0.93, 0.02, linewidth=1, edgecolor='black', facecolor='none')
+        ax.add_patch(rect)
+        ax.set_ylabel("Rates $\\left[1/\\left<R\\right>\\left<C\\right>\\right]$")
+        ax.set_xlabel("$\\left(-\\Delta E\\right) \\left[e^2/\\left<C\\right>\\right]$")
+        ax.legend(fontsize=30, loc=[0.6, 0.6])
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'sc_rates.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
     elif action == 'print_scores':
          full = True
          for directory, names in zip(directories, file_names):
