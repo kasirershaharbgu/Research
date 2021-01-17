@@ -5,11 +5,22 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="updating results processor">
+    <list default="true" id="7cd786ec-6816-4bd9-89ba-468deb9fd398" name="Default Changelist" comment="Creating SC movie">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dots_array_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/dots_array_new.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_Imap.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_5_5_T_0.001_cg_10_run_1_Imap.mp4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/running_scripts/run_2d_array.sh" beforeDir="false" afterPath="$PROJECT_DIR$/running_scripts/run_2d_array.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_IV.png" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_IV.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_Imap.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_Imap.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_Q.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_Q.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_QErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_QErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_full_I.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_full_I.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_full_IErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_full_IErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_n.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_n.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_nErr.npy" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.001_cg_1_nErr.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.005_cg_1.out" beforeDir="false" afterPath="$PROJECT_DIR$/super_conducting_array_different_temperatures/sc_array_10_10_T_0.005_cg_1.out" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +239,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_processor.py" />
-      <option name="PARAMETERS" value="--action plot_sc_rates" />
+      <option name="PARAMETERS" value="--action plot_thresholds_like_in_MW -i $USER_HOME$/University/Research/simulation_results/zero_temperature/ --filter-param R_std --filter-val 9" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -322,16 +333,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.deposition_models" />
-      <item itemvalue="Python.dots_array_reduced" />
-      <item itemvalue="Python.old single dot run" />
-      <item itemvalue="Python.single dot run" />
-      <item itemvalue="Python.thermalArray" />
-      <item itemvalue="Python.toy model" />
       <item itemvalue="Python.dots_array" />
       <item itemvalue="Python.dots_array_new" />
+      <item itemvalue="Python.dots_array_reduced" />
       <item itemvalue="Python.ising1d" />
+      <item itemvalue="Python.old single dot run" />
       <item itemvalue="Python.results_processor" />
+      <item itemvalue="Python.single dot run" />
       <item itemvalue="Python.temp" />
+      <item itemvalue="Python.thermalArray" />
+      <item itemvalue="Python.toy model" />
     </list>
     <recent_temporary>
       <list>
