@@ -30,28 +30,26 @@ efermi=""
 dbg=""
 double_time=""
 double_loop=""
-input="super_conducting_array_different_temperatures/runningParameters_array_10_10_disorder_c_std_0.1_r_std_9_run_1.txt"
+input="super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1.txt"
 custom_rh="\"\""
 custom_rv="\"\""
 custom_ch="\"\""
 custom_cv="\"\""
 temperature_gradient=0
-vmax=1.5
+vmax=5
 efermi=""
+T=0.001
 superconducting="--superconducting"
-gap=0.1
-f="super_conducting_array_different_temperatures"
+f="super_conducting_array_different_gap"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
-rows=10
-columns=10
-for T in 0.001 0.005
+rows=5
+columns=5
+cg_avg=10
+for gap in 0.05 0.2 0.5
 do
-	for cg_avg in 1 5
-	do
 	name="sc_array_${rows}_${columns}_T_${T}"
 	qsub "$flags" -N "$name" -o "$f/$name.out" -v M="$rows",N="$columns",vmin="$vmin",vmax="$vmax",vstep="$vstep",vg_avg="$vg_avg",vg_std="$vg_std",c_avg="$c_avg",c_std="$c_std",cg_avg="$cg_avg",cg_std="$cg_std",r_avg="$r_avg",r_std="$r_std",rg_avg="$rg_avg",rg_std="$rg_std",repeats="$repeats",n_avg="$n_avg",n_std="$n_std",q_avg="$q_avg",q_std="$q_std",T="$T",temperature_gradient="$temperature_gradient",file_name="$name",out="$f",input="$input",vr="$vr",dist="$dist",full="$full",currentmap="$currentmap",graph="$graph",resume="$resume",vSym="$vSym",superconducting="$superconducting",gap=$gap,leaping="$leaping",efermi="$efermi",double_time="$double_time",double_loop="$double_loop",dbg="$dbg" -v custom_rh="$custom_rh" -v custom_rv="$custom_rv" -v custom_ch="$custom_ch" -v custom_cv="$custom_cv" run_RC_SET.sh
 	sleep 1
-	done
 done
