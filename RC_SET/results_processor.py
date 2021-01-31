@@ -3,6 +3,10 @@ import matplotlib
 import glob
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
+import matplotlib.ticker
+from matplotlib.patches import Rectangle
+from copy import copy
+import scipy.stats
 font = {'family' : 'sans-serif',
         'weight' : 'normal',
         'size' : 40}
@@ -19,6 +23,7 @@ from scipy.interpolate import interp1d
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
+from scipy.stats import moment
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
@@ -26,6 +31,7 @@ EPS = 1e-6
 FIGSIZE=(30,16)
 SCORE_NAMES=['hysteresisArea', 'jumpSeparationUp', 'jumpSeparationDown', 'jumpSeparationUpDown', 'jumpHeightUp',
              'jumpHeightDown', 'thresholdVoltageUp', 'thresholdVoltageDown', 'jumpNumUp', 'jumpNumDown', 'firstJumpV',
+             'firstJumpDownV',
              'smallVPowerUp', 'smallVPowerDown', 'smallVCoefficientUp', 'smallVCoefficientDown', 'maxJumpHeight',
              'pathNum']
 ACTIONS = ['plot_results', 'plot_score_by_parameter', 'plot_score_by_disorder',
@@ -36,11 +42,11 @@ SCORE_HIGH_ERR = 'high_err'
 SCORE_LOW_ERROR = 'low_err'
 ERR_VAL=-99
 
-def add_text_upper_left_corner(ax, text):
+def add_text_upper_left_corner(ax, text, shift=0):
     x_min,x_max,y_min,y_max = ax.axis()
     x = x_min + (x_max-x_min)/100
-    y = y_max - (y_max-y_min)/9
-    ax.text(x, y, text, fontsize=30)
+    y = y_max - (y_max-y_min)/9 + shift
+    ax.text(x, y, text, fontsize=60)
     return ax
 
 def add_subplot_axes(fig, ax,rect):
@@ -70,13 +76,27 @@ def flattenToColumn(a):
 def flattenToRow(a):
     return a.reshape((1, a.size))
 
+def average_results(a, a_err=None, window_size=9):
+    res = np.convolve(a, np.ones((window_size,))/window_size, mode='same')
+    if a_err is None:
+        return res
+    else:
+        if len(a_err.shape) == 2:
+            err = np.zeros(a_err.shape)
+            for row in range(a_err.shape[0]):
+                err[row, :] = np.sqrt(np.convolve(a_err[row,:]**2, np.ones((window_size,))/window_size**2, mode='same'))
+        else:
+            err = np.sqrt(np.convolve(a_err**2, np.ones((window_size,))/window_size**2, mode='same'))
+        return res, err
+
 class MissingFilesException(Exception):
     pass
 
 
 class SingleResultsProcessor:
     """ Used for proccessing result from one dot array simulation"""
-    def __init__(self, directory, file_name, fullOutput=False, vertCurrent=False, reAnalyze=True, graph=False, IT=False):
+    def __init__(self, directory, file_name, fullOutput=False, vertCurrent=False, reAnalyze=True, graph=False,
+                 IT=False, single=False):
         self.basePath = os.path.join(directory, file_name)
         self.fileName = file_name
         self.directory = directory
@@ -87,6 +107,8 @@ class SingleResultsProcessor:
         self.T = None
         self.IErr = None
         self.Imaps = None
+        self.vertI = None
+        self.vertIErr = None
         self.n = None
         self.Q = None
         self.nErr = None
@@ -98,6 +120,7 @@ class SingleResultsProcessor:
         self.smallVScores = None
         self.path_dict = None
         self.mid_idx = 0
+        self.single = single
         self.runningParams = dict()
         self.arrayParams = dict()
         self.graph = graph
@@ -117,6 +140,9 @@ class SingleResultsProcessor:
     def normalize(self):
         Vnorm = self.calc_param_average("C")
         Inorm = Vnorm*self.calc_param_average("R")
+        if self.single:
+            Vnorm *= 2
+            Inorm *= 2
         if self.V is not None:
            self.V *= Vnorm
         self.I *= Inorm
@@ -184,6 +210,8 @@ class SingleResultsProcessor:
         if self.Imaps is not None:
             kernel = np.ones((1000,))
             self.Imaps = np.apply_along_axis(lambda m: np.convolve(m, kernel, mode='same'), axis=0, arr=self.Imaps)
+        if self.vertI is not None:
+            self.vertI, self.vertIErr = average_results(self.vertI, self.vertIErr, window_size=10)
         return True
 
 
@@ -217,8 +245,6 @@ class SingleResultsProcessor:
                 self.nErr = np.load(nErr_file)
                 self.QErr = np.load(QErr_file)
                 self.full_I = np.load(full_I_file)
-            if reAnalyze:
-                self.reAnalyzeI()
         if self.vert:
             vertI_file = os.path.join(self.basePath + '_vertI.npy')
             vertIErr_file = os.path.join(self.basePath + '_vertIErr.npy')
@@ -227,6 +253,8 @@ class SingleResultsProcessor:
         Imaps_file = os.path.join(self.basePath + '_Imap.npy')
         if os.path.isfile(Imaps_file):
             self.Imaps = np.load(Imaps_file)
+        if reAnalyze:
+            self.reAnalyzeI()
         return True
 
     def save_re_analysis(self):
@@ -271,7 +299,7 @@ class SingleResultsProcessor:
                             value = literal_eval(splitted[1])
                         except Exception:
                             value = splitted[1].rstrip('\n')
-                        if key == "Cv":
+                        if key == "Cv" and not self.vert:
                             value = value[1:]
                         self.arrayParams[key] = value
                     start = True
@@ -287,7 +315,7 @@ class SingleResultsProcessor:
                 value = literal_eval(splitted[1])
             except Exception:
                 value = splitted[1].rstrip('\n')
-            if key == "Cv":
+            if key == "Cv" and not self.vert:
                 value = value[1:]
             self.arrayParams[key] = value
         return True
@@ -328,7 +356,7 @@ class SingleResultsProcessor:
         I = np.array(I[:mid_idx])
         IErr = np.clip(IErr[:mid_idx],a_min=0.01, a_max=np.inf)
         matchingV = np.array(V[:mid_idx])
-        dV = np.abs(self.V[1] - self.V[0])
+        dV = np.abs(self.V[1] - self.V[0]) if self.V is not None else np.abs(self.T[1] - self.T[0])
         if (I < 2*IErr).any():
             small = np.max(matchingV[I < 2*IErr])
             big = np.max(matchingV[I < 4*IErr])
@@ -341,7 +369,7 @@ class SingleResultsProcessor:
         I = np.array(I[mid_idx:])
         IErr = np.clip(IErr[mid_idx:],a_min=0.01, a_max=np.inf)
         matchingV = np.array(V[mid_idx:])
-        dV = np.abs(self.V[1] - self.V[0])
+        dV = np.abs(self.V[1] - self.V[0]) if self.V is not None else np.abs(self.T[1] - self.T[0])
         if (I < 2 * IErr).any():
             small = np.max(matchingV[I < 2 * IErr])
             big = np.max(matchingV[I < 4 * IErr])
@@ -382,87 +410,95 @@ class SingleResultsProcessor:
         plt.xlabel('Voltage')
         plt.ylabel('Power')
 
-    def plot_electrons_temperature(self, ax=None, fig=None, el_temp=None, el_temp_vert=None):
+
+    def calc_electrons_temperature(self, V, I, IErr, el_temp):
+        el_temp_val, el_temp_low, el_temp_high = el_temp
+        resistance = V / I
+        resistance_err = (IErr * resistance) / I
+        Tel = el_temp_val(resistance)
+        TelHighErr = el_temp_high(resistance - resistance_err)
+        TelLowErr = el_temp_low(resistance + resistance_err)
+        TelErr = np.abs(np.vstack((Tel - TelLowErr, TelHighErr - Tel)))
+        return Tel, TelErr
+
+    def plot_electrons_temperature(self, ax=None, fig=None, el_temp=None, ylim=None, xlim=None,
+                                   subplot_loc=None):
         if el_temp is None:
             print("Missing electrons temperature approximation.")
             exit(1)
         if ax is None:
             fig, ax = plt.subplots(figsize=FIGSIZE)
-
-        ax.set_yscale("log", nonposy='clip')
-        Vup = self.V[:self.mid_idx]
-        Iup = self.I[:self.mid_idx]
-        IupErr = self.I[:self.mid_idx]
-        Vup = Vup[Iup > 0]
-        IUpErr = IupErr[Iup > 0]
-        Iup = Iup[Iup > 0]
-        resistance_up = Vup / Iup
-        resistance_up_err = Vup*IUpErr/resistance_up
-        TelUp = el_temp(resistance_up)
-        TelUpHighErr = el_temp(resistance_up + resistance_up_err)
-        TelUpLowErr = el_temp(resistance_up - resistance_up_err)
-        TelUpErr = np.abs(np.vstack((TelUpLowErr - TelUp, TelUpHighErr - TelUp)))
-        Vdown = self.V[self.mid_idx:]
-        Idown = self.I[self.mid_idx:]
-        IdownErr = self.IErr[self.mid_idx:]
-        Vdown = Vdown[Idown > 0]
-        IdownErr = IdownErr[Idown > 0]
-        Idown = Idown[Idown > 0]
-        resistance_down = Vdown / Idown
-        resistance_down_err = Vdown*IdownErr/resistance_down
-        TelDown = el_temp(resistance_down)
-        TelDownHighErr = el_temp(resistance_down + resistance_down_err)
-        TelDownLowErr = el_temp(resistance_down - resistance_down_err)
-        TelDownErr = np.abs(np.vstack((TelDownLowErr - TelDown, TelDownHighErr - TelDown)))
-        up_valid = np.logical_and(np.logical_and(TelUp!=ERR_VAL, TelUpHighErr!=ERR_VAL), TelUpLowErr!=ERR_VAL)
-        ax.errorbar(Vup[up_valid], TelUp[up_valid], yerr=TelUpErr[:,up_valid], fmt='r.',
-                    label="horizontal increasing v")
-        down_valid = np.logical_and(np.logical_and(TelDown != ERR_VAL, TelDownHighErr != ERR_VAL), TelDownLowErr != ERR_VAL)
-        ax.errorbar(Vdown[down_valid], TelDown[down_valid], yerr=TelDownErr[:,down_valid], fmt='b.',
-                label="horizontal decreasing v")
-
+        def plot_el_temp_helper(resistance_V, plot_V, I, IErr, el_temp, label, fmt_up, fmt_down):
+            Iup = I[:self.mid_idx]
+            IupErr = IErr[:self.mid_idx]
+            valid_up = Iup > EPS
+            IupErr[~valid_up] = 0
+            Iup[~valid_up] = 0
+            Idown = I[self.mid_idx:]
+            IdownErr = IErr[self.mid_idx:]
+            valid_down = Idown > EPS
+            IdownErr[~valid_down] = 0
+            Idown[~valid_down] = 0
+            if hasattr(resistance_V, "__len__"):
+                Vup = resistance_V[:self.mid_idx]
+                # Vup = Vup[valid_up]
+                Vdown = resistance_V[self.mid_idx:]
+                # Vdown = Vdown[valid_down]
+            else:
+                Vup = resistance_V
+                Vdown = resistance_V
+            TelUp, TelUpErr = self.calc_electrons_temperature(Vup, Iup, IupErr, el_temp)
+            TelDown, TelDownErr = self.calc_electrons_temperature(Vdown, Idown, IdownErr, el_temp)
+            TelUp, TelUpErr = average_results(TelUp, TelUpErr, window_size=21)
+            TelDown, TelDownErr = average_results(TelDown, TelDownErr, window_size=21)
+            plot_V_up = plot_V[:self.mid_idx]
+            # plot_V_up = plot_V_up[valid_up]
+            plot_V_down = plot_V[self.mid_idx:]
+            # plot_V_down = plot_V_down[valid_down]
+            ax.errorbar(plot_V_up, TelUp, yerr=TelUpErr, fmt=fmt_up,
+                        label="%s increasing v" %label)
+            ax.errorbar(plot_V_down, TelDown, yerr=TelDownErr, fmt=fmt_down,
+                        label="%s decreasing v"%label)
+            return TelUp, TelUpErr, valid_up, TelDown, TelDownErr, valid_down
+        TelUp, TelUpErr, valid_up, TelDown, TelDownErr, valid_down = \
+            plot_el_temp_helper(self.V, self.V, self.I, self.IErr, el_temp[:3], "horizontal", 'r.', 'b.')
+        if xlim is not None:
+            ax.set_xlim(*xlim)
+        if ylim is not None:
+            ax.set_ylim(*ylim)
         if self.vert:
-            if el_temp_vert is None:
+            if len(el_temp) < 6 :
                 print("Missing vertical electrons temperature approximation.")
                 exit(1)
-            vertV = np.abs(self.get_running_param("VU") - self.get_running_param("VD"))
-            vertIup = self.vertI[:self.mid_idx]
+            vertV = np.abs(self.get_running_param("VU") - self.get_running_param("VD")) * self.calc_param_average("C")
+            TelUp_vert, TelUpErr_vert, valid_up_vert, TelDown_vert, TelDownErr_vert, valid_down_vert = \
+                plot_el_temp_helper(vertV, self.V, self.vertI, self.vertIErr, el_temp[3:], "vertical", 'm.', 'g.')
+            if subplot_loc is None:
+                subplot_loc = [0.0, 0.5, 0.5, 0.5]
+            ax2 = add_subplot_axes(fig, ax, subplot_loc)
+            def compare_helper(V, Tel, Tel_vert, valid, valid_vert, fmt):
+                valid = np.logical_and(valid, valid_vert)
+                Tel_vert = Tel_vert[valid]
+                Tel = Tel[valid]
+                diff = Tel_vert - Tel
+                avg = (Tel + Tel_vert)/2
+                ax2.plot(V, np.abs(diff)/avg, fmt)
             Vup = self.V[:self.mid_idx]
-            vertIupErr = self.vertIErr[:self.mid_idx]
-            Vup = Vup[vertIup > 0]
-            vertIupErr = vertIupErr[vertIup > 0]
-            vertIup = vertIup[vertIup > 0]
-            resistance_up = vertV / vertIup
-            resistance_up_err = vertV*vertIupErr/resistance_up
-            TelUp_vert = el_temp_vert(resistance_up)
-            TelUpHighErr_vert = el_temp(resistance_up + resistance_up_err)
-            TelUpLowErr_vert = el_temp(resistance_up - resistance_up_err)
-            TelUpErr_vert = np.abs(np.vstack((TelUpLowErr_vert - TelUp_vert, TelUpHighErr_vert - TelUp_vert)))
-            vertIdown = self.vertI[self.mid_idx:]
+            Vup = Vup[np.logical_and(valid_up, valid_up_vert)]
+            compare_helper(Vup, TelUp, TelUp_vert, valid_up, valid_up_vert, 'r.')
             Vdown = self.V[self.mid_idx:]
-            vertIDownErr = self.vertIErr[:self.mid_idx]
-            Vdown = Vdown[vertIdown > 0]
-            vertIDownErr = vertIDownErr[vertIdown > 0]
-            vertIdown = vertIdown[vertIdown > 0]
-            resistance_down = vertV / vertIdown
-            resistance_down_err = vertV*vertIDownErr/resistance_down
-            TelDown_vert = el_temp_vert(resistance_down)
-            TelDownHighErr_vert = el_temp(resistance_down + resistance_down_err)
-            TelDownLowErr_vert = el_temp(resistance_down - resistance_down_err)
-            TelDownErr_vert = np.abs(np.vstack((TelDownLowErr_vert - TelDown_vert, TelDownHighErr_vert - TelDown_vert)))
-            up_valid = np.logical_and(np.logical_and(TelUp_vert != ERR_VAL, TelUpHighErr_vert != ERR_VAL),
-                                      TelUpLowErr_vert != ERR_VAL)
-            ax.errorbar(Vup[up_valid], TelUp_vert[up_valid],
-                        yerr=TelUpErr_vert[:,up_valid],
-                        fmt='m.', label="vertical increasing v")
-            down_valid = np.logical_and(np.logical_and(TelDown_vert != ERR_VAL, TelDownHighErr_vert != ERR_VAL),
-                                      TelDownLowErr_vert != ERR_VAL)
-            ax.errorbar(Vdown[down_valid], TelDown_vert[down_valid],
-                    yerr=TelDownErr_vert[:,down_valid],
-                    fmt='g.', label="vertical decreasing v")
-            ax.legend()
+            Vdown = Vdown[np.logical_and(valid_down, valid_down_vert)]
+            compare_helper(Vdown, TelDown, TelDown_vert, valid_down, valid_down_vert, 'b.')
+            ax2.set_ylabel('$\\Delta T_{el}/\\left<T_{el}\\right>$')
+            if subplot_loc[0] < 0.5:
+                ax2.yaxis.set_label_position("right")
+                ax2.yaxis.tick_right()
+            if xlim is not None:
+                ax2.set_xlim(*xlim)
         ax.set_xlabel('$V\\frac{\\left<C\\right>}{e}$')
         ax.set_ylabel('$k_BT_{el}\\frac{\\left<C\\right>}{e^2}$')
+        # ax.set_yscale("log", nonposy='clip')
+
 
     def plot_resistance(self, ax=None, fig=None):
         if ax is None:
@@ -509,10 +545,9 @@ class SingleResultsProcessor:
         I = self.I[self.V>=0]
         IErr = self.IErr[self.V>=0]
         mid_idx = np.argmax(V)
-        thresholdV = np.min(V[I>EPS])
         IV_diffV1, IV_diffV2, IV_diff1, IV_diff2, IV_Vjumps1, IV_Vjumps2, IV_freq1, IV_freq2, IV_fou1, IV_fou2 =\
-            self.calc_jumps_freq(I[V >= thresholdV], IErr[V>=thresholdV], V=V[V>=thresholdV], mid_idx=np.argmax(V[V>=thresholdV]),
-                                 threshold_factor=2)
+            self.calc_jumps_freq(I, IErr, V=V, mid_idx=np.argmax(V),
+                                 threshold_factor=10, window_size_factor=1, absolute_threshold=0.01)
         if ax1 is None:
             fig, ax1 = plt.subplots(figsize=FIGSIZE)
         fig2 = None
@@ -644,7 +679,7 @@ class SingleResultsProcessor:
             ax3 = add_subplot_axes(fig, ax1, ax3_location)
             self.plot_array_params("RC", ax3, fig, island_colors=island_colors)
             if self.Imaps is not None and not by_occupation:
-                plot_paths(sorted(self.path_dict.keys()), ax3, colors)
+                plot_paths(sorted(self.path_dict.keys()), ax3, colors, vert=self.vert)
         return fig, fig2, fig3
 
 
@@ -663,7 +698,7 @@ class SingleResultsProcessor:
         if up_and_down:
             diff1 = np.abs(diff1)
             diff2 = np.abs(diff2)
-        dV = self.V[1]-self.V[0]
+        dV = self.V[1]-self.V[0] if self.V is not None else self.T[1] - self.T[0]
         if diff1.size > 0:
             freq1, fou1 = self.calc_fourier(dV, diff1)
         else:
@@ -711,9 +746,9 @@ class SingleResultsProcessor:
 
     def calc_jumps_scores(self, I, IErr, V, mid_idx):
         diffV1, diffV2, diff1, diff2, Vjumps1, Vjumps2,_,_,_,_ = self.calc_jumps_freq(I, IErr, V=V, mid_idx=mid_idx,
-                                                                                      window_size_factor=1,
-                                                                                      threshold_factor=1,
-                                                                                      absolute_threshold=0.001)
+                                                                                      window_size_factor=0.5,
+                                                                                      threshold_factor=10,
+                                                                                      absolute_threshold=0.01)
         self.jumpScores = dict()
         self.jumpScores['jumpSeparationUp'] = (np.average(diffV1), np.std(diffV1), np.std(diffV1)) if diffV1.size > 0 else (0,0,0)
         self.jumpScores['jumpSeparationDown'] = (-np.average(diffV2), -np.std(diffV2), -np.std(diffV2)) if diffV2.size > 0 else (0,0,0)
@@ -727,14 +762,16 @@ class SingleResultsProcessor:
             up_jumps_larger_than_down = Vjumps1[Vjumps1>down]
             if len(up_jumps_larger_than_down) > 0:
                 up = np.min(up_jumps_larger_than_down)
-
+                self.jumpScores['firstJumpDownV'] = (down, 0, 0)
             else:
                 up = down
+                self.jumpScores['firstJumpDownV'] = (0, 0, 0)
             self.jumpScores['jumpSeparationUpDown'] = ((up-down), 0, 0)
             self.jumpScores['firstJumpV'] = (up,0,0)
         else:
             self.jumpScores['jumpSeparationUpDown'] = (0, 0, 0)
             self.jumpScores['firstJumpV'] = (0,0,0)
+            self.jumpScores['firstJumpDownV'] = (0, 0, 0)
 
     def calc_small_v_scores(self, I, IErr, V, mid_idx):
         self.smallVScores = dict()
@@ -822,8 +859,10 @@ class SingleResultsProcessor:
             I = self.I
         if IErr is None:
             IErr = self.IErr
-        if V is None:
+        if V is None and self.V is not None:
             V = self.V
+        elif self.T is not None:
+            V = self.T
         if mid_idx is None:
              mid_idx = self.mid_idx
         if 'jump' in scoreName or 'Jump' in scoreName:
@@ -865,7 +904,28 @@ class SingleResultsProcessor:
         return path_scores
 
     def print_scores(self, for_paths=False):
-        print("Scores for file %s, from dir %s" % (self.fileName, self.directory))
+        print("Scores and parameters for file %s, from dir %s" % (self.fileName, self.directory))
+        for param in ["R", "C"]:
+            combined = np.hstack((np.array(self.get_array_param(param + "h")).flatten(),
+                                  np.array(self.get_array_param(param + "v")).flatten()))
+            std = np.std(combined)
+            print("%s std = %f"%(param, std))
+        for param in ["CG", "VG", "RG"]:
+            vals = np.array(self.get_array_param(param))
+            norm_param = self.calc_param_average("C") if param == "CG" else 1/self.calc_param_average("C") if \
+                         param == "VG" else self.calc_param_average("R")
+            vals /= norm_param
+            std = np.std(vals)
+            avg = np.average(vals)
+            print("%s average = %f" % (param, avg))
+            print("%s std = %f" % (param, std))
+        running_params = ["T", "Vmax", "Vmin", "VR"]
+        if self.vert:
+            running_params += ["VD", "VU"]
+        for param in running_params:
+            print("%s = %f" %(param, self.get_running_param(param) *self.calc_param_average("C")))
+
+
         for score in SCORE_NAMES:
             score_val, high, low = self.calc_score(score)
             print("%s: %f (%f, %f)" % (score, score_val, score_val - low, score_val + high))
@@ -877,24 +937,33 @@ class SingleResultsProcessor:
                     print("For path %s score %s is %f (%f, %f)" % (path, score, score_val,
                                                                    score_val - low, score_val + high))
 
-    def plot_array_params(self, parameter,ax=None, fig=None, island_colors=None):
+    def plot_array_params(self, parameter,ax=None, fig=None, island_colors=None, electrodes=None):
         M = self.runningParams["M"]
         N = self.runningParams["N"]
-        connection = np.zeros((M*6-4,N*6+4))
+        if self.vert:
+            connection = np.zeros((M * 6 + 4, N * 6 + 4))
+        else:
+            connection = np.zeros((M * 6 - 4, N * 6 + 4))
         C_avg = self.calc_param_average("C")
         R_avg = self.calc_param_average("R")
         if parameter in ["R", "C"]:
-            horzRows = np.repeat(np.arange(0, M * 6 - 4, 6), 2)
-            horzRows[1::2] +=1
+            if self.vert:
+                horzRows = np.repeat(np.arange(4, M * 6 + 4, 6), 2)
+                vertRows = np.repeat(np.arange(0, M * 6 + 4, 6), 4)
+            else:
+                horzRows = np.repeat(np.arange(0, M * 6 - 4, 6), 2)
+                vertRows = np.repeat(np.arange(2, M * 6 - 4, 6), 4)
             horzCols = np.repeat(np.arange(0, 6 * N + 4, 6), 4)
+            vertCols = np.repeat(np.arange(4, 6 * N + 4, 6), 2)
+            horzRows[1::2] +=1
             horzCols[1::4] += 1
             horzCols[2::4] += 2
             horzCols[3::4] += 3
-            vertRows = np.repeat(np.arange(2, M * 6 -4, 6), 4)
+
             vertRows[1::4] += 1
             vertRows[2::4] += 2
             vertRows[3::4] += 3
-            vertCols = np.repeat(np.arange(4, 6 * N + 4, 6), 2)
+
             vertCols[1::2] += 1
             if parameter == "C":
                 data_horz = np.array(self.arrayParams["Ch"])/C_avg
@@ -915,18 +984,28 @@ class SingleResultsProcessor:
                 connection[np.ix_(vertRows, vertCols)] = np.repeat(np.repeat(data_vert,4,axis=0), 2, axis=1)
         elif parameter == "RC":
             connection2 = np.zeros(connection.shape)
-            horzRowsR = np.arange(0, M * 6 - 4, 6)
-            horzRowsC = np.arange(1, M * 6 - 4, 6)
+            if self.vert:
+                horzRowsR = np.arange(4, M * 6 + 4, 6)
+                horzRowsC = np.arange(5, M * 6 + 4, 6)
+                vertRows = np.repeat(np.arange(0, M * 6 + 4, 6), 4)
+                rows = np.repeat(np.arange(4, M * 6 + 4, 6), 2)
+            else:
+                horzRowsR = np.arange(0, M * 6 - 4, 6)
+                horzRowsC = np.arange(1, M * 6 - 4, 6)
+                vertRows = np.repeat(np.arange(2, M * 6 - 4, 6), 4)
+                rows = np.repeat(np.arange(0, M * 6 - 4, 6), 2)
             horzCols = np.repeat(np.arange(0, 6 * N + 4, 6), 4)
+            vertColsR = np.arange(4, 6 * N + 4, 6)
+            vertColsC = np.arange(5, 6 * N + 4, 6)
+            cols = np.repeat(np.arange(4, 6 * N + 4, 6), 2)
             horzCols[1::4] += 1
             horzCols[2::4] += 2
             horzCols[3::4] += 3
-            vertRows = np.repeat(np.arange(2, M * 6 -4, 6), 4)
             vertRows[1::4] += 1
             vertRows[2::4] += 2
             vertRows[3::4] += 3
-            vertColsR = np.arange(4, 6 * N + 4, 6)
-            vertColsC = np.arange(5, 6 * N + 4, 6)
+            rows[1::2] += 1
+            cols[1::2] += 1
             data_horz_C = np.array(self.arrayParams["Ch"]) / C_avg
             data_vert_C = np.array(self.arrayParams["Cv"]) / C_avg
             data_horz_R = np.array(self.arrayParams["Rh"]) / R_avg
@@ -953,10 +1032,6 @@ class SingleResultsProcessor:
                 self.arrayParams["RG"]/R_avg if parameter == "RG" else self.arrayParams["VG"]*C_avg
             data = np.reshape(data, (self.runningParams["M"], self.runningParams["N"]))
             cmap = 'RdBu' if parameter == "VG" else 'Greens'
-        rows = np.repeat(np.arange(0, M* 6 -4, 6), 2)
-        rows[1::2] +=1
-        cols = np.repeat(np.arange(4, 6 * N + 4, 6),2)
-        cols[1::2] +=1
 
 
         if island_colors is not None:
@@ -976,29 +1051,35 @@ class SingleResultsProcessor:
         ax.imshow(np.ma.masked_array(dots, dots_mask), vmin=np.min(dots),
                   vmax=np.max(dots), cmap='Blues', aspect='equal')
         divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
+        pad = 0.55 if electrodes else 0.05
+        cax = divider.append_axes("right", size="5%", pad=pad)
         if parameter == "RC":
             im2 = ax.imshow(np.ma.masked_array(connection2, connection2_mask), vmin=np.min(connection2),
                             vmax=np.max(connection2), cmap=cmap2, aspect='equal')
             cb = fig.colorbar(im1, cax=cax)
-            cax2 = divider.append_axes("right", size="5%", pad=0.7)
+            cax2 = divider.append_axes("right", size="5%", pad=1)
             cb2 = fig.colorbar(im2, cax=cax2)
-            cb.set_label("$R/\\left<R\\right>$", fontsize=15)
-            cb2.set_label("$C/\\left<C\\right>$", fontsize=15)
+            cb.set_label("$R/\\left<R\\right>$", fontsize=20)
+            cb2.set_label("$C/\\left<C\\right>$", fontsize=20)
         else:
             cb = fig.colorbar(im1, cax=cax)
             norm_parameter = "C" if parameter in ["C","CG"] else "R"
             cb.set_label("$" + parameter + "/\\left<" + norm_parameter + "\\right>$")
         y_label_list = ['row ' + str(row) for row in range(self.rows)]
         if self.columns > 3:
-            x_label_list = ['col ' + str(col) for col in range(0,self.columns,2)]
-            ax.set_xticks(cols[::4])
+            x_label_list = ['col ' + str(col) for col in range(0,self.columns,4)]
+            ax.set_xticks(cols[::8])
         else:
             x_label_list = ['col ' + str(col) for col in range(self.columns)]
             ax.set_xticks(cols[::2])
         ax.set_yticks(rows[::2])
         ax.set_xticklabels(x_label_list)
         ax.set_yticklabels(y_label_list)
+        if electrodes is not None:
+            for rect in electrodes:
+                ax.add_patch(copy(rect))
+
+
         return ax
 
     def createCapacitanceMatrix(self):
@@ -1079,7 +1160,8 @@ class SingleResultsProcessor:
 
 
     def plot_IV(self, ax=None, fig=None, err=True, alternative=False, errorevery=10,
-                Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current', shift=0, fmt_up='r.', fmt_down='b.'):
+                Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current', shift=0, fmt_up='r.', fmt_down='b.',
+                xlim=None, ylim=None):
 
         if ax is None:
             fig, ax = plt.subplots()
@@ -1103,6 +1185,25 @@ class SingleResultsProcessor:
                          self.alternativeI[self.alternative_mid_idx:]/Inorm + shift,
                          fmt='c.', yerr=self.alternativeIErr[self.alternative_mid_idx:]/Inorm,
                          errorevery=errorevery)
+            if xlim is not None:
+                ax.set_xlim(*xlim)
+            if ylim is not None:
+                ax.set_ylim(*ylim)
+        if self.vert:
+            ax2 = add_subplot_axes(fig, ax, [0.1,0.5,0.5,0.5])
+            ax2.yaxis.set_label_position("right")
+            ax2.yaxis.tick_right()
+            if err:
+                ax2.errorbar(self.V[:self.mid_idx] / Vnorm, self.vertI[:self.mid_idx] / Inorm + shift, fmt='m.',
+                            yerr=self.vertIErr[:self.mid_idx] / Inorm,
+                            errorevery=errorevery)
+
+                ax2.errorbar(self.V[self.mid_idx:] / Vnorm, self.vertI[self.mid_idx:] / Inorm + shift, fmt='g.',
+                            yerr=self.vertIErr[self.mid_idx:] / Inorm,
+                            errorevery=errorevery)
+            else:
+                ax2.plot(self.V[:self.mid_idx] / Vnorm, self.vertI[:self.mid_idx] / Inorm + shift, 'm.')
+                ax2.plot(self.V[self.mid_idx:] / Vnorm, self.vertI[self.mid_idx:] / Inorm + shift, 'g.')
 
         ax.set_xlabel(Vlabel)
         ax.set_ylabel(Ilabel)
@@ -1113,81 +1214,111 @@ class SingleResultsProcessor:
             print("No temperature data where loaded")
             exit(1)
         V = self.get_running_param("Vmin") * self.calc_param_average("C")
-        I = self.I[self.I > 0]
-        T = self.T[self.I > 0]
-        # IErr = self.IErr[self.I > 0]
-        # IErr[IErr < EPS] = EPS
-        R = V/I
+        I = self.I
+        T = self.T
+        IErr = self.IErr[I > 0]
+        IErr[IErr < EPS] = EPS
+        R = V/I[I > 0]
+        RErr = (IErr * R) / I[I > 0]
+        results = (interp1d(R, T[I > 0], assume_sorted=False, fill_value=(np.max(T), 0), bounds_error=False),
+                   interp1d(R + RErr, T[I > 0], assume_sorted=False, fill_value=(np.max(T), 0), bounds_error=False),
+                   interp1d(R - RErr, T[I > 0], assume_sorted=False, fill_value=(np.max(T), 0), bounds_error=False))
         if self.vert:
-            vertV = np.abs(self.get_running_param("VU") - self.get_running_param("VD"))
-            vertI = self.vertI[self.vertI > 0]
-            vertR = vertV / vertI
-            return interp1d(R, T, assume_sorted=False, fill_value=ERR_VAL, bounds_error=False),\
-                   interp1d(vertR, T, assume_sorted=False, fill_value=ERR_VAL, bounds_error=False)
-        else:
-            return interp1d(R, T, assume_sorted=False)
+            vertV = np.abs(self.get_running_param("VU") - self.get_running_param("VD"))* self.calc_param_average("C")
+            vertI, vertIErr = average_results(self.vertI, self.vertIErr, window_size=9)
+            vertR = vertV / vertI[vertI > 0]
+            vertRErr = (vertIErr[vertI > 0] * vertR) / vertI[vertI > 0]
+            results += (interp1d(vertR, T[vertI > 0], assume_sorted=False, fill_value=(np.max(T), 0), bounds_error=False),
+                        interp1d(vertR + vertRErr, T[vertI > 0], assume_sorted=False, fill_value=(np.max(T), 0), bounds_error=False),
+                        interp1d(vertR - vertRErr, T[vertI > 0], assume_sorted=False, fill_value=(np.max(T), 0), bounds_error=False))
+        return results
 
-    def plot_RT(self, ax=None, err=True, errorevery=10, fit=True, shift=1, color='green', label=""):
+    def plot_RT(self, ax=None, err=False, errorevery=1, fit=True, shift=1, color='blue', vert_color="green",
+                label="", vert_label="", text_pos=None):
         if self.T is None:
             print("No temperature data where loaded")
             exit(1)
         if ax is None:
             fig, ax = plt.subplots(figsize=FIGSIZE)
-        def plot_RT_helper(V, T, I, IErr):
-            if err:
-                ax.errorbar(T[I>0], (V/I[I>0]) * shift, color=color, marker='.',linestyle="",
-                             yerr=IErr[I>0]*V/I[I>0], errorevery=errorevery)
-            else:
-                ax.plot(T[I>0], (V/I[I>0])* shift, color=color, marker='.',linestyle="")
+        def plot_RT_helper(V, T, I, IErr, label="", fit_label="", color="", text_pos=None):
+            I[I<0] = 0
+            R = V / I[I > EPS]
+            RErr = (IErr[I > EPS] * R) / I[I > EPS]
             if fit:
                 def arrhenius(T, a, b):
                     return a*np.exp(-b/T)
                 def shifted_arrhenius(T, a, b, c):
                     return a * np.exp(-b / T) + c
-                if I[0] == 0:
-                    fit_param, fit_cov = curve_fit(arrhenius, T, I / V, p0=((I[-1] - I[0]) / V, 0.1),
-                                                   bounds=(0, np.inf), sigma=IErr)
+                if I[0] < EPS:
+                    fit_param, fit_cov = curve_fit(arrhenius, T, I/V, p0=(I[-1] / V, 0.1),
+                                                   bounds=(0, np.inf), sigma=IErr/V)
                     G, T0 = fit_param
                     G_err, T0_err = np.sqrt(np.diag(fit_cov))
                     Rinf = 1 / G
-                    Rinf_err = Rinf * G_err
+                    Rinf_err = (Rinf * G_err) / G
                     Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                     T0,T0_err = significant_figures(T0, T0_err)
-                    ax.text(np.max(T)-0.37, 1.9 * shift * (V / I[-1]),
-                            "$R_{\\infty}/\\left(R_1+R_2\\right) = %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2} = %s \\pm %s$" % (
+                    if text_pos is None:
+                        text_pos = (np.min(1/T[I>EPS]) + 0.04, np.min(R)*shift)
+                    ax.text(text_pos[0], text_pos[1],
+                            "$R_{\\infty}= %s \\pm %s$, $T_0 = %s \\pm %s$" % (
                                 str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                     fit_result = arrhenius(T, *fit_param)
+                    ax.plot(1 / T[I > EPS], (1 / fit_result[I > EPS]) * shift, color=color, label=fit_label)
+                    if err:
+                        ax.errorbar(1 / T[I > EPS], R * shift, color=color, marker='.', linestyle="",
+                                    yerr=RErr, errorevery=errorevery, label=label)
+                    else:
+                        ax.plot(1 / T[I > EPS], R * shift, color=color, marker='.', linestyle="", label=label)
                 else:
                     fit_param, fit_cov = curve_fit(shifted_arrhenius, T, I/V, p0=((I[-1]-I[0])/V, 2,I[3]/V), bounds=(0,np.inf),
-                                                   sigma=IErr)
+                                                   sigma=IErr/V)
                     G, T0, G0 = fit_param
                     G_err, T0_err, G0_err = np.sqrt(np.diag(fit_cov))
                     Rinf = 1 / (G + G0)
-                    Rinf_err = Rinf * np.sqrt(G_err ** 2 + G0_err ** 2)
+                    Rinf_err = Rinf**2 * np.sqrt(G_err ** 2 + G0_err ** 2)
                     R0 = 1 / G0
-                    R0_err = R0 * G0_err
+                    R0_err = (R0 * G0_err) / G0
                     Rinf, Rinf_err = significant_figures(Rinf, Rinf_err)
                     T0, T0_err = significant_figures(T0, T0_err)
                     R0, R0_err = significant_figures(R0, R0_err)
-                    ax.text(np.max(T)-0.45,1.9*shift*(V/I[-1]),"$R_{0}/\\left(R_1+R_2\\right) = %s \\pm %s$, $R_{\\infty}/\\left(R_1+R_2\\right)= %s \\pm %s$, $T_0\\frac{C_1+C_2}{e^2}  = %s \\pm %s$" % (
-                    str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
+                    if text_pos is None:
+                        text_pos = (np.min(1/T[I>EPS]) , (1/R[-1]-G0)*shift)
+                    ax.text(text_pos[0], text_pos[1],
+                            "$R_{0} = %s \\pm %s$, $R= %s \\pm %s$, $T_0 = %s \\pm %s$" % (
+                          str(R0), str(R0_err), str(Rinf), str(Rinf_err), str(T0), str(T0_err)), color=color)
                     fit_result = shifted_arrhenius(T, *fit_param)
-                ax.plot(T, (1/fit_result) * shift, color=color,label=label)
-            ax.set_ylim(1, np.max(V/I[I>0] *shift)*2000)
-            ax.set_xlim(0, max(ax.get_xlim()[1], np.max(T) + 0.01))
+                    ax.plot(1/T[I>EPS], (1/(fit_result[I>EPS]-G0)) * shift, color=color,label=fit_label)
+                    if err:
+                        ax.errorbar(1 / T[I > EPS], (1/(1/R -G0))* shift, color=color, marker='.', linestyle="",
+                                    yerr=RErr, errorevery=errorevery, label=label)
+                    else:
+                        ax.plot(1 / T[I > EPS], (R - R0) * shift, color=color, marker='.', linestyle="", label=label)
+
+            else:
+                if err:
+                    ax.errorbar(1 / T[I > EPS], R * shift, color=color, marker='.', linestyle="",
+                                yerr=RErr, errorevery=errorevery, label=label)
+                else:
+                    ax.plot(1 / T[I > EPS], R * shift, color=color, marker='.', linestyle="", label=label)
             return True
         V = self.get_running_param("Vmin") * self.calc_param_average("C")
         T = self.T
         I = self.I
         IErr = self.IErr
         IErr[IErr < EPS] = EPS
-        ax.set_yscale("log", nonposy='clip')
-        plot_RT_helper(V, T, I, IErr)
+        plot_RT_helper(V, T, I, IErr,label=label, fit_label=label + " fit", color=color, text_pos=text_pos)
         if self.vert:
-            V = np.abs(self.get_running_param("VU") - self.get_running_param("VL"))  * self.calc_param_average("C")
+            V = np.abs(self.get_running_param("VU") - self.get_running_param("VL")) * self.calc_param_average("C")
             I = self.vertI
             IErr = self.vertIErr
-            plot_RT_helper(V, T, I, IErr)
+            plot_RT_helper(V, T, I, IErr, label=vert_label, fit_label=vert_label + " fit", color=vert_color,
+                           text_pos=text_pos)
+        if label:
+            ax.legends()
+        ax.set_ylabel("$\\frac{R_{arr}}{\\left<R\\right>}$")
+        ax.set_xlabel("$\\frac{1}{k_BT}\\frac{e^2}{\\left<C\\right>}$")
+        ax.set_yscale("log", nonposy='clip')
         return V
 
 
@@ -1224,7 +1355,7 @@ class SingleResultsProcessor:
                     plt.ylabel('Current')
 
     def power_law_fit(self, I=None, IErr=None, V=None, mid_idx=None, err=True, errorevery=10, Vlabel='Voltage', Ilabel='Current', shift=0,
-                        fmt_up='r.', fmt_down='b.', plot=False):
+                        fmt_up='r.', fmt_down='b.', plot=False, ax=None, fig=None):
         if I is None:
             I = self.I
         if IErr is None:
@@ -1237,6 +1368,10 @@ class SingleResultsProcessor:
         VthresholdUp = self.calc_threshold_voltage_up(I, IErr, V, mid_idx)[0]
         if VthresholdUp == 0 or VthresholdDown == 0:
             return [0,0],[0,0],[0,0],[0,0]
+        I, IErr = average_results(I, IErr, window_size=10)
+        I *= self.calc_param_average("CG")/(self.calc_param_average("C")*self.columns)
+        IErr *= self.calc_param_average("CG") / (self.calc_param_average("C")*self.columns)
+
         VUp = V[:mid_idx]
         IUp = I[:mid_idx]
         IErrUp = IErr[:mid_idx]
@@ -1251,12 +1386,13 @@ class SingleResultsProcessor:
         IDown = IDown[VDown > VthresholdDown]
         IErrDown = IErrDown[VDown > VthresholdDown]
         VDown = (VDown[VDown > VthresholdDown] - VthresholdDown) / VthresholdDown
-        if VDown.size < 30 or VUp.size < 30:
+        point_num_for_fit=50
+        if VDown.size < point_num_for_fit or VUp.size < point_num_for_fit:
             return [0,0],[0,0],[0,0],[0,0]
-        VUp_for_fit = VUp[:50]
-        VDown_for_fit = VDown[-50:]
-        IUp_for_fit = IUp[:50] - IUp[0]
-        IDown_for_fit = IDown[-50:] - IDown[-1]
+        VUp_for_fit = VUp[:point_num_for_fit]
+        VDown_for_fit = VDown[-point_num_for_fit:]
+        IUp_for_fit = IUp[:point_num_for_fit] - IUp[0]
+        IDown_for_fit = IDown[-point_num_for_fit:] - IDown[-1]
 
         def power_law(x, a, b):
             return a * x ** b
@@ -1268,21 +1404,24 @@ class SingleResultsProcessor:
         except RuntimeError:
             return [0,0],[0,0],[0,0],[0,0]
         if plot:
+            if ax is None:
+                fig, ax = plt.subplots(figsize=FIGSIZE)
             if err:
-                plt.errorbar(VUp, IUp + shift, fmt=fmt_up, yerr=IErrUp,
+                ax.errorbar(VUp, IUp + shift, fmt=fmt_up, yerr=IErrUp,
                              errorevery=errorevery, label="up")
-                plt.errorbar(VDown, IDown + shift, fmt=fmt_down,
+                ax.errorbar(VDown, IDown + shift, fmt=fmt_down,
                              yerr=IErrDown,
                              errorevery=errorevery, label="down")
             else:
-                plt.plot(VUp, IUp + shift, fmt_up, label="up")
-                plt.plot(VDown, IDown + shift, fmt_down, label="down")
+                ax.plot(VUp, IUp + shift, fmt_up, label="up")
+                ax.plot(VDown, IDown + shift, fmt_down, label="down")
+            print("Plotting %s from directory %s" %(self.fileName, self.directory))
             print("Up fit: {}x^{}".format(*paramsUp))
-            plt.plot(VUp_for_fit, power_law(VUp_for_fit, *paramsUp) + IUp[0], label="fit up")
+            ax.plot(VUp_for_fit, power_law(VUp_for_fit, *paramsUp) + IUp[0], 'r', label="fit up")
             print("Down fit: {}x^{}".format(*paramsDown))
-            plt.plot(VDown_for_fit, power_law(VDown_for_fit, *paramsDown) + IDown[-1], label="fit down")
-            plt.xlabel(Vlabel)
-            plt.ylabel(Ilabel)
+            ax.plot(VDown_for_fit, power_law(VDown_for_fit, *paramsDown) + IDown[-1], 'b', label="fit down")
+            ax.set_xlabel(Vlabel)
+            ax.set_ylabel(Ilabel)
         return paramsUp, np.sqrt(np.diag(covUp)), paramsDown, np.sqrt(np.diag(covDown))
 
     def calc_param_average(self, name):
@@ -1300,16 +1439,17 @@ class SingleResultsProcessor:
         path_dict = dict()
         if len(self.Imaps.shape) < 3:
             self.Imaps = self.Imaps.reshape((1,1,self.Imaps.size))
-        for v,Imap in zip(self.V, self.Imaps):
-            paths, paths_current = findPaths(Imap, self.rows, self.columns)
+        V = self.V if self.V is not None else self.T
+        for v,Imap in zip(V, self.Imaps):
+            paths, paths_current = findPaths(Imap, self.rows, self.columns,vert=self.vert, eps=0.01)
             for path, path_current in zip(paths, paths_current):
                 path_tup = tuple(path)
                 current = np.min(path_current)
                 if path_tup not in path_dict:
                     path_dict[path_tup] = [[],[]]
                 path_dict[path_tup][0].append(v)
-                path_dict[path_tup][1].append(current)
-        return self.filter_paths(path_dict, 30)
+                path_dict[path_tup][1].append(np.abs(current))
+        return self.filter_paths(path_dict, 10)
 
     def filter_paths(self, path_dict, percentage_threshold):
         currents = []
@@ -1372,8 +1512,8 @@ class MultiResultAnalyzer:
             self.runningParams = {p: [] for p in relevant_running_params}
         else:
             self.runningParams = dict()
-        self.disorders = {p: [] for p in ["C","R","CG","VG"]}
-        self.averages = {p: [] for p in ["C", "R", "CG", "VG"]}
+        self.disorders = {p: [] for p in ["C","R","CG","VG", "T"]}
+        self.averages = {p: [] for p in ["C", "R", "CG", "VG", "T"]}
         self.groups = np.array(groups)
         self.groupNames = group_names
         self.small_v_fit_up = []
@@ -1393,7 +1533,6 @@ class MultiResultAnalyzer:
         for directory, fileName in zip(self.directories, self.fileNames):
             try:
                 processor = SingleResultsProcessor(directory, fileName, fullOutput=full, graph=graph, reAnalyze=reAnalyze)
-                processor.load_results(reAnalyze=reAnalyze)
                 if load_params:
                     processor.load_params()
             except MissingFilesException:
@@ -1418,15 +1557,22 @@ class MultiResultAnalyzer:
                     std, avg = self.calc_disorder_and_average(p, processor)
                     self.disorders[p].append(std)
                     self.averages[p].append(avg)
+
             idx += 1
         for i in missing_idx:
             del self.directories[i]
             del self.fileNames[i]
+
+        self.averages["T"] = np.array(self.averages["T"]) * np.array(self.averages["C"])  # normalizing temperature
+
     def calc_disorder_and_average(self, name, processor):
         if name in ["C","R"]:
             combined = np.hstack((np.array(processor.get_array_param(name + "h")).flatten(),np.array(processor.get_array_param(name + "v")).flatten()))
             std = np.std(combined)
             avg = np.average(combined)
+        elif name == "T":
+            std = 0
+            avg = np.average(processor.get_running_param(name))
         else:
             std = np.std(processor.get_array_param(name))
             avg = np.average(processor.get_array_param(name))
@@ -1513,7 +1659,7 @@ class MultiResultAnalyzer:
             ylabel = score_name
         if xlabel is None:
             xlabel = "example num."
-        plt.errorbar(x, np.array(y) + shift, yerr=yerror, fmt=fmt, label=label)
+        plt.errorbar(x, np.array(y) + shift, yerr=yerror, fmt=fmt, label=label, markersize=16)
         plt.ylabel(ylabel)
         plt.xlabel(xlabel)
 
@@ -1542,7 +1688,8 @@ class MultiResultAnalyzer:
         return ax, fig
 
     def plot_score_by_parameter(self, score_name, parameter_names, runningParam=True,
-                                average_results=True, normalizing_parameter_names=None, fig=None, ax=None):
+                                average_results=True, normalizing_parameter_names=None, fig=None, ax=None,
+                                fmt='.'):
         """
         Plots score as a function of given parameter
         :param score_name: relevant score name (hysteresis, jump, blockade)
@@ -1555,9 +1702,11 @@ class MultiResultAnalyzer:
             parameter_name = parameter_names[0]
             y, y_high_err, y_low_err = self.get_relevant_scores(score_name)
             if runningParam:
-                normalization = np.array(self.runningParams[normalizing_parameter_names[0]]) if\
-                    normalizing_parameter_names is not None else 1
-                x = np.array(self.runningParams[parameter_name])/normalization
+                if normalizing_parameter_names is not None:
+                    normalization = np.array(self.runningParams[normalizing_parameter_names[0]])
+                    x = np.array(self.runningParams[parameter_name])/normalization
+                elif parameter_name == "T" or "V" in parameter_name:
+                    x = np.array(self.runningParams[parameter_name])*np.array(self.averages["C"])
             else:
                 normalization = np.array(self.arrayParams[normalizing_parameter_names[0]]) if \
                     normalizing_parameter_names is not None else 1
@@ -1572,7 +1721,7 @@ class MultiResultAnalyzer:
             yerror = yerror[:, y > 0]
             x = x[y > 0]
             y = y[y > 0]
-            plt.errorbar(x, y, yerr=yerror, fmt='.',)
+            ax.errorbar(x, y, yerr=yerror, fmt=fmt, markersize=20)
         elif len(parameter_names) == 2:
             if ax is None:
                 fig = plt.figure(figsize=FIGSIZE)
@@ -1599,7 +1748,7 @@ class MultiResultAnalyzer:
             z = z[z>0]
             plt.xlabel(parameter_names[0])
             plt.ylabel(parameter_names[1])
-
+            ax.scatter(x, y, z, fmt=fmt)
         else:
             raise NotImplementedError
         return ax, fig
@@ -1712,12 +1861,11 @@ class MultiResultAnalyzer:
                         if window_size is None:
                             window_size = 0
                         x, y, yerror = self.running_average(x,y,yerror,window_size)
-                    ax.errorbar(x,y, yerr=yerror, fmt=fmt)
+                    ax.errorbar(x,y, yerr=yerror, fmt=fmt, markersize=20)
         return ax, fig
 
     def print_max_score_file(self, score):
         index = np.argmax(self.scores[score]["score"])
-        val = np.max(self.scores[score]["score"])
         print("File with maximum " + score + " is:")
         print(os.path.join(self.directories[index],self.fileNames[index]))
 
@@ -1753,9 +1901,9 @@ class MultiResultAnalyzer:
         new_xs = []
         new_ys = []
         new_ysErr = []
-        while high <= x_max:
+        while low <= x_max:
             relevant = np.logical_and(x >= low, x <= high)
-            if x[relevant].size > 0:
+            if x[relevant].size > 3:
                 new_xs.append(np.average(x[relevant]))
                 new_ys.append(np.average(y[relevant]))
                 new_ysErr.append(np.std(y[relevant]/len(y[relevant])))
@@ -1788,6 +1936,94 @@ class MultiResultAnalyzer:
                 new_zs.append(new_z_variance*np.sum(z[relevant]/zErr[relevant]**2))
                 new_zsErr.append(np.sqrt(new_z_variance))
         return np.array(new_xs), np.array(new_ys), np.array(new_zs), np.array(new_zsErr)
+
+    def plot_threshold_like_in_MW(self, ax=None, ax2=None, fig=None, dimensions=2, decreasing_voltage=False,
+                                  avg_marker='.',std_marker='.', fit=False, fit_linestyle="--"):
+        if ax is None:
+            fig, ax = plt.subplots()
+        res = dict()
+        score = "thresholdVoltage"
+        score += "Down" if decreasing_voltage else "Up"
+        for idx, N in enumerate(self.runningParams["N"]):
+            if N == 1:
+                continue
+            if dimensions == 1 and self.runningParams["M"][idx] > 1:
+                continue
+            elif dimensions == 2 and self.runningParams["M"][idx] != N:
+                continue
+            else:
+                CG = self.averages["CG"][idx] / self.averages["C"][idx]
+                c_disorder = self.disorders["C"][idx]/self.averages["C"][idx]
+                r_disorder = self.disorders["R"][idx]/self.averages["R"][idx]
+                if CG > 10 or CG < 5 or r_disorder > 1.1 or c_disorder > 1 or r_disorder < 0.5:
+                    continue
+                if N not in res:
+                    res[N] = {SCORE_VAL:[], "CG":[]}
+                res[N][SCORE_VAL].append(self.scores[score][SCORE_VAL][idx])
+                res[N]["CG"].append(CG)
+        normalized_avareges = []
+        normalized_avareges_err = []
+        normalized_std = []
+        normalized_std_err = []
+        Ns = np.array(sorted(res.keys()))
+        valid_Ns = []
+        for N in Ns:
+            thresholds = np.array(res[N][SCORE_VAL])
+            n = thresholds.size
+            if n < 3:
+                continue
+            print("For N=%d there are %d results." %(N, n))
+            valid_Ns.append(N)
+            CG = np.array(res[N]["CG"])
+            normalized_avareges.append(np.average(thresholds*CG)/N)
+            normalized_avareges_err.append(np.std(thresholds*CG/(N*n)))
+            normalized_std.append(np.std(thresholds)/np.average(thresholds))
+            normalized_std_err.append(np.sqrt(((moment(thresholds, 4) - ((n-3)/(n-1))*np.var(thresholds)**2)/n)/
+                                      (4*np.var(thresholds)*np.average(thresholds)**2) +
+                                              np.var(thresholds)**2/np.average(thresholds)**4))
+        valid_Ns = np.array(valid_Ns)
+        normalized_avareges = np.array(normalized_avareges)
+        normalized_avareges_err = np.array(normalized_avareges_err)
+        normalized_std = np.array(normalized_std)
+        normalized_std_err = np.array(normalized_std_err)
+        avg_color = 'magenta'
+        std_color = 'green'
+        ax.errorbar(valid_Ns, normalized_avareges, yerr=normalized_avareges_err,
+                    marker=avg_marker, color=avg_color, linestyle='', ms=30)
+        ax.set_xlabel("$N$")
+        ax.set_ylabel("$\\left<V^{th}\\right>\\frac{C_G}{eN}$", color=avg_color)
+        ax.tick_params(axis='y', labelcolor=avg_color)
+        if ax2 is None:
+            ax2 = ax.twinx()
+        ax2.errorbar(valid_Ns, normalized_std, yerr=normalized_std_err,
+                     marker=std_marker, color=std_color, linestyle='', ms=30)
+        ax2.set_ylabel("$\\frac{\\sigma_{V^{th}}}{\\left<V^{th}\\right>}$", color=std_color)
+        ax2.tick_params(axis='y', labelcolor=std_color)
+        if fit:
+            def MW_func(x, a, b):
+                return a*(x**(-2/3))*np.sqrt(np.log(x)) + b
+            def constfunc(x, a, b):
+                return a*np.ones(x.shape) + b
+            def one_over(x, a, b):
+                return a/x + b
+            avg_func = MW_func if dimensions ==2 else constfunc
+            std_func = MW_func if dimensions ==2 else one_over
+            params_avg, cov_avg = curve_fit(f=avg_func, xdata=valid_Ns, ydata=normalized_avareges,
+                                            p0=[-1, 0], bounds=(-np.inf, np.inf),
+                                            sigma=normalized_avareges_err)
+            params_std, cov_std = curve_fit(f=std_func, xdata=valid_Ns, ydata=normalized_std,
+                                            sigma=normalized_std_err,
+                                            p0=[-1, 0], bounds=(-np.inf, np.inf))
+            print("Average fit params: alpha=%f +- %f, c=%f +- %f" %(params_avg[0], np.sqrt(cov_avg[0,0]),
+                                                                     params_avg[1], cov_avg[1, 1]))
+            print("Std fit params: alpha=%f +- %f, c=%f +- %f" % (params_std[0], np.sqrt(cov_std[0, 0]),
+                                                                      params_std[1], cov_std[1, 1]))
+            fit_Ns = np.linspace(np.min(Ns), np.max(Ns), 100)
+            ax.plot(fit_Ns, avg_func(fit_Ns, *params_avg), color=avg_color, linestyle=fit_linestyle)
+            ax2.plot(fit_Ns, std_func(fit_Ns, *params_std), color=std_color, linestyle=fit_linestyle)
+            ax.plot(fit_Ns, 0.5/fit_Ns, color="orange", linestyle='dotted', linewidth=5)
+        return fig, ax, ax2
+
 
 
 def get_filter(param_names, param_vals, score_names, minimum_score_vals):
@@ -1823,11 +2059,13 @@ def resistance_temperature_analysis(directory, file_names):
         Vt = V[:,i]
         plt.semilogy(1/T, np.abs(Vt/It))
 
-def findPaths(Imap, rows, columns, eps=0.001):
+def findPaths(Imap, rows, columns, eps=0.001, vert=False):
     paths = []
     paths_current = []
+    def row_to_index(row):
+        return row*2 + 1 if vert else row*2
     def array_DFS(i ,j , path, path_current):
-        if j == columns:
+        if j == columns or i==rows or i < 0:
             path_copy = path.copy()
             path_current_copy = path_current.copy()
             path_copy.append((i,j))
@@ -1835,64 +2073,105 @@ def findPaths(Imap, rows, columns, eps=0.001):
             paths_current.append(path_current_copy)
             path_flow = np.min(path_current_copy)
             first_row = path_copy[0][0]
-            Imap[first_row*2,0] -= path_flow
+            first_column = path_copy[0][1]
+            if first_column > 0 and first_row==rows-1:
+                 first_row = rows *2
+            else:
+                first_row = row_to_index(first_row)
+            Imap[first_row,first_column] -= path_flow
             for node_idx in range(len(path_copy)-1):
                 flow_row, flow_column = path_copy[node_idx]
                 flow_row += path_copy[node_idx+1][0]
                 flow_column += max(path_copy[node_idx+1][1]-flow_column,0)
+                if vert:
+                    flow_row += 1
                 if Imap[flow_row, flow_column] > 0:
-                    Imap[flow_row, flow_column] -= path_flow
+                    Imap[flow_row, flow_column] -= np.abs(path_flow)
                 else:
-                    Imap[flow_row, flow_column] += path_flow
+                    Imap[flow_row, flow_column] += np.abs(path_flow)
             return True
-        elif (i,j) in path or i < 0 or j < 0 or i == rows:
+        elif (i,j) in path or j < 0:
             return False
         else:
             path.append((i,j))
-            if Imap[i*2,j] < -eps:
-                path_current.append(-Imap[i*2 , j ])
+            if Imap[row_to_index(i),j] < -eps:
+                path_current.append(-Imap[row_to_index(i) , j ])
                 if array_DFS(i,j-1,path, path_current):
                     return True
                 del path_current[-1]
-            if i > 0 and Imap[i*2-1,j] < -eps:
-                path_current.append(-Imap[i*2 - 1, j ])
+            if row_to_index(i)-1 > 0 and Imap[row_to_index(i)-1,j] < -eps:
+                path_current.append(-Imap[row_to_index(i) - 1, j ])
                 if array_DFS(i - 1, j, path, path_current):
                     return True
                 del path_current[-1]
-            if i < rows - 1 and Imap[i*2 + 1,j] > eps:
-                path_current.append(Imap[i*2 + 1, j])
+            if row_to_index(i) + 1 < Imap.shape[0] and Imap[row_to_index(i) + 1,j] > eps:
+                path_current.append(Imap[row_to_index(i) + 1, j])
                 if array_DFS(i+1, j, path, path_current):
                     return True
                 del path_current[-1]
-            if Imap[i * 2, j + 1] > eps:
-                path_current.append(Imap[i * 2, j + 1])
+            if Imap[row_to_index(i), j + 1] > eps:
+                path_current.append(Imap[row_to_index(i), j + 1])
                 if array_DFS(i, j + 1, path, path_current):
                     return True
                 del path_current[-1]
         del path[-1]
         return False
     for i in range(rows):
-        if Imap[i*2, 0] > eps:
+        if Imap[row_to_index(i), 0] > eps:
             path = []
-            path_current = [Imap[i*2, 0]]
-            while array_DFS(i, 0, path, path_current) and Imap[i*2, 0] > eps:
+            path_current = [Imap[row_to_index(i), 0]]
+            while array_DFS(i, 0, path, path_current) and Imap[row_to_index(i), 0] > eps:
                 path = []
-                path_current = [Imap[i * 2, 0]]
+                path_current = [Imap[row_to_index(i), 0]]
+    if vert:
+        for j in range(columns):
+            if Imap[0, j] > eps:
+                path = []
+                path_current = [Imap[0, j]]
+                while array_DFS(0, j, path, path_current) and Imap[0, j] > eps:
+                    path = []
+                    path_current = [Imap[0, j]]
+            if Imap[row_to_index(rows)-1, j] < -eps:
+                path = []
+                path_current = [Imap[row_to_index(rows)-1, j]]
+                while array_DFS(rows-1, j, path, path_current) and Imap[row_to_index(rows)-1, j] < -eps:
+                    path = []
+                    path_current = [Imap[row_to_index(rows)-1, j]]
     return paths, paths_current
 
-def plot_paths(paths, ax, colors):
+def plot_paths(paths, ax, colors, vert=False):
     shift = 0
     for path_idx,path in enumerate(paths):
         i_start = path[0][0]
-        ax.arrow(6*shift, 6 * (i_start + shift), 4, 0,
-                 head_width=1, head_length=0.5, color=colors[path_idx], width=0.1)
+        j_start = path[0][1]
+        if j_start == 0:
+            right = 4
+            up = 0
+        elif i_start == 0:
+            right = 0
+            up = 4
+        else:
+            right = 0
+            up = -4
+            i_start += 1
+        arrow_y = 6 * (i_start + shift)
+        arrow_x = 6*(j_start +shift)
+        if j_start > 0:
+            arrow_x += 4
+            if i_start > 0:
+                arrow_y += 2
+        elif vert:
+            arrow_y += 4
+        ax.arrow(arrow_x, arrow_y, right, up,
+                 head_width=3, head_length=0.5, color=colors[path_idx], width=0.5, clip_on=False)
         for idx in range(len(path)-1):
             i1 = path[idx][0]
             j1 = path[idx][1]
             i2 = path[idx+1][0]
             j2 = path[idx+1][1]
-            ax.arrow(4+6*(j1+ shift), 6*(i1+shift), 6*(j2-j1), 6*(i2-i1),
-                     head_width=1, head_length=0.5, color=colors[path_idx], width=0.1)
+            arrow_y = 6 * (i1 + shift) + 4 if vert else 6 * (i1 + shift)
+            ax.arrow(4+6*(j1+ shift), arrow_y, 6*(j2-j1), 6*(i2-i1),
+                     head_width=3, head_length=0.5, color=colors[path_idx], width=0.5, clip_on=False)
         shift += 0.02
     return ax
 
@@ -1951,46 +2230,47 @@ def approx_threshold_voltage(R1, R2, C1, C2, CG, VG, nini):
     q2 = CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) + nini
     Vt1 = q1 / (C1 + CG / 2)
     Vt2 = q2 / (C2 + CG / 2)
-    if Vt2 < Vt1:
-        if R1 > R2:
+    if R2 > R1:
+        if Vt1 < Vt2:
+            return Vt1
+        elif Vt2 >= C1+C2 or CG <= (C1+C2)/(1/((C1+C2)*Vt2) - 1):
             return Vt2
         else:
-            nini = 1
-            q1 = -CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) - nini
-            q2 = CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) + nini
-            Vt1 = q1 / (C1 + CG / 2)
-            Vt2 = q2 / (C2 + CG / 2)
-            return min(Vt1, Vt2)
+            return approx_threshold_voltage(R1, R2, C1, C2, CG, VG, nini+1)
     else:
-        if R2 > R1:
+        if Vt2 < Vt1:
+            return Vt2
+        elif Vt1 >= C1+C2 or CG <= (C1+C2)/(1/((C1+C2)*Vt1) - 1):
             return Vt1
         else:
-            nini = -1
-            q1 = -CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) - nini
-            q2 = CG * VG + 0.5 * (C1 + C2 + CG) / (C1 + C2) + nini
-            Vt1 = q1 / (C1 + CG / 2)
-            Vt2 = q2 / (C2 + CG / 2)
-            return min(Vt1, Vt2)
+            return approx_threshold_voltage(R1, R2, C1, C2, CG, VG, nini-1)
+
 
 def approx_jumps_height(R1, R2, C1, C2, CG):
     return 1 / ((C1 + C2 + CG) * (R1 + R2))
 
+def approx_jumps_height_down(R1, R2, C1, C2, CG, Vs):
+    Rmin = min(R1,R2)
+    Rmax = max(R1,R2)
+    total = 0
+    if len(Vs) > 0:
+        for V in Vs:
+            factor =((C1+C2+CG)/(CG*(Rmax-Rmin)))*(Rmax/(C1+C2) - np.sqrt((R1*R2*V*(C1+C2+CG))/(CG*(C1+C2))))
+            total += approx_jumps_height(R1, R2, C1, C2, CG)*factor
+        return total / len(Vs)
+    else:
+        return 0
+
 def approx_jump_up_down(R1, R2, C1, C2, CG, V):
     Rmax = max(R1, R2)
     Rmin = min(R1, R2)
-    Ugap = np.abs((Rmax/(C1+C2)+ Rmin * V)/(Rmax-Rmin) - (C1+C2+2*CG)*(np.sqrt((R1*R2*V)/(CG*(C1+C2+CG)*(C1+C2)*(R1-R2)**2))))
-    # Ugap = ((Rmax/(C1+C2)+ ((C1+C2+CG)/CG)*Rmin * V - 2*(np.sqrt((R1*R2*V*(C1+C2+CG))/(CG*(C1+C2))))))/(Rmax-Rmin)
+    Ugap = (Rmax/(C1+C2)+ ((C1+C2+CG)/CG)*Rmin * V - 2*(np.sqrt((R1*R2*V*(C1+C2+CG))/(CG*(C1+C2)))))/(Rmax-Rmin)
     return CG * Ugap * approx_jumps_separation(R1, R2, C1, C2, CG)
 
-def approx_hysteresis_total_area(R1, R2, C1, C2, CG, VG, Vmax):
-    Vmax = min((max(R1, R2)*CG)/(min(R1, R2)*(C1+C2)*(C1+C2+CG)),Vmax)
-    Vmin = 1.1
-    dV = approx_jumps_separation(R1,R2,C1,C2,CG)
-    V = Vmin
+def approx_hysteresis_total_area(R1, R2, C1, C2, CG, VG, Vs):
     area = 0
-    while V < Vmax:
+    for V in Vs:
         area += approx_jump_up_down(R1,R2,C1,C2,CG,V)*approx_jumps_height(R1,R2,C1,C2,CG)
-        V += dV
     return area
 
 def significant_figures(x, xerr):
@@ -2102,18 +2382,128 @@ if __name__ == "__main__":
                     s.plot_resistance()
                     plt.show()
 
-
     elif action =="perpendicular_electron_temperature":
         for directory, names in zip(directories, file_names):
             for name in names:
-                s_iv = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=True)
-                s_it = SingleResultsProcessor(options.it_directory, name, fullOutput=options.full, vertCurrent=True,
-                                              IT=True)
+                s_iv = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=True,
+                                              reAnalyze=options.re_analyze)
+                s_it = SingleResultsProcessor(options.it_directory, name + "_it", fullOutput=options.full,
+                                              vertCurrent=True, IT=True, reAnalyze=options.re_analyze)
                 if filter(s_iv):
-                    el_temp_approx, el_temp_vert_approx = s_it.get_electron_temperature_approx()
-                    s_iv.plot_electrons_temperature(el_temp=el_temp_approx, el_temp_vert=el_temp_vert_approx)
+                    el_temp_approx = s_it.get_electron_temperature_approx()
+                    s_iv.plot_electrons_temperature(el_temp=el_temp_approx)
                     plt.show()
 
+    elif action =="perpendicular_electron_temperature_for_text":
+        directory = directories[0]
+        it_directory = options.it_directory
+        names = ['array_5_15_r_std_9_run_1', 'array_5_15_r_std_9_run_2',
+                 'array_5_15_r_std_9_run_3', 'array_5_15_r_std_9_run_4']
+        xlimits = [(2,2.65), (3.4, 4), (3.3, 3.8), (2.4,2.75)]
+        ylimits = [(0.002, 0.046), (0.002, 0.046), (0.002,0.046), (0.002, 0.046)]
+        subplotloc=[[0.6,0.1,0.45,0.45],[0.5,0.1,0.45,0.45],[0.03,0.55,0.45,0.45],[-0.05,0.55,0.45,0.45]]
+        fig, axes = plt.subplots(2, 2, figsize=FIGSIZE)
+        for i,name in enumerate(names):
+            ax = axes[i//2, i%2]
+            s_iv = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=True,
+                                          reAnalyze=options.re_analyze)
+            s_it = SingleResultsProcessor(options.it_directory, name + "_it", fullOutput=options.full,
+                                          vertCurrent=True, IT=True, reAnalyze=options.re_analyze)
+            el_temp_approx = s_it.get_electron_temperature_approx()
+            s_iv.plot_electrons_temperature(fig=fig, ax=ax, el_temp=el_temp_approx,
+                                            xlim=xlimits[i], ylim=ylimits[i], subplot_loc=subplotloc[i])
+        add_text_upper_left_corner(axes[0,0], "a")
+        add_text_upper_left_corner(axes[0, 1], "b", shift=-0.001)
+        add_text_upper_left_corner(axes[1, 0], "c")
+        add_text_upper_left_corner(axes[1, 1], "d", shift=-0.001)
+        axes[0,0].legend(loc='upper center',
+                         bbox_to_anchor=(0.8, 1.4), ncol=2, fancybox=True, shadow=True)
+        axes[0,0].set_xlabel("")
+        axes[0,1].set_xlabel("")
+        axes[0, 1].set_ylabel("")
+        axes[0, 1].set_yticks([])
+        axes[1, 1].set_ylabel("")
+        axes[1, 1].set_yticks([])
+        plt.subplots_adjust(wspace=0)
+        locmaj = matplotlib.ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+        axes[0,0].yaxis.set_major_locator(locmaj)
+        axes[1, 0].yaxis.set_major_locator(locmaj)
+
+        locmin = matplotlib.ticker.LogLocator(base=10.0, subs=np.arange(2, 10) * .1,
+                                              numticks=100)
+        formatmin = matplotlib.ticker.LogFormatterMathtext(base=10.0, labelOnlyBase=False, minor_thresholds=(1.5, 1))
+        axes[0,0].yaxis.set_minor_locator(locmin)
+        axes[1, 0].yaxis.set_minor_locator(locmin)
+        axes[0,0].yaxis.set_minor_formatter(formatmin)
+        axes[1, 0].yaxis.set_minor_formatter(formatmin)
+
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, "perp_current.png"), bbox_inches = 'tight', pad_inches = 0.1)
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == "perp_current_complete":
+        # xlimits = [(1.9, 2.65), (3.35, 3.65), (3, 3.71), (2.38, 2.8)]
+        # ylimits = [(-0.001, 0.046), (-0.001, 0.046), (-0.001, 0.046), (-0.001, 0.046)]
+        xlimits = [(0.4, 1.3), (0.88, 1.2), (0.2, 1.3), (1.1, 1.85)]
+        ylimits = [(-0.001, 0.03), (-0.001, 0.036), (-0.001, 0.05), (-0.001, 0.045)]
+        # subplotloc = [[0.55, 0.1, 0.45, 0.45], [0.55, 0.1, 0.45, 0.45], [0.1, 0.55, 0.4, 0.4],
+        #               [0.55, 0.1, 0.45, 0.45]]
+        subplotloc = [[0.55, 0.1, 0.45, 0.45], [0.55, 0.1, 0.45, 0.45], [0.55, 0.1, 0.45, 0.45],
+                                     [0.55, 0.1, 0.45, 0.45]]
+        c_shifts = [-5e5, -8.9e4, -4.1e4, -2.8e4]
+        c_xlim = [200, 400, 100, 200]
+        # electrodes = [Rectangle((-3,3.5),3,26, fill=True, color="m", clip_on=False),
+        #               Rectangle((93,3.5),3,26, fill=True, color="m", clip_on=False),
+        #               Rectangle((45.5,-7),2,6, fill=True, color="m", clip_on=False),
+        #               Rectangle((45.5,33),2,6, fill=True, color="m", clip_on=False)]
+        electrodes = [Rectangle((-3.5, 3.5), 3, 14, fill=True, color="m", clip_on=False),
+                      Rectangle((45.5,3.5),3,14, fill=True, color="m", clip_on=False),
+                      Rectangle((21.5,-6.5),2,6, fill=True, color="m", clip_on=False),
+                      Rectangle((21.5,21.5),2,6, fill=True, color="m", clip_on=False)]
+        for directory, names in zip(directories, file_names):
+            for i,name in enumerate(sorted(names)):
+                s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=True,
+                                           graph=False, reAnalyze=options.re_analyze)
+                s_it = SingleResultsProcessor(options.it_directory, name + "_it", fullOutput=options.full,
+                                              vertCurrent=True, IT=True, reAnalyze=options.re_analyze)
+                if filter(s):
+                    fig, axes = plt.subplots(2,2,figsize=FIGSIZE)
+                    s.plot_array_params("RC", axes[0,0],fig, electrodes=electrodes)
+                    path_dict = s.calc_paths()
+                    plot_paths(path_dict, axes[0,0],
+                               colors=matplotlib.cm.tab10(np.linspace(0, 1, len(path_dict.keys()))), vert=True)
+                    for rect in electrodes:
+                        axes[0,0].add_patch(copy(rect))
+                    s.plot_IV(axes[0,1], fig, err=True, errorevery=10, Vlabel="$V\\frac{\\left<C\\right>}{e}$",
+                              Ilabel="$I\\frac{\\left<C\\right>\\left<R\\right>}{e}$")
+                    s_it.plot_RT(axes[1,0],err=True,errorevery=1,fit=False)
+                    el_temp_approx = s_it.get_electron_temperature_approx()
+                    s.plot_electrons_temperature(fig=fig, ax=axes[1,1], el_temp=el_temp_approx,
+                                                 subplot_loc=subplotloc[i], xlim=xlimits[i], ylim=ylimits[i])
+
+                    # locmaj = matplotlib.ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+                    # axes[1, 1].yaxis.set_major_locator(locmaj)
+                    #
+                    # locmin = matplotlib.ticker.LogLocator(base=10.0, subs=np.arange(2, 10) * .1,
+                    #                                       numticks=100)
+                    # formatmin = matplotlib.ticker.LogFormatterMathtext(base=10.0, labelOnlyBase=False,
+                    #                                                    minor_thresholds=(1.5, 1))
+                    # axes[1, 1].yaxis.set_minor_locator(locmin)
+                    # axes[1, 1].yaxis.set_minor_formatter(formatmin)
+                    axes[1,0].set_xlim(0, c_xlim[i])
+                    add_text_upper_left_corner(axes[0, 0], "a")
+                    add_text_upper_left_corner(axes[0, 1], "b")
+                    add_text_upper_left_corner(axes[1, 0], "c", shift=c_shifts[i])
+                    add_text_upper_left_corner(axes[1, 1], "d", shift=-0.001)
+                    plt.subplots_adjust(hspace=0.26, wspace=0.35)
+                    if options.output_folder:
+                        plt.savefig(os.path.join(options.output_folder, "perp_current_complete_%s.png" %name),
+                                    bbox_inches='tight', pad_inches=0.1)
+                        plt.close(fig)
+                    else:
+                        plt.show()
     elif action == "plot_RT":
         for directory, names in zip(directories, file_names):
             for name in names:
@@ -2122,8 +2512,8 @@ if __name__ == "__main__":
                 if filter(s):
                     v = s.plot_RT(err=True)
                     plt.show()
-    elif action == "plot_RT_dingle_island":
-        directory = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_IT"
+    elif action == "plot_RT_single_island":
+        directory = "/home/kasirershahar/University/Research/simulation_results/it/single_island_IT"
         files = [["array_1_1_cg_1_v_0.1","array_1_1_cg_1_v_0.1_r_disorder","array_1_1_cg_10_v_0.1",
                   "array_1_1_cg_10_v_0.1_r_disorder"],
                  ["array_1_1_cg_1_v_0.5", "array_1_1_cg_1_v_0.5_r_disorder", "array_1_1_cg_10_v_0.5",
@@ -2132,46 +2522,98 @@ if __name__ == "__main__":
                   "array_1_1_cg_10_v_1_r_disorder"]]
         fig, ax = plt.subplots(3,1, figsize=FIGSIZE)
         shift = 1
-        shift_factor = [700,700,100]
+        shift_factor = [800,1500,5000]
         labels =["$\\frac{C_G}{C_1+C_2} = 1$ $\\frac{R_2}{R_1}=1$", "$\\frac{C_G}{C_1+C_2} = 1$ $\\frac{R_2}{R_1}=9$", "$\\frac{C_G}{C_1+C_2} = 10$ $\\frac{R_2}{R_1}=1$",
                  "$\\frac{C_G}{C_1+C_2} = 10$ $\\frac{R_2}{R_1}=9$"]
         colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, 4))
         for index in range(3):
             for i,name in enumerate(files[index]):
                 s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=False, graph=False,
-                                           reAnalyze=options.re_analyze, IT=True)
+                                           reAnalyze=options.re_analyze, IT=True, single=True)
                 if filter(s):
-                    v = s.plot_RT(ax[index], shift=shift, err=True, color=colors[i])
+                    v = s.plot_RT(ax[index], shift=shift, err=True, color=colors[i], text_pos=(2, 0.01*shift))
                     shift *= shift_factor[index]
-                ax[index].set_title("$V\\frac{C_1+C_2}{e} = %1.1f$" %v, position=(0.5, 0.75))
-                ax[index].set_xlabel("$T\\frac{C_1+C_2}{e^2}$")
-                ax[index].set_ylabel("$\\frac{R}{R_1+R_2}$")
+                ax[index].set_title("$V = %1.1f$" %v, position=(0.1, 0.8))
+                ax[index].set_xlabel("$\\frac{1}{k_BT}\\frac{e^2}{C_1+C_2}$")
+                if index == 2:
+                    ax[index].set_ylabel("$\\frac{\\left(R_{tot}^{-1}-R_0^{-1}\\right)^{-1}}{R_1+R_2}$")
+                else:
+                    ax[index].set_ylabel("$\\frac{R_{tot}}{R_1+R_2}$")
+
             index += 1
             shift=1
         ax[0].set_xlabel('')
-        ax[0].set_xticks([])
-        ax[0].set_xlim(0,0.3)
-        ax[0].set_ylim(1,1e15)
+        ax[0].set_xlim(2,25)
+        ax[0].set_ylim(0.01,1e12)
         ax[1].set_xlabel('')
-        ax[1].set_xticks([])
-        ax[1].set_xlim(-0.003, 0.3)
-        ax[1].set_ylim(1,1e15)
-        ax[2].set_ylim(1,1e10)
-        ax[2].set_xlim(0, 0.3)
-        plt.subplots_adjust(wspace=0, hspace=0)
-        ax[0].legend(labels, loc='upper center', bbox_to_anchor=(0.5, 1.2), ncol=4, fancybox=True, shadow=True)
-        ax[0].text(0.001, 5*1e13, "a", fontsize=30)
-        ax[1].text(-0.0015, 1e13, "b", fontsize=30)
-        ax[2].text(0.001, 1e9, "c", fontsize=30)
-        # plt.show()
-        plt.savefig(os.path.join(options.output_folder,'single_island_RT.png'), bbox_inches='tight', pad_inches=0.1)
-        plt.close(fig)
+        ax[1].set_xlim(2, 80)
+        ax[1].set_ylim(0.01,1e14)
+        ax[2].set_ylim(0.01,1e15)
+        ax[2].set_xlim(2, 20)
+        plt.subplots_adjust(wspace=0, hspace=0.3)
+        ax[0].legend(labels, loc='upper center', bbox_to_anchor=(0.5, 1.5), ncol=4, fancybox=True, shadow=True)
+        add_text_upper_left_corner(ax[0], "a", shift=-8.7e11)
+        add_text_upper_left_corner(ax[1], "b", shift=-8.85e13)
+        add_text_upper_left_corner(ax[2], "c", shift=-8.8e14)
+
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder,'single_island_RT.png'), bbox_inches='tight', pad_inches=0.2)
+            plt.close(fig)
+        else:
+            plt.show()
+    elif action == "plot_RT_arrays":
+        directory = directories[0]
+        files = [["array_10_10_it_v_0.2_cg_%d"%i for i in [1, 5, 10]],
+                 ["array_10_10_it_v_0.6_cg_%d"%i for i in [1, 5, 10]],
+                 ["array_10_10_it_v_0.8_cg_%d"%i for i in [1, 5, 10]]]
+        fig, ax = plt.subplots(3, 1, figsize=FIGSIZE)
+        shift = 1
+        shift_factor = [1000, 1000, 1000]
+        ymin = [0.01, 0.02, 0.05]
+        labels = ["$\\frac{C_G}{\\left<C\\right>} = 0.5$", "$\\frac{C_G}{\\left<C\\right>} = 2.5$",
+                  "$\\frac{C_G}{\\left<C\\right>} = 5$"]
+        colors = matplotlib.cm.gist_rainbow(np.linspace(0, 1, 3))
+        for index in range(3):
+            for i, name in enumerate(files[index]):
+                s = SingleResultsProcessor(directory, name, fullOutput=options.full, vertCurrent=False, graph=False,
+                                           reAnalyze=options.re_analyze, IT=True, single=True)
+                if filter(s):
+                    v = s.plot_RT(ax[index], shift=shift, err=True, color=colors[i], text_pos=(10,ymin[index]*shift))
+                    shift *= shift_factor[index]
+                ax[index].set_title("$V = %1.1f$" % v, position=(0.1, 0.75))
+                ax[index].set_xlabel("$\\frac{1}{k_BT}\\frac{e^2}{\\left<C\\right>}$")
+                if index ==0:
+                    ax[index].set_ylabel("$\\frac{R_{tot}}{\\left<R\\right>}$")
+                else:
+                    ax[index].set_ylabel("$\\frac{\\left(R_{tot}^{-1}-R_0^{-1}\\right)^{-1}}{\\left<R\\right>}$")
+            index += 1
+            shift = 1
+        ax[0].set_xlabel('')
+        ax[0].set_xlim(10, 25)
+        ax[0].set_ylim(0.01, 1e11)
+        ax[1].set_xlabel('')
+        ax[1].set_xlim(10, 60)
+        ax[1].set_ylim(0.02, 5e10)
+        ax[2].set_xlim(10, 75)
+        ax[2].set_ylim(0.05, 1e9)
+        plt.subplots_adjust(hspace=0.3)
+        ax[0].legend(labels, loc='upper center', bbox_to_anchor=(0.5, 1.5), ncol=3, fancybox=True, shadow=True)
+        add_text_upper_left_corner(ax[0], "a", shift=-8.6e10)
+        add_text_upper_left_corner(ax[1], "b", shift=-4.41e10)
+        add_text_upper_left_corner(ax[2], "c", shift=-8.2e8)
+
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, 'array_RT.png'), bbox_inches='tight',
+                        pad_inches=0.1)
+            plt.close(fig)
+        else:
+            plt.show()
     elif action == "plot_jumps":
         full = options.full
         for directory,names in zip(directories, file_names):
             for name in names:
                 try:
-                    s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, graph=False,
+                    s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=options.perp, graph=False,
                                                reAnalyze=options.re_analyze)
                     if filter(s):
                         print("Plotting file: " + name + " from directory " + directory)
@@ -2295,7 +2737,6 @@ if __name__ == "__main__":
                     continue
     ####### Manual actions ########
     elif action == "compareIV": # compares methods
-        output_dir = '/home/kasirershahar/University/Research/Thesis/Figures/'
         directory_graph = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
         directory_gillespie = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_different_temperature"
         resultNames= ["big_CG_big_R2","big_CG_small_R2","small_CG_big_R2","small_CG_small_R2"]
@@ -2309,16 +2750,17 @@ if __name__ == "__main__":
             ax = axes[plot_idx//2, plot_idx%2]
             pGraph = SingleResultsProcessor(directory_graph, nameGraph, fullOutput=False, vertCurrent=False,
                                                reAnalyze=False, graph=True)
-            psGillespie = [SingleResultsProcessor(directory_gillespie, nameGillespie + str(T), fullOutput=False, vertCurrent=False,
-                                                reAnalyze=True) for T in [0, 0.001, 0.01, 0.1]]
+            psGillespie = [SingleResultsProcessor(directory_gillespie, nameGillespie + str(T), fullOutput=True, vertCurrent=False,
+                                                reAnalyze=False) for T in [0, 0.001, 0.01, 0.1]]
             shift = 0
-            psGillespie[0].plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
+            # psGillespie[0].plot_jumps_freq(by_occupation=True, ax1=ax, fig=fig)
+            psGillespie[0].plot_IV(err=False, alternative=False, errorevery=1,
                       Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
             shift += 1
-            pGraph.plot_IV("Graph method", err=False, alternative=False,
+            pGraph.plot_IV( err=False, alternative=False,
                            Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", fmt_up='c*', fmt_down='m*', ax=ax, fig=fig)
             for p in psGillespie[1:]:
-                p.plot_IV("Dynamical method", err=False, alternative=False, errorevery=1,
+                p.plot_IV( err=False, alternative=False, errorevery=1,
                                Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
                 shift += 1
             plot_idx += 1
@@ -2336,21 +2778,24 @@ if __name__ == "__main__":
                     'Graph method (increasing voltage)','Graph method (decreasing voltage)'],loc='upper center',
                          bbox_to_anchor=(1, 1.2), ncol=2, fancybox=True, shadow=True)
         axes[0,0].set_zorder(4)
-        axes[0,0].text(-0.2,5.8,"a",fontsize=30)
+        add_text_upper_left_corner(axes[0,0], "a")
         axes[0,1].set_zorder(3)
-        axes[0,1].text(-0.2,5.8,"b",fontsize=30)
+        add_text_upper_left_corner(axes[0,1], "b")
         axes[1,0].set_zorder(2)
-        axes[1,0].text(-0.2,5.8,"c",fontsize=30)
+        add_text_upper_left_corner(axes[1,0], "c")
         axes[1,1].set_zorder(1)
-        axes[1,1].text(-0.2,5.8,"d",fontsize=30)
-        # plt.show()
-        plt.savefig(os.path.join(output_dir, "IV_examples_single_island.png"), bbox_inches = 'tight', pad_inches = 0.01)
-        plt.close(fig)
+        add_text_upper_left_corner(axes[1,1], "d")
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, "IV_examples_single_island.png"), bbox_inches = 'tight', pad_inches = 0.01)
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == "jumps_separation_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        plt.figure(figsize=FIGSIZE)
+        fig = plt.figure(figsize=FIGSIZE)
         shift = 0
+        legend=False
         for Cratio in [0.1,0.2,0.3,0.4,0.5,0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
             Rratios = [0.1,0.2,0.3,0.4,0.5,3,4,5,6,7,8,9,10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
@@ -2368,18 +2813,29 @@ if __name__ == "__main__":
                 R1 = 1/(Rratio + 1)
                 R2 = Rratio/(Rratio + 1)
                 approx.append(approx_jumps_separation(R1, R2, C1, C2, CG))
-            m.plot_score("jumpSeparationUp", xs=Rratios, xlabel="R2/R1", ylabel="Average voltage difference [e/(C1+C2)]", fmt='r.',
-                          shift=shift)
-            m.plot_score("jumpSeparationDown", xs=Rratios, xlabel="R2/R1", ylabel="Average voltage difference [e/(C1+C2)]", fmt='b.',
-                          shift=shift)
-            plt.plot(Rratios, np.array(approx) + shift, 'orange')
+            m.plot_score("jumpSeparationUp", xs=Rratios, xlabel="$R_2/R_1$", ylabel="$\\Delta V \\frac{C_1+C_2}{e}$", fmt='r.',
+                          shift=shift, label="Increasing voltage")
+            m.plot_score("jumpSeparationDown", xs=Rratios, xlabel="$R_2/R_1$", ylabel="$\\Delta V \\frac{C_1+C_2}{e}$", fmt='b.',
+                          shift=shift, label="Decreasing voltage")
+            plt.plot(Rratios, np.array(approx) + shift, 'orange', label="Approximation")
+            plt.text(10.1, approx[-1] + shift - 0.1, str(Cratio), fontsize=30)
             shift += 1
-        plt.show()
+            if not legend:
+                plt.legend(loc='upper center', bbox_to_anchor=(0.6, 1), ncol=3, fancybox=True, shadow=True,
+                           fontsize=30)
+                legend=True
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, "jumps_separation_compare_single_island.png"), bbox_inches='tight',
+                        pad_inches=0.15)
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == "jumps_up_down_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        plt.figure(figsize=FIGSIZE)
+        fig = plt.figure(figsize=FIGSIZE)
         shift = 0
+        legend=False
         for Rratio in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,2,3,4,5,6,7,8,9,10]:
             Cratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
@@ -2387,7 +2843,7 @@ if __name__ == "__main__":
             save_re_analysis = False
             directories_list = [directory]*len(names)
             m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=True)
-            loopV, _, _ = m.get_relevant_scores('firstJumpV')
+            loopV, _, _ = m.get_relevant_scores('firstJumpDownV')
             score,_,_ = m.get_relevant_scores("jumpSeparationUpDown")
             loopV = np.array(loopV)
             loopV[score==0] = 0
@@ -2403,16 +2859,31 @@ if __name__ == "__main__":
                 R2 = Rratio/(Rratio + 1)
                 approx.append(approx_jump_up_down(R1, R2, C1, C2, CG, loopV[i]))
 
-            m.plot_score("jumpSeparationUpDown", xs=Cratios, xlabel="C2/C1", ylabel="Average voltage difference [e/(C1+C2)]",
-                         label=labelprefix + " numerical results", shift=shift, fmt='m.')
-            plt.plot(Cratios[loopV > 0], np.array(approx)[loopV > 0]+shift, "orange", label=labelprefix + " analytic approximation")
+            m.plot_score("jumpSeparationUpDown", xs=Cratios, xlabel="$C_2/C_1$", ylabel="$\\Delta V_{\\uparrow \\downarrow}\\frac{C1+C2}{e}$",
+                         label="Numerical results", shift=shift, fmt='m.')
+            plt.plot(Cratios[loopV > 0], np.array(approx)[loopV > 0]+shift, "orange", label="Approximation")
+            valid_approx = np.array(approx)[loopV > 0]
+            if Rratio == 0.2:
+                valid_approx -= 0.4
+            plt.text(np.max(Cratios[loopV > 0]) + 0.1, valid_approx[-1] - 0.2 + shift, str(Rratio), fontsize=30)
+            if not legend:
+                plt.legend(loc='upper center', bbox_to_anchor=(0.6, 1.05), ncol=2, fancybox=True, shadow=True,
+                           fontsize=30)
+                legend=True
             shift += 1
-        plt.show()
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, "jumps_up_down_compare_single_island.png"),
+                        bbox_inches='tight',
+                        pad_inches=0.15)
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == "jumps_height_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        plt.figure(figsize=FIGSIZE)
+        fig = plt.figure(figsize=FIGSIZE)
         shift = 0
+        legend=False
         for Rratio in [0.1, 0.2, 0.3, 0.4, 2,3,4,5,6,7,8,9,10]:
             Cratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Cratio in Cratios]
@@ -2427,21 +2898,43 @@ if __name__ == "__main__":
             C2 = Cratios / (Cratios + 1)
             R1 = 1 / (Rratio + 1)
             R2 = Rratio / (Rratio + 1)
-            approx = 1/((C1+C2+CG)*(R1+R2)) + shift
-            m.plot_score("jumpHeightUp", xs=Cratios, xlabel="C2/C1",
-                         ylabel="Average current difference [e/(C1+C2)(R1+R2)]",
-                         label=labelprefix + " increasing voltage numerical results", shift=shift, fmt=".r")
-            m.plot_score("jumpHeightDown", xs=Cratios, xlabel="C2/C1",
-                         ylabel="Average current difference [e/(C1+C2)(R1+R2)]",
-                         label=labelprefix + " decreasing voltage numerical results", shift=shift, fmt=".b")
-            plt.plot(Cratios, approx, "orange",label=labelprefix + " analytic approximation")
+            approx_up = approx_jumps_height(R1, R2, C1, C2, CG)
+            approx_down = []
+            for name, Cratio in zip(names, Cratios):
+                s = SingleResultsProcessor(directory, name, graph=True)
+                _, _, _, _, _, Vdown, _, _, _, _ = s.calc_jumps_freq(s.I, s.IErr, V=s.V, mid_idx=s.mid_idx,
+                                                                     window_size_factor=1,
+                                                                     threshold_factor=1,
+                                                                     absolute_threshold=0.05)
+                approx_down.append(approx_jumps_height_down(R1, R2, 1 / (Cratio + 1), Cratio / (Cratio + 1), CG, Vdown))
+            approx_down = np.array(approx_down)
+            m.plot_score("jumpHeightUp", xs=Cratios, xlabel="$C_2/C_1$",
+                         ylabel="$\Delta I \\frac{\\left(C_1+C_2\\right)\\left(R_1+R_2\\right)}{e}$",
+                         label="Numerical results - increasing voltage", shift=shift, fmt=".r")
+            m.plot_score("jumpHeightDown", xs=Cratios, xlabel="$C_2/C_1$",
+                         ylabel="$\Delta I \\frac{\\left(C_1+C_2\\right)\\left(R_1+R_2\\right)}{e}$",
+                         label="Numerical results - decreasing voltage", shift=shift, fmt=".b")
+            plt.plot(Cratios, approx_up + shift, "orange",label="Approximation - increasing voltage")
+            plt.plot(Cratios, approx_down + shift, "green", label="Approximation - decreasing voltage")
+            plt.text(np.max(Cratios) + 0.1, approx_up[-1] - 0.2 + shift, str(Rratio), fontsize=30)
             shift += 1
-        plt.show()
+            if not legend:
+                plt.legend(loc='upper center', bbox_to_anchor=(0.6, 1.1), ncol=2, fancybox=True, shadow=True,
+                           fontsize=30)
+                legend=True
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, "jumps_height_compare_single_island.png"),
+                        bbox_inches='tight',
+                        pad_inches=0.15)
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == "hysteresis_area_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        plt.figure(figsize=FIGSIZE)
+        fig = plt.figure(figsize=FIGSIZE)
         shift = 0
+        legend=False
         for Cratio in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2, 3, 4, 5, 6, 7, 8, 9, 10]:
             Rratios = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2, 3, 4, 5, 6, 7, 8, 9, 10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
@@ -2453,22 +2946,42 @@ if __name__ == "__main__":
             VG = 0.5
             approx = []
 
-            for Rratio in Rratios:
+            for Rratio,name in zip(Rratios, names):
                 C1 = 1 / (Cratio + 1)
                 C2 = Cratio / (Cratio + 1)
                 R1 = 1 / (Rratio + 1)
                 R2 = Rratio / (Rratio + 1)
-                approx.append(approx_hysteresis_total_area(R1, R2, C1, C2, CG, VG, 4))
-            m.plot_score("hysteresisArea", xs=Rratios, xlabel="R2/R1",
-                         ylabel="Average loop area [e^2/(C1+C2)^2(R1+R2)]", shift=shift, fmt='m.')
-            plt.plot(Rratios, np.array(approx) + shift, 'orange', linestyle='dashed')
+                s = SingleResultsProcessor(directory, name, graph=True)
+                _, _, _, _, Vup, Vdown, _, _, _, _ = s.calc_jumps_freq(s.I, s.IErr, V=s.V, mid_idx=s.mid_idx,
+                                                                     window_size_factor=1,
+                                                                     threshold_factor=1,
+                                                                     absolute_threshold=0.05)
+                if len(Vup) > 0 and len(Vdown) > 0 and np.min(Vup) < np.min(Vdown):
+                    Vdown = np.hstack((Vdown, [np.min(Vup)]))
+                approx.append(approx_hysteresis_total_area(R1, R2, C1, C2, CG, VG, Vdown))
+            m.plot_score("hysteresisArea", xs=Rratios, xlabel="$R_2/R_1$",
+                         ylabel="Hysteresis loop area [$\\frac{e^2}{\\left(C_1+C_2\\right)^2\\left(R_1+R_2\\right)}$]",
+                         shift=shift, fmt='m.', label="Numerical results")
+            plt.plot(Rratios, np.array(approx) + shift, 'orange', label="Approximation")
+            plt.text(np.max(Rratios) + 0.1, approx[-1] - 0.2 + shift, str(Cratio), fontsize=30)
+            if not legend:
+                plt.legend(loc='upper center', bbox_to_anchor=(0.6, 1.05), ncol=2, fancybox=True, shadow=True,
+                           fontsize=30)
+                legend=True
             shift += 1
-        plt.show()
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, "hysteresis_area_compare_single_island.png"),
+                        bbox_inches='tight',
+                        pad_inches=0.15)
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == "threshold_voltage_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
-        plt.figure(figsize=FIGSIZE)
+        fig = plt.figure(figsize=FIGSIZE)
         shift = 0
+        legend=False
         for Cratio in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
             Rratios = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             names = ["single_island_Cratio_" + str(Cratio) + "_Rratio_" + str(Rratio) for Rratio in Rratios]
@@ -2487,12 +3000,23 @@ if __name__ == "__main__":
                 R1 = 1 / (Rratio + 1)
                 R2 = Rratio / (Rratio + 1)
                 approx.append(approx_threshold_voltage(R1, R2, C1, C2, CG, VG, nini))
-            m.plot_score("thresholdVoltageUp", xs=Rratios, xlabel="R2/R1",
-                         ylabel="Threshold voltage [e^2/(C1+C2)^2(R1+R2)]",
-                         label=labelprefix + " numerical results", shift=shift, fmt=".m")
-            plt.plot(Rratios, np.array(approx)+shift, "orange", label=labelprefix + " analytic approximation")
+            m.plot_score("thresholdVoltageUp", xs=Rratios, xlabel="$R_2/R_1$",
+                         ylabel="$V^{th}\\frac{C_1+C_2}{e}$",
+                         label="Numerical results", shift=shift, fmt=".m")
+            plt.plot(Rratios, np.array(approx)+shift, "orange", label="Approximation")
+            plt.text(np.max(Rratios) + 0.1, approx[-1] - 0.2 + shift, str(Cratio), fontsize=30)
+            if not legend:
+                plt.legend(loc='upper center', bbox_to_anchor=(0.6, 1.05), ncol=2, fancybox=True, shadow=True,
+                           fontsize=30)
+                legend=True
             shift+=1
-        plt.show()
+        if options.output_folder:
+            plt.savefig(os.path.join(options.output_folder, "threshold_voltage_compare_single_island.png"),
+                        bbox_inches='tight',
+                        pad_inches=0.15)
+            plt.close(fig)
+        else:
+            plt.show()
 
     elif action == "jumps_num_compare":
         directory = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
@@ -2519,25 +3043,59 @@ if __name__ == "__main__":
         plt.show()
 
     elif action == 'IV_different_temperatures':
+        fig = plt.figure(constrained_layout=False, figsize=FIGSIZE)
+        gs = fig.add_gridspec(nrows=2, ncols=2, left=0.15, right=0.9, wspace=0.2, hspace=0)
+        ax1 = fig.add_subplot(gs[:, 1])
+        ax2 = fig.add_subplot(gs[0, 0])
+        ax3 = fig.add_subplot(gs[1, 0])
+        # plotting different temperatures, same array
         directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature"
         Ts = [0.001, 0.002, 0.005, 0.007, 0.01, 0.015, 0.02]
         names = ["array_10_10_T_" + str(T) for T in Ts]
         shift=0
-        fig, ax = plt.subplots(1, figsize=FIGSIZE)
         for T,name in zip(Ts,names):
             p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
-            p.plot_IV(ax, fig, Vnorm=1/2, Inorm=1/20, shift=shift, err=True, errorevery=5,alternative=False,
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5,alternative=False,
                       Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$",Vlabel="$V\\frac{\\left<C\\right>}{e}$")
-            shift+=2
-        ax.set_xlim(2,4.5)
-        ax.text(2.1, 0.3,"0.5")
-        ax.text(2.1, 2.3,"1")
-        ax.text(2.1, 4.3,"2.5")
-        ax.text(2.1,6.5,"3.5")
-        ax.text(2.1,9.5,"5")
-        ax.text(2.1, 14.1, "7.5")
-        ax.text(2.1, 18, "10")
-        plt.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30)
+            shift+=0.1
+        ax1.set_xlim(1,2.25)
+        ax1.text(1.05, 0.015,"0.002", fontsize=30)
+        ax1.text(1.05, 0.115,"0.004", fontsize=30)
+        ax1.text(1.05, 0.215,"0.01", fontsize=30)
+        ax1.text(1.05,0.338,"0.014", fontsize=30)
+        ax1.text(1.05,0.5,"0.02", fontsize=30)
+        ax1.text(1.05, 0.72, "0.03", fontsize=30)
+        ax1.text(1.05, 0.95, "0.04", fontsize=30)
+        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1,0.8])
+        # Plotting temperature dependency
+        directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/bgu_2d_array_finite_temperature"
+        names = [name.replace("_IV.png","") for name in os.listdir(directory) if (("_IV.png" in name) and
+                                                                                            ("vert" not in name))]
+        m = MultiResultAnalyzer([directory] * len(names),
+                                 names,
+                                out_directory=None, graph=False, reAnalyze=options.re_analyze,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "T",
+                                                         "M", "N"],
+                                filter=filter)
+        window_size = 0.01
+        m.plot_results_by_average(["T"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
+                                   window_size=window_size, fmt='^g', fig=fig, ax=ax2)
+        m.plot_results_by_average(["T"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
+                                   window_size=window_size, fmt='vg', fig=fig, ax=ax2)
+        ax2.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='green')
+        ax2.tick_params(axis='y', labelcolor='green')
+        m.plot_results_by_average(["T"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                   window_size=window_size, fmt='om', fig=fig, ax=ax3)
+        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        ax3.tick_params(axis='y', labelcolor='m')
+        ax3.set_xlabel("$k_BT\\frac{\\left<C\\right>}{e^2}$")
+        ax2.set_xlim(-0.001,0.03)
+        ax3.set_xlim(-0.001,0.03)
+        add_text_upper_left_corner(ax2, "a", shift=0.06)
+        add_text_upper_left_corner(ax3, "b", shift=0.00002)
+        add_text_upper_left_corner(ax1, "c", shift=0.15)
+        ax2.set_xticklabels([])
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_temperatures.png'), bbox_inches='tight')
             plt.close(fig)
@@ -2545,39 +3103,192 @@ if __name__ == "__main__":
             plt.show()
 
     elif action == 'score_by_cg':
-        directories_list = []
-        for directory, names in zip(directories, file_names):
-            directories_list += [directory] * len(names)
-        names = [name for files in file_names for name in files]
+        fig, axes = plt.subplots(4, 1, figsize=FIGSIZE)
+        plt.subplots_adjust(hspace=0)
+        ax1 = axes[0]
+        ax2 = axes[1]
+        ax3 = axes[2]
+        ax4 = axes[3]
+        # Plotting different CG statistics
+        cg_window=1
+        names = [name for name in file_names[0]]
+        directories_list = [directories[0]] * len(names)
         m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,reAnalyze=options.re_analyze,
                                 relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
                                 relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
                                                          "M", "N"],
                                 filter=filter)
-
-        fig, ax1 = plt.subplots()
-        m.plot_results_by_average(["CG"], ["jumpSeparationUp"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='.b', fig=fig, ax=ax1)
-        m.plot_results_by_average(["CG"], ["jumpSeparationDown"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='*b', fig=fig, ax=ax1)
-        ax1.set_xlabel("$\\frac{C_G}{\\left<C\\right>}$")
-        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue')
+        m.plot_results_by_average(["CG"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^b', fig=fig, ax=ax1)
+        m.plot_results_by_average(["CG"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vb', fig=fig, ax=ax1)
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue', fontsize=30, rotation=0, labelpad=40)
         ax1.tick_params(axis='y', labelcolor='blue')
-        ax2 = ax1.twinx()
-        m.plot_results_by_average(["CG"], ["jumpHeightUp"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='.r', fig=fig, ax=ax2)
-        m.plot_results_by_average(["CG"], ["jumpHeightDown"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='*r', fig=fig, ax=ax2)
-        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red')
+        m.plot_results_by_average(["CG"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^r', fig=fig, ax=ax2)
+        m.plot_results_by_average(["CG"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vr', fig=fig, ax=ax2)
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red', fontsize=30, rotation=0,
+                       labelpad=50)
         ax2.tick_params(axis='y', labelcolor='red')
-        ax3 = ax1.twinx()
-        m.plot_results_by_average(["CG"], ["hysteresisArea"], plot3D=options.plot3d, average=options.average,
-                                  window_size=options.window, fmt='om', fig=fig, ax=ax3)
-        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        m.plot_results_by_average(["CG"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='om', fig=fig, ax=ax3)
+        ax3.set_ylabel("Hysteresis area \n$\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m',
+                       fontsize=30, rotation=0, labelpad=80)
         ax3.tick_params(axis='y', labelcolor='m')
-        ax3.spines['right'].set_position(('outward', 90))
-        fig.tight_layout()
-        plt.show()
+        m.plot_results_by_average(["CG"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^g', fig=fig, ax=ax4)
+        m.plot_results_by_average(["CG"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vg', fig=fig, ax=ax4)
+        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g', fontsize=30, rotation=0, labelpad=40)
+        ax4.tick_params(axis='y', labelcolor='g')
+        ax4.set_xlabel("$C_G/\\left<C\\right>$")
+        ax1.set_xticklabels([])
+        ax2.set_xticklabels([])
+        ax3.set_xticklabels([])
+
+        add_text_upper_left_corner(ax1, "a")
+        add_text_upper_left_corner(ax2, "b")
+        add_text_upper_left_corner(ax3, "c")
+        add_text_upper_left_corner(ax4, "d")
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'hysteresis_and_jumps_by_cg.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == "IV_by_cg":
+        fig, axes = plt.subplots(1, 2, figsize=FIGSIZE)
+        ax1 = axes[0]
+        ax2 = axes[1]
+        directory = directories[0]
+        names1 = ["array_10_10_disorder_c_std_0_run_3_cg_10", "array_10_10_disorder_c_std_0_run_3_cg_1"]
+        names2 = ["array_10_10_disorder_c_std_1_run_1_cg_10", "array_10_10_disorder_c_std_1_run_1_cg_1"]
+        cg_vals1 = []
+        cg_vals2 = []
+        shift = 0
+        for name in names1:
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals1.append(p.calc_param_average("CG") / p.calc_param_average("C"))
+            shift += 0.1
+        shift = 0
+        for name in names2:
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax2, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals2.append(p.calc_param_average("CG") / p.calc_param_average("C"))
+            shift += 0.1
+        ax1.set_xlim(0.7, 2.1)
+        ax2.set_xlim(0.7, 2.1)
+
+        ax1.text(1, 0.015, str(cg_vals1[0]), fontsize=30)
+        ax1.text(1, 0.19, str(cg_vals1[1]), fontsize=30)
+        ax2.text(1, 0.015, str(np.round(100 * cg_vals2[0]) / 100), fontsize=30)
+        ax2.text(1, 0.18, str(np.round(100 * cg_vals2[1]) / 100), fontsize=30)
+        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.7])
+
+        add_text_upper_left_corner(ax1, "a", shift=0.05)
+        add_text_upper_left_corner(ax2, "b", shift=0.03)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_cg.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == 'score_by_cg_and_c':
+        fig = plt.figure(constrained_layout=False, figsize=FIGSIZE)
+        gs = fig.add_gridspec(nrows=4, ncols=2, left=0.18, right=0.95, wspace=0.2, hspace=0)
+        ax1 = fig.add_subplot(gs[0, 0])
+        ax2 = fig.add_subplot(gs[1, 0])
+        ax3 = fig.add_subplot(gs[2, 0])
+        ax4 = fig.add_subplot(gs[3, 0])
+        # Plotting different CG statistics
+        cg_window=0.1
+        names = [name for name in file_names[0]]
+        directories_list = [directories[0]] * len(names)
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False,reAnalyze=options.re_analyze,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
+                                                         "M", "N"],
+                                filter=filter)
+        m.plot_results_by_disorder(["C"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^b', fig=fig, ax=ax1)
+        m.plot_results_by_disorder(["C"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vb', fig=fig, ax=ax1)
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue', fontsize=30, rotation=0, labelpad=40)
+        ax1.tick_params(axis='y', labelcolor='blue')
+        m.plot_results_by_disorder(["C"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^r', fig=fig, ax=ax2)
+        m.plot_results_by_disorder(["C"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vr', fig=fig, ax=ax2)
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red', fontsize=30, rotation=0,
+                       labelpad=50)
+        ax2.tick_params(axis='y', labelcolor='red')
+        m.plot_results_by_disorder(["C"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='om', fig=fig, ax=ax3)
+        ax3.set_ylabel("Hysteresis area \n$\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m',
+                       fontsize=30, rotation=0, labelpad=80)
+        ax3.tick_params(axis='y', labelcolor='m')
+        m.plot_results_by_disorder(["C"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='^g', fig=fig, ax=ax4)
+        m.plot_results_by_disorder(["C"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
+                                   window_size=cg_window, fmt='vg', fig=fig, ax=ax4)
+        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g', fontsize=30, rotation=0, labelpad=40)
+        ax4.tick_params(axis='y', labelcolor='g')
+        ax4.set_xlabel("$\\sigma_C/\\left<C\\right>$")
+        ax1.set_xticklabels([])
+        # ax2.set_yticklabels(["","","0.2","0.3"])
+        ax2.set_xticklabels([])
+        ax3.set_xticklabels([])
+
+        ax5 = fig.add_subplot(gs[:2, 1])
+        ax6 = fig.add_subplot(gs[2:, 1])
+        # Plotting IV for different CG
+        directory = directories[1]
+        names1 = ["array_10_10_disorder_c_std_0_run_3_cg_10", "array_10_10_disorder_c_std_0_run_3_cg_1"]
+        names2 = ["array_10_10_disorder_c_std_1_run_1_cg_10", "array_10_10_disorder_c_std_1_run_1_cg_1"]
+        cg_vals1 = []
+        cg_vals2 = []
+        shift = 0
+        for name in names1:
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax5, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals1.append(p.calc_param_average("CG")/p.calc_param_average("C"))
+            shift += 0.1
+        shift = 0
+        for name in names2:
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax6, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals2.append(p.calc_param_average("CG") / p.calc_param_average("C"))
+            shift += 0.1
+        ax5.set_xlim(0.7, 2.2)
+        ax6.set_xlim(0.7, 2.2)
+
+
+        ax5.text(1, 0.015, str(cg_vals1[0]), fontsize=30)
+        ax5.text(1, 0.19, str(cg_vals1[1]), fontsize=30)
+        ax6.text(1, 0.015, str(np.round(100*cg_vals2[0])/100), fontsize=30)
+        ax6.text(1, 0.18, str(np.round(100*cg_vals2[1])/100), fontsize=30)
+        ax5.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.7])
+
+        add_text_upper_left_corner(ax1, "a")
+        add_text_upper_left_corner(ax2, "b")
+        add_text_upper_left_corner(ax3, "c")
+        add_text_upper_left_corner(ax4, "d")
+        add_text_upper_left_corner(ax5, "e")
+        add_text_upper_left_corner(ax6, "f")
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_cg.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+
+
     elif action == 'score_by_c_disorder':
         zero_temp_window = 0.05
         finite_temp_window = 0.1
@@ -2594,19 +3305,23 @@ if __name__ == "__main__":
                                    window_size=zero_temp_window, fmt='^b', fig=fig, ax=ax1)
         m.plot_results_by_disorder(["C"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
                                    window_size=zero_temp_window, fmt='vb', fig=fig, ax=ax1)
-        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue')
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue',
+                       fontsize=30, rotation=0,labelpad=40)
         ax1.tick_params(axis='y', labelcolor='blue')
         ax2 = axes[1, 0]
         m.plot_results_by_disorder(["C"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
                                    window_size=zero_temp_window, fmt='^r', fig=fig, ax=ax2)
         m.plot_results_by_disorder(["C"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
                                    window_size=zero_temp_window, fmt='vr', fig=fig, ax=ax2)
-        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red')
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red',
+                       fontsize=30, rotation=0,labelpad=50)
         ax2.tick_params(axis='y', labelcolor='red')
         ax3 = axes[2, 0]
         m.plot_results_by_disorder(["C"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
                                    window_size=zero_temp_window, fmt='om', fig=fig, ax=ax3)
-        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m',
+                       fontsize=30, rotation=0,labelpad=80)
+        ax3.yaxis.set_label_coords(-0.2, 0.3)
         ax3.tick_params(axis='y', labelcolor='m')
         ax3.set_xlabel("$\\sigma_C/\\left<C\\right>$")
         ax4 = axes[3, 0]
@@ -2614,7 +3329,8 @@ if __name__ == "__main__":
                                    window_size=zero_temp_window, fmt='^g', fig=fig, ax=ax4)
         m.plot_results_by_disorder(["C"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
                                    window_size=zero_temp_window, fmt='vg', fig=fig, ax=ax4)
-        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g')
+        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g',
+                       fontsize=30, rotation=0,labelpad=40)
         ax4.tick_params(axis='y', labelcolor='g')
         ax4.set_xlabel("$\\sigma_C/\\left<C\\right>$")
         ax1.set_xticklabels([])
@@ -2642,7 +3358,7 @@ if __name__ == "__main__":
         m.plot_results_by_disorder(["C"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
                                    window_size=finite_temp_window, fmt='om', fig=fig, ax=ax7)
         ax7.tick_params(axis='y', labelcolor='m')
-        ax7.set_xlabel("$\\sigma_C/\\left<R\\right>$")
+        ax7.set_xlabel("$\\sigma_C/\\left<C\\right>$")
         ax8 = axes[3, 1]
         m.plot_results_by_disorder(["C"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
                                    window_size=finite_temp_window, fmt='^g', fig=fig, ax=ax8)
@@ -2655,7 +3371,7 @@ if __name__ == "__main__":
         ax7.set_xticklabels([])
         xmin, xmax, _, _ = axes[1, 1].axis()
         axes[0, 1].set_xlim(xmin, xmax)
-        plt.subplots_adjust(wspace=0.13, hspace=0)
+        plt.subplots_adjust(wspace=0.15, hspace=0)
         add_text_upper_left_corner(axes[0, 0], "a")
         add_text_upper_left_corner(axes[1, 0], "b")
         add_text_upper_left_corner(axes[2, 0], "c")
@@ -2688,19 +3404,22 @@ if __name__ == "__main__":
         m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
                                   window_size=zero_temp_window, fmt='vb', fig=fig, ax=ax1)
 
-        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue')
+        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue',
+                       fontsize=30, rotation=0,labelpad=40)
         ax1.tick_params(axis='y', labelcolor='blue')
         ax2 = axes[1,0]
         m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
                                   window_size=zero_temp_window, fmt='^r', fig=fig, ax=ax2)
         m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
                                   window_size=zero_temp_window, fmt='vr', fig=fig, ax=ax2)
-        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red')
+        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red',
+                       fontsize=30, rotation=0,labelpad=50)
         ax2.tick_params(axis='y', labelcolor='red')
         ax3 = axes[2,0]
         m.plot_results_by_disorder(["R"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
                                   window_size=zero_temp_window, fmt='om', fig=fig, ax=ax3)
-        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m',
+                       fontsize=30, rotation=0,labelpad=100)
         ax3.tick_params(axis='y', labelcolor='m')
         ax3.set_xlabel("$\\sigma_R/\\left<R\\right>$")
         ax4 = axes[3, 0]
@@ -2708,7 +3427,8 @@ if __name__ == "__main__":
                                    window_size=zero_temp_window, fmt='^g', fig=fig, ax=ax4)
         m.plot_results_by_disorder(["R"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
                                    window_size=zero_temp_window, fmt='vg', fig=fig, ax=ax4)
-        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g')
+        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g',
+                       fontsize=30, rotation=0,labelpad=40)
         ax4.tick_params(axis='y', labelcolor='g')
         ax4.set_xlabel("$\\sigma_R/\\left<R\\right>$")
         ax1.set_xticklabels([])
@@ -2864,10 +3584,10 @@ if __name__ == "__main__":
 
     elif action == 'plot_small_v_fit':
         for directory, names in zip(directories, file_names):
-            full = True
             for name in names:
-                s = SingleResultsProcessor(directory, name, fullOutput=full, reAnalyze=False)
-                s.power_law_fit(err=True, errorevery=10, plot=True)
+                fig, ax = plt.subplots(figsize=FIGSIZE)
+                s = SingleResultsProcessor(directory, name, fullOutput=options.full, reAnalyze=False)
+                s.power_law_fit(err=True, errorevery=10, plot=True, ax=ax, fig=fig)
                 plt.show()
     elif action == 'plot_current_by_path':
         for directory, names in zip(directories, file_names):
@@ -2898,31 +3618,35 @@ if __name__ == "__main__":
         axes[0, 1].set_yticklabels([])
         axes[1, 1].set_ylabel("")
         axes[1, 1].set_yticklabels([])
-        axes[0, 0].text(-0.08, 1.5, "a", fontsize=30)
-        axes[0, 1].text(-0.08, 1.5, "b", fontsize=30)
-        axes[1, 0].text(-0.08, 2.3, "c", fontsize=30)
-        axes[1, 1].text(-0.08, 2.3, "d", fontsize=30)
+
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'jumps_1d_vertical_array.png'), bbox_inches='tight')
             plt.close(fig)
         else:
             plt.show()
     elif action == 'plot_jumps_for_resistance_effect':
-        fig, axes = plt.subplots(3,2,figsize=FIGSIZE)
-        plt.subplots_adjust(wspace=0, hspace=0)
-        directories = ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_horizontal_arrays']*3+\
-                      ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_jumps_check']*3
-        names = ['array_1_2_no_disorder_cg_5', 'array_1_2_lambda_shape_cg_10', 'array_1_2_u_shape_cg_10',
-                 'array_5_5_const_r_c_disorder_cg_10_run_3', 'array_5_5_const_r_c_disorder_cg_10_run_3_v1',
-                 'array_5_5_const_r_c_disorder_cg_10_run_3_v3']
+        # fig, axes = plt.subplots(3,2,figsize=FIGSIZE)
+        fig, axes = plt.subplots(2, 2, figsize=FIGSIZE)
+        plt.subplots_adjust(wspace=0.1, hspace=0)
+        # directories = ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_horizontal_arrays']*3+\
+        #               ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_jumps_check']*3
+        # names = ['array_1_2_no_disorder_cg_5', 'array_1_2_lambda_shape_cg_10', 'array_1_2_u_shape_cg_10',
+        #          'array_5_5_const_r_c_disorder_cg_10_run_3', 'array_5_5_const_r_c_disorder_cg_10_run_3_v1',
+        #          'array_5_5_const_r_c_disorder_cg_10_run_3_v3']
+        directories = ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_1d_horizontal_arrays']*2+\
+                      ['/home/kasirershahar/University/Research/simulation_results/zero_temperature/bgu_jumps_check']*2
+        names = ['array_1_2_c_disorder_cg_5', 'array_1_2_c_disorder_2_cg_5',
+                 'array_5_5_const_r_c_disorder_cg_10_run_3_v4',
+                 'array_5_5_const_r_c_disorder_cg_10_run_3_v5']
         index=0
         for directory,name in zip(directories,names):
-            ax = axes[index%3,index//3]
+            # ax = axes[index%3,index//3]
+            ax = axes[index % 2, index // 2]
             s = SingleResultsProcessor(directory, name, fullOutput=True, vertCurrent=False, graph=False,
                                        reAnalyze=options.re_analyze)
 
-            fig, fig2, fig3 = s.plot_jumps_freq(by_occupation=index<3,
-                              by_path_occupation=index >= 3, ax1=ax, fig=fig)
+            fig, fig2, fig3 = s.plot_jumps_freq(by_occupation=index<2,
+                              by_path_occupation=index >= 2, ax1=ax, fig=fig)
             plt.close(fig2)
             plt.close(fig3)
             index += 1
@@ -2930,28 +3654,35 @@ if __name__ == "__main__":
         axes[0, 0].set_xticklabels([])
         axes[0, 1].set_xlabel("")
         axes[0, 1].set_xticklabels([])
-        axes[1, 0].set_xlabel("")
-        axes[1, 0].set_xticklabels([])
-        axes[1, 1].set_xlabel("")
-        axes[1, 1].set_xticklabels([])
+        # axes[1, 0].set_xlabel("")
+        # axes[1, 0].set_xticklabels([])
+        # axes[1, 1].set_xlabel("")
+        # axes[1, 1].set_xticklabels([])
         axes[0, 1].set_ylabel("")
-        axes[0, 1].set_yticklabels([])
+        # axes[0, 1].set_yticklabels([])
         axes[1, 1].set_ylabel("")
-        axes[1, 1].set_yticklabels([])
-        axes[2, 1].set_ylabel("")
-        axes[2, 1].set_yticklabels([])
-        axes[0, 0].text(-0.08, 0.35, "a", fontsize=30)
-        axes[1, 0].text(-0.08, 0.35, "b", fontsize=30)
-        axes[2, 0].text(-0.08, 0.35, "c", fontsize=30)
-        axes[0, 1].text(0.32, 0.35, "d", fontsize=30)
-        axes[1, 1].text(0.32, 0.35, "e", fontsize=30)
-        axes[2, 1].text(0.32, 0.35, "f", fontsize=30)
-        for ax in axes.flatten():
-            ax.set_ylim(-0.01,0.39)
+        # axes[1, 1].set_yticklabels([])
+        # axes[2, 1].set_ylabel("")
+        # axes[2, 1].set_yticklabels([])
+
+        # for ax in axes.flatten():
+        #     ax.set_ylim(-0.01,0.39)
         for ax in axes[:,1]:
             ax.set_xlim(0.3,3.51)
+            ax.set_ylim(-0.01, 0.39)
+        for ax in axes[:,0]:
+            ax.set_xlim(0.7,1.5)
+            # ax.set_ylim(-0.01, 0.2)
+        add_text_upper_left_corner(axes[0, 0], "a", shift=0.01)
+        add_text_upper_left_corner(axes[1, 0], "b", shift=0.01)
+        # add_text_upper_left_corner(axes[2, 0], "c")
+        # add_text_upper_left_corner(axes[0, 1], "d")
+        # add_text_upper_left_corner(axes[1, 1], "e")
+        # add_text_upper_left_corner(axes[2, 1], "f")
+        add_text_upper_left_corner(axes[0, 1], "c", shift=0.02)
+        add_text_upper_left_corner(axes[1, 1], "d", shift=0.015)
         if options.output_folder:
-            fig.savefig(os.path.join(options.output_folder, 'resistance_effect.png'), bbox_inches='tight')
+            fig.savefig(os.path.join(options.output_folder, 'resistance_effect_sup.png'), bbox_inches='tight')
             plt.close(fig)
         else:
             plt.show()
@@ -2966,13 +3697,235 @@ if __name__ == "__main__":
                  #s.plot_IV(err=False, errorevery=10, alternative=True)
                  plt.show()
 
+    elif action == 'plot_thresholds_like_in_MW':
+        directories_list = []
+        for directory, names in zip(directories, file_names):
+            directories_list += [directory] * len(names)
+        names = [name for files in file_names for name in files]
+        fig = plt.figure(constrained_layout=False, figsize=(150, 12))
+        gs = fig.add_gridspec(nrows=2, ncols=2, left=0.1, right=0.2, wspace=0.21, hspace=0.3)
+        ax1 = fig.add_subplot(gs[0, 0])
+        ax3 = fig.add_subplot(gs[0, 1])
+        ax5 = fig.add_subplot(gs[1, :])
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False, reAnalyze=False,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv", "CG"],
+                                relevant_running_params=["M", "N","C_std", "R_std", "R_avg",
+                                                         "C_avg", "CG_avg", "CG_std", "T"],
+                                filter=filter)
+        _,_, ax2 = m.plot_threshold_like_in_MW(ax=ax1, fig=fig, dimensions=1, avg_marker='^', std_marker='^', fit=True)
+        m.plot_threshold_like_in_MW(ax=ax1, ax2 =ax2, fig=fig, dimensions=1,decreasing_voltage=True,
+                                    avg_marker='v', std_marker='v')
+        _,_,ax4 = m.plot_threshold_like_in_MW(ax=ax3, fig=fig, dimensions=2,  avg_marker='^', std_marker='^', fit=True)
+        m.plot_threshold_like_in_MW(ax=ax3, ax2=ax4, fig=fig, dimensions=2, decreasing_voltage=True,
+                                    avg_marker='v', std_marker='v')
+        ax1.set_xlim(1.3, 10.4)
+        ax2.set_xlim(1.3, 10.4)
+        ax3.set_xlim(1.3, 10.4)
+        ax4.set_xlim(1.3, 10.4)
+        ax3.set_ylabel("")
+        ax2.set_ylabel("")
+        add_text_upper_left_corner(ax1, "a")
+        add_text_upper_left_corner(ax3, "b")
+        directory="/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature/"
+        names = [name.replace("_IV.png","") for name in os.listdir(directory)]
+        directories_list = [directory] * len(names)
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False, reAnalyze=False,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "N",
+                                                         "M", "T"],
+                                filter=filter)
+        m.plot_score_by_parameter("smallVPowerUp", ["T"], runningParam=True, average_results=options.average, fig=fig,
+                                  ax=ax5, fmt='r^')
+        m.plot_score_by_parameter("smallVPowerDown", ["T"], runningParam=True, average_results=options.average, fig=fig,
+                                  ax=ax5, fmt='bv')
+        xs = np.linspace(0,0.1,1000)
+        ys = (5/3)*np.ones(xs.shape)
+        ax5.plot(xs,ys,color="orange",linestyle='dotted',linewidth=5)
+        ax5.set_xlabel("$k_B T \\frac{\\left<C\\right>}{e^2}$")
+        ax5.set_ylabel("Power-law exponent")
+        add_text_upper_left_corner(ax5, "c")
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'threshold_voltage_power_law.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == 'plot_small_v_fit_vs_temperature':
+        fig, ax = plt.subplots(figsize=FIGSIZE)
+        directories_list = []
+        for directory, names in zip(directories, file_names):
+            directories_list += [directory] * len(names)
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False, reAnalyze=False,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "N",
+                                                         "M", "T"],
+                                filter=filter)
+        m.plot_score_by_parameter("smallVPowerUp", ["T"], runningParam=True, average_results=options.average,fig=fig,
+                                  ax=ax, fmt='r^')
+        m.plot_score_by_parameter("smallVPowerDown", ["T"], runningParam=True, average_results=options.average, fig=fig,
+                                  ax=ax, fmt='bv')
+        ax.set_xlabel("$k_B T \\frac{\\left<C\\right>}{e^2}$")
+        ax.set_ylabel("Power low exponent")
+        plt.tight_layout()
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'power_law_vs_temperature.png'))
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == "IV_by_gap":
+        fig, ax1 = plt.subplots(figsize=(15, 16))
+        directory = directories[0]
+        names = ["sc_array_5_5_T_0.001_cg_10_run_2_gap_0.01",
+                  "sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1"]
+        gaps=[0.01, 0.1]
+        gap_vals = ["2", "0.2"]
+        shift = 0
+        for index,name in enumerate(names):
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=1, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            gap_vals.append(gaps[index]*p.calc_param_average("C"))
+            shift += 0.3
+        ax1.text(1.01, 0.05, "$\\Delta = %sE_c$"%gap_vals[0],
+                 fontsize=30)
+        ax1.text(1.01,0.31, "$\\Delta = %sE_c$"%gap_vals[1],
+                 fontsize=30)
+        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.8])
+        ax1.set_xlim(1,2.48)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_sc_gap.png'),
+                        bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == "IV_superconducting":
+        fig, axes = plt.subplots(1,2,figsize=(30, 16))
+        ax1,ax2 = axes
+        directory = directories[0]
+        names1 = ["sc_array_10_10_T_0.001_cg_1",
+                  "sc_array_10_10_T_0.001_cg_10"]
+        names2 = ["sc_array_10_10_T_0.005_cg_1",
+                  "sc_array_10_10_T_0.005_cg_10"]
+        cg_vals = []
+        shift = 0
+        for index,name in enumerate(names1):
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=1, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals.append(p.calc_param_average("CG")/p.calc_param_average("C"))
+            shift += 0.3
+        ax1.text(1.01, 0.05, "$C_G = " + str(np.round(10 * cg_vals[0]) / 10) + "\\left<C\\right>$",
+                 fontsize=30)
+        ax1.text(1.01,0.31, "$C_G = " + str(np.round(10 * cg_vals[1]) / 10) + "\\left<C\\right>$",
+                 fontsize=30)
+        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.8])
+        for index,name in enumerate(names2):
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax2, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=1, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_vals.append(p.calc_param_average("CG")/p.calc_param_average("C"))
+            shift += 0.3
+        ax2.text(1.01, 0.05, "$C_G = " + str(np.round(10 * cg_vals[0]) / 10) + "\\left<C\\right>$",
+                 fontsize=30)
+        ax2.text(1.01,0.31, "$C_G = " + str(np.round(10 * cg_vals[1]) / 10) + "\\left<C\\right>$",
+                 fontsize=30)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_sc_gap.png'),
+                        bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action =='plot_sc_rates':
+        fig, axes = plt.subplots(1,2,figsize=FIGSIZE)
+        ax, ax1 =axes
+        cp_directories = ["cooper_pairs_rate/tunneling_rate_0.001_0.0012498865053282438",
+                          "cooper_pairs_rate/tunneling_rate_0.001_0.0125"]
+        qp_directories = ["quasi_particles_rate/tunneling_rate_0.001_0.01",
+                          "quasi_particles_rate/tunneling_rate_0.001_0.1"]
+        colors = ["red", "blue"]
+        gaps = ["0.2", "2"]
+        ax2 = add_subplot_axes(fig, ax, [0.1, 0.47, 0.25, 0.5])
+        def electrons_tunneling_rates(deltaE, temperature):
+            return deltaE / (1 - np.exp(-deltaE/temperature))
+
+        def load_rates(direcory):
+            deltaEmin = np.load(os.path.join(direcory, "deltaEmin.npy"))
+            deltaEmax = np.load(os.path.join(direcory, "deltaEmax.npy"))
+            deltaEstep = np.load(os.path.join(direcory, "deltaEstep.npy"))
+            deltaEvals = np.arange(deltaEmin, deltaEmax, deltaEstep)
+            vals = np.load(os.path.join(direcory, "vals.npy"))
+            return 20*deltaEvals, 0.5*vals
+        for cp_dir, qp_dir, color, gap in zip(cp_directories, qp_directories, colors, gaps):
+            cp_deltaE, cp_rates = load_rates(cp_dir)
+            qp_deltaE, qp_rates = load_rates(qp_dir)
+            cp_label = "$\\Gamma_{cp}$, $\\Delta= %s E_c$" % gap
+            qp_label = "$\\Gamma_{qp}$, $\\Delta= %s E_c$" % gap
+            electrons_label = "$\\Gamma_{e}$"
+            ax.plot(cp_deltaE, (1/4)*cp_rates, linestyle='-', color=color, label=cp_label, linewidth=5)
+            ax.plot(qp_deltaE, qp_rates, linestyle='--', color=color, label=qp_label, linewidth=5)
+
+
+            ax2.plot(cp_deltaE, (1/4)*cp_rates, linestyle='-', color=color, linewidth=5)
+            ax2.plot(qp_deltaE, qp_rates, linestyle='--', color=color, linewidth=5)
+
+        ax.plot(qp_deltaE, (0.025)*electrons_tunneling_rates(qp_deltaE, 0.016),
+                linestyle='dotted', color='m', label=electrons_label, linewidth=5)
+        ax2.plot(qp_deltaE, (0.025) * electrons_tunneling_rates(qp_deltaE, 0.016),
+                linestyle='dotted', color='m', label=electrons_label, linewidth=5)
+        ax.set_ylim(-0.01, 0.12)
+        ax.set_xlim(-0.005, 6)
+        ax2.set_ylim(-0.00005,0.004)
+        ax2.set_xlim(0, 5.2)
+        rect = Rectangle((0, 0), 5.2, 0.006, linewidth=1, edgecolor='black', facecolor='none')
+        ax.add_patch(rect)
+        ax.set_ylabel("Rates $\\left[1/\\left<R\\right>\\left<C\\right>\\right]$")
+        ax.set_xlabel("$\\left(-\\Delta E\\right)/E_c$")
+        ax.legend(fontsize=30, loc=[0.35, 0.65])
+        directory = directories[0]
+        names = ["sc_array_5_5_T_0.001_cg_10_run_2_gap_0.01",
+                 "sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1"]
+        gaps = [0.01, 0.1]
+        gap_vals = ["0.2", "2"]
+        shift = 0
+        for index, name in enumerate(names):
+            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=1, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            gap_vals.append(gaps[index] * p.calc_param_average("C"))
+            shift += 0.3
+        ax1.text(1.01, 0.05,
+                 "$\\Delta = %s E_c$"%gap_vals[0],
+                 fontsize=30)
+        ax1.text(1.01, 0.31, "$\\Delta = %s E_c$"%gap_vals[1],
+                 fontsize=30)
+        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.8])
+        ax1.set_xlim(1, 2.48)
+
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'sc_results.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
     elif action == 'print_scores':
          full = True
          for directory, names in zip(directories, file_names):
              for name in names:
-                 s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, reAnalyze=True)
+                 s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=options.perp,
+                                            reAnalyze=options.re_analyze)
                  if filter(s):
-                    s.print_scores(for_paths=True)
+                    s.print_scores(for_paths=False)
+         it_file_names = [name.replace("_IT.png", "") for name in os.listdir(options.it_directory) if (("_IT.png" in name) and
+                                                                                             ("vert" not in name))]
+         for name in it_file_names:
+             s = SingleResultsProcessor(options.it_directory, name, fullOutput=full, vertCurrent=options.perp,
+                                        reAnalyze=options.re_analyze, IT=True)
+             if filter(s):
+                 s.print_scores(for_paths=False)
+
 
     else:
         print("Unknown action")
