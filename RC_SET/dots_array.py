@@ -1251,33 +1251,37 @@ class Simulator:
         baseName = basePath + "_temp_" + str(self.index)
         if not os.path.isfile(baseName + "_I.npy"):
             return None
-        I = np.load(baseName + "_I.npy")
-        loadLen = len(I)
-        IErr = np.load(baseName + "_IErr.npy")
-        if len(IErr) > loadLen:
-            IErr = IErr[:loadLen]
-        n = np.load(baseName + "_n.npy")
-        Q = np.load(baseName + "_Q.npy")
-        res = (I,IErr,n,Q)
-        if fullOutput:
-            ns = np.load(baseName + "_ns.npy")
-            if len(ns) > loadLen:
-                ns = ns[:loadLen, :, :]
-            Qs = np.load(baseName + "_Qs.npy")
-            if len(Qs) > loadLen:
-                Qs = Qs[:loadLen, :, :]
-            nsErr = np.load(baseName + "_nsErr.npy")
-            if len(nsErr) > loadLen:
-                nsErr = nsErr[:loadLen, :, :]
-            QsErr = np.load(baseName + "_QsErr.npy")
-            if len(QsErr) > loadLen:
-                QsErr = QsErr[:loadLen, :, :]
-            res = res + (ns, Qs,nsErr, QsErr)
-        if currentMap:
-            Imaps = np.load(baseName + "_current_map.npy")
-            if len(Imaps) > loadLen:
-                Imaps = Imaps[:loadLen, :, :]
-            res = res + (Imaps,)
+        try:
+            I = np.load(baseName + "_I.npy")
+            loadLen = len(I)
+            IErr = np.load(baseName + "_IErr.npy")
+            if len(IErr) > loadLen:
+                IErr = IErr[:loadLen]
+            n = np.load(baseName + "_n.npy")
+            Q = np.load(baseName + "_Q.npy")
+            res = (I,IErr,n,Q)
+            if fullOutput:
+                ns = np.load(baseName + "_ns.npy")
+                if len(ns) > loadLen:
+                    ns = ns[:loadLen, :, :]
+                Qs = np.load(baseName + "_Qs.npy")
+                if len(Qs) > loadLen:
+                    Qs = Qs[:loadLen, :, :]
+                nsErr = np.load(baseName + "_nsErr.npy")
+                if len(nsErr) > loadLen:
+                    nsErr = nsErr[:loadLen, :, :]
+                QsErr = np.load(baseName + "_QsErr.npy")
+                if len(QsErr) > loadLen:
+                    QsErr = QsErr[:loadLen, :, :]
+                res = res + (ns, Qs,nsErr, QsErr)
+            if currentMap:
+                Imaps = np.load(baseName + "_current_map.npy")
+                if len(Imaps) > loadLen:
+                    Imaps = Imaps[:loadLen, :, :]
+                res = res + (Imaps,)
+        except ValueError as e:
+            print(e)
+            return None
         return res
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False,
