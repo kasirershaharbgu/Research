@@ -2,7 +2,7 @@ __author__ = 'Shahar_Kasirer'
 
 # Environment imports
 import os
-os.environ["OPENBLAS_NUM_THREADS"] = "5"  # Number of threads used for EACH simulation instance.
+os.environ["OPENBLAS_NUM_THREADS"] = "1"  # Number of threads used for EACH simulation instance.
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
