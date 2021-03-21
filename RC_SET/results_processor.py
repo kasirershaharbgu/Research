@@ -3102,6 +3102,57 @@ if __name__ == "__main__":
         else:
             plt.show()
 
+    elif action == 'IV_by_cg_and_temperature':
+        fig, ax = plt.subplots(1,2,figsize=FIGSIZE)
+        ax1, ax2 = ax
+        # plotting different temperatures, same array
+        temperature_directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature"
+        Ts = [0.001, 0.002, 0.005, 0.007, 0.01, 0.015, 0.02]
+        names = ["array_10_10_T_" + str(T) for T in Ts]
+        shift = 0
+        for T, name in zip(Ts, names):
+            p = SingleResultsProcessor(temperature_directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            shift += 0.1
+        ax1.set_xlim(1, 2.25)
+        ax1.set_ylim(-0.01, 1.8)
+        ax1.text(1.05, 0.015, "0.002", fontsize=30)
+        ax1.text(1.05, 0.115, "0.004", fontsize=30)
+        ax1.text(1.05, 0.215, "0.01", fontsize=30)
+        ax1.text(1.05, 0.338, "0.014", fontsize=30)
+        ax1.text(1.05, 0.5, "0.02", fontsize=30)
+        ax1.text(1.05, 0.72, "0.03", fontsize=30)
+        ax1.text(1.05, 0.95, "0.04", fontsize=30)
+
+        cg_directory = "/home/kasirershahar/University/Research/simulation_results/zero_temperature/same_array_different_cg"
+        cgs = np.arange(1,11)
+        names = ["array_10_10_disorder_c_std_1_run_1_cg_%d"%cg for cg in cgs]
+        shift = 0
+        for name in names:
+            p = SingleResultsProcessor(cg_directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            p.plot_IV(ax2, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5, alternative=False,
+                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+            cg_val = p.calc_param_average("CG") / p.calc_param_average("C")
+            ax2.text(0.71, 0.015 + shift, str(np.round(cg_val*100)/100), fontsize=30)
+            shift += 0.15
+        ax2.set_xlim(0.7, 2)
+        ax2.set_ylim(-0.01,1.8)
+        ax2.set_ylabel("")
+        ax2.set_yticklabels([])
+        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 1.01], ncol=2)
+        add_text_upper_left_corner(ax1, "a", shift=0.05)
+        add_text_upper_left_corner(ax2, "b", shift=0.03)
+        plt.subplots_adjust(wspace=0)
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_temperatures_and_cgs.png'),
+                        bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+
+
     elif action == 'score_by_cg':
         fig, axes = plt.subplots(4, 1, figsize=FIGSIZE)
         plt.subplots_adjust(hspace=0)
@@ -3692,8 +3743,8 @@ if __name__ == "__main__":
              for name in names:
                  s = SingleResultsProcessor(directory, name, fullOutput=full, vertCurrent=False, reAnalyze=True)
                  s.plot_results()
-                 s.plot_array_params("R")
-                 s.plot_array_params("C")
+                 # s.plot_array_params("R")
+                 # s.plot_array_params("C")
                  #s.plot_IV(err=False, errorevery=10, alternative=True)
                  plt.show()
 
