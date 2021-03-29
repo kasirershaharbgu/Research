@@ -1,9 +1,0 @@
-
-python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 5 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.05 --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name sc_array_5_5_T_0.001 -o super_conducting_array_different_gap -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1.txt --full --current-map   --symmetric-v      --superconducting 
-
-
-python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 5 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.2 --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name sc_array_5_5_T_0.001 -o super_conducting_array_different_gap -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1.txt --full --current-map   --symmetric-v      --superconducting 
-
-
-python3 dots_array.py -M 5 -N 5 --vmin 0 --vmax 5 --vstep 0.001 --vr 0 --vg-avg 0 --vg-std 0 --c-avg 1 --c-std 0.9 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 9 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0 --distribution exp --gap 0.5 --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name sc_array_5_5_T_0.001 -o super_conducting_array_different_gap -i super_conducting_array_different_temperatures/runningParameters_sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1.txt --full --current-map   --symmetric-v      --superconducting 
-

@@ -2739,30 +2739,34 @@ if __name__ == "__main__":
     elif action == "compareIV": # compares methods
         directory_graph = "/home/kasirershahar/University/Research/Numerics/jumps_stats"
         directory_gillespie = "/home/kasirershahar/University/Research/simulation_results/single_island/single_island_different_temperature"
-        resultNames= ["big_CG_big_R2","big_CG_small_R2","small_CG_big_R2","small_CG_small_R2"]
-        namesGraph = ["large_R2_large_CG", "small_R2_large_CG",
-                      "large_R2_small_CG", "small_R2_small_CG"]
-        namesGillespie = ["array_1_1_big_cg_big_r2_T_", "array_1_1_big_cg_small_r2_T_",
-                          "array_1_1_small_cg_big_r2_T_", "array_1_1_small_cg_small_r2_T_"]
+        resultNames= ["small_CG_small_R2", "big_CG_small_R2", "small_CG_big_R2", "big_CG_big_R2"]
+        namesGraph = ["small_R2_small_CG", "small_R2_large_CG", "large_R2_small_CG","large_R2_large_CG"]
+        namesGillespie = ["array_1_1_small_cg_small_r2_T_", "array_1_1_big_cg_small_r2_T_", "array_1_1_small_cg_big_r2_T_", "array_1_1_big_cg_big_r2_T_",]
         fig, axes = plt.subplots(2,2,figsize=FIGSIZE)
         plot_idx = 0
+        Ts = [0, 0.001, 0.01, 0.1]
+        titles = ["$C_G = C_L + C_R$, $R_R=R_L$", "$C_G = 10\left(C_L + C_R\\right)$, $R_R=R_L$",
+                  "$C_G = C_L + C_R$, $R_R=10R_L$", "$C_G = 10\left(C_L + C_R\\right)$, $R_R=10R_L$"]
         for nameGraph, nameGillespie, resultName in zip(namesGraph, namesGillespie, resultNames):
             ax = axes[plot_idx//2, plot_idx%2]
             pGraph = SingleResultsProcessor(directory_graph, nameGraph, fullOutput=False, vertCurrent=False,
                                                reAnalyze=False, graph=True)
             psGillespie = [SingleResultsProcessor(directory_gillespie, nameGillespie + str(T), fullOutput=True, vertCurrent=False,
-                                                reAnalyze=False) for T in [0, 0.001, 0.01, 0.1]]
+                                                reAnalyze=False) for T in Ts]
             shift = 0
             # psGillespie[0].plot_jumps_freq(by_occupation=True, ax1=ax, fig=fig)
             psGillespie[0].plot_IV(err=False, alternative=False, errorevery=1,
-                      Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
+                      Vlabel="$V\\frac{C_L+C_R}{e}$", Ilabel="$I\\frac{\\left(C_L+C_R\\right)\\left(R_L+R_R\\right)}{e}$", shift=shift, ax=ax, fig=fig)
+            ax.text(0.01, shift + 0.1, str(Ts[shift]))
             shift += 1
             pGraph.plot_IV( err=False, alternative=False,
-                           Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", fmt_up='c*', fmt_down='m*', ax=ax, fig=fig)
+                           Vlabel="$V\\frac{C_L+C_R}{e}$", Ilabel="$I\\frac{\\left(C_L+C_R\\right)\\left(R_L+R_R\\right)}{e}$", fmt_up='c*', fmt_down='m*', ax=ax, fig=fig)
             for p in psGillespie[1:]:
                 p.plot_IV( err=False, alternative=False, errorevery=1,
-                               Vlabel="$V\\frac{C1+C2}{e}$", Ilabel="$I\\frac{\\left(C1+C2\\right)\\left(R1+R2\\right)}{e}$", shift=shift, ax=ax, fig=fig)
+                               Vlabel="$V\\frac{C_L+C_R}{e}$", Ilabel="$I\\frac{\\left(C_L+C_R\\right)\\left(R_L+R_R\\right)}{e}$", shift=shift, ax=ax, fig=fig)
+                ax.text(-0.07, shift+0.1, str(Ts[shift]))
                 shift += 1
+            ax.text(0.3,5.5, titles[plot_idx])
             plot_idx += 1
 
         axes[0,0].set_xlabel('')
@@ -2774,9 +2778,9 @@ if __name__ == "__main__":
         axes[1, 1].set_ylabel('')
         axes[1, 1].set_yticks([])
         plt.subplots_adjust(wspace=0, hspace=0)
-        axes[0,0].legend(['Dynamical method (increasing voltage)', 'Dynamical method (decreasing voltage)',
-                    'Graph method (increasing voltage)','Graph method (decreasing voltage)'],loc='upper center',
-                         bbox_to_anchor=(1, 1.2), ncol=2, fancybox=True, shadow=True)
+        axes[0,0].legend(['Numerical solution (increasing voltage)', 'Numerical solution (decreasing voltage)',
+                    'Analytical solution (increasing voltage)','Analytical solution (decreasing voltage)'],loc='upper center',
+                         bbox_to_anchor=(1, 1.35), ncol=2, fancybox=True, shadow=True)
         axes[0,0].set_zorder(4)
         add_text_upper_left_corner(axes[0,0], "a")
         axes[0,1].set_zorder(3)
@@ -2786,7 +2790,7 @@ if __name__ == "__main__":
         axes[1,1].set_zorder(1)
         add_text_upper_left_corner(axes[1,1], "d")
         if options.output_folder:
-            plt.savefig(os.path.join(options.output_folder, "IV_examples_single_island.png"), bbox_inches = 'tight', pad_inches = 0.01)
+            plt.savefig(os.path.join(options.output_folder, "IV_examples_single_island.png"), bbox_inches = 'tight', pad_inches = 0.1)
             plt.close(fig)
         else:
             plt.show()
