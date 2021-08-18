@@ -35,9 +35,10 @@ custom_cv="\"\""
 temperature_gradient=0
 vmax=2
 efermi=""
+input=""
 gap=0
-T=0
-f="different_size_arrays"
+T=0.001
+f="different_size_arrays_finite_temperature"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
@@ -49,7 +50,7 @@ c_std=0.9
 r_std=9
 double_loop=""
 double_time=""
-for length in 1 2 3 4 5
+for length in 6 7 8
 do
 	for run in 1 2 3 4 5
 	do
