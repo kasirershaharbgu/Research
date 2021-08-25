@@ -2444,6 +2444,9 @@ if __name__ == "__main__":
         Cv = Cv[1:]
         Rh = arrayParams['Rh']
         Rv = arrayParams['Rv']
+        # For testing disorder
+        #Rh = Rh*(9.5/9)
+        #Rv = Rv*(9.5/9)
     else:
         VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                                  False)

@@ -8,8 +8,8 @@ from matplotlib.patches import Rectangle
 from copy import copy
 import scipy.stats
 font = {'family' : 'sans-serif',
-        'weight' : 'normal',
-        'size' : 40}
+        'weight' : 'bold',
+        'size' : 70}
 matplotlib.rc('font', **font)
 matplotlib.rc('text', usetex=True)
 from optparse import OptionParser
@@ -165,11 +165,11 @@ class SingleResultsProcessor:
         self.alternativeIErr = []
         self.alternativeV = []
         for i in range(len(full_I)):
-            min_idx = max(0, i-10)
-            max_idx = min(len(full_I)-1, i+10)
+            min_idx = max(0, i-5)
+            max_idx = min(len(full_I)-1, i+5)
             point = np.hstack([full_I[j] for j in range(min_idx, max_idx)])
-            bins = bistabilityAnalysis(point)
-            # bins = [point]
+            # bins = bistabilityAnalysis(point)
+            bins = [point]
             if i > 0 and len(bins) > 1 and len(bins[0]) > 2 and len(bins[1]) > 2:
                 avg1 = np.average(bins[0])
                 avg2 = np.average(bins[1])
@@ -1166,16 +1166,16 @@ class SingleResultsProcessor:
         if ax is None:
             fig, ax = plt.subplots()
         if err:
-            ax.errorbar(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt=fmt_up,
-                         yerr=self.IErr[:self.mid_idx]/Inorm,
-                         errorevery=errorevery)
+            ax.errorbar(self.V[:self.mid_idx:10]/Vnorm, self.I[:self.mid_idx:10]/Inorm + shift, fmt=fmt_up,
+                         yerr=self.IErr[:self.mid_idx:10]/Inorm,
+                         errorevery=errorevery,markersize=20, linewidth=2)
 
-            ax.errorbar(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt=fmt_down,
-                         yerr=self.IErr[self.mid_idx:]/Inorm,
-                         errorevery=errorevery)
+            ax.errorbar(self.V[self.mid_idx::10]/Vnorm, self.I[self.mid_idx::10]/Inorm + shift, fmt=fmt_down,
+                         yerr=self.IErr[self.mid_idx::10]/Inorm,
+                         errorevery=errorevery,markersize=20, linewidth=2)
         else:
-            ax.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt_up)
-            ax.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt_down)
+            ax.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt_up, markersize=16, linewidth=5)
+            ax.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt_down, markersize=16, linewidth=5)
         if alternative and self.alternativeV is not None:
             ax.errorbar(self.alternativeV[:self.alternative_mid_idx]/Vnorm,
                          self.alternativeI[:self.alternative_mid_idx]/Inorm + shift,
@@ -1205,8 +1205,8 @@ class SingleResultsProcessor:
                 ax2.plot(self.V[:self.mid_idx] / Vnorm, self.vertI[:self.mid_idx] / Inorm + shift, 'm.')
                 ax2.plot(self.V[self.mid_idx:] / Vnorm, self.vertI[self.mid_idx:] / Inorm + shift, 'g.')
 
-        ax.set_xlabel(Vlabel)
-        ax.set_ylabel(Ilabel)
+        ax.set_xlabel(Vlabel, fontsize=90)
+        ax.set_ylabel(Ilabel, fontsize=90)
         return ax, fig
 
     def get_electron_temperature_approx(self):
@@ -2742,11 +2742,11 @@ if __name__ == "__main__":
         resultNames= ["small_CG_small_R2", "big_CG_small_R2", "small_CG_big_R2", "big_CG_big_R2"]
         namesGraph = ["small_R2_small_CG", "small_R2_large_CG", "large_R2_small_CG","large_R2_large_CG"]
         namesGillespie = ["array_1_1_small_cg_small_r2_T_", "array_1_1_big_cg_small_r2_T_", "array_1_1_small_cg_big_r2_T_", "array_1_1_big_cg_big_r2_T_",]
-        fig, axes = plt.subplots(2,2,figsize=FIGSIZE)
+        fig, axes = plt.subplots(2,2,figsize=(18,21))
         plot_idx = 0
         Ts = [0, 0.001, 0.01, 0.1]
-        titles = ["$C_G = C_L + C_R$, $R_R=R_L$", "$C_G = 10\left(C_L + C_R\\right)$, $R_R=R_L$",
-                  "$C_G = C_L + C_R$, $R_R=10R_L$", "$C_G = 10\left(C_L + C_R\\right)$, $R_R=10R_L$"]
+        titles = ["$C_G = C_L + C_R$\n $R_R=R_L$", "$C_G = 10\left(C_L + C_R\\right)$\n $R_R=R_L$",
+                  "$C_G = C_L + C_R$\n $R_R=10R_L$", "$C_G = 10\left(C_L + C_R\\right)$\n $R_R=10R_L$"]
         for nameGraph, nameGillespie, resultName in zip(namesGraph, namesGillespie, resultNames):
             ax = axes[plot_idx//2, plot_idx%2]
             pGraph = SingleResultsProcessor(directory_graph, nameGraph, fullOutput=False, vertCurrent=False,
@@ -2756,17 +2756,17 @@ if __name__ == "__main__":
             shift = 0
             # psGillespie[0].plot_jumps_freq(by_occupation=True, ax1=ax, fig=fig)
             psGillespie[0].plot_IV(err=False, alternative=False, errorevery=1,
-                      Vlabel="$V\\frac{C_L+C_R}{e}$", Ilabel="$I\\frac{\\left(C_L+C_R\\right)\\left(R_L+R_R\\right)}{e}$", shift=shift, ax=ax, fig=fig)
-            ax.text(0.01, shift + 0.1, str(Ts[shift]))
+                      Vlabel="", Ilabel="", shift=shift, ax=ax, fig=fig, fmt_up='-r', fmt_down='-b')
+            # ax.text(0.01, shift + 0.1, str(Ts[shift]), fontsize=60)
             shift += 1
-            pGraph.plot_IV( err=False, alternative=False,
-                           Vlabel="$V\\frac{C_L+C_R}{e}$", Ilabel="$I\\frac{\\left(C_L+C_R\\right)\\left(R_L+R_R\\right)}{e}$", fmt_up='c*', fmt_down='m*', ax=ax, fig=fig)
+            # pGraph.plot_IV( err=False, alternative=False,
+            #                Vlabel="$V\\frac{C_L+C_R}{e}$", Ilabel="$I\\frac{\\left(C_L+C_R\\right)\\left(R_L+R_R\\right)}{e}$", fmt_up='c*', fmt_down='m*', ax=ax, fig=fig)
             for p in psGillespie[1:]:
                 p.plot_IV( err=False, alternative=False, errorevery=1,
-                               Vlabel="$V\\frac{C_L+C_R}{e}$", Ilabel="$I\\frac{\\left(C_L+C_R\\right)\\left(R_L+R_R\\right)}{e}$", shift=shift, ax=ax, fig=fig)
-                ax.text(-0.07, shift+0.1, str(Ts[shift]))
+                               Vlabel="", Ilabel="", shift=shift, ax=ax, fig=fig, fmt_up='-r', fmt_down='-b')
+                # ax.text(-0.07, shift+0.25, str(Ts[shift]), fontsize=60)
                 shift += 1
-            ax.text(0.3,5.5, titles[plot_idx])
+            # ax.text(0.05,4.5, titles[plot_idx], fontsize=50)
             plot_idx += 1
 
         axes[0,0].set_xlabel('')
@@ -2777,20 +2777,37 @@ if __name__ == "__main__":
         axes[0, 1].set_yticks([])
         axes[1, 1].set_ylabel('')
         axes[1, 1].set_yticks([])
+        axes[0,0].set_xlim(0,4)
+        axes[0,0].set_ylim(0,6.1)
+        axes[0, 1].set_xlim(0, 4)
+        axes[0, 1].set_ylim(0, 6.1)
+        axes[1, 0].set_xlim(0, 4)
+        axes[1, 0].set_ylim(0, 6.1)
+        axes[1, 1].set_xlim(0, 4)
+        axes[1, 1].set_ylim(0, 6.1)
+        axes[0, 0].xaxis.set_tick_params(width=5, size=10)
+        axes[0, 0].yaxis.set_tick_params(width=5, size=10)
+        axes[0, 1].xaxis.set_tick_params(width=5, size=10)
+        axes[0, 1].yaxis.set_tick_params(width=5, size=10)
+        axes[1, 0].xaxis.set_tick_params(width=5, size=10)
+        axes[1, 0].yaxis.set_tick_params(width=5, size=10)
+        axes[1, 1].xaxis.set_tick_params(width=5, size=10)
+        axes[1, 1].yaxis.set_tick_params(width=5, size=10)
         plt.subplots_adjust(wspace=0, hspace=0)
-        axes[0,0].legend(['Numerical solution (increasing voltage)', 'Numerical solution (decreasing voltage)',
-                    'Analytical solution (increasing voltage)','Analytical solution (decreasing voltage)'],loc='upper center',
-                         bbox_to_anchor=(1, 1.35), ncol=2, fancybox=True, shadow=True)
-        axes[0,0].set_zorder(4)
-        add_text_upper_left_corner(axes[0,0], "a")
-        axes[0,1].set_zorder(3)
-        add_text_upper_left_corner(axes[0,1], "b")
-        axes[1,0].set_zorder(2)
-        add_text_upper_left_corner(axes[1,0], "c")
-        axes[1,1].set_zorder(1)
-        add_text_upper_left_corner(axes[1,1], "d")
+        # axes[0,0].legend(['Numerical solution (increasing voltage)', 'Numerical solution (decreasing voltage)',
+        #             'Analytical solution (increasing voltage)','Analytical solution (decreasing voltage)'],loc='upper center',
+        #                  bbox_to_anchor=(1, 1.45), ncol=2, fancybox=False, shadow=True, labelspacing=0.5,
+        #                  columnspacing=0, markerscale=5, borderpad=0, handletextpad=0.1, handlelength=1)
+        # axes[0,0].set_zorder(4)
+        # add_text_upper_left_corner(axes[0,0], "a")
+        # axes[0,1].set_zorder(3)
+        # add_text_upper_left_corner(axes[0,1], "b")
+        # axes[1,0].set_zorder(2)
+        # add_text_upper_left_corner(axes[1,0], "c")
+        # axes[1,1].set_zorder(1)
+        # add_text_upper_left_corner(axes[1,1], "d")
         if options.output_folder:
-            plt.savefig(os.path.join(options.output_folder, "IV_examples_single_island.png"), bbox_inches = 'tight', pad_inches = 0.1)
+            plt.savefig(os.path.join(options.output_folder, "IV_examples_single_island.png"), bbox_inches='tight')
             plt.close(fig)
         else:
             plt.show()
@@ -3047,60 +3064,68 @@ if __name__ == "__main__":
         plt.show()
 
     elif action == 'IV_different_temperatures':
-        fig = plt.figure(constrained_layout=False, figsize=FIGSIZE)
-        gs = fig.add_gridspec(nrows=2, ncols=2, left=0.15, right=0.9, wspace=0.2, hspace=0)
-        ax1 = fig.add_subplot(gs[:, 1])
-        ax2 = fig.add_subplot(gs[0, 0])
-        ax3 = fig.add_subplot(gs[1, 0])
-        # plotting different temperatures, same array
+        fig, ax1 = plt.subplots(constrained_layout=False, figsize=(17.22,22.4))
+        # gs = fig.add_gridspec(nrows=2, ncols=2, left=0.15, right=0.9, wspace=0.2, hspace=0)
+        # ax1 = fig.add_subplot(gs[:, 1])
+        # ax2 = fig.add_subplot(gs[0, 0])
+        # ax3 = fig.add_subplot(gs[1, 0])
+        # # plotting different temperatures, same array
         directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature"
-        Ts = [0.001, 0.002, 0.005, 0.007, 0.01, 0.015, 0.02]
+        Ts = [0, 0.0005, 0.001, 0.002, 0.003, 0.004, 0.005, 0.007, 0.01]
         names = ["array_10_10_T_" + str(T) for T in Ts]
         shift=0
         for T,name in zip(Ts,names):
             p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
-            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=5,alternative=False,
-                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$",Vlabel="$V\\frac{\\left<C\\right>}{e}$")
-            shift+=0.1
-        ax1.set_xlim(1,2.25)
-        ax1.text(1.05, 0.015,"0.002", fontsize=30)
-        ax1.text(1.05, 0.115,"0.004", fontsize=30)
-        ax1.text(1.05, 0.215,"0.01", fontsize=30)
-        ax1.text(1.05,0.338,"0.014", fontsize=30)
-        ax1.text(1.05,0.5,"0.02", fontsize=30)
-        ax1.text(1.05, 0.72, "0.03", fontsize=30)
-        ax1.text(1.05, 0.95, "0.04", fontsize=30)
-        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1,0.8])
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=False, errorevery=1,alternative=False,
+                      Ilabel="",Vlabel="", fmt_up="r-", fmt_down='b-')
+            shift+=0.3
+        ax1.set_xlim(1.5,2.15)
+        ax1.set_ylim(0, 3)
+        ax1.xaxis.set_tick_params(width=5, size=15)
+        ax1.yaxis.set_tick_params(width=5, size=15)
+        ax1.set_xticklabels([])
+        ax1.set_yticklabels([])
+        # ax1.text(1.55, 0.02, "0", fontsize=60)
+        # ax1.text(1.55, 0.34, "0.001", fontsize=60)
+        # ax1.text(1.55, 0.63,"0.002", fontsize=60)
+        # ax1.text(1.55, 0.98,"0.004", fontsize=60)
+        # ax1.text(1.55, 1.3, "0.006", fontsize=60)
+        # ax1.text(1.55, 1.67, "0.008", fontsize=60)
+        # ax1.text(1.55, 1.98,"0.01", fontsize=60)
+        # ax1.text(1.55,2.34,"0.014", fontsize=60)
+        # ax1.text(1.55,2.73,"0.02", fontsize=60)
+        # ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=60, loc=[0.01,0.85], markerscale=5)
         # Plotting temperature dependency
-        directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/bgu_2d_array_finite_temperature"
-        names = [name.replace("_IV.png","") for name in os.listdir(directory) if (("_IV.png" in name) and
-                                                                                            ("vert" not in name))]
-        m = MultiResultAnalyzer([directory] * len(names),
-                                 names,
-                                out_directory=None, graph=False, reAnalyze=options.re_analyze,
-                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
-                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "T",
-                                                         "M", "N"],
-                                filter=filter)
-        window_size = 0.01
-        m.plot_results_by_average(["T"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
-                                   window_size=window_size, fmt='^g', fig=fig, ax=ax2)
-        m.plot_results_by_average(["T"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
-                                   window_size=window_size, fmt='vg', fig=fig, ax=ax2)
-        ax2.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='green')
-        ax2.tick_params(axis='y', labelcolor='green')
-        m.plot_results_by_average(["T"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
-                                   window_size=window_size, fmt='om', fig=fig, ax=ax3)
-        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
-        ax3.tick_params(axis='y', labelcolor='m')
-        ax3.set_xlabel("$k_BT\\frac{\\left<C\\right>}{e^2}$")
-        ax2.set_xlim(-0.001,0.03)
-        ax3.set_xlim(-0.001,0.03)
-        add_text_upper_left_corner(ax2, "a", shift=0.06)
-        add_text_upper_left_corner(ax3, "b", shift=0.00002)
-        add_text_upper_left_corner(ax1, "c", shift=0.15)
-        ax2.set_xticklabels([])
+        # directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/bgu_2d_array_finite_temperature"
+        # names = [name.replace("_IV.png","") for name in os.listdir(directory) if (("_IV.png" in name) and
+        #                                                                                     ("vert" not in name))]
+        # m = MultiResultAnalyzer([directory] * len(names),
+        #                          names,
+        #                         out_directory=None, graph=False, reAnalyze=options.re_analyze,
+        #                         relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+        #                         relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "T",
+        #                                                  "M", "N"],
+        #                         filter=filter)
+        # window_size = 0.01
+        # m.plot_results_by_average(["T"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
+        #                            window_size=window_size, fmt='^g', fig=fig, ax=ax2)
+        # m.plot_results_by_average(["T"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
+        #                            window_size=window_size, fmt='vg', fig=fig, ax=ax2)
+        # ax2.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='green')
+        # ax2.tick_params(axis='y', labelcolor='green')
+        # m.plot_results_by_average(["T"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
+        #                            window_size=window_size, fmt='om', fig=fig, ax=ax3)
+        # ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        # ax3.tick_params(axis='y', labelcolor='m')
+        # ax3.set_xlabel("$k_BT\\frac{\\left<C\\right>}{e^2}$")
+        # ax2.set_xlim(-0.001,0.03)
+        # ax3.set_xlim(-0.001,0.03)
+        # add_text_upper_left_corner(ax2, "a", shift=0.06)
+        # add_text_upper_left_corner(ax3, "b", shift=0.00002)
+        # add_text_upper_left_corner(ax1, "c", shift=0.15)
+        # ax2.set_xticklabels([])
         if options.output_folder:
+            # fig.subplots_adjust(left=0.145, right=0.99, top=0.99, bottom=0.1)
             fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_temperatures.png'), bbox_inches='tight')
             plt.close(fig)
         else:
@@ -3128,6 +3153,8 @@ if __name__ == "__main__":
         ax1.text(1.05, 0.5, "0.02", fontsize=30)
         ax1.text(1.05, 0.72, "0.03", fontsize=30)
         ax1.text(1.05, 0.95, "0.04", fontsize=30)
+        ax.xaxis.set_tick_params(weight='bold')
+        ax.yaxis.set_tick_params(weight='bold')
 
         cg_directory = "/home/kasirershahar/University/Research/simulation_results/zero_temperature/same_array_different_cg"
         cgs = np.arange(1,11)
@@ -3452,89 +3479,96 @@ if __name__ == "__main__":
                                                          "M", "N"],
                                 filter=filter)
 
-        fig, axes = plt.subplots(4,2,figsize=FIGSIZE)
+        fig, axes = plt.subplots(2,2,figsize=FIGSIZE)
         ax1 = axes[0,0]
-        m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
-                                  window_size=zero_temp_window, fmt='^b', fig=fig, ax=ax1)
-        m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
-                                  window_size=zero_temp_window, fmt='vb', fig=fig, ax=ax1)
+        # m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+        #                           window_size=zero_temp_window, fmt='^b', fig=fig, ax=ax1)
+        # m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+        #                           window_size=zero_temp_window, fmt='vb', fig=fig, ax=ax1)
 
-        ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue',
-                       fontsize=30, rotation=0,labelpad=40)
-        ax1.tick_params(axis='y', labelcolor='blue')
+        # ax1.set_ylabel("$\\Delta V \\frac{\\left<C\\right>}{e}$", color='blue',
+        #                fontsize=30, rotation=0,labelpad=40)
+        # ax1.tick_params(axis='y', labelcolor='blue')
         ax2 = axes[1,0]
-        m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
-                                  window_size=zero_temp_window, fmt='^r', fig=fig, ax=ax2)
-        m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
-                                  window_size=zero_temp_window, fmt='vr', fig=fig, ax=ax2)
-        ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red',
-                       fontsize=30, rotation=0,labelpad=50)
-        ax2.tick_params(axis='y', labelcolor='red')
-        ax3 = axes[2,0]
+        # m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+        #                           window_size=zero_temp_window, fmt='^r', fig=fig, ax=ax2)
+        # m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+        #                           window_size=zero_temp_window, fmt='vr', fig=fig, ax=ax2)
+        # ax2.set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='red',
+        #                fontsize=30, rotation=0,labelpad=50)
+        # ax2.tick_params(axis='y', labelcolor='red')
+        # ax3 = axes[2,0]
         m.plot_results_by_disorder(["R"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
-                                  window_size=zero_temp_window, fmt='om', fig=fig, ax=ax3)
-        ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m',
-                       fontsize=30, rotation=0,labelpad=100)
-        ax3.tick_params(axis='y', labelcolor='m')
-        ax3.set_xlabel("$\\sigma_R/\\left<R\\right>$")
-        ax4 = axes[3, 0]
+                                  window_size=zero_temp_window, fmt='og', fig=fig, ax=ax1)
+        # ax3.set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m',
+        #                fontsize=30, rotation=0,labelpad=100)
+        ax1.tick_params(axis='y', labelcolor='m')
+        # ax3.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+        # ax4 = axes[3, 0]
         m.plot_results_by_disorder(["R"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
-                                   window_size=zero_temp_window, fmt='^g', fig=fig, ax=ax4)
+                                   window_size=zero_temp_window, fmt='^r', fig=fig, ax=ax2)
         m.plot_results_by_disorder(["R"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
-                                   window_size=zero_temp_window, fmt='vg', fig=fig, ax=ax4)
-        ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g',
-                       fontsize=30, rotation=0,labelpad=40)
-        ax4.tick_params(axis='y', labelcolor='g')
-        ax4.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+                                   window_size=zero_temp_window, fmt='vb', fig=fig, ax=ax2)
+        # ax4.set_ylabel("$V^{th} \\frac{\\left<C\\right>}{e}$", color='g',
+        #                fontsize=30, rotation=0,labelpad=40)
+        ax2.tick_params(axis='y', labelcolor='g')
+        # ax4.set_xlabel("$\\sigma_R/\\left<R\\right>$")
         ax1.set_xticklabels([])
         ax2.set_xticklabels([])
-        ax3.set_xticklabels([])
-        m = MultiResultAnalyzer([directories[2]]*len(file_names[2]), file_names[2], out_directory=None, graph=False,
+        ax1.set_yticklabels([])
+        ax2.set_yticklabels([])
+        # ax3.set_xticklabels([])
+        m = MultiResultAnalyzer([directories[2]]*len(file_names[2]),
+                                file_names[2],
+                                out_directory=None, graph=False,
                                 reAnalyze=options.re_analyze,
                                 relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
                                 relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "T",
                                                          "M", "N"],
                                 filter=filter)
         ax5 = axes[0,1]
-        m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
-                                   window_size=finite_temp_window, fmt='^b', fig=fig, ax=ax5)
-        m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
-                                   window_size=finite_temp_window, fmt='vb', fig=fig, ax=ax5)
-
-
-        ax5.tick_params(axis='y', labelcolor='blue')
+        # m.plot_results_by_disorder(["R"], ["jumpSeparationUp"], plot3D=options.plot3d, average=True,
+        #                            window_size=finite_temp_window, fmt='^b', fig=fig, ax=ax5)
+        # m.plot_results_by_disorder(["R"], ["jumpSeparationDown"], plot3D=options.plot3d, average=True,
+        #                            window_size=finite_temp_window, fmt='vb', fig=fig, ax=ax5)
+        #
+        #
+        # ax5.tick_params(axis='y', labelcolor='blue')
         ax6 = axes[1,1]
-        m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
-                                   window_size=finite_temp_window, fmt='^r', fig=fig, ax=ax6)
-        m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
-                                   window_size=finite_temp_window, fmt='vr', fig=fig, ax=ax6)
-        ax6.tick_params(axis='y', labelcolor='red')
-        ax7 = axes[2,1]
+        # m.plot_results_by_disorder(["R"], ["jumpHeightUp"], plot3D=options.plot3d, average=True,
+        #                            window_size=finite_temp_window, fmt='^r', fig=fig, ax=ax6)
+        # m.plot_results_by_disorder(["R"], ["jumpHeightDown"], plot3D=options.plot3d, average=True,
+        #                            window_size=finite_temp_window, fmt='vr', fig=fig, ax=ax6)
+        # ax6.tick_params(axis='y', labelcolor='red')
+        # ax7 = axes[2,1]
         m.plot_results_by_disorder(["R"], ["hysteresisArea"], plot3D=options.plot3d, average=True,
-                                   window_size=finite_temp_window, fmt='om', fig=fig, ax=ax7)
-        ax7.tick_params(axis='y', labelcolor='m')
-        ax7.set_xlabel("$\\sigma_R/\\left<R\\right>$")
-        ax8 = axes[3, 1]
+                                   window_size=finite_temp_window, fmt='og', fig=fig, ax=ax5)
+        ax5.tick_params(axis='y', labelcolor='m')
+        # ax7.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+        # ax8 = axes[3, 1]
         m.plot_results_by_disorder(["R"], ["thresholdVoltageUp"], plot3D=options.plot3d, average=True,
-                                   window_size=finite_temp_window, fmt='^g', fig=fig, ax=ax8)
+                                   window_size=finite_temp_window, fmt='^r', fig=fig, ax=ax6)
         m.plot_results_by_disorder(["R"], ["thresholdVoltageDown"], plot3D=options.plot3d, average=True,
-                                   window_size=finite_temp_window, fmt='vg', fig=fig, ax=ax8)
-        ax8.tick_params(axis='y', labelcolor='g')
-        ax8.set_xlabel("$\\sigma_R/\\left<R\\right>$")
+                                   window_size=finite_temp_window, fmt='vb', fig=fig, ax=ax6)
+        ax6.tick_params(axis='y', labelcolor='g')
+        # ax8.set_xlabel("$\\sigma_R/\\left<R\\right>$")
         ax5.set_xticklabels([])
         ax6.set_xticklabels([])
-        ax7.set_xticklabels([])
+        ax5.set_yticklabels([])
+        ax6.set_yticklabels([])
+        # ax7.set_xticklabels([])
         xmin, xmax, _, _ = axes[1, 1].axis()
         axes[0, 1].set_xlim(xmin, xmax)
-        plt.subplots_adjust(wspace=0.13, hspace=0)
-        add_text_upper_left_corner(axes[0, 0], "a")
-        add_text_upper_left_corner(axes[1, 0], "b")
-        add_text_upper_left_corner(axes[2, 0], "c")
-        add_text_upper_left_corner(axes[3, 0], "d")
-        add_text_upper_left_corner(axes[0, 1], "e")
-        add_text_upper_left_corner(axes[1, 1], "f")
-        add_text_upper_left_corner(axes[2, 1], "g")
-        add_text_upper_left_corner(axes[3, 1], "h")
+        ax6.xaxis.set_ticks(np.array([0.4,0.6,0.8]))
+        plt.subplots_adjust(wspace=0.2, hspace=0)
+        # add_text_upper_left_corner(axes[0, 0], "a")
+        # add_text_upper_left_corner(axes[1, 0], "b")
+        # add_text_upper_left_corner(axes[2, 0], "c")
+        # add_text_upper_left_corner(axes[3, 0], "d")
+        # add_text_upper_left_corner(axes[0, 1], "e")
+        # add_text_upper_left_corner(axes[1, 1], "f")
+        # add_text_upper_left_corner(axes[2, 1], "g")
+        # add_text_upper_left_corner(axes[3, 1], "h")
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder,  'hysteresis_and_jumps_by_r_disorders.png'), bbox_inches='tight')
             plt.close(fig)
@@ -3616,20 +3650,20 @@ if __name__ == "__main__":
             m.plot_scores_together(options.scores[0], options.scores[2], average_results=options.average,
                                      window_size=windows[directory_index], fig=fig, ax=ax[1,directory_index],fmt='.m')
             directory_index += 1
-        ax[1,0].set_xlabel("$V^{th}\\frac{\\left<C\\right>}{e}$")
-        ax[1, 1].set_xlabel("$V^{th}\\frac{\\left<C\\right>}{e}$")
-        ax[0,0].set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='b')
-        ax[1, 0].set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
-        ax[0,0].tick_params(axis='y', labelcolor='b')
-        ax[0, 1].tick_params(axis='y', labelcolor='b')
-        ax[1,0].tick_params(axis='y', labelcolor='m')
-        ax[1, 1].tick_params(axis='y', labelcolor='m')
+        # ax[1,0].set_xlabel("$V^{th}\\frac{\\left<C\\right>}{e}$")
+        # ax[1, 1].set_xlabel("$V^{th}\\frac{\\left<C\\right>}{e}$")
+        # ax[0,0].set_ylabel("$\\Delta I \\frac{\\left<C\\right>\\left<R\\right>}{e}$", color='b')
+        # ax[1, 0].set_ylabel("Hysteresis area $\\left[\\frac{e^2}{\\left<C\\right>^2\\left<R\\right>}\\right]$", color='m')
+        # ax[0,0].tick_params(axis='y', labelcolor='b')
+        # ax[0, 1].tick_params(axis='y', labelcolor='b')
+        # ax[1,0].tick_params(axis='y', labelcolor='m')
+        # ax[1, 1].tick_params(axis='y', labelcolor='m')
         ax[0,0].set_xticklabels([])
         ax[0, 1].set_xticklabels([])
-        ax[0, 0].text(0.88, 0.025, "a", fontsize=30)
-        ax[1, 0].text(0.88, 0.00052, "b", fontsize=30)
-        ax[0, 1].text(0.415, 0.66, "c", fontsize=30)
-        ax[1, 1].text(0.415, 0.42, "d", fontsize=30)
+        # ax[0, 0].text(0.88, 0.025, "a", fontsize=30)
+        # ax[1, 0].text(0.88, 0.00052, "b", fontsize=30)
+        # ax[0, 1].text(0.415, 0.66, "c", fontsize=30)
+        # ax[1, 1].text(0.415, 0.42, "d", fontsize=30)
         plt.subplots_adjust(wspace=0.13, hspace=0)
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'jumps_and_hysteresis_by_threshold.png'), bbox_inches='tight')
@@ -3831,14 +3865,14 @@ if __name__ == "__main__":
     elif action == "IV_by_gap":
         fig, ax1 = plt.subplots(figsize=(15, 16))
         directory = directories[0]
-        names = ["sc_array_5_5_T_0.001_cg_10_run_2_gap_0.01",
-                  "sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1"]
-        gaps=[0.01, 0.1]
-        gap_vals = ["2", "0.2"]
+        names = ["sc_array_5_5_T_0.001_gap_0.05",
+                  "sc_array_5_5_T_0.001_gap_0.1"]
+        gaps=[0.05, 0.1]
+        gap_vals = ["0.1", "0.2"]
         shift = 0
         for index,name in enumerate(names):
             p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
-            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=1, alternative=False,
+            p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=10, alternative=False,
                       Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
             gap_vals.append(gaps[index]*p.calc_param_average("C"))
             shift += 0.3
@@ -3850,7 +3884,7 @@ if __name__ == "__main__":
         ax1.set_xlim(1,2.48)
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'array_IV_examples_different_sc_gap.png'),
-                        bbox_inches='tight')
+                        bbox_inces='tight')
             plt.close(fig)
         else:
             plt.show()
@@ -3894,14 +3928,16 @@ if __name__ == "__main__":
             plt.show()
 
     elif action =='plot_sc_rates':
-        fig, axes = plt.subplots(1,2,figsize=FIGSIZE)
+        fig, axes = plt.subplots(1,2,figsize=(30,16.4))
         ax, ax1 =axes
         cp_directories = ["cooper_pairs_rate/tunneling_rate_0.001_0.0012498865053282438",
+                          "cooper_pairs_rate/tunneling_rate_0.001_0.00625",
                           "cooper_pairs_rate/tunneling_rate_0.001_0.0125"]
         qp_directories = ["quasi_particles_rate/tunneling_rate_0.001_0.01",
+                          "quasi_particles_rate/tunneling_rate_0.001_0.05",
                           "quasi_particles_rate/tunneling_rate_0.001_0.1"]
-        colors = ["red", "blue"]
-        gaps = ["0.2", "2"]
+        colors = ["red", "blue", "green"]
+        gaps = ["0.2", "1", "2"]
         ax2 = add_subplot_axes(fig, ax, [0.1, 0.47, 0.25, 0.5])
         def electrons_tunneling_rates(deltaE, temperature):
             return deltaE / (1 - np.exp(-deltaE/temperature))
@@ -3930,34 +3966,52 @@ if __name__ == "__main__":
                 linestyle='dotted', color='m', label=electrons_label, linewidth=5)
         ax2.plot(qp_deltaE, (0.025) * electrons_tunneling_rates(qp_deltaE, 0.016),
                 linestyle='dotted', color='m', label=electrons_label, linewidth=5)
-        ax.set_ylim(-0.01, 0.12)
-        ax.set_xlim(-0.005, 6)
+        ax.set_ylim(-0.0001, 0.12)
+        ax.set_xlim(-1, 6)
         ax2.set_ylim(-0.00005,0.004)
         ax2.set_xlim(0, 5.2)
         rect = Rectangle((0, 0), 5.2, 0.006, linewidth=1, edgecolor='black', facecolor='none')
         ax.add_patch(rect)
-        ax.set_ylabel("Rates $\\left[1/\\left<R\\right>\\left<C\\right>\\right]$")
-        ax.set_xlabel("$\\left(-\\Delta E\\right)/E_c$")
-        ax.legend(fontsize=30, loc=[0.35, 0.65])
+        # ax.set_ylabel("Rates $\\left[1/\\left<R\\right>\\left<C\\right>\\right]$")
+        # ax.set_xlabel("$\\left(-\\Delta E\\right)/E_c$")
+        # ax.legend(fontsize=40, loc=[0.35, 0.50])
+        # ax.set_xticklabels([])
+        # ax.set_yticklabels([])
+        # ax2.set_xticklabels([])
+        # ax2.set_yticklabels([])
         directory = directories[0]
-        names = ["sc_array_5_5_T_0.001_cg_10_run_2_gap_0.01",
-                 "sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1"]
-        gaps = [0.01, 0.1]
-        gap_vals = ["0.2", "2"]
+        # names = ["sc_array_5_5_T_0.001_cg_10_run_2_gap_0.01",
+        #          "sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1"]
+        # gaps = [0.01, 0.1]
+        # gap_vals = ["0.2", "2"]
+        names = ["sc_array_5_5_T_0.001_gap_0.01",
+                 "sc_array_5_5_T_0.001_gap_0.05",
+                 "sc_array_5_5_T_0.001_gap_0.1"]
+        gaps = [0.01, 0.05, 0.1]
+        gap_vals = ["0.2", "1", "2"]
         shift = 0
         for index, name in enumerate(names):
             p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
             p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=1, alternative=False,
-                      Ilabel="$I\\frac{\\left<R\\right>\\left<C\\right>}{e}$", Vlabel="$V\\frac{\\left<C\\right>}{e}$")
+                      Ilabel="", Vlabel="", fmt_up='-r', fmt_down='-b')
             gap_vals.append(gaps[index] * p.calc_param_average("C"))
-            shift += 0.3
-        ax1.text(1.01, 0.05,
-                 "$\\Delta = %s E_c$"%gap_vals[0],
-                 fontsize=30)
-        ax1.text(1.01, 0.31, "$\\Delta = %s E_c$"%gap_vals[1],
-                 fontsize=30)
-        ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=30, loc=[0.1, 0.8])
-        ax1.set_xlim(1, 2.48)
+            shift += 0.25
+        # ax1.text(1.01, 0.07,
+        #          "$\\Delta = %s E_c$"%gap_vals[0],
+        #          fontsize=60)
+        # ax1.text(1.01, 0.34, "$\\Delta = %s E_c$"%gap_vals[1],
+        #          fontsize=60)
+        # ax1.text(1.01, 0.61, "$\\Delta = %s E_c$" % gap_vals[2],
+        #          fontsize=60)
+        # ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=50, loc=[0, 0.8], handlelength=0.1, handletextpad=0.5)
+        ax1.set_xlim(1, 2.4)
+        ax1.set_ylim(0, 0.81)
+        # ax.set_xticklabels([])
+        # ax.set_yticklabels([])
+        # ax1.set_xticklabels([])
+        # ax1.set_yticklabels([])
+        # ax2.set_xticklabels([])
+        # ax2.set_yticklabels([])
 
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'sc_results.png'), bbox_inches='tight')
