@@ -2445,8 +2445,10 @@ if __name__ == "__main__":
         Rh = arrayParams['Rh']
         Rv = arrayParams['Rv']
         # For testing disorder
-        #Rh = Rh*(9.5/9)
-        #Rv = Rv*(9.5/9)
+        Rh = np.array(Rh)*(9.5/9) - 5/9
+        Rv = np.array(Rv)*(9.5/9) - 5/9
+        Rh[Rh < 0.01] = 0.01
+        Rv[Rv < 0.01] = 0.01
     else:
         VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                                  False)
