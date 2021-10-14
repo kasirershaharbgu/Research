@@ -3071,7 +3071,7 @@ if __name__ == "__main__":
         # ax3 = fig.add_subplot(gs[1, 0])
         # # plotting different temperatures, same array
         directory = "/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature"
-        Ts = [0, 0.0005, 0.001, 0.002, 0.003, 0.004, 0.005, 0.007, 0.01]
+        Ts = [0,0.0001,0.0002,0.0003,0.0004, 0.0005, 0.0006,0.0007,0.0008,0.0009,0.001, 0.002, 0.003, 0.004, 0.005, 0.007, 0.01]
         names = ["array_10_10_T_" + str(T) for T in Ts]
         shift=0
         for T,name in zip(Ts,names):
@@ -3080,7 +3080,7 @@ if __name__ == "__main__":
                       Ilabel="",Vlabel="", fmt_up="r-", fmt_down='b-')
             shift+=0.3
         ax1.set_xlim(1.5,2.15)
-        ax1.set_ylim(0, 3)
+        ax1.set_ylim(0, 5)
         ax1.xaxis.set_tick_params(width=5, size=15)
         ax1.yaxis.set_tick_params(width=5, size=15)
         ax1.set_xticklabels([])
@@ -3471,8 +3471,8 @@ if __name__ == "__main__":
     elif action == 'score_by_r_disorder':
         zero_temp_window=0.2
         finite_temp_window=0.1
-        m = MultiResultAnalyzer([directories[0]]*len(file_names[0]) + [directories[1]]*len(file_names[1]) ,
-                                file_names[0] + file_names[1],
+        m = MultiResultAnalyzer( [directories[1]]*len(file_names[1]) ,
+                                 file_names[1],
                                 out_directory=None, graph=False,reAnalyze=options.re_analyze,
                                 relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
                                 relevant_running_params=["C_std","R_std", "R_avg","C_avg", "CG_avg", "CG_std", "T",
@@ -3513,13 +3513,13 @@ if __name__ == "__main__":
         #                fontsize=30, rotation=0,labelpad=40)
         ax2.tick_params(axis='y', labelcolor='g')
         # ax4.set_xlabel("$\\sigma_R/\\left<R\\right>$")
-        ax1.set_xticklabels([])
-        ax2.set_xticklabels([])
+        # ax1.set_xticklabels([])
+        # ax2.set_xticklabels([])
         ax1.set_yticklabels([])
         ax2.set_yticklabels([])
         # ax3.set_xticklabels([])
-        m = MultiResultAnalyzer([directories[2]]*len(file_names[2]),
-                                file_names[2],
+        m = MultiResultAnalyzer([directories[2]]*len(file_names[2]) + [directories[3]]*len(file_names[3])  ,
+                                file_names[2] + file_names[3] ,
                                 out_directory=None, graph=False,
                                 reAnalyze=options.re_analyze,
                                 relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
@@ -3552,8 +3552,8 @@ if __name__ == "__main__":
                                    window_size=finite_temp_window, fmt='vb', fig=fig, ax=ax6)
         ax6.tick_params(axis='y', labelcolor='g')
         # ax8.set_xlabel("$\\sigma_R/\\left<R\\right>$")
-        ax5.set_xticklabels([])
-        ax6.set_xticklabels([])
+        # ax5.set_xticklabels([])
+        # ax6.set_xticklabels([])
         ax5.set_yticklabels([])
         ax6.set_yticklabels([])
         # ax7.set_xticklabels([])
@@ -3838,6 +3838,44 @@ if __name__ == "__main__":
             plt.close(fig)
         else:
             plt.show()
+
+    elif action == 'plot_thresholds_by_temperature':
+        fig, ax = plt.subplots(1, figsize=FIGSIZE)
+        ax2 = add_subplot_axes(fig, ax, [0.6, 0.47, 0.35, 0.5])
+        directory="/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature/"
+        Ts = [0, 0.0001, 0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.0009, 0.001, 0.002, 0.003, 0.004,
+              0.005, 0.007, 0.01]
+        names = ["array_10_10_T_" + str(T) for T in Ts]
+        directories_list = [directory] * len(names)
+        m = MultiResultAnalyzer(directories_list, names, out_directory=None, graph=False, reAnalyze=False,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "N",
+                                                         "M", "T"],
+                                filter=filter)
+        m.plot_score_by_parameter("thresholdVoltageUp", ["T"], runningParam=True, average_results=options.average, fig=fig,
+                                  ax=ax, fmt='r^')
+        m.plot_score_by_parameter("thresholdVoltageDown", ["T"], runningParam=True, average_results=options.average, fig=fig,
+                                  ax=ax, fmt='bv')
+        m = MultiResultAnalyzer(directories_list[:11], names, out_directory=None, graph=False, reAnalyze=False,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "N",
+                                                         "M", "T"],
+                                filter=filter)
+        m.plot_score_by_parameter("thresholdVoltageUp", ["T"], runningParam=True, average_results=options.average,
+                                  fig=fig,
+                                  ax=ax2, fmt='r^')
+        m.plot_score_by_parameter("thresholdVoltageDown", ["T"], runningParam=True, average_results=options.average,
+                                  fig=fig,
+                                  ax=ax2, fmt='bv')
+
+        ax.set_xlabel("Temperature")
+        ax.set_ylabel("Threshold Voltage")
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'threshold_voltage_by_temperature.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
 
     elif action == 'plot_small_v_fit_vs_temperature':
         fig, ax = plt.subplots(figsize=FIGSIZE)

@@ -862,9 +862,9 @@ class JJArray(DotArray):
         self.gap = gap
         self.Ej = self.getEj()
         self.Ec = 1/(2*np.mean(CG))
-        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, gap,
+        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.001, qp_tunneling, self.Ec, temperature, gap,
                                                           "quasi_particles_rate")
-        self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
+        self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.001, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
         plt.show()
         print("Rates were calculated")
