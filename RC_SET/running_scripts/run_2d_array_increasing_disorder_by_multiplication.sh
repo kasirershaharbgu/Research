@@ -32,7 +32,7 @@ efermi=""
 input=""
 gap=0
 T=0.001
-f="increase_disorder_by_multiplication"
+f="increase_disorder_by_multiplication_correction"
 if [ ! -d "$f" ]; then
   mkdir "$f"
 fi
