@@ -1721,7 +1721,7 @@ class MultiResultAnalyzer:
             yerror = yerror[:, y > 0]
             x = x[y > 0]
             y = y[y > 0]
-            ax.errorbar(x, y, yerr=yerror, fmt=fmt, markersize=20)
+            ax.errorbar(x, -y, yerr=yerror, fmt=fmt, markersize=20)
         elif len(parameter_names) == 2:
             if ax is None:
                 fig = plt.figure(figsize=FIGSIZE)
@@ -3841,7 +3841,7 @@ if __name__ == "__main__":
 
     elif action == 'plot_thresholds_by_temperature':
         fig, ax = plt.subplots(1, figsize=FIGSIZE)
-        ax2 = add_subplot_axes(fig, ax, [0.6, 0.47, 0.35, 0.5])
+        ax2 = add_subplot_axes(fig, ax, [0.6, 0.05, 0.35, 0.5])
         directory="/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature/"
         Ts = [0, 0.0001, 0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.0009, 0.001, 0.002, 0.003, 0.004,
               0.005, 0.007, 0.01]
@@ -3869,7 +3869,7 @@ if __name__ == "__main__":
                                   ax=ax2, fmt='bv')
 
         ax.set_xlabel("Temperature")
-        ax.set_ylabel("Threshold Voltage")
+        ax.set_ylabel("$-V^{th}$")
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'threshold_voltage_by_temperature.png'), bbox_inches='tight')
             plt.close(fig)
