@@ -2,7 +2,7 @@ __author__ = 'Shahar_Kasirer'
 
 # Environment imports
 import os
-os.environ["OPENBLAS_NUM_THREADS"] = "5"  # Number of threads used for EACH simulation instance.
+os.environ["OPENBLAS_NUM_THREADS"] = "1"  # Number of threads used for EACH simulation instance.
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
@@ -45,6 +45,7 @@ GRAD_REP = 100
 INI_LR = 0.001
 
 
+
 def flattenToColumn(a):
     return a.reshape((a.size, 1))
 
@@ -54,6 +55,18 @@ def flattenToRow(a):
 def local_min_func(input):
     mid = len(input)//2
     return (input[mid] <= input).all()
+
+def safe_save(path, arr):
+    if not path.endswith('.npy'):
+        path = path + '.npy'
+    if os.path.isfile(path):
+        temp_path = path.replace('.npy', '_1.npy')
+        np.save(temp_path, arr)
+        os.remove(path)
+        os.rename(temp_path, path)
+    else:
+        np.save(path, arr)
+
 
 def detect_local_minima(arr):
     # https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
@@ -233,10 +246,10 @@ class TunnelingRateCalculator:
         return True
 
     def saveVals(self):
-        np.save(os.path.join(self.dirName, "deltaEmin"), self.deltaEmin)
-        np.save(os.path.join(self.dirName, "deltaEmax"), self.deltaEmax)
-        np.save(os.path.join(self.dirName, "deltaEstep"), self.deltaEstep)
-        np.save(os.path.join(self.dirName, "vals"), self.vals)
+        safe_save(os.path.join(self.dirName, "deltaEmin"), self.deltaEmin)
+        safe_save(os.path.join(self.dirName, "deltaEmax"), self.deltaEmax)
+        safe_save(os.path.join(self.dirName, "deltaEstep"), self.deltaEstep)
+        safe_save(os.path.join(self.dirName, "vals"), self.vals)
 
     def set_approx(self):
         self.approx = interp1d(self.deltaEvals, self.vals, assume_sorted=True)
@@ -849,9 +862,9 @@ class JJArray(DotArray):
         self.gap = gap
         self.Ej = self.getEj()
         self.Ec = 1/(2*np.mean(CG))
-        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, qp_tunneling, self.Ec, temperature, gap,
+        self.qp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.001, qp_tunneling, self.Ec, temperature, gap,
                                                           "quasi_particles_rate")
-        self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.01, cp_tunneling, self.Ec, temperature, self.Ej,
+        self.cp_rate_calculator = TunnelingRateCalculator(-1, 1, 0.001, cp_tunneling, self.Ec, temperature, self.Ej,
                                                           "cooper_pairs_rate")
         plt.show()
         print("Rates were calculated")
@@ -1236,48 +1249,52 @@ class Simulator:
                   fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         if fullOutput:
-            np.save(baseName + "_ns", np.array(n))
-            np.save(baseName + "_Qs", np.array(Q))
-            np.save(baseName + "_nsErr", np.array(nErr))
-            np.save(baseName + "_QsErr", np.array(QErr))
-        np.save(baseName + "_n", self.dotArray.getOccupation())
-        np.save(baseName + "_Q", self.dotArray.getGroundCharge())
+            safe_save(baseName + "_ns", np.array(n))
+            safe_save(baseName + "_Qs", np.array(Q))
+            safe_save(baseName + "_nsErr", np.array(nErr))
+            safe_save(baseName + "_QsErr", np.array(QErr))
+        safe_save(baseName + "_n", self.dotArray.getOccupation())
+        safe_save(baseName + "_Q", self.dotArray.getGroundCharge())
         if currentMap:
-            np.save(baseName + "_current_map", np.array(Imaps))
-        np.save(baseName + "_I", np.array(I))
-        np.save(baseName + "_IErr", np.array(IErr))
+            safe_save(baseName + "_current_map", np.array(Imaps))
+        safe_save(baseName + "_I", np.array(I))
+        safe_save(baseName + "_IErr", np.array(IErr))
 
     def loadState(self,  fullOutput=False, currentMap=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         if not os.path.isfile(baseName + "_I.npy"):
             return None
-        I = np.load(baseName + "_I.npy")
-        loadLen = len(I)
-        IErr = np.load(baseName + "_IErr.npy")
-        if len(IErr) > loadLen:
-            IErr = IErr[:loadLen]
-        n = np.load(baseName + "_n.npy")
-        Q = np.load(baseName + "_Q.npy")
-        res = (I,IErr,n,Q)
-        if fullOutput:
-            ns = np.load(baseName + "_ns.npy")
-            if len(ns) > loadLen:
-                ns = ns[:loadLen, :, :]
-            Qs = np.load(baseName + "_Qs.npy")
-            if len(Qs) > loadLen:
-                Qs = Qs[:loadLen, :, :]
-            nsErr = np.load(baseName + "_nsErr.npy")
-            if len(nsErr) > loadLen:
-                nsErr = nsErr[:loadLen, :, :]
-            QsErr = np.load(baseName + "_QsErr.npy")
-            if len(QsErr) > loadLen:
-                QsErr = QsErr[:loadLen, :, :]
-            res = res + (ns, Qs,nsErr, QsErr)
-        if currentMap:
-            Imaps = np.load(baseName + "_current_map.npy")
-            if len(Imaps) > loadLen:
-                Imaps = Imaps[:loadLen, :, :]
-            res = res + (Imaps,)
+        try:
+            I = np.load(baseName + "_I.npy")
+            loadLen = len(I)
+            IErr = np.load(baseName + "_IErr.npy")
+            if len(IErr) > loadLen:
+                IErr = IErr[:loadLen]
+            n = np.load(baseName + "_n.npy")
+            Q = np.load(baseName + "_Q.npy")
+            res = (I,IErr,n,Q)
+            if fullOutput:
+                ns = np.load(baseName + "_ns.npy")
+                if len(ns) > loadLen:
+                    ns = ns[:loadLen, :, :]
+                Qs = np.load(baseName + "_Qs.npy")
+                if len(Qs) > loadLen:
+                    Qs = Qs[:loadLen, :, :]
+                nsErr = np.load(baseName + "_nsErr.npy")
+                if len(nsErr) > loadLen:
+                    nsErr = nsErr[:loadLen, :, :]
+                QsErr = np.load(baseName + "_QsErr.npy")
+                if len(QsErr) > loadLen:
+                    QsErr = QsErr[:loadLen, :, :]
+                res = res + (ns, Qs,nsErr, QsErr)
+            if currentMap:
+                Imaps = np.load(baseName + "_current_map.npy")
+                if len(Imaps) > loadLen:
+                    Imaps = Imaps[:loadLen, :, :]
+                res = res + (Imaps,)
+        except ValueError as e:
+            print(e)
+            return None
         return res
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False,
@@ -1656,11 +1673,11 @@ class GraphSimulator:
     def saveState(self, I, n=None, Q=None, fullOutput=False, basePath=''):
         baseName = basePath + "_temp_" + str(self.index)
         if fullOutput:
-            np.save(baseName + "_ns", np.array(n))
-            np.save(baseName + "_Qs", np.array(Q))
-        np.save(baseName + "_n", self.n0)
-        np.save(baseName + "_Q", self.QG)
-        np.save(baseName + "_I", np.array(I))
+            safe_save(baseName + "_ns", np.array(n))
+            safe_save(baseName + "_Qs", np.array(Q))
+        safe_save(baseName + "_n", self.n0)
+        safe_save(baseName + "_Q", self.QG)
+        safe_save(baseName + "_I", np.array(I))
 
 
     def loadState(self, fullOutput=False, basePath=''):
@@ -1743,15 +1760,15 @@ def runSingleSimulation(index, VL0, VR0, vSym, Q0, n0,Vmax, Vstep, dotArray,
 
 def saveRandomParams(VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,basePath):
     baseName = basePath + "_temp_"
-    np.save(baseName + "VG", VG)
-    np.save(baseName + "Q0", Q0)
-    np.save(baseName + "n0", n0)
-    np.save(baseName + "CG", CG)
-    np.save(baseName + "RG", RG)
-    np.save(baseName + "Ch", Ch)
-    np.save(baseName + "Cv", Cv)
-    np.save(baseName + "Rh", Rh)
-    np.save(baseName + "Rv", Rv)
+    safe_save(baseName + "VG", VG)
+    safe_save(baseName + "Q0", Q0)
+    safe_save(baseName + "n0", n0)
+    safe_save(baseName + "CG", CG)
+    safe_save(baseName + "RG", RG)
+    safe_save(baseName + "Ch", Ch)
+    safe_save(baseName + "Cv", Cv)
+    safe_save(baseName + "Rh", Rh)
+    safe_save(baseName + "Rv", Rv)
     return True
 
 def loadRandomParams(basePath):
@@ -1922,12 +1939,12 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         avgQ = np.mean(np.array(Qs), axis=0)
         avgNErr = np.sqrt(np.sum(np.array(nsErr) ** 2, axis=0)) / len(nsErr)
         avgQErr = np.sqrt(np.sum(np.array(QsErr) ** 2, axis=0)) / len(QsErr)
-        np.save(basePath + "_n", avgN)
-        np.save(basePath + "_Q", avgQ)
-        np.save(basePath + "_nErr", avgNErr)
-        np.save(basePath + "_QErr", avgQErr)
-        np.save(basePath + "_full_I", np.array(Is))
-        np.save(basePath + "_full_IErr", np.array(IsErr))
+        safe_save(basePath + "_n", avgN)
+        safe_save(basePath + "_Q", avgQ)
+        safe_save(basePath + "_nErr", avgNErr)
+        safe_save(basePath + "_QErr", avgQErr)
+        safe_save(basePath + "_full_I", np.array(Is))
+        safe_save(basePath + "_full_IErr", np.array(IsErr))
     fig = plt.figure()
     IplusErr = avgI + avgIErr
     IminusErr = avgI - avgIErr
@@ -1937,7 +1954,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         plt.xlabel('Temperature')
         plt.ylabel('Current from left to right')
         plt.savefig(basePath + "_IT.png")
-        np.save(basePath + "_T", V)
+        safe_save(basePath + "_T", V)
     elif double_loop:
         plt.plot(V[:V.size // 4], avgI[:V.size // 4], 'b-',
                  V[:V.size // 4], IplusErr[:V.size // 4], 'b--',
@@ -1955,7 +1972,7 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         plt.xlabel('Voltage')
         plt.ylabel('Current from left to right')
         plt.savefig(basePath + "_IV.png")
-        np.save(basePath + "_V", V)
+        safe_save(basePath + "_V", V)
     else:
         plt.plot(V[:V.size // 2], avgI[:V.size // 2], 'b-', V[:V.size // 2], IplusErr[:V.size // 2], 'b--',
                  V[:V.size // 2], IminusErr[:V.size // 2], 'b--',
@@ -1964,16 +1981,16 @@ def runFullSimulation(VL0, VR0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,
         plt.xlabel('Voltage')
         plt.ylabel('Current from left to right')
         plt.savefig(basePath + "_IV.png")
-        np.save(basePath + "_V", V)
+        safe_save(basePath + "_V", V)
     plt.close(fig)
     fig = plt.figure()
     plt.close(fig)
-    np.save(basePath + "_I", avgI)
-    np.save(basePath + "_IErr", avgIErr)
+    safe_save(basePath + "_I", avgI)
+    safe_save(basePath + "_IErr", avgIErr)
 
     if currentMap:
         avgImaps = np.mean(np.array(Imaps),axis=0)
-        np.save(basePath + "_Imap", avgImaps)
+        safe_save(basePath + "_Imap", avgImaps)
     for index in range(repeats):
         removeState(index, fullOutput=fullOutput, basePath=basePath, currentMap=currentMap, graph=use_graph)
     removeRandomParams(basePath)
@@ -2427,6 +2444,11 @@ if __name__ == "__main__":
         Cv = Cv[1:]
         Rh = arrayParams['Rh']
         Rv = arrayParams['Rv']
+        # For testing disorder
+        #Rh = np.array(Rh)*(9.5/9) - 5/9
+        #Rv = np.array(Rv)*(9.5/9) - 5/9
+        #Rh[Rh < 0.01] = 0.01
+        #Rv[Rv < 0.01] = 0.01
     else:
         VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                                  False)
