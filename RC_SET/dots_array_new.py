@@ -486,6 +486,7 @@ class DotArray:
         self.Rh = Rh
         self.Rv = Rv if Rv.size else np.zeros((0, 0))
         self.R = np.hstack((Rh.flatten(), Rh.flatten(), Rv.flatten(), Rv.flatten()))
+        self.R[self.R == 0] = np.inf
         self.temperature = temperature if temperature_gradient == 0 else \
             self.getTemperatureArray(temperature, temperature_gradient)
         self.temperature_gradient = temperature_gradient
@@ -3427,10 +3428,12 @@ if __name__ == "__main__":
         Rh = arrayParams['Rh']
         Rv = arrayParams['Rv']
         # Fixing parameters from an older version
+        Cv = np.array(Cv)
+        Rv = np.array(Rv)
         if Cv.shape[0] != rows+1:
-            Cv = Cv.pad(Cv, ((1, 1), (0, 0)))
+            Cv = np.pad(Cv, ((0, 1), (0, 0)))
         if Rv.shape[0] != rows+1:
-            Rv = Rv.pad(Cv, ((1, 1), (0, 0)))
+            Rv = np.pad(Rv, ((1, 1), (0, 0)))
     else:
         VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                                  False)
