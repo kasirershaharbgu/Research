@@ -23,21 +23,24 @@ matplotlib.use("Agg")  # To avoid showing plots during a run on server.
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
+#from mayavi import mlab
 
 # Parsing tools
 from optparse import OptionParser
 import re as regex
 from ast import literal_eval
+from copy import copy
 
 #  Constants  #
-EPS = 0.0001
+EPS = 0.000001
 #  Gillespie Constants  #
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-3
 STEADY_STATE_REP = 100
 INV_DOS = 0.01
-#  Tau Leaping Constants #
+
+# Tau Leaping Constants
 TAU_EPS = 0.03
 #  Graph Constants  #
 DQ = 0.1
@@ -63,6 +66,21 @@ def flattenToRow(a):
     :return: (1,N*M) numpy array.
     """
     return a.reshape((1, a.size))
+
+def local_min_func(input):
+    mid = len(input)//2
+    return (input[mid] <= input).all()
+
+def safe_save(path, arr):
+    if not path.endswith('.npy'):
+        path = path + '.npy'
+    if os.path.isfile(path):
+        temp_path = path.replace('.npy', '_1.npy')
+        np.save(temp_path, arr)
+        os.remove(path)
+        os.rename(temp_path, path)
+    else:
+        np.save(path, arr)
 
 
 def detect_local_minima(arr):
@@ -109,7 +127,6 @@ def simple_gradient_descent(grad, x0, eps=1e-4, lr=1e-3, max_iter=1000000, plot_
         plt.plot(gradvec)
         plt.show()
     return x, iter < max_iter
-
 
 #  Methods for calculating superconducting related tunneling rates  #
 #  see https://doi.org/10.1007/978-1-4757-2166-9_2  #
@@ -166,8 +183,13 @@ def cp_tunneling(x, Ec, Ej, T):
         res[ind] = (np.pi*Ej)**2 * high_impedance_p(val, Ec, T, 2)
     return res
 
+def qp_integrand(deltaE, Ec, gap, T):
+    def f(x1, x2):
+        return qp_density_of_states(x1, gap)*qp_density_of_states(x2, gap)*fermi_dirac_dist(x1, T)\
+               *(1-fermi_dirac_dist(x2, T))*high_impedance_p(x1 - x2 + deltaE, Ec, T, 1)
+    return f
 
-def qp_tunneling(deltaE, Ec, gap, T):
+def qp_integrand_big_energies(deltaE, Ec, T):
     """
     Quasi-particles tunneling rates for high impedance.
     :param deltaE: tunneling energy differences array (before - after).
@@ -176,32 +198,31 @@ def qp_tunneling(deltaE, Ec, gap, T):
     :param T: Temperature.
     :return: Array with same shape as deltaE.
     """
-    def qp_integrand(dE):
-        def f(x1, x2):
-            return qp_density_of_states(x1, gap) * qp_density_of_states(x2, gap) * fermi_dirac_dist(x1, T) \
-                   * (1 - fermi_dirac_dist(x2, T)) * high_impedance_p(x1 - x2 + dE, Ec, T, 1)
-        return f
+    def f(x1):
+        return (x1/(1-exp(-x1/T)))*high_impedance_p(x1 - deltaE, Ec, T, 1)
+    return f
 
-    def qp_tunneling_single(dE):
-        if fabs(deltaE) < 10 * gap:
-            mp.dps = 50
-            part1 = quad(qp_integrand(dE), [ninf, -gap], [ninf, -gap])
-            part2 = quad(qp_integrand(dE), [ninf, -gap], [gap, inf])
-            part3 = quad(qp_integrand(dE), [gap, inf], [ninf, -gap])
-            part4 = quad(qp_integrand(dE), [gap, inf], [gap, inf])
-            mp.dps = 15
-            return re(part1 + part2 + part3 + part4)
-        elif deltaE > 0:
-            return deltaE - Ec
-        else:
-            return 0
 
-    res = np.zeros(deltaE.shape)
-    for ind, val in enumerate(deltaE):
-        res[ind] = qp_tunneling_single(val)
-    res[res < 0] = 0
-    return res
+def qp_tunneling_single(deltaE, Ec, gap, T):
+    if fabs(deltaE) < 10*gap:
+        mp.dps = 50
+        part1 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [ninf, -gap])
+        part2 = quad(qp_integrand(deltaE, Ec, gap, T), [ninf, -gap], [gap, inf])
+        part3 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [ninf, -gap])
+        part4 = quad(qp_integrand(deltaE, Ec, gap, T), [gap, inf], [gap, inf])
+        mp.dps = 15
+        return re(part1 + part2 + part3 + part4)
+    elif deltaE > 0:
+        return deltaE - Ec
+    else:
+        return 0
 
+def qp_tunneling(deltaE, Ec, gap, T):
+        res = np.zeros(deltaE.shape)
+        for ind,val in enumerate(deltaE):
+            res[ind] = qp_tunneling_single(val, Ec, gap, T)
+        res[res < 0] = 0
+        return res
 
 class TunnelingRateCalculator:
     """
@@ -244,7 +265,7 @@ class TunnelingRateCalculator:
                     for line in lines:
                         pid = int(line)
                         try:
-                            os.kill(pid, 0)
+                            os.kill(pid,0)
                         except OSError:
                             continue
                         else:
@@ -264,8 +285,8 @@ class TunnelingRateCalculator:
             while self.isWriting():
                 sleep(60)
             with open(os.path.join(self.dirName, "writing.txt"), "a") as f:
-                f.write(str(os.getpid()) + "\n")
-            got_it = True
+                f.write(str(os.getpid())+"\n")
+            got_it=True
             try:
                 with open(os.path.join(self.dirName, "writing.txt"), "r") as f:
                     lines = f.readlines()
@@ -320,10 +341,10 @@ class TunnelingRateCalculator:
         """
         Saving calculated rates
         """
-        np.save(os.path.join(self.dirName, "deltaEmin"), self.deltaEmin)
-        np.save(os.path.join(self.dirName, "deltaEmax"), self.deltaEmax)
-        np.save(os.path.join(self.dirName, "deltaEstep"), self.deltaEstep)
-        np.save(os.path.join(self.dirName, "vals"), self.vals)
+        safe_save(os.path.join(self.dirName, "deltaEmin"), self.deltaEmin)
+        safe_save(os.path.join(self.dirName, "deltaEmax"), self.deltaEmax)
+        safe_save(os.path.join(self.dirName, "deltaEstep"), self.deltaEstep)
+        safe_save(os.path.join(self.dirName, "vals"), self.vals)
 
     def set_approx(self):
         """
@@ -338,7 +359,7 @@ class TunnelingRateCalculator:
         print("Increasing high limit", flush=True)
         new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
         new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
-        new_vals = self.rateFunc(new_inputs, self.Ec, self.otherParam, self.T)
+        new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
         self.deltaEmax = new_deltaEmax
         self.deltaEvals = np.hstack((self.deltaEvals, new_inputs))
         self.vals = np.hstack((self.vals, new_vals))
@@ -350,16 +371,17 @@ class TunnelingRateCalculator:
         """
         Calculating rates for lower energy differences than the ones currently exist.
         """
-        print("Decreasing low limit")
+        print("Decreasing low limit", flush=True)
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
         new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
-        new_vals = self.rateFunc(new_inputs, self.Ec, self.otherParam, self.T)
+        new_vals = self.rateFunc(new_inputs,self.Ec, self.otherParam, self.T)
         self.deltaEmin = new_deltaEmin
         self.deltaEvals = np.hstack((new_inputs, self.deltaEvals))
         self.vals = np.hstack((new_vals, self.vals))
         self.saveVals()
         self.set_approx()
         print("Low limit decreased, Emin= " + str(self.deltaEmin), flush=True)
+
 
     def update_rates(self):
         """
@@ -392,14 +414,23 @@ class TunnelingRateCalculator:
             self.freeWritingLock()
         return self.approx(deltaE)
 
-    def plot_rate(self, fig, ax, fmt):
-        """
-        Plotting the calculated rates (for dbg).
-        :return:
-        """
-        ax.plot(self.deltaEvals, self.vals, fmt)
-        return fig, ax
+    def expand_range(self, deltaE):
+        if self.deltaEmin - np.min(deltaE) >= -self.deltaEstep or self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
+            self.update_rates()
+        while self.deltaEmin - np.min(deltaE) >= -self.deltaEstep:
+            self.getWritingLock()
+            self.decrease_low_limit()
+            self.freeWritingLock()
+        while self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
+            self.getWritingLock()
+            self.increase_high_limit()
+            self.freeWritingLock()
 
+    def plot_rate(self):
+        plt.plot(self.deltaEvals, self.vals, '.')
+
+class NoElectronsOnDot(RuntimeError):
+    pass
 
 class DotArray:
     """
@@ -408,7 +439,7 @@ class DotArray:
     """
 
     def __init__(self, rows, columns, VL, VR, VU, VD, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature,
-                 temperature_gradient, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                 temperature_gradient, temperature_gradient_step, leftElectrode, rightElectrode, upElectrode, downElectrode,
                  fastRelaxation=False, tauLeaping=False, modifyR=False):
         """
         Creates new array of quantum dots
@@ -455,8 +486,11 @@ class DotArray:
         self.Rh = Rh
         self.Rv = Rv if Rv.size else np.zeros((0, 0))
         self.R = np.hstack((Rh.flatten(), Rh.flatten(), Rv.flatten(), Rv.flatten()))
+        self.R[self.R == 0] = np.inf
         self.temperature = temperature if temperature_gradient == 0 else \
             self.getTemperatureArray(temperature, temperature_gradient)
+        self.temperature_gradient = temperature_gradient
+        self.temperature_gradient_step = temperature_gradient_step
         self.rightWorkLen = (self.columns + 1) * self.rows
         self.downWorkLen = self.columns * (self.rows + 1)
         self.no_tunneling_next_time = False
@@ -509,7 +543,9 @@ class DotArray:
         copy_array.Rh = self.Rh
         copy_array.Rv = self.Rv
         copy_array.R = np.copy(self.R)
-        copy_array.temperature = self.temperature
+        copy_array.temperature = np.copy(self.temperature)
+        copy_array.temperature_gradient = self.temperature_gradient
+        copy_array.temperature_gradient_step = self.temperature_gradient_step
         copy_array.rightWorkLen = self.rightWorkLen
         copy_array.downWorkLen = self.downWorkLen
         copy_array.no_tunneling_next_time = self.no_tunneling_next_time
@@ -540,7 +576,6 @@ class DotArray:
         copy_array.tauLeaping = self.tauLeaping
         copy_array.use_modifyR = self.use_modifyR
         copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
-        # Modified R variables
         if self.use_modifyR:
             copy_array._leftnExponent = np.copy(self._leftnExponent)
             copy_array._rightnExponent = np.copy(self._rightnExponent)
@@ -577,7 +612,7 @@ class DotArray:
         """
         line = temperature + temperatureGradient * np.arange(self.getColumns() + 1)
         Th = np.tile(line, (self.getRows(), 1))
-        Tv = (Th[1:, :-1] + Th[1:, 1:])/2
+        Tv = np.tile((line[:-1] + line[1:])/2, (self.getRows()+1, 1))
         return np.hstack((Th.flatten(), Th.flatten(), Tv.flatten(), Tv.flatten()))
 
     def is_vertical_current(self):
@@ -1016,7 +1051,7 @@ class DotArray:
             out_of_interval = dt > self.default_dt
             if np.max(self.get_dist_from_steady(self.n, self.Q)) < ALLOWED_ERR:
                 break
-            return dt, intervals
+        return dt, intervals
 
     def getLeapingTimeInterval(self):
         """
@@ -1182,7 +1217,7 @@ class JJArray(DotArray):
     Superconducting array version
     """
     def __init__(self, rows, columns, VL, VR, VU, VD,  VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                 temperature, temperature_gradient, scGap, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                 temperature, temperature_gradient, temperature_gradient_step, scGap, leftElectrode, rightElectrode, upElectrode, downElectrode,
                  fastRelaxation=False, tauLeaping=False, modifyR=False):
         """
         Creates a new Josephson junctions array.
@@ -1210,7 +1245,7 @@ class JJArray(DotArray):
         :param modifyR: True to modify tunneling resistance according to the occupation (finite DOF for electrons).
         """
         DotArray.__init__(self, rows, columns, VL, VR, VU, VD, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv,
-                          temperature, temperature_gradient, leftElectrode, rightElectrode, upElectrode, downElectrode,
+                          temperature, temperature_gradient, temperature_gradient_step, leftElectrode, rightElectrode, upElectrode, downElectrode,
                           fastRelaxation=fastRelaxation, tauLeaping=tauLeaping, modifyR=modifyR)
 
         self.gap = scGap
@@ -1717,7 +1752,7 @@ class Simulator:
 
     def calcIV(self, Vmax, Vstep, vSym, fullOutput=False, print_stats=False,
                currentMap=False, basePath="", resume=False, double_loop=False, double_time=False,
-               average_vertical_directions=False):
+               average_vertical_directions=False, heat_up_left_electrode=False):
         """
         Calculating the I-V curve of the system while voltage increase from Vmin to Vmax and back again..
         :param Vmax: Maximum external voltage.
@@ -1789,29 +1824,71 @@ class Simulator:
                     QsErr = list(resumeParams[9])
                 if currentMap:
                     Imaps = list(resumeParams[-1])
+        calc_for_different_temperature_gradients = False
+        if self.dotArray.temperature_gradient_step > 0:
+            temperature_gradients = np.arange(start=0,
+                                              step=self.dotArray.temperature_gradient_step,
+                                              stop=self.dotArray.temperature_gradient)
+            min_temp = np.min(self.dotArray.temperature)
+            calc_for_different_temperature_gradients = True
         for VL, VR in zip(VL_vec, VR_vec):
             self.dotArray.changeVext(VL, VR, self.VU, self.VD)
-            # running once to get to steady state
-            self.getToSteadyState()
-            # now we are in steady state calculate current
-            stepRes1 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap,
-                                        double_time=double_time)
-            if average_vertical_directions:
-                self.dotArray.changeVext(VL, VR, self.VD, self.VU)
+            if calc_for_different_temperature_gradients:
+                res = []
+                for grad in temperature_gradients:
+                    if heat_up_left_electrode:
+                        left_temp = min_temp + grad*self.dotArray.getColumns()
+                        self.dotArray.setTemperature(self.dotArray.getTemperatureArray(left_temp, -grad))
+                    else:
+                        self.dotArray.setTemperature(self.dotArray.getTemperatureArray(min_temp, grad))
+                    # running once to get to steady state
+                    self.getToSteadyState()
+                    # now we are in steady state calculate current
+                    res.append(self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap,
+                                                double_time=double_time))
+                stepRes1 = []
+                for res_i in range(len(res[0])):
+                    stepRes1.append(np.array([res[grad_i][res_i] for grad_i in range(len(temperature_gradients))]))
+            else:
                 # running once to get to steady state
                 self.getToSteadyState()
                 # now we are in steady state calculate current
-                stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=False,
+                stepRes1 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap,
                                             double_time=double_time)
-                current = (stepRes1[0] + stepRes2[0])/2
-                currentErr = (stepRes1[1] + stepRes2[1])/2
-                vert_current = np.sqrt((stepRes1[2]**2 + stepRes2[2]**2)/2)
-                vert_currentErr = np.sqrt((stepRes1[3]**2 + stepRes2[3]**2)/2)
-                if fullOutput:
-                    ns.append((stepRes1[4] + stepRes2[4])/2)
-                    Qs.append((stepRes1[5] + stepRes1[5])/2)
-                    nsErr.append((stepRes1[6] + stepRes2[6])/2)
-                    QsErr.append((stepRes1[7] + stepRes2[7])/2)
+            if average_vertical_directions:
+                self.dotArray.changeVext(VL, VR, self.VD, self.VU)
+                if calc_for_different_temperature_gradients:
+                    res = []
+                    for grad in temperature_gradients:
+                        if heat_up_left_electrode:
+                            left_temp = min_temp + grad * self.dotArray.getColumns()
+                            self.dotArray.setTemperature(self.dotArray.getTemperatureArray(left_temp, -grad))
+                        else:
+                            self.dotArray.setTemperature(self.dotArray.getTemperatureArray(min_temp, grad))
+                        # running once to get to steady state
+                        self.getToSteadyState()
+                        # now we are in steady state calculate current
+                        res.append(
+                            self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=currentMap,
+                                             double_time=double_time))
+                        stepRes2 = []
+                        for res_i in range(len(res[0])):
+                            stepRes2.append(np.array([res[grad_i][res_i] for grad_i in range(len(temperature_gradients))]))
+                else:
+                    # running once to get to steady state
+                    self.getToSteadyState()
+                    # now we are in steady state calculate current
+                    stepRes2 = self.calcCurrent(print_stats=print_stats, fullOutput=fullOutput, currentMap=False,
+                                                double_time=double_time)
+                    current = (stepRes1[0] + stepRes2[0])/2
+                    currentErr = (stepRes1[1] + stepRes2[1])/2
+                    vert_current = np.sqrt((stepRes1[2]**2 + stepRes2[2]**2)/2)
+                    vert_currentErr = np.sqrt((stepRes1[3]**2 + stepRes2[3]**2)/2)
+                    if fullOutput:
+                        ns.append((stepRes1[4] + stepRes2[4])/2)
+                        Qs.append((stepRes1[5] + stepRes1[5])/2)
+                        nsErr.append((stepRes1[6] + stepRes2[6])/2)
+                        QsErr.append((stepRes1[7] + stepRes2[7])/2)
             else:
                 current = stepRes1[0]
                 currentErr = stepRes1[1]
@@ -2554,7 +2631,8 @@ def removeRandomParams(basePath):
 
 def runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows, columns,
                       Vmax, Vstep, leftElectrode, rightElectrode, upElectrode, downElectrode,
-                      temperature=0, temperature_gradient=0, repeats=1, savePath=".", fileName="", fullOutput=False,
+                      temperature=0, temperature_gradient=0, temperature_gradient_step=0, repeats=1,
+                      savePath=".", fileName="", fullOutput=False,
                       printState=False, useGraph=False, fastRelaxation=False,
                       currentMap=False, dbg=False, plotCurrentMaps=False, plotBinaryCurrentMaps=False, resume=False,
                       superconducting=False, gap=0, leaping=False, modifyR=False, plotVoltages=False,
@@ -2656,13 +2734,13 @@ def runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG0, Q0, n0, CG, RG, Ch, Cv, Rh,
     if superconducting:
         prototypeArray = JJArray(rows, columns, VL0, VR0, VU0, VD0, np.array(VG0), np.array(Q0), np.array(n0),
                                  np.array(CG), np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                 temperature, temperature_gradient, gap, leftElectrode, rightElectrode, upElectrode,
+                                 temperature, temperature_gradient, temperature_gradient_step, gap, leftElectrode, rightElectrode, upElectrode,
                                  downElectrode, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
         print("Superconducting prototype array was created")
     else:
         prototypeArray = DotArray(rows, columns, VL0, VR0, VU0, VD0, np.array(VG0), np.array(Q0), np.array(n0),
                                   np.array(CG), np.array(RG), np.array(Ch), np.array(Cv), np.array(Rh), np.array(Rv),
-                                  temperature, temperature_gradient, leftElectrode, rightElectrode, upElectrode,
+                                  temperature, temperature_gradient, temperature_gradient_step, leftElectrode, rightElectrode, upElectrode,
                                   downElectrode, fastRelaxation=fastRelaxation, tauLeaping=leaping, modifyR=modifyR)
         print("Normal prototype array was created")
 
@@ -3014,7 +3092,12 @@ def getOptions():
                       default=0, type=float)
     parser.add_option("--temperature-gradient", dest="temperature_gradient",
                       help="Temperature gradient (in units of planckConstant/(timeUnits*Lattice constant))"
-                           " [default: %default]",
+                           " [default: %default]. Will be used as maximal value if --temperature-gradient-step is given.",
+                      default=0, type=float)
+    parser.add_option("--temperature-gradient-step", dest="temperature_gradient_step",
+                      help="Temperature gradient step (in units of planckConstant/(timeUnits*Lattice constant))"
+                           " [default: %default]. If given, the current for each temperature gradient from zero to the"
+                           " given gradient in --temperature-gradient will be calculated for each voltage",
                       default=0, type=float)
     parser.add_option("--gap", dest="gap",
                       help="superconducting gap (in units of planckConstant/timeUnits)[default: %default]",
@@ -3047,12 +3130,12 @@ def getOptions():
     parser.add_option("--up-electrode", dest="upElectrode",
                       help="Location of upper electrode in form of a binary array, i.e. if the array width is 5 and"
                            " the electrode is connected in the second and fifth rows then [0,1,0,0,1] [default: "
-                           "connected to all columns]",
+                           "no electrode]",
                       default="")
     parser.add_option("--down-electrode", dest="downElectrode",
                       help="Location of lower electrode in form of a binary array, i.e. if the array width is 5 and"
                            " the electrode is connected in the second and fifth rows then [0,1,0,0,1] [default: "
-                           "connected to all columns]",
+                           "no electrode]",
                       default="")
     parser.add_option("--vmin", dest="Vmin", help="minimum external voltage  (in units of"
                                               " planckConstant/electronCharge*timeUnits)"
@@ -3313,6 +3396,7 @@ if __name__ == "__main__":
     dist = options.dist
     T = options.T
     temperature_gradient = options.temperature_gradient
+    temperature_gradient_step = options.temperature_gradient_step
     gap = options.gap
     sc = options.sc
     leaping = options.leaping
@@ -3343,6 +3427,13 @@ if __name__ == "__main__":
         Cv = arrayParams['Cv']
         Rh = arrayParams['Rh']
         Rv = arrayParams['Rv']
+        # Fixing parameters from an older version
+        Cv = np.array(Cv)
+        Rv = np.array(Rv)
+        if Cv.shape[0] != rows+1:
+            Cv = np.pad(Cv, ((0, 1), (0, 0)))
+        if Rv.shape[0] != rows+1:
+            Rv = np.pad(Rv, ((1, 1), (0, 0)))
     else:
         VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                                  False)
@@ -3378,11 +3469,12 @@ if __name__ == "__main__":
 
     leftElectrode = literal_eval(options.leftElectrode.replace('\"', '')) if options.leftElectrode else [1]*rows
     rightElectrode = literal_eval(options.rightElectrode.replace('\"', '')) if options.rightElectrode else [1]*rows
-    upElectrode = literal_eval(options.upElectrode.replace('\"', '')) if options.upElectrode else [1]*columns
-    downElectrode = literal_eval(options.downElectrode.replace('\"', '')) if options.downElectrode else [1]*columns
+    upElectrode = literal_eval(options.upElectrode.replace('\"', '')) if options.upElectrode else [0]*columns
+    downElectrode = literal_eval(options.downElectrode.replace('\"', '')) if options.downElectrode else [0]*columns
     array_params = runFullSimulation(VL0, VR0, VU0, VD0, vSym, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, rows,  columns,
                                      Vmax, Vstep, leftElectrode, rightElectrode, upElectrode, downElectrode,
-                                     temperature=T, temperature_gradient=temperature_gradient, repeats=repeats,
+                                     temperature=T, temperature_gradient=temperature_gradient,
+                                     temperature_gradient_step=temperature_gradient_step,repeats=repeats,
                                      savePath=savePath, fileName=fileName,
                                      fullOutput=fullOutput, printState=False, useGraph=use_graph,
                                      fastRelaxation=fast_relaxation, currentMap=current_map,

@@ -1689,7 +1689,7 @@ class MultiResultAnalyzer:
 
     def plot_score_by_parameter(self, score_name, parameter_names, runningParam=True,
                                 average_results=True, normalizing_parameter_names=None, fig=None, ax=None,
-                                fmt='.'):
+                                fmt='.', linear_fit=False):
         """
         Plots score as a function of given parameter
         :param score_name: relevant score name (hysteresis, jump, blockade)
@@ -1722,6 +1722,14 @@ class MultiResultAnalyzer:
             x = x[y > 0]
             y = y[y > 0]
             ax.errorbar(x, -y, yerr=yerror, fmt=fmt, markersize=20)
+            if linear_fit:
+                p, residuals, rank, singular_values, rcond = np.polyfit(x[:-1], -y[:-1], 1, full=True)
+                ax.plot(x, p[0]*x + p[1], 'm')
+                print(p)
+                print(residuals)
+                print(rank)
+                print(singular_values)
+                print(rcond)
         elif len(parameter_names) == 2:
             if ax is None:
                 fig = plt.figure(figsize=FIGSIZE)
@@ -3863,7 +3871,7 @@ if __name__ == "__main__":
                                 filter=filter)
         m.plot_score_by_parameter("thresholdVoltageUp", ["T"], runningParam=True, average_results=options.average,
                                   fig=fig,
-                                  ax=ax2, fmt='r^')
+                                  ax=ax2, fmt='r^', linear_fit=True)
         m.plot_score_by_parameter("thresholdVoltageDown", ["T"], runningParam=True, average_results=options.average,
                                   fig=fig,
                                   ax=ax2, fmt='bv')
@@ -3872,6 +3880,62 @@ if __name__ == "__main__":
         ax.set_ylabel("$-V^{th}$")
         if options.output_folder:
             fig.savefig(os.path.join(options.output_folder, 'threshold_voltage_by_temperature.png'), bbox_inches='tight')
+            plt.close(fig)
+        else:
+            plt.show()
+
+    elif action == 'plot_up_thresholds_by_temperature':
+        fig = plt.figure(figsize=FIGSIZE)
+        ax = fig.add_subplot(111, label="1")
+        ax2 = fig.add_subplot(111, label="2", frame_on=False)
+
+        directory="/home/kasirershahar/University/Research/simulation_results/finite_temperature/same_array_different_temperature/"
+        Ts = [0, 0.0001, 0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.0009, 0.001, 0.002, 0.003, 0.004,
+              0.005, 0.007, 0.01]
+        names = ["array_10_10_T_" + str(T) for T in Ts]
+        directories_list = [directory] * len(names)
+        m = MultiResultAnalyzer(directories_list[:11], names, out_directory=None, graph=False, reAnalyze=False,
+                                relevant_array_params=["Rh", "Rv", "Ch", "Cv"],
+                                relevant_running_params=["C_std", "R_std", "R_avg", "C_avg", "CG_avg", "CG_std", "N",
+                                                         "M", "T"],
+                                filter=filter)
+        m.plot_score_by_parameter("thresholdVoltageUp", ["T"], runningParam=True, average_results=options.average, fig=fig,
+                                  ax=ax, fmt='^m', linear_fit=True)
+        danny_t = np.array([0.1, 81.0/740.0, 89.0/740.0, 24.0/185.0, 103.0/740.0, 0.15, 59.0/370.0, 25.0/148.0,
+                            7.0/37.0])
+        danny_v = np.array([-25+125/71, -25+210.0/71.0, -25+265.0/71.0, -25+305.0/71.0, -25+365.0/71.0,
+                            -25 + 420.0/71.0, -25+450.0/71.0, -25+475.0/71.0, -25+505.0/71.0])
+
+
+        p = np.polyfit(danny_t[:-1], danny_v[:-1], 1)
+        print(p)
+
+        ax2.plot(danny_t, danny_v, marker=".", markersize=16, color="red", linestyle="-.")
+        # ax2.plot(danny_t, p[0]*danny_t + p[1], "b")
+        ax2.xaxis.tick_top()
+        ax2.yaxis.tick_right()
+
+
+        ax.tick_params(axis='x', colors="m")
+        ax.tick_params(axis='y', colors="m")
+
+        ax2.tick_params(axis='x', colors="r")
+        ax2.tick_params(axis='y', colors="r")
+
+
+        ax.set_xlabel("Temperature")
+        ax.set_ylabel("$-V^{th}$")
+        # ax.set_ylim([-1.97, -1.8445])  # last 3 shifted
+        ax.set_ylim([-1.9623,-1.84]) # last 2 shifted
+        x_lim_min, x_lim_max = ax2.get_xlim()
+        ax2.set_xlim([x_lim_min - 0.01, x_lim_max])
+        # ax.set_ylim([-1.961,-1.8445]) # last 3
+        # ax.set_ylim([-1.9623,-1.84]) #l ast 2
+        # ax.set_ylim([-1.9638, -1.8338]) # last 1
+        # ax2.set_ylim([-25.2, -14.2])
+        ax2.set_ylim([-24.27, -14.58])
+        if options.output_folder:
+            fig.savefig(os.path.join(options.output_folder, 'threshold_voltage_up_by_temperature1.png'), bbox_inches='tight')
             plt.close(fig)
         else:
             plt.show()
@@ -4018,6 +4082,7 @@ if __name__ == "__main__":
         # ax2.set_xticklabels([])
         # ax2.set_yticklabels([])
         directory = directories[0]
+        # directory2 = directories[1]
         # names = ["sc_array_5_5_T_0.001_cg_10_run_2_gap_0.01",
         #          "sc_array_5_5_T_0.001_cg_10_run_2_gap_0.1"]
         # gaps = [0.01, 0.1]
@@ -4029,7 +4094,8 @@ if __name__ == "__main__":
         gap_vals = ["0.2", "1", "2"]
         shift = 0
         for index, name in enumerate(names):
-            p = SingleResultsProcessor(directory, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
+            cur_dir = directory if index < 2 else directory
+            p = SingleResultsProcessor(cur_dir, name, reAnalyze=options.re_analyze, graph=False, fullOutput=False)
             p.plot_IV(ax1, fig, Vnorm=1, Inorm=1, shift=shift, err=True, errorevery=1, alternative=False,
                       Ilabel="", Vlabel="", fmt_up='-r', fmt_down='-b')
             gap_vals.append(gaps[index] * p.calc_param_average("C"))
@@ -4044,15 +4110,15 @@ if __name__ == "__main__":
         # ax1.legend(["Increasing voltage", "Decreasing voltage"], fontsize=50, loc=[0, 0.8], handlelength=0.1, handletextpad=0.5)
         ax1.set_xlim(1, 2.4)
         ax1.set_ylim(0, 0.81)
-        # ax.set_xticklabels([])
-        # ax.set_yticklabels([])
-        # ax1.set_xticklabels([])
-        # ax1.set_yticklabels([])
-        # ax2.set_xticklabels([])
-        # ax2.set_yticklabels([])
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax1.set_xticklabels([])
+        ax1.set_yticklabels([])
+        ax2.set_xticklabels([])
+        ax2.set_yticklabels([])
 
         if options.output_folder:
-            fig.savefig(os.path.join(options.output_folder, 'sc_results.png'), bbox_inches='tight')
+            fig.savefig(os.path.join(options.output_folder, 'sc_results_2.png'), bbox_inches='tight')
             plt.close(fig)
         else:
             plt.show()
