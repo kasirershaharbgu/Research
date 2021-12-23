@@ -1,8 +1,15 @@
-__author__ = 'Shahar_Kasirer'
+__author__ = 'Shahar Kasirer'
+
+# Distributed under GNU GENERAL PUBLIC LICENSE version 2.0, see LICENSE
 
 # Environment imports
 import os
-os.environ["OPENBLAS_NUM_THREADS"] = "1"  # Number of threads used for EACH simulation instance.
+os.environ["OPENBLAS_NUM_THREADS"] = "5"  # Number of threads used for EACH simulation instance.
+from time import sleep
+from multiprocessing import Pool
+from copy import copy
+
+# Mathematical tools
 import numpy as np
 import scipy.ndimage.filters as filters
 import scipy.ndimage.morphology as morphology
@@ -10,7 +17,7 @@ from scipy.integrate import cumtrapz
 from mpmath import quad, exp, sqrt, fabs, re, inf, ninf, mp
 from scipy.interpolate import interp1d
 
-
+# Graphical tools
 import matplotlib
 matplotlib.use("Agg")  # To avoid showing plots during a run on server.
 from matplotlib import pyplot as plt
@@ -18,18 +25,15 @@ import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
 #from mayavi import mlab
 
+# Parsing tools
 from optparse import OptionParser
 import re as regex
-from time import sleep
-from multiprocessing import Pool
-
-
 from ast import literal_eval
 from copy import copy
 
-
-EPS = 1e-6
-# Gillespie Constants
+#  Constants  #
+EPS = 0.000001
+#  Gillespie Constants  #
 MIN_STEPS = 10
 STEADY_STATE_VAR = 1e-4
 ALLOWED_ERR = 1e-3
@@ -38,18 +42,29 @@ INV_DOS = 0.01
 
 # Tau Leaping Constants
 TAU_EPS = 0.03
-# Lyaponuv Constants
+#  Graph Constants  #
 DQ = 0.1
-Q_SHIFT = 1
+Q_SHIFT = 10
 GRAD_REP = 100
 INI_LR = 0.001
 
 
-
+#  Helping Methods  #
 def flattenToColumn(a):
+    """
+    Returns the given array, reshaped into a column array.
+    :param a: (N,M) numpy array.
+    :return: (N*M,1) numpy array.
+    """
     return a.reshape((a.size, 1))
 
+
 def flattenToRow(a):
+    """
+    Returns the given array, reshaped into a row array.
+    :param a: (N,M) numpy array.
+    :return: (1,N*M) numpy array.
+    """
     return a.reshape((1, a.size))
 
 def local_min_func(input):
@@ -69,26 +84,42 @@ def safe_save(path, arr):
 
 
 def detect_local_minima(arr):
-    # https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
+    # From https://stackoverflow.com/questions/3684484/peak-detection-in-a-2d-array/3689710#3689710
     """
     Takes an array and detects the troughs using the local minimum filter.
     Returns a boolean mask of the troughs (i.e. 1 when
     the pixel's value is the neighborhood minimum, 0 otherwise)
     """
-    neighborhood = morphology.generate_binary_structure(len(arr.shape),2)
+    def local_min_func(input):
+        mid = len(input) // 2
+        return (input[mid] <= input).all()
+    neighborhood = morphology.generate_binary_structure(len(arr.shape), 2)
     return np.where(filters.generic_filter(arr, local_min_func, footprint=neighborhood,
                                            mode='constant', cval=np.min(arr)-1))
-def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-3, max_iter=1000000, plot_lc=True):
-    x=x0.flatten()
+
+
+def simple_gradient_descent(grad, x0, eps=1e-4, lr=1e-3, max_iter=1000000, plot_lc=True):
+    """
+    Performs a gradient descent for a given function to detect the nearest local minima.
+    :param grad: A method that gets an array with the same shape as x0 and calculates the gradient in this point.
+    :param x0: Initial point.
+    :param eps: A point will be considered a local minima if the gradient in this point is smaller than eps.
+    :param lr: Learning rate. At each step x -> x - lr*grad(x)
+    :param max_iter: Maximum iterations
+    :param plot_lc: If true, the learning curve will be plotted (gradient vs. iteration number).
+    :return: x, success_flag. x - Detected local minima (or location in last iteration if max_iteration has
+     been reached)
+     success_flag - True if run terminated successfully.
+    """
+    x = x0.flatten()
     curr_grad = grad(x)
     if plot_lc:
         gradvec = []
     iter=0
     while np.max(np.abs(curr_grad)) > eps and iter < max_iter:
         if plot_lc:
-            # print(iter)
             gradvec.append(curr_grad)
-        x = x - curr_grad*lr
+        x = x - curr_grad * lr
         curr_grad = grad(x)
         iter += 1
     if plot_lc:
@@ -97,30 +128,59 @@ def simple_gadient_descent(grad, x0, eps=1e-4, lr=1e-3, max_iter=1000000, plot_l
         plt.show()
     return x, iter < max_iter
 
-# Methods for calculating superconducting related tunneling rates
-
-def high_impadance_p(x,Ec,T,kappa):
+#  Methods for calculating superconducting related tunneling rates  #
+#  see https://doi.org/10.1007/978-1-4757-2166-9_2  #
+def high_impedance_p(x, Ec, T, kappa):
+    """
+    P- function for high impedance.
+    :param x: function input (energy).
+    :param Ec: Electrostatic energy of environment.
+    :param T: Temperature.
+    :param kappa: Carrier charge in units of e.
+    :return: P(x)
+    """
     sigma = 2*(kappa**2)*Ec*T
     mu = kappa**2*Ec
     return exp(-(x-mu)**2/(2*sigma))/sqrt(2*np.pi*sigma)
 
-def fermi_dirac_dist(x,T):
+
+def fermi_dirac_dist(x, T):
+    """
+    Fermi-dirac distribution function.
+    :param x: Energy.
+    :param T: Temperature (energy units).
+    :return: f(x).
+    """
     exp_arg = x/T
     if exp_arg > 20:
         return 0
     else:
         return 1/(1 + exp(x/T))
 
-def qp_density_of_states(x,energy_gap):
+
+def qp_density_of_states(x, energy_gap):
+    """
+    Normalized Quasi-particles density of states (BCS)
+    :param x: energy.
+    :param energy_gap: Superconducting gap.
+    :return: Ns(x)/N0(x).
+    """
     arg = x**2-energy_gap**2
-    # if arg < EPS:
-    #     arg = EPS
     return fabs(x) / sqrt(arg)
 
+
 def cp_tunneling(x, Ec, Ej, T):
+    """
+    Cooper-pairs tunneling rates for high impedance.
+    :param x: tunneling energy differences array (before - after).
+    :param Ec: Electrostatic energy of environment.
+    :param Ej: Josephson energy.
+    :param T: Temperature.
+    :return: Array with same shape as x.
+    """
     res = np.zeros(x.shape)
     for ind, val in enumerate(x):
-        res[ind] = (np.pi*Ej)**2 * high_impadance_p(val, Ec, T, 2)
+        res[ind] = (np.pi*Ej)**2 * high_impedance_p(val, Ec, T, 2)
     return res
 
 def qp_integrand(deltaE, Ec, gap, T):
@@ -130,6 +190,14 @@ def qp_integrand(deltaE, Ec, gap, T):
     return f
 
 def qp_integrand_big_energies(deltaE, Ec, T):
+    """
+    Quasi-particles tunneling rates for high impedance.
+    :param deltaE: tunneling energy differences array (before - after).
+    :param Ec: Electrostatic energy of environment.
+    :param gap: Superconducting gap.
+    :param T: Temperature.
+    :return: Array with same shape as deltaE.
+    """
     def f(x1):
         return (x1/(1-exp(-x1/T)))*high_impadance_p(x1 - deltaE, Ec, T, 1)
     return f
@@ -157,7 +225,19 @@ def qp_tunneling(deltaE, Ec, gap, T):
         return res
 
 class TunnelingRateCalculator:
+    """
+    Calculates tunneling rates and saves them for later use (or loads existing rates).
+    """
     def __init__(self, deltaEmin, deltaEmax, deltaEstep, rateFunc, Ec, T, otherParam, dirPath):
+        """
+        :param deltaEmin, deltaEmax, deltaEstep: Rates are calculated for energy differences between given minimum
+         and maximum with the given steps (and interpolated in between).
+        :param rateFunc: Function for calculating tunneling rates, with signature f(deltaE, Ec, otherParameter, T).
+        :param Ec: Electrostatic energy of environment.
+        :param T: Temperature.
+        :param otherParam: Superconducting gap (for quasi-particles) or Josephson energy (for Cooper-pairs).
+        :param dirPath: Path to directory where rates will be saved (or loaded from).
+        """
         self.T = T
         self.otherParam = otherParam
         self.Ec = Ec
@@ -172,9 +252,11 @@ class TunnelingRateCalculator:
         self.vals = None
         self.set_results()
         self.set_approx()
-        self.plot_rate()
 
     def isWriting(self):
+        """
+        Checking of writing "mutex" is occupied
+        """
         if os.path.exists(os.path.join(self.dirName, "writing.txt")):
             writing_process_still_alive = False
             try:
@@ -195,6 +277,9 @@ class TunnelingRateCalculator:
             return False
 
     def getWritingLock(self):
+        """
+        Getting writing "mutex".
+        """
         got_it = False
         while not got_it:
             while self.isWriting():
@@ -214,10 +299,17 @@ class TunnelingRateCalculator:
                 got_it = False
 
     def freeWritingLock(self):
+        """
+        Freeing writing "mutex".
+        :return:
+        """
         if self.isWriting():
             os.remove(os.path.join(self.dirName, "writing.txt"))
 
     def set_results(self):
+        """
+        Setting initial state
+        """
         if os.path.isdir(self.dirName):
             desireddeltaEmin = self.deltaEmin
             desireddeltaEmax = self.deltaEmax
@@ -246,15 +338,24 @@ class TunnelingRateCalculator:
         return True
 
     def saveVals(self):
+        """
+        Saving calculated rates
+        """
         safe_save(os.path.join(self.dirName, "deltaEmin"), self.deltaEmin)
         safe_save(os.path.join(self.dirName, "deltaEmax"), self.deltaEmax)
         safe_save(os.path.join(self.dirName, "deltaEstep"), self.deltaEstep)
         safe_save(os.path.join(self.dirName, "vals"), self.vals)
 
     def set_approx(self):
+        """
+        Setting interpolation for calculated rates.
+        """
         self.approx = interp1d(self.deltaEvals, self.vals, assume_sorted=True)
 
     def increase_high_limit(self):
+        """
+        Calculating rates for higher energy differences than the ones currently exist.
+        """
         print("Increasing high limit", flush=True)
         new_deltaEmax = self.deltaEmax + np.abs(self.deltaEmax)
         new_inputs = np.arange(self.deltaEmax, new_deltaEmax, self.deltaEstep)
@@ -267,6 +368,9 @@ class TunnelingRateCalculator:
         print("High limit increased, Emax= " + str(self.deltaEmax), flush=True)
 
     def decrease_low_limit(self):
+        """
+        Calculating rates for lower energy differences than the ones currently exist.
+        """
         print("Decreasing low limit", flush=True)
         new_deltaEmin = self.deltaEmin - np.abs(self.deltaEmin)
         new_inputs = np.arange(new_deltaEmin, self.deltaEmin, self.deltaEstep)
@@ -280,6 +384,9 @@ class TunnelingRateCalculator:
 
 
     def update_rates(self):
+        """
+        Updating rates by loading existing results.
+        """
         self.getWritingLock()
         self.deltaEmin = np.load(os.path.join(self.dirName, "deltaEmin.npy"))
         self.deltaEmax = np.load(os.path.join(self.dirName, "deltaEmax.npy"))
@@ -289,7 +396,12 @@ class TunnelingRateCalculator:
         self.set_approx()
         self.freeWritingLock()
 
-    def get_tunnling_rates(self, deltaE):
+    def get_tunneling_rates(self, deltaE):
+        """
+        Returns tunneling rates for the given energy differences (before - after).
+        :param deltaE: 1D numpy array.
+        :return: Numpy array with same size as deltaE.
+        """
         if self.deltaEmin - np.min(deltaE) >= -self.deltaEstep or self.deltaEmax - np.max(deltaE) <= self.deltaEstep:
             self.update_rates()
         while self.deltaEmin - np.min(deltaE) >= -self.deltaEstep:
@@ -326,7 +438,7 @@ class DotArray:
     right and to gate voltage
     """
 
-    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, temperature_gradient=0,
+    def __init__(self, rows, columns, VL, VR, VG, Q0, n0, CG, RG, Ch, Cv, Rh, Rv, temperature, temperature_gradient=0, temperature_gradient_step=0
                  fastRelaxation=False, tauLeaping=False, modifyR=False, constQ=False):
         """
         Creates new array of quantum dots
@@ -337,11 +449,16 @@ class DotArray:
         :param Q0: np array of initial charges (rowsXcolumns double array)
         :param n0: np array of initial electrons (rowsXcolumns double array)
         :param VG: voltage of the gates (rowsXcolumns double array)
-        :param Ch: horizotal capacitances ((rowsXcolumns+1 double array)
-        :param Cv: vertical capacitances (rows-1Xcolumns double array)
-        :param Rh: vertical tunnelling ressistances (rowsXcolumns+1 double array)
-        :param Rv: horizontal tunnelling ressistances (rows-1Xcolumns double array)
-        :param RG: ground resistances (rowsXcolumns double array)
+        :param Ch: horizontal capacitance ((rowsXcolumns+1 double array)
+        :param Cv: vertical capacitance (rows-1Xcolumns double array)
+        :param Rh: vertical tunnelling resistance (rowsXcolumns+1 double array)
+        :param Rv: horizontal tunnelling resistance (rowsXcolumns+1 double array)
+        :param RG: gate resistances (rowsXcolumns double array)
+        :param temperature: temperature on the left side of the array (double)
+        :param temperature_gradient: constant temperature gradient, from left to right (double)
+        :param fastRelaxation: True for working in the fast relaxation limit.
+        :param tauLeaping: True to use tau leaping approximation.
+        :param modifyR: True to modify tunneling resistance according to the occupation (finite DOF for electrons).
         """
         self.fast_relaxation = fastRelaxation
         self.constQ = constQ
@@ -357,18 +474,22 @@ class DotArray:
         self.Ch = Ch
         self.Cv = np.vstack((np.zeros((1,columns)),Cv)) if Cv.size else np.zeros((1,1))
         self.Rh = Rh
-        self.Rv = Rv if Rv.size else np.zeros((0,0))
+        self.Rv = Rv if Rv.size else np.zeros((0, 0))
         self.R = np.hstack((Rh.flatten(), Rh.flatten(), Rv.flatten(), Rv.flatten()))
-        self.temperature = temperature if temperature_gradient==0 else self.getTemperatureArray(temperature, temperature_gradient)
-        self.variableRightWorkLen = (self.columns + 1) * self.rows
-        self.variableDownWorkLen = self.columns * (self.rows - 1)
+        self.temperature = temperature if temperature_gradient == 0 else \
+            self.getTemperatureArray(temperature, temperature_gradient)
+        self.temperature_gradient = temperature_gradient
+        self.temperature_gradient_step = temperature_gradient_step
+        self.rightWorkLen = (self.columns + 1) * self.rows
+        self.downWorkLen = self.columns * (self.rows + 1)
         self.no_tunneling_next_time = False
+        self._Q_eigenbasis = None
         self.createCapacitanceMatrix()
-        self.setDiagonalizedJ()
+        self.setDiagonalizedInvTau()
         self.setConstWork()
         self.setConstMatrix()
         self.setConstNprimePart()
-        self.use_modifyR=modifyR
+        self.use_modifyR = modifyR
 
         # for variable R calculation
         if self.use_modifyR:
@@ -384,6 +505,10 @@ class DotArray:
             self.up = np.zeros((self.rows - 1, self.columns))
 
     def __copy__(self):
+        """
+        Copy constructor. Shallow copy for static constant variables. Deep copy for dynamical variables.
+        :return: A copy of the current DotArray instance.
+        """
         copy_array = object.__new__(type(self))
         copy_array.fast_relaxation = self.fast_relaxation
         copy_array.rows = self.rows
@@ -400,15 +525,17 @@ class DotArray:
         copy_array.Rh = self.Rh
         copy_array.Rv = self.Rv
         copy_array.R = np.copy(self.R)
-        copy_array.temperature = self.temperature
-        copy_array.variableRightWorkLen = self.variableRightWorkLen
-        copy_array.variableDownWorkLen = self.variableDownWorkLen
+        copy_array.temperature = np.copy(self.temperature)
+        copy_array.temperature_gradient = self.temperature_gradient
+        copy_array.temperature_gradient_step = self.temperature_gradient_step
+        copy_array.rightWorkLen = self.rightWorkLen
+        copy_array.downWorkLen = self.downWorkLen
         copy_array.no_tunneling_next_time = self.no_tunneling_next_time
         copy_array.invC = self.invC
         copy_array.invCeq = self.invCeq
-        copy_array._JeigenVectors = self._JeigenVectors
-        copy_array._JeigenValues = self._JeigenValues
-        copy_array._JeigenVectorsInv = self._JeigenVectorsInv
+        copy_array._InvTauEigenVectors = self._InvTauEigenVectors
+        copy_array._InvTauEigenValues = self._InvTauEigenValues
+        copy_array._InvTauEigenVectorsInv = self._InvTauEigenVectorsInv
         copy_array.timeStep = self.timeStep
         copy_array.default_dt = self.default_dt
         copy_array._constQnPart = self._constQnPart
@@ -424,6 +551,8 @@ class DotArray:
         copy_array.verticalMatrix = self.verticalMatrix
         copy_array._left_part_n_prime = self._left_part_n_prime
         copy_array._right_part_n_prime = self._right_part_n_prime
+        copy_array._up_part_n_prime = self._up_part_n_prime
+        copy_array._down_part_n_prime = self._down_part_n_prime
         copy_array.tauLeaping = self.tauLeaping
         copy_array.use_modifyR = self.use_modifyR
         copy_array._Q_eigenbasis = np.copy(self._Q_eigenbasis)
@@ -433,7 +562,7 @@ class DotArray:
             copy_array._rightnExponent = np.copy(self._rightnExponent)
         copy_array.rates = np.copy(self.rates)
         copy_array.cumRates = np.copy(self.cumRates)
-        # tau leaping
+        # tau leaping variables
         if copy_array.tauLeaping:
             copy_array.totalAction = np.copy(self.totalAction)
             copy_array.left = np.copy(self.left)
@@ -443,21 +572,43 @@ class DotArray:
         return copy_array
 
     def getRows(self):
+        """
+        :return: The number of rows in the array.
+        """
         return self.rows
 
     def getColumns(self):
+        """
+        :return: The number of columns in the array.
+        """
         return self.columns
 
     def getTemperatureArray(self, temperature, temperatureGradient):
-        line = temperature + temperatureGradient*np.arange(self.getColumns()+1)
-        Th = np.tile(line, (self.getRows(),1))
-        Tv = (Th[1:,:-1] + Th[1:,1:])/2
+        """
+        Calculates the temperature on each junction with a constant temperature gradient.
+        :param temperature: Temperature on the left side of the array.
+        :param temperatureGradient: Gradient of temperature (left to right direction).
+        :return: A vector holding the temperature of each junction in the same order as
+         tunneling rates, [horizontal, horizontal, vertical, vertical].
+        """
+        line = temperature + temperatureGradient * np.arange(self.getColumns() + 1)
+        Th = np.tile(line, (self.getRows(), 1))
+        Tv = np.tile((line[:-1] + line[1:])/2, (self.getRows()-1, 1))
         return np.hstack((Th.flatten(), Th.flatten(), Tv.flatten(), Tv.flatten()))
 
     def setTemperature(self, temperature):
+        """
+        Sets the temperatures in the array
+        :param temperature: Array temperature, can be number if it is uniform, or a vector with
+         the same size and order as self.Rates if a temperature gradient exists.
+        """
         self.temperature = temperature
 
     def getTemperature(self):
+        """
+        :return: Array temperature, can be number if it is uniform, or a vector with
+         the same size and order as self.Rates if a temperature gradient exists.
+        """
         return self.temperature
 
     def changeVext(self, newVL, newVR):
@@ -467,19 +618,39 @@ class DotArray:
         return True
 
     def getOccupation(self):
+        """
+        :return: the occupation (number of excess electrons) on each island.
+         Numpy array with the shape of the islands array.
+        """
         return np.copy(self.n).reshape((self.rows, self.columns))
 
-    def getGroundCharge(self):
+    def getGateCharge(self):
+        """
+        :return: the charge on gate capacitors of each island.
+         Numpy array with the shape of the islands array.
+        """
         return np.copy(self.Q).reshape((self.rows, self.columns))
 
     def setOccupation(self, n):
+        """
+        Setting array occupation (number of excess electrons on each island)
+        :param n: Numpy array with the same size as the islands array.
+        """
         self.n = flattenToColumn(n)
 
-    def setGroundCharge(self, Q):
+    def setGateCharge(self, Q):
+        """
+        Setting charges on gate capacitors.
+        :param Q: Numpy array with the same size as the islands array.
+        """
         self.Q = flattenToColumn(Q)
-        self._Q_eigenbasis = self._JeigenVectorsInv.dot(self.Q)
+        self._Q_eigenbasis = self._InvTauEigenVectorsInv.dot(self.Q)
 
     def getTimeStep(self):
+        """
+        :return: The approximated time until steady state (after this time,
+        the state would be evaluated to see if the system already reached a steady state).
+        """
         return self.timeStep
 
     def getCurrentMap(self):
