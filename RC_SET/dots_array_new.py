@@ -3431,9 +3431,9 @@ if __name__ == "__main__":
         Cv = np.array(Cv)
         Rv = np.array(Rv)
         if Cv.shape[0] != rows+1:
-            Cv = np.pad(Cv, ((0, 1), (0, 0)))
+            Cv = np.pad(Cv, ((0, 1), (0, 0)), mode='constant')
         if Rv.shape[0] != rows+1:
-            Rv = np.pad(Rv, ((1, 1), (0, 0)))
+            Rv = np.pad(Rv, ((1, 1), (0, 0)), mode='constant')
     else:
         VG = create_random_array(rows, columns, options.VG_avg, options.VG_std, dist,
                                  False)
