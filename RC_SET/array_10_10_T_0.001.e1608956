@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "dots_array_new.py", line 3472, in <module>
+    upElectrode = literal_eval(options.upElectrode.replace('\"', '')) if options.upElectrode else [0]*columns
+  File "/gpfs0/jdubi/users/kasirer/Python-3.7/lib/python3.7/ast.py", line 46, in literal_eval
+    node_or_string = parse(node_or_string, mode='eval')
+  File "/gpfs0/jdubi/users/kasirer/Python-3.7/lib/python3.7/ast.py", line 35, in parse
+    return compile(source, filename, mode, PyCF_ONLY_AST)
+  File "<unknown>", line 0
+    
+    ^
+SyntaxError: unexpected EOF while parsing

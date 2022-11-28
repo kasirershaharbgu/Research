@@ -1,0 +1,18 @@
+
+python3 dots_array_new.py -M 10 -N 10 --vmin 0 --vmax 1.2 --vstep 0.001 --vr 0 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0.01 --temperature-gradient-step 0.001 --distribution exp --down-electrode "" --up-electrode "" --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_T_0.001 -o same_array_different_temperature --full --current-map   --symmetric-v     -i linear_response_temperature_gradient/runningParameters_array_10_10_T_0.001.txt
+
+python3 dots_array_new.py -M 10 -N 10 --vmin 0 --vmax 1.2 --vstep 0.001 --vr 0 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0.01 --temperature-gradient-step 0.001 --distribution exp --down-electrode "" --up-electrode "" --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_T_0.001 -o same_array_different_temperature --full --current-map   --symmetric-v     -i linear_response_temperature_gradient/runningParameters_array_10_10_T_0.001.txt
+
+Loading parameters from file linear_response_temperature_gradient/runningParameters_array_10_10_T_0.001.txt
+
+python3 dots_array_new.py -M 10 -N 10 --vmin 0 --vmax 1.2 --vstep 0.001 --vr 0 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0.01 --temperature-gradient-step 0.001 --distribution exp --down-electrode "" --up-electrode "" --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_T_0.001 -o same_array_different_temperature --full --current-map   --symmetric-v     -i linear_response_temperature_gradient/runningParameters_array_10_10_T_0.001.txt
+
+Loading parameters from file linear_response_temperature_gradient/runningParameters_array_10_10_T_0.001.txt
+
+python3 dots_array_new.py -M 10 -N 10 --vmin 0 --vmax 1.2 --vstep 0.001 --vr 0 --vd 0 --vu 0 --vg-avg 0 --vg-std 0 --c-avg 2 --c-std 0 --cg-avg 10 --cg-std 0 --r-avg 10 --r-std 0 --rg-avg 1000 --rg-std 0 --repeats 50 --n-avg 0 --n-std 0 --q-avg 0 --q-std 0 -T 0.001 --temperature-gradient 0.01 --temperature-gradient-step 0.001 --distribution exp --custom-rh "" --custom-rv "" --custom-ch "" --custom-cv "" --file-name array_10_10_T_0.001 -o same_array_different_temperature --full --current-map   --symmetric-v     -i linear_response_temperature_gradient/runningParameters_array_10_10_T_0.001.txt
+
+Loading parameters from file linear_response_temperature_gradient/runningParameters_array_10_10_T_0.001.txt
+Saving array parameters
+Normal prototype array was created
+Starting parallel run
+0.000,0.001,0.002,0.003,

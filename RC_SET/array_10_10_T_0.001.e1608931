@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "dots_array_new.py", line 3434, in <module>
+    Cv = np.pad(Cv, ((0, 1), (0, 0)))
+TypeError: pad() missing 1 required positional argument: 'mode'
