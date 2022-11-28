@@ -1161,21 +1161,21 @@ class SingleResultsProcessor:
 
     def plot_IV(self, ax=None, fig=None, err=True, alternative=False, errorevery=10,
                 Vnorm=1, Inorm=1, Vlabel='Voltage', Ilabel='Current', shift=0, fmt_up='r.', fmt_down='b.',
-                xlim=None, ylim=None):
+                xlim=None, ylim=None, x_shift=0):
 
         if ax is None:
             fig, ax = plt.subplots()
         if err:
             ax.errorbar(self.V[:self.mid_idx:10]/Vnorm, self.I[:self.mid_idx:10]/Inorm + shift, fmt=fmt_up,
                          yerr=self.IErr[:self.mid_idx:10]/Inorm,
-                         errorevery=errorevery,markersize=20, linewidth=2)
+                         errorevery=errorevery,markersize=20, linewidth=10)
 
             ax.errorbar(self.V[self.mid_idx::10]/Vnorm, self.I[self.mid_idx::10]/Inorm + shift, fmt=fmt_down,
                          yerr=self.IErr[self.mid_idx::10]/Inorm,
-                         errorevery=errorevery,markersize=20, linewidth=2)
+                         errorevery=errorevery,markersize=20, linewidth=10)
         else:
-            ax.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt_up, markersize=16, linewidth=5)
-            ax.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt_down, markersize=16, linewidth=5)
+            ax.plot(self.V[:self.mid_idx]/Vnorm, self.I[:self.mid_idx]/Inorm + shift, fmt_up, markersize=16, linewidth=10)
+            ax.plot(self.V[self.mid_idx:]/Vnorm, self.I[self.mid_idx:]/Inorm + shift, fmt_down, markersize=16, linewidth=10)
         if alternative and self.alternativeV is not None:
             ax.errorbar(self.alternativeV[:self.alternative_mid_idx]/Vnorm,
                          self.alternativeI[:self.alternative_mid_idx]/Inorm + shift,
@@ -2779,12 +2779,16 @@ if __name__ == "__main__":
 
         axes[0,0].set_xlabel('')
         axes[0, 0].set_xticks([])
+        axes[0, 0].set_yticks([])
         axes[0,1].set_xlabel('')
         axes[0, 1].set_xticks([])
         axes[0, 1].set_ylabel('')
         axes[0, 1].set_yticks([])
         axes[1, 1].set_ylabel('')
         axes[1, 1].set_yticks([])
+        axes[1, 1].set_xticks([])
+        axes[1, 0].set_yticks([])
+        axes[1, 0].set_xticks([])
         axes[0,0].set_xlim(0,4)
         axes[0,0].set_ylim(0,6.1)
         axes[0, 1].set_xlim(0, 4)
@@ -4057,17 +4061,17 @@ if __name__ == "__main__":
             cp_label = "$\\Gamma_{cp}$, $\\Delta= %s E_c$" % gap
             qp_label = "$\\Gamma_{qp}$, $\\Delta= %s E_c$" % gap
             electrons_label = "$\\Gamma_{e}$"
-            ax.plot(cp_deltaE, (1/4)*cp_rates, linestyle='-', color=color, label=cp_label, linewidth=5)
-            ax.plot(qp_deltaE, qp_rates, linestyle='--', color=color, label=qp_label, linewidth=5)
+            ax.plot(cp_deltaE, (1/4)*cp_rates, linestyle='-', color=color, label=cp_label, linewidth=10)
+            ax.plot(qp_deltaE, qp_rates, linestyle='--', color=color, label=qp_label, linewidth=10)
 
 
-            ax2.plot(cp_deltaE, (1/4)*cp_rates, linestyle='-', color=color, linewidth=5)
-            ax2.plot(qp_deltaE, qp_rates, linestyle='--', color=color, linewidth=5)
+            ax2.plot(cp_deltaE, (1/4)*cp_rates, linestyle='-', color=color, linewidth=10)
+            ax2.plot(qp_deltaE, qp_rates, linestyle='--', color=color, linewidth=10)
 
         ax.plot(qp_deltaE, (0.025)*electrons_tunneling_rates(qp_deltaE, 0.016),
-                linestyle='dotted', color='m', label=electrons_label, linewidth=5)
+                linestyle='dotted', color='m', label=electrons_label, linewidth=10)
         ax2.plot(qp_deltaE, (0.025) * electrons_tunneling_rates(qp_deltaE, 0.016),
-                linestyle='dotted', color='m', label=electrons_label, linewidth=5)
+                linestyle='dotted', color='m', label=electrons_label, linewidth=10)
         ax.set_ylim(-0.0001, 0.12)
         ax.set_xlim(-1, 6)
         ax2.set_ylim(-0.00005,0.004)
